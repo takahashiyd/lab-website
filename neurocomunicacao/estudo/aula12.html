@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 12 · Quando a comunicação falha — Material de estudo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,600..800&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{--bg:#f6f7f9;--surface:#fff;--fg:#142033;--muted:#566377;--line:#d8dee6;--accent:#0e7c86;--accent2:#c9771a;--soft:#e5f1f2;--soft2:#fbf1e3;
+--display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;--body:"Source Serif 4",Georgia,"Times New Roman",serif;--ui:"Source Sans 3","Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1621;--surface:#172132;--fg:#e6ecf3;--muted:#9aa8b9;--line:#2a3850;--accent:#3db4be;--accent2:#f0a645;--soft:#173740;--soft2:#3a2c17;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:18px/1.65 var(--body)}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 80px}
+.top{font:600 13px/1.4 var(--ui);display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:22px}
+.top a{color:var(--accent);text-decoration:none}
+.eyebrow{font:600 12px/1 ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(30px,6.5vw,46px)/1.08 var(--display);font-stretch:112%;margin:10px 0 8px;text-wrap:balance}
+.sub{font:400 20px/1.4 var(--ui);color:var(--muted);margin:0 0 26px}
+h2{font:750 25px/1.2 var(--display);margin:46px 0 12px;text-wrap:balance}
+h3{font:700 19px/1.3 var(--ui);margin:28px 0 8px}
+p{margin:0 0 16px}
+a{color:var(--accent)}
+ul,ol{padding-left:24px;margin:0 0 16px} li{margin:4px 0}
+figure{margin:26px 0;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;break-inside:avoid}
+figure img{width:100%;height:auto;display:block;border-radius:6px;background:#fff}
+figcaption{font:15px/1.5 var(--ui);color:var(--muted);margin-top:10px}
+.objetivos{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;padding:14px 18px 6px;margin:0 0 30px;font-family:var(--ui)}
+.objetivos::before{content:"Nesta aula você vai aprender a";display:block;font:700 13px/1 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:4px 0 10px}
+.destaque{background:var(--soft2);border-radius:10px;padding:14px 18px 2px;margin:22px 0;font-family:var(--ui);break-inside:avoid}
+.conceitos{background:var(--soft);border-radius:12px;padding:16px 20px 6px;margin:30px 0;font-family:var(--ui)}
+.conceitos::before{content:"Conceitos-chave";display:block;font:700 13px/1 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:4px 0 12px}
+.conceitos dl{margin:0} .conceitos dt{font-weight:700;margin-top:10px} .conceitos dd{margin:2px 0 8px 0;color:var(--fg)}
+details{margin:8px 0 4px;font-family:var(--ui);font-size:16px}
+summary{cursor:pointer;color:var(--accent);font-weight:600}
+details[open] summary{margin-bottom:6px}
+.refs p,#referencias + * p{font-size:15px;line-height:1.5;padding-left:1.4em;text-indent:-1.4em}
+.rodape{margin-top:50px;padding-top:16px;border-top:1px solid var(--line);font:13px/1.5 var(--ui);color:var(--muted)}
+@media print{
+ :root{--bg:#fff;--surface:#fff}
+ body{font-size:11.5pt;line-height:1.5}
+ .wrap{max-width:none;padding:0}
+ .top{display:none}
+ h2{font-size:17pt;margin-top:24pt;break-after:avoid}
+ h1{font-size:28pt}
+ figure{padding:8pt;border-color:#ccc}
+ figure img{max-height:9cm;object-fit:contain}
+ details>summary{display:none}
+ details{margin-left:0;font-size:10.5pt}
+ details::before{content:"Resposta: ";font-weight:700}
+ a{color:inherit;text-decoration:none}
+ .refs p{font-size:10pt}
+ @page{size:A4;margin:18mm 18mm 20mm}
+}
+</style>
+<div class="wrap">
+<nav class="top"><a href="index.html">Material de estudo</a><a href="../aula12.html">Laboratório da aula 12</a><a href="aula11.html">← Aula 11</a><a href="aula13.html">Aula 13 →</a></nav>
+<span class="eyebrow">Bases neurais da comunicação humana · Aula 12 · Material de estudo</span>
+<h1>Quando a comunicação falha</h1>
+<p class="sub">Afasias depois de um AVC, a linguagem que se desfaz aos poucos, diferenças que surgem no desenvolvimento e as neuropróteses que devolvem a voz a quem não consegue mais falar</p>
+<div class="objetivos">
+<ul>
+<li>Definir afasia e distingui-la de problemas motores da fala e de perda de inteligência.</li>
+<li>Classificar as afasias clássicas com três perguntas: a fala é fluente? A pessoa compreende? Consegue repetir?</li>
+<li>Relacionar cada síndrome ao território típico da lesão e explicar por que o modelo clássico é insuficiente.</li>
+<li>Descrever como o cérebro se reorganiza na recuperação e o que as terapias intensivas acrescentam.</li>
+<li>Comparar a afasia progressiva primária com a afasia por AVC.</li>
+<li>Discutir autismo e transtorno do desenvolvimento da linguagem com dados atuais e linguagem respeitosa.</li>
+<li>Explicar como funcionam as neuropróteses de fala e que questões éticas elas levantam.</li>
+</ul>
+</div>
+<h2 id="afasia-perder-a-língua-não-a-inteligência">1. Afasia: perder a língua, não a inteligência</h2>
+<p>Nas aulas anteriores estudamos como o cérebro ouve, fala, lê e entende. Hoje olhamos para o que acontece quando esse sistema falha. Antes, um combinado: falamos de pessoas, não de casos. Dizemos “pessoa com afasia”, e não “o afásico”. Alguém na turma pode ter um avô que teve um AVC ou ser uma pessoa autista.</p>
+<p><strong>Afasia</strong> é uma alteração da linguagem adquirida depois de uma lesão cerebral. Ela atinge a fala, a compreensão, a leitura e a escrita, em graus diferentes (Brady <em>et al.</em>, 2016; Tippett; Hillis, 2016). A causa mais comum é o acidente vascular cerebral (AVC), o “derrame”: um vaso entope ou se rompe e uma parte do cérebro fica sem sangue. Dos AVCs novos, algo entre 25% e 50% se apresentam com alguma forma de afasia (Schlaug, 2016).</p>
+<p>Afasia não é a mesma coisa que um problema na execução dos movimentos da fala. Na <strong>disartria</strong>, a fraqueza ou a falta de coordenação dos músculos deixa a fala arrastada, mas a língua (as palavras e a gramática) está intacta. Na afasia, o problema está na própria língua: achar a palavra, montar a frase, entender o que o outro disse.</p>
+<p>A história começa em Paris. Em 1861, o médico Paul Broca examinou Louis Victor Leborgne, um homem que só conseguia produzir a sílaba “tan”, muitas vezes acompanhada de gestos. Na autópsia, Broca encontrou uma lesão na parte posterior do giro frontal inferior esquerdo (Small; Hickok, 2016), região que passou a se chamar área de Broca (Tippett; Hillis, 2016). Em 1874, Carl Wernicke descreveu o padrão oposto: fala fluente e bem articulada, mas sem sentido, com lesões na parte posterior do lobo temporal esquerdo (Tippett; Hillis, 2016; Gorno-Tempini; Pressman, 2016). O achado mais confiável dessa época foi que a maioria das pessoas com afasia tinha lesão no hemisfério esquerdo (Tippett; Hillis, 2016).</p>
+<div class="destaque">
+<p>Perder a linguagem não é perder o pensamento. Pessoas com <strong>afasia global</strong>, que quase não entendem nem produzem linguagem, ainda somam e subtraem, resolvem problemas de lógica, pensam sobre o que outra pessoa está pensando, apreciam música e se orientam no espaço (Fedorenko; Varley, 2016). Por isso não se fala com uma pessoa com afasia como se fala com uma criança: fale devagar, com frases curtas, e dê tempo para ela responder.</p>
+</div>
+<h2 id="três-perguntas-que-organizam-as-síndromes">2. Três perguntas que organizam as síndromes</h2>
+<p>Na clínica, as afasias “clássicas” são classificadas pelo comportamento, com três perguntas simples (figura 1). <strong>A fala é fluente?</strong> Fala fluente sai sem esforço, com frases de tamanho normal e melodia natural. <strong>A pessoa compreende</strong> o que ouve? <strong>Consegue repetir</strong> uma frase dita pelo examinador?</p>
+<figure>
+<img src="img/aula12/fluxograma.png" alt="Figura 1. Três perguntas (fluência, compreensão e repetição) levam às oito síndromes afásicas clássicas. Fonte: elaborada para o curso a partir de Tippett e Hillis (2016)." />
+<figcaption aria-hidden="true"><strong>Figura 1.</strong> Três perguntas (fluência, compreensão e repetição) levam às oito síndromes afásicas clássicas. Fonte: elaborada para o curso a partir de Tippett e Hillis (2016).</figcaption>
+</figure>
+<p>Na <strong>afasia de Broca</strong>, a fala é não fluente, lenta e esforçada. A pessoa usa sobretudo palavras de conteúdo, como substantivos e verbos, e omite ou troca as palavras gramaticais (artigos, preposições, verbos auxiliares) e as terminações de plural e de tempo verbal. Esse padrão se chama <strong>agramatismo</strong>: a fala fica “telegráfica” (Tippett; Hillis, 2016). Substantivos costumam ser mais fáceis do que verbos. A compreensão é relativamente boa na conversa, mas falha em frases com sintaxe complexa, como “As flores que o João deu à Maria eram rosas” (Tippett; Hillis, 2016). A repetição é lenta e difícil. Como a lesão costuma alcançar o córtex motor vizinho, é frequente a fraqueza do braço e da face do lado direito (Tippett; Hillis, 2016).</p>
+<p>Na <strong>afasia de Wernicke</strong>, a fala é fluente e tem melodia normal, mas pouco sentido. Aparecem <strong>parafasias</strong>: trocas de sons (“sanobete” por “sabonete”, uma parafasia fonológica), trocas de palavras (“faca” por “garfo”, uma parafasia semântica) e palavras inexistentes, os <strong>neologismos</strong>. Quando os neologismos dominam, a fala vira um <strong>jargão</strong> (Tippett; Hillis, 2016; Blumstein, 2016). A compreensão é ruim já no nível das palavras isoladas, e a repetição também. Uma diferença marcante: ao contrário da pessoa com afasia de Broca, que percebe os próprios erros e muitas vezes se frustra, a pessoa com afasia de Wernicke em geral não tem consciência deles (Tippett; Hillis, 2016).</p>
+<p>As outras síndromes completam o quadro:</p>
+<ul>
+<li><strong>Afasia de condução:</strong> fala fluente com parafasias fonológicas, compreensão boa e repetição desproporcionalmente ruim. A pessoa tenta várias vezes e se aproxima da palavra-alvo aos poucos (Tippett; Hillis, 2016).</li>
+<li><strong>Afasia global:</strong> tudo comprometido. A fala pode se reduzir a palavras soltas ou a uma expressão repetida, e a comunicação depende de gestos e desenhos (Tippett; Hillis, 2016).</li>
+<li><strong>Afasia anômica:</strong> a dificuldade principal é achar palavras (<strong>anomia</strong>), com pausas e rodeios (“aquela coisa de cortar…”); o resto da linguagem vai bem (Tippett; Hillis, 2016).</li>
+<li><strong>Afasias transcorticais:</strong> o traço comum é a <strong>repetição preservada</strong>. A transcortical motora parece a de Broca, mas repete bem; a sensorial parece a de Wernicke, mas repete bem; a mista parece a global, mas repete, muitas vezes de forma automática, como um eco (<strong>ecolalia</strong>) (Tippett; Hillis, 2016).</li>
+</ul>
+<p>A classificação é útil, mas descreve sintomas, não explica mecanismos. Os sintomas de uma síndrome aparecem juntos porque dependem de regiões irrigadas pela mesma artéria, e não porque tenham uma causa comum. Por isso eles se separam em pessoas diferentes (Tippett; Hillis, 2016). Até a “fluência”, que parece óbvia, é difícil de julgar: fonoaudiólogos experientes concordaram pouco entre si ao classificá-la (Tippett; Hillis, 2016).</p>
+<h2 id="onde-estão-as-lesões-e-os-limites-do-modelo-clássico">3. Onde estão as lesões e os limites do modelo clássico</h2>
+<p>Cada síndrome tem um território típico de lesão (figura 2). A afasia de Broca se associa a lesões frontais posteriores irrigadas pelo ramo superior da artéria cerebral média esquerda. A de Wernicke, a lesões na parte posterior do giro temporal superior (a área de Wernicke), muitas vezes estendidas ao lobo parietal inferior, no território do ramo inferior da mesma artéria. A global aparece quando a artéria é bloqueada antes de se dividir, e as áreas de Broca e de Wernicke são atingidas juntas (Tippett; Hillis, 2016).</p>
+<figure>
+<img src="img/aula12/mapa_sindromes.png" alt="Figura 2. Hemisfério esquerdo esquemático com o local típico de lesão de cada síndrome. A área cinza tracejada marca o território perissilviano, em volta do sulco lateral; a linha pontilhada representa o fascículo arqueado. Fonte: elaborada para o curso a partir de Tippett e Hillis (2016)." />
+<figcaption aria-hidden="true"><strong>Figura 2.</strong> Hemisfério esquerdo esquemático com o local típico de lesão de cada síndrome. A área cinza tracejada marca o território perissilviano, em volta do sulco lateral; a linha pontilhada representa o fascículo arqueado. Fonte: elaborada para o curso a partir de Tippett e Hillis (2016).</figcaption>
+</figure>
+<p>A afasia de condução foi atribuída por muito tempo a uma lesão do <strong>fascículo arqueado</strong>, o feixe de fibras que liga as regiões temporais às frontais. Hoje se sabe que lesões só corticais, no giro supramarginal ou no temporal superior, também a produzem, e que lesões do fascículo nem sempre a causam (Tippett; Hillis, 2016). A anômica é a menos localizável na fase crônica, porque a anomia é o ponto de chegada comum da recuperação de várias afasias. As transcorticais poupam o “anel” perissilviano: a motora fica à frente ou acima da área de Broca, e a sensorial em volta da área de Wernicke, muitas vezes em zonas de fronteira entre artérias (Tippett; Hillis, 2016).</p>
+<p>Esses padrões inspiraram os primeiros diagramas da linguagem no cérebro, como o de Ludwig Lichtheim, de 1885 (Small; Hickok, 2016), redesenhado na figura 3. O modelo tinha três partes ligadas entre si: a área de Wernicke, que guardaria a forma sonora das palavras; a área de Broca, com os programas para planejar e executar a fala; e uma região onde ficariam os conceitos. A lógica era localizacionista: uma lesão num centro ou numa ligação produziria um padrão específico de déficits (Mildner, 2008). No século 20, Norman Geschwind retomou e adaptou esse modelo (Tippett; Hillis, 2016).</p>
+<figure>
+<img src="img/aula12/modelo_classico.png" alt="Figura 3. Modelo de Wernicke e Lichtheim: imagens auditivas (A), imagens motoras (M) e conceitos (C). Os números marcam lesões e as síndromes que elas preveem. Fonte: elaborada para o curso a partir do modelo de Lichtheim, conforme Small e Hickok (2016) e Mildner (2008)." />
+<figcaption aria-hidden="true"><strong>Figura 3.</strong> Modelo de Wernicke e Lichtheim: imagens auditivas (A), imagens motoras (M) e conceitos (C). Os números marcam lesões e as síndromes que elas preveem. Fonte: elaborada para o curso a partir do modelo de Lichtheim, conforme Small e Hickok (2016) e Mildner (2008).</figcaption>
+</figure>
+<p>O modelo clássico acerta o espírito, mas erra os detalhes:</p>
+<ul>
+<li><strong>A área de Broca não basta.</strong> Lesões restritas a ela produzem só parte dos sintomas, sobretudo dificuldade motora da fala. Para a síndrome completa é preciso uma lesão mais ampla (Mohr <em>et al.</em>, 1978; Tippett; Hillis, 2016).</li>
+<li><strong>Nem o caso original era “só Broca”.</strong> Os cérebros de Leborgne e de um segundo paciente, Lelong, estão preservados até hoje. Exames de imagem mostraram que as lesões chegavam a estruturas mais profundas e à substância branca, por baixo da superfície descrita por Broca (Small; Hickok, 2016); o estudo mais recente usou ressonância magnética de alta resolução (Dronkers <em>et al.</em>, 2007).</li>
+<li><strong>A área de Broca faz mais do que falar.</strong> Ela participa de várias funções linguísticas, da memória de trabalho verbal e até de tarefas não linguísticas (Tippett; Hillis, 2016).</li>
+<li><strong>Os cérebros variam.</strong> O formato dos giros e a distribuição das artérias mudam de pessoa para pessoa, e a mesma lesão aparente pode afetar funções diferentes (Tippett; Hillis, 2016).</li>
+</ul>
+<p>Os modelos atuais falam em redes e em <strong>duas vias</strong>. Uma <strong>via ventral</strong>, no lobo temporal, liga o som ao significado e sustenta a compreensão. Uma <strong>via dorsal</strong>, que passa pela junção entre os lobos temporal e parietal até o lobo frontal, liga o som à articulação e sustenta a repetição e a produção (Hickok; Poeppel, 2007). As síndromes clássicas cabem nesse esquema: a afasia de Broca envolve a via dorsal e sua rede articulatória; a de Wernicke, a interface entre som e significado da via ventral; e a de condução, a ligação entre o sistema auditivo e o motor na via dorsal (Tippett; Hillis, 2016). Você já viu essas duas vias nas aulas 3 e 5.</p>
+<h2 id="recuperação-e-terapia">4. Recuperação e terapia</h2>
+<p>Depois de um AVC, a linguagem costuma melhorar, e o cérebro muda junto. Dorothee Saur e colegas (2006) fizeram ressonância funcional em 14 pessoas com afasia em três momentos: na fase aguda (em média 1,8 dia após o AVC), na subaguda (cerca de 12 dias) e na crônica (cerca de 321 dias). Na fase aguda, as áreas esquerdas não lesionadas ativavam pouco. Na subaguda, a ativação aumentou nos dois hemisférios, com pico na região do hemisfério direito equivalente à área de Broca e na área motora suplementar, e esse aumento acompanhou a melhora da linguagem. Na fase crônica, a ativação voltou a se concentrar nas áreas esquerdas, com nova melhora (Saur <em>et al.</em>, 2006). A figura 4 resume esse curso em três fases.</p>
+<figure>
+<img src="img/aula12/recuperacao.png" alt="Figura 4. Esquema qualitativo da recuperação: o desempenho melhora rápido; a ativação do hemisfério direito sobe nas primeiras semanas e a ativação esquerda, perto da lesão, volta nos meses seguintes. Fonte: elaborada para o curso a partir de Saur et al. (2006)." />
+<figcaption aria-hidden="true"><strong>Figura 4.</strong> Esquema qualitativo da recuperação: o desempenho melhora rápido; a ativação do hemisfério direito sobe nas primeiras semanas e a ativação esquerda, perto da lesão, volta nos meses seguintes. Fonte: elaborada para o curso a partir de Saur <em>et al.</em> (2006).</figcaption>
+</figure>
+<p>O papel do hemisfério direito ainda é debatido. Alguns estudos associam melhores resultados ao recrutamento de áreas esquerdas próximas da lesão e piores ao recrutamento do hemisfério direito; outros encontram o contrário (Fridriksson; Smith, 2016). Uma síntese possível é que o hemisfério direito ajuda logo depois do tratamento, mas que as áreas esquerdas perilesionais sustentam os ganhos duradouros (Fridriksson; Smith, 2016).</p>
+<p>A terapia fonoaudiológica funciona. Uma revisão sistemática Cochrane reuniu 57 ensaios clínicos e encontrou benefício na <strong>comunicação funcional</strong>, isto é, na capacidade de se comunicar no dia a dia. Terapias de alta intensidade trouxeram mais ganho, mas também mais desistências (Brady <em>et al.</em>, 2016). Duas terapias se apoiam diretamente em ideias da neurociência.</p>
+<p>A <strong>terapia de entonação melódica</strong> nasceu da observação de que pessoas com afasia não fluente grave às vezes cantam palavras que não conseguem falar. A pessoa entoa frases curtas em duas notas, devagar (cerca de uma sílaba por segundo), batendo a mão esquerda a cada sílaba, primeiro em coro com o terapeuta, depois sozinha. O primeiro relato, em 1973, foi com três pessoas com afasia de Broca crônica (Schlaug, 2016). A ideia é recrutar redes do hemisfério direito ligadas ao canto e ao ritmo; a batida da mão esquerda pode acionar uma rede sensório-motora direita que funciona como um “marca-passo” para a fala (Schlaug, 2016). O programa é intensivo: até uma hora e meia por dia, cinco dias por semana, durante vários meses (Schlaug, 2016). Num estudo, depois de 75 sessões, o fascículo arqueado direito aumentou de volume e de número de fibras (Fridriksson; Smith, 2016). Ainda não se sabe quanto do efeito vem da melodia e quanto vem do ritmo da batida, e outros elementos do método, como a própria intensidade, podem ser igualmente importantes (Schlaug, 2016).</p>
+<p>A <strong>terapia de linguagem induzida por restrição</strong> adapta uma terapia criada para o braço paralisado: em vez de amarrar o braço bom, a “restrição” é pedir que a pessoa se comunique falando, sem apontar ou fazer gestos. Em um jogo de cartas, os participantes, separados por uma barreira, pedem cartas uns aos outros (Pulvermüller; Mohr; Taub, 2016). Em um ensaio controlado com pessoas com afasia crônica, a terapia intensiva concentrada em cerca de duas semanas trouxe melhoras claras, e a mesma quantidade de terapia espalhada por um período mais longo funcionou menos (Pulvermüller <em>et al.</em>, 2001; Pulvermüller; Mohr; Taub, 2016). O resultado derrubou a ideia de que não vale a pena tratar a afasia crônica. Mas, de novo, há discussão: um ensaio com pessoas na fase subaguda, com a terapia aplicada numa intensidade um pouco menor, encontrou melhoras parecidas com as de outra abordagem, e os autores sugeriram que a intensidade é um fator importante. Resta saber quanto do efeito vem da restrição e quanto vem da intensidade (Pulvermüller; Mohr; Taub, 2016).</p>
+<h2 id="quando-a-linguagem-se-desfaz-aos-poucos-a-afasia-progressiva-primária">5. Quando a linguagem se desfaz aos poucos: a afasia progressiva primária</h2>
+<p>No AVC, a afasia aparece de repente e tende a melhorar. Na <strong>afasia progressiva primária</strong> (APP), a linguagem piora devagar, por causa de uma doença neurodegenerativa. Ela é “primária” porque a linguagem é o sintoma mais importante no início e por cerca de dois anos, enquanto a memória do dia a dia e o comportamento ficam relativamente preservados (Gorno-Tempini; Pressman, 2016). Um consenso internacional definiu três variantes (Gorno-Tempini <em>et al.</em>, 2011):</p>
+<ul>
+<li><strong>Não fluente/agramatical:</strong> fala esforçada e hesitante, com agramatismo e dificuldade de planejar os movimentos da fala. A atrofia (perda de tecido) começa na região frontal inferior posterior e na ínsula esquerdas. A patologia frequentemente envolve a proteína tau (Gorno-Tempini; Pressman, 2016).</li>
+<li><strong>Semântica:</strong> a pessoa perde o significado das palavras e dos objetos. Ela tem dificuldade de nomear e de entender palavras isoladas, mas fala com gramática correta. A atrofia começa no lobo temporal anterior, que funciona como um <strong>centro integrador semântico</strong> (<em>hub</em>) que junta informações de vários sentidos num conceito; com o tempo, os dois lobos temporais são atingidos (Gorno-Tempini; Pressman, 2016).</li>
+<li><strong>Logopênica:</strong> pausas para achar palavras e dificuldade de repetir frases longas, ligada à memória fonológica de curto prazo. A atrofia é temporoparietal esquerda, e a patologia mais comum é a da doença de Alzheimer (Gorno-Tempini; Pressman, 2016).</li>
+</ul>
+<p>A APP ensinou algo que as lesões vasculares escondiam. O lobo temporal anterior raramente é lesionado sozinho por um AVC; foi a variante semântica que mostrou seu papel no significado (Gorno-Tempini; Pressman, 2016). E, como a perda de neurônios é lenta, o cérebro tem tempo de se reorganizar parcialmente, por isso os sintomas da APP não são cópias das síndromes vasculares (Gorno-Tempini; Pressman, 2016).</p>
+<h2 id="diferenças-que-surgem-no-desenvolvimento">6. Diferenças que surgem no desenvolvimento</h2>
+<p>Até aqui falamos de linguagem perdida depois de adquirida. Agora, de diferenças que aparecem enquanto a linguagem se desenvolve.</p>
+<h3 id="autismo">Autismo</h3>
+<p>O autismo é uma condição do neurodesenvolvimento. Os critérios diagnósticos atuais da psiquiatria americana (DSM-5, de 2013) tratam de aspectos da comunicação social, como contato visual, expressões faciais e gestos, mas não mencionam o desenvolvimento da linguagem em si. Quando o autismo entrou no manual, em 1980, um grande atraso de linguagem era obrigatório para o diagnóstico (Gernsbacher; Morson; Grace, 2016).</p>
+<p>O que mais chama a atenção é a <strong>variabilidade</strong>. O atraso de linguagem é comum no autismo, mas não universal, e não é exclusivo dele. Numa amostra de crianças e adolescentes autistas, metade teve resultado na média num teste de vocabulário, um quarto ficou de um a dois desvios-padrão abaixo da média e outro quarto, mais de dois desvios-padrão acima (Gernsbacher; Morson; Grace, 2016). Em um grupo de 35 crianças autistas que tinham menos de 60 palavras no início do estudo, algumas chegaram a quase 700 palavras em dois anos, e outras quase não mudaram (Gernsbacher; Morson; Grace, 2016). Em geral, quando a linguagem atrasa, ela segue a mesma ordem do desenvolvimento típico. Traços considerados “típicos” do autismo, como a ecolalia (repetir frases ouvidas) ou trocar “eu” por “você”, não são universais nem exclusivos dele (Gernsbacher; Morson; Grace, 2016).</p>
+<p>Como falar sobre isso? Numa pesquisa com 3.470 pessoas da comunidade autista do Reino Unido, o termo “autista” foi aceito por grande parte dos adultos autistas e das famílias, mas por bem menos profissionais; “pessoa com autismo” foi aceito por quase metade dos profissionais, mas por menos adultos autistas. Não houve um termo preferido por todos (Kenny <em>et al.</em>, 2016). A regra prática é perguntar e respeitar a preferência de cada pessoa.</p>
+<p>Durante muito tempo, as dificuldades de comunicação foram vistas como um déficit só da pessoa autista. O <strong>problema da dupla empatia</strong> propõe outra leitura: a dificuldade é mútua e surge do encontro entre pessoas com modos diferentes de perceber e se comunicar (Milton, 2012; Crompton <em>et al.</em>, 2020). Catherine Crompton e colegas (2020) testaram a ideia com “telefone sem fio”: uma história era recontada ao longo de cadeias de oito pessoas, num total de 72 adultos. Cadeias só de autistas preservaram os detalhes tão bem quanto cadeias só de não autistas; as cadeias mistas perderam detalhes mais depressa e relataram menos afinidade (<em>rapport</em>) (figura 5). Esse resultado questiona a ideia de que pessoas autistas não têm habilidades para interagir (Crompton <em>et al.</em>, 2020).</p>
+<figure>
+<img src="img/aula12/dupla_empatia.png" alt="Figura 5. Esquema qualitativo de um experimento de “telefone sem fio”: cadeias só de pessoas autistas e só de não autistas preservam os detalhes de forma parecida; cadeias mistas perdem mais. Fonte: elaborada para o curso a partir de Crompton et al. (2020)." />
+<figcaption aria-hidden="true"><strong>Figura 5.</strong> Esquema qualitativo de um experimento de “telefone sem fio”: cadeias só de pessoas autistas e só de não autistas preservam os detalhes de forma parecida; cadeias mistas perdem mais. Fonte: elaborada para o curso a partir de Crompton <em>et al.</em> (2020).</figcaption>
+</figure>
+<h3 id="transtorno-do-desenvolvimento-da-linguagem">Transtorno do desenvolvimento da linguagem</h3>
+<p>O <strong>transtorno do desenvolvimento da linguagem</strong> (TDL) é uma dificuldade persistente de linguagem sem causa biomédica conhecida, como surdez, deficiência intelectual ou síndrome genética. O nome foi recomendado por um consenso internacional de especialistas em 2017, no lugar de termos antigos como “distúrbio específico de linguagem” (Bishop <em>et al.</em>, 2017). Esse consenso também afirma que o TDL pode coexistir com outras condições do neurodesenvolvimento e que não é preciso haver diferença entre a inteligência verbal e a não verbal para o diagnóstico (Bishop <em>et al.</em>, 2017).</p>
+<p>O TDL é comum. Nos Estados Unidos, um estudo com mais de 7 mil crianças estimou a prevalência em 7,4% aos 5 anos (Tomblin <em>et al.</em>, 1997). Um estudo populacional mais recente estimou em 7,58% a prevalência de transtorno de linguagem de causa desconhecida; segundo os autores, cerca de duas crianças em cada sala de 30 têm um transtorno de linguagem grave a ponto de atrapalhar o aprendizado escolar (Norbury <em>et al.</em>, 2016). Mesmo assim, é muito menos conhecido que o autismo.</p>
+<p>As crianças com TDL aprendem palavras e gramática mais devagar e costumam ter dificuldades fora da linguagem: velocidade de processamento, memória de trabalho fonológica, processamento auditivo e aprendizagem de sequências (Evans; Brown, 2016). Na neuroimagem não há uma lesão visível. O que aparece, em média, são diferenças de estrutura em algumas regiões, mas não em outras (por exemplo, menos substância cinzenta no núcleo caudado), e uma lateralização atípica da atividade, menos concentrada no hemisfério esquerdo (Evans; Brown, 2016). A causa do TDL continua desconhecida (Evans; Brown, 2016). Um gene costuma aparecer nessa discussão: o <em>FOXP2</em>, descoberto numa família de três gerações (a “família KE”). Mas suas mutações explicam uma forma rara, de um único gene, de <strong>apraxia da fala na infância</strong>, um distúrbio do planejamento motor da fala; para o TDL, nenhuma mutação de um único gene foi confirmada (Morgan, 2019).</p>
+<h2 id="neuropróteses-de-fala">7. Neuropróteses de fala</h2>
+<p>Há pessoas em quem a linguagem está intacta, mas a saída motora não funciona. Na esclerose lateral amiotrófica (ELA), os neurônios motores morrem aos poucos; certos AVCs no tronco cerebral deixam a pessoa consciente, mas incapaz de mover a boca. Essa incapacidade de articular se chama <strong>anartria</strong>. Para essas pessoas, uma <strong>neuroprótese de fala</strong> (ou interface cérebro-computador de fala) tenta ler no cérebro a fala que a pessoa tenta produzir.</p>
+<p>O alvo é a parte ventral (inferior) do córtex sensório-motor, onde fica um mapa dos articuladores da fala, como lábios, língua e laringe (Bianchi; Simonyan, 2019). Quando a pessoa tenta falar, mesmo sem produzir som, esse mapa se ativa. O sistema tem quatro etapas (figura 6): eletrodos registram a atividade; uma rede neural artificial, treinada com muitas frases tentadas, traduz o sinal em sons da fala (fonemas); um modelo de linguagem escolhe a frase mais provável; e o resultado sai como texto, voz sintetizada ou avatar (Moses <em>et al.</em>, 2021; Willett <em>et al.</em>, 2023; Metzger <em>et al.</em>, 2023).</p>
+<figure>
+<img src="img/aula12/bci_pipeline.png" alt="Figura 6. Como funciona uma neuroprótese de fala: eletrodos sobre o córtex motor da fala, sinal neural, rede neural que estima fonemas, modelo de linguagem e saída em texto, voz ou avatar. Fonte: elaborada para o curso a partir de Willett et al. (2023) e Metzger et al. (2023)." />
+<figcaption aria-hidden="true"><strong>Figura 6.</strong> Como funciona uma neuroprótese de fala: eletrodos sobre o córtex motor da fala, sinal neural, rede neural que estima fonemas, modelo de linguagem e saída em texto, voz ou avatar. Fonte: elaborada para o curso a partir de Willett <em>et al.</em> (2023) e Metzger <em>et al.</em> (2023).</figcaption>
+</figure>
+<p>Em 2021, um grupo implantou uma grade de eletrodos sobre o córtex sensório-motor da fala de uma pessoa com anartria por AVC de tronco cerebral. Com um vocabulário de 50 palavras, o sistema decodificou frases a 15,2 palavras por minuto, com 25,6% de palavras erradas (Moses <em>et al.</em>, 2021). Em 2023, dois estudos deram um salto:</p>
+<ul>
+<li><strong>Willett e colegas</strong> usaram microeletrodos implantados no córtex de uma pessoa com ELA. Com 50 palavras, a taxa de erro foi de 9,1%; com um vocabulário de 125 mil palavras, de 23,8%. A velocidade chegou a 62 palavras por minuto; uma conversa natural tem cerca de 160 (Willett <em>et al.</em>, 2023).</li>
+<li><strong>Metzger e colegas</strong> usaram uma grade de alta densidade sobre a superfície do córtex de uma pessoa com paralisia grave dos membros e da fala. O texto saiu a 78 palavras por minuto, com erro mediano de 25%; a voz sintetizada foi personalizada com a voz que a pessoa tinha antes da lesão, e um avatar reproduziu os movimentos do rosto (Metzger <em>et al.</em>, 2023).</li>
+</ul>
+<p>Dois limites importam. Primeiro, são poucas pessoas, sistemas experimentais, com cirurgia e treino. Segundo, a neuroprótese contorna uma saída quebrada; ela não substitui uma rede de linguagem lesionada. Por isso ela funciona em quem tem ELA ou anartria, e não, hoje, em quem tem afasia.</p>
+<h3 id="fala-interior-e-ética">Fala interior e ética</h3>
+<p>E a fala que dizemos “na cabeça”? Erin Kunz e colegas (2025) registraram o córtex motor de quatro participantes e mostraram que a <strong>fala interior</strong> está bem representada ali. O padrão é muito parecido com o da fala tentada, embora uma dimensão do sinal (“intenção motora”) separe as duas. Frases imaginadas foram decodificadas em tempo real; num vocabulário de 125 mil palavras, a taxa de erro variou de 26% a 54%, conforme o participante. Mais delicado: alguns aspectos de fala interior não solicitada, como números contados em silêncio, também puderam ser decodificados. Os autores testaram salvaguardas, como só “destravar” o decodificador depois que a pessoa imagina uma palavra-senha (Kunz <em>et al.</em>, 2025).</p>
+<div class="destaque">
+<p>As neuropróteses não leem pensamentos em geral: leem padrões motores de fala, tentada ou imaginada. Mas, como a fala interior deixa rastros no córtex motor, surgem perguntas novas. Quem controla quando o aparelho decodifica? A quem pertencem os dados cerebrais? Quem responde por um erro de decodificação? É a pergunta para casa desta aula.</p>
+</div>
+<h2 id="o-que-o-laboratório-mostrou">8. O que o laboratório mostrou</h2>
+<p><strong>Experimento 1 · Estudos de caso.</strong> Em grupo, vocês leram sete casos fictícios e usaram as três perguntas da figura 1 para escolher a síndrome e tocar no local da lesão. Espera-se que Broca, Wernicke e global sejam os mais fáceis. As confusões típicas são condução versus Wernicke (as duas têm parafasias; a compreensão decide) e as transcorticais, quando o grupo não presta atenção à repetição preservada. Na localização, anômica e global confundem mais, como esperado, porque a anômica é a menos localizável (Tippett; Hillis, 2016). Lembre que os casos eram idealizados: na clínica, a mesma lesão pode dar quadros diferentes.</p>
+<p><strong>Experimento 2 · Na ponta da língua.</strong> Para nomes pouco usados (dedal, metrônomo, estetoscópio), é comum ficar com a palavra “na ponta da língua”. Nesse estado, a pessoa sabe o que o objeto é e às vezes até a primeira letra e o número de sílabas, mas os sons não chegam (Brown; McNeill, 1966; Blumstein, 2016). Por isso se espera que a pista de som (as primeiras sílabas) resolva mais do que a de significado: o conceito já estava ativo, faltava a forma sonora. Pessoas com afasia também melhoram a nomeação com pistas fonológicas ou semânticas, sinal de que a palavra não foi perdida, mas ficou difícil de acessar (Blumstein, 2016). Uma ressalva de método: no experimento, a pista de som vinha sempre depois da de significado e dava mais informação.</p>
+<p><strong>Experimento 3 · Siga as instruções.</strong> A tarefa imitava o <em>Token Test</em>, criado como um teste sensível para detectar distúrbios de compreensão na afasia (De Renzi; Vignolo, 1962). Os níveis iniciais quase não têm erro. Os primeiros erros costumam aparecer quando a instrução fica longa (memória de trabalho) ou quando a ordem das palavras não coincide com a ordem dos atos (“antes de tocar no A, toque no B”). Compreender não é uma coisa só: depende de reconhecer palavras, guardá-las na memória e analisar a sintaxe. É a mesma lógica da dificuldade de pessoas com afasia de Broca com frases complexas (Tippett; Hillis, 2016) e da memória fonológica afetada na variante logopênica (Gorno-Tempini; Pressman, 2016).</p>
+<p><strong>Experimento 4 · Decodificador de fala.</strong> A simulação era simplificada: cada letra fazia o papel de um fonema, com um padrão de atividade mais ruído. Ler cada som isoladamente quase nunca acerta a palavra; restringir a palavras reais ajuda; um vocabulário grande traz mais vizinhos parecidos e o erro sobe; e o modelo de linguagem reduz muito o erro porque usa o contexto, como fazemos ao ouvir alguém num lugar barulhento. Mais eletrodos também ajudam. É a mesma receita das neuropróteses reais, que combinam um decodificador de fonemas com um modelo de linguagem (Willett <em>et al.</em>, 2023; Metzger <em>et al.</em>, 2023). Os números da turma variam de rodada para rodada; o que importa é a direção dos efeitos.</p>
+<div class="conceitos">
+<dl>
+<dt><strong>Afasia</strong></dt>
+<dd>
+Alteração adquirida da linguagem após lesão cerebral, que atinge fala, compreensão, leitura e escrita em graus diferentes (Tippett; Hillis, 2016).
+</dd>
+<dt><strong>Agramatismo</strong></dt>
+<dd>
+Produção de frases sem palavras gramaticais e flexões, com estilo “telegráfico”; típico da afasia de Broca (Tippett; Hillis, 2016).
+</dd>
+<dt><strong>Parafasia</strong></dt>
+<dd>
+Erro de produção em que um som (fonológica) ou uma palavra (semântica) é trocado; quando a palavra produzida não existe, chama-se neologismo (Tippett; Hillis, 2016).
+</dd>
+<dt><strong>Anomia</strong></dt>
+<dd>
+Dificuldade de achar palavras; presente em quase todas as afasias e principal sintoma da afasia anômica (Tippett; Hillis, 2016).
+</dd>
+<dt><strong>Afasias transcorticais</strong></dt>
+<dd>
+Síndromes com repetição preservada, em geral causadas por lesões em volta do território perissilviano, que o poupam (Tippett; Hillis, 2016).
+</dd>
+<dt><strong>Vias dorsal e ventral</strong></dt>
+<dd>
+Modelo atual em que uma via liga o som à articulação (dorsal) e outra liga o som ao significado (ventral) (Hickok; Poeppel, 2007).
+</dd>
+<dt><strong>Terapia de entonação melódica</strong></dt>
+<dd>
+Terapia para afasia não fluente em que a pessoa entoa frases em duas notas, devagar, batendo a mão esquerda a cada sílaba (Schlaug, 2016).
+</dd>
+<dt><strong>Afasia progressiva primária</strong></dt>
+<dd>
+Afasia causada por doença neurodegenerativa, com três variantes: não fluente/agramatical, semântica e logopênica (Gorno-Tempini <em>et al.</em>, 2011).
+</dd>
+<dt><strong>Dupla empatia</strong></dt>
+<dd>
+Proposta de que as dificuldades de comunicação entre pessoas autistas e não autistas são mútuas, e não um déficit de um lado só (Milton, 2012).
+</dd>
+<dt><strong>Transtorno do desenvolvimento da linguagem (TDL)</strong></dt>
+<dd>
+Dificuldade persistente de linguagem sem causa biomédica conhecida; afeta cerca de 7% das crianças em idade escolar (Bishop <em>et al.</em>, 2017; Norbury <em>et al.</em>, 2016).
+</dd>
+<dt><strong>Neuroprótese de fala</strong></dt>
+<dd>
+Sistema que registra a atividade do córtex motor da fala e a converte em texto, voz ou avatar, para pessoas com a linguagem intacta e a fala paralisada (Willett <em>et al.</em>, 2023).
+</dd>
+</dl>
+</div>
+<h2 id="para-revisar">Para revisar</h2>
+<ol type="1">
+<li><p>Uma pessoa com afasia global não consegue entender nem produzir frases. Por que isso não significa que ela perdeu a capacidade de pensar?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Porque linguagem e pensamento dependem de redes diferentes. Pessoas com afasia global ainda fazem contas, resolvem problemas de lógica, raciocinam sobre o que outra pessoa pensa e se orientam no espaço. O que falta é o acesso à língua, não o raciocínio.</p>
+</details></li>
+<li><p>Dois pacientes têm fala fluente com parafasias. O que você perguntaria para decidir entre afasia de Wernicke e afasia de condução?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Se a pessoa compreende. Na afasia de condução a compreensão é boa e o problema principal é repetir; na de Wernicke a compreensão é ruim. A consciência dos erros também ajuda: a pessoa com afasia de condução tenta se corrigir; a com Wernicke em geral não percebe os erros.</p>
+</details></li>
+<li><p>Por que a repetição preservada indica que a lesão está fora do território perissilviano?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Repetir exige levar o som ouvido até a articulação, pela via dorsal que passa pelo território perissilviano. Se a pessoa repete bem, essa via está funcionando, e a lesão deve estar fora dela, desconectando-a dos conceitos ou do planejamento da fala, como nas afasias transcorticais.</p>
+</details></li>
+<li><p>O caso de Leborgne é usado como prova de que a área de Broca é “a área da fala”. O que os estudos posteriores mostraram?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>A ressonância do cérebro preservado de Leborgne mostrou lesões que iam além da superfície, até estruturas profundas e substância branca. E lesões restritas à área de Broca causam só parte dos sintomas. A síndrome depende de uma lesão mais ampla, numa rede, e não de um único “centro”.</p>
+</details></li>
+<li><p>No estudo de Saur e colegas, a ativação do hemisfério direito subiu nas primeiras semanas e depois caiu, enquanto a linguagem continuava melhorando. Que interpretação isso sugere?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Que a recuperação tem fases: o hemisfério direito parece ajudar na fase subaguda, e os ganhos duradouros dependem da volta da atividade às áreas esquerdas próximas da lesão. O papel exato do hemisfério direito ainda é debatido.</p>
+</details></li>
+<li><p>Em que a afasia progressiva primária difere da afasia por AVC, e o que a variante semântica revelou sobre o cérebro?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>A APP começa devagar e piora com o tempo, por doença neurodegenerativa; a afasia por AVC aparece de repente e tende a melhorar. A variante semântica mostrou que o lobo temporal anterior é essencial para o significado de palavras e objetos, algo que os AVCs raramente revelam, porque essa região quase nunca é lesionada sozinha.</p>
+</details></li>
+<li><p>Como o experimento de Crompton e colegas muda a ideia de que as pessoas autistas “têm um déficit de comunicação”?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Cadeias só de autistas transmitiram a história tão bem quanto cadeias só de não autistas; o que piorou foram as cadeias mistas. Isso sugere que parte da dificuldade está no encontro entre modos diferentes de se comunicar, como propõe a dupla empatia, e não em uma falha de um lado só.</p>
+</details></li>
+<li><p>Por que uma neuroprótese de fala ajuda uma pessoa com ELA, mas hoje não ajudaria uma pessoa com afasia de Broca?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>A neuroprótese lê a fala tentada no córtex motor e contorna músculos que não funcionam. Na ELA a linguagem está intacta e só a saída falha. Na afasia de Broca a lesão atinge a própria rede da linguagem; não há um plano de frase intacto para ser lido.</p>
+</details></li>
+</ol>
+<h2 id="para-saber-mais">Para saber mais</h2>
+<ul>
+<li><strong>Fedorenko, E.; Varley, R. (2016). Language and thought are not the same thing.</strong> Revisão clara, em inglês, sobre o que pessoas com afasia global ainda conseguem fazer e o que a neuroimagem diz sobre linguagem e pensamento. Nível intermediário. Acesso aberto: https://pmc.ncbi.nlm.nih.gov/articles/PMC4874898/.</li>
+<li><strong>Crompton, C. J. <em>et al.</em> (2020). Autistic peer-to-peer information transfer is highly effective.</strong> Artigo curto, em inglês, com um experimento simples e elegante sobre dupla empatia. Acessível. Acesso aberto: https://pmc.ncbi.nlm.nih.gov/articles/PMC7545656/.</li>
+<li><strong>Kunz, E. M. <em>et al.</em> (2025). Inner speech in motor cortex and implications for speech neuroprostheses.</strong> Para quem quer ir fundo nas neuropróteses e na ética da fala interior. Avançado, em inglês. Acesso aberto: https://pmc.ncbi.nlm.nih.gov/articles/PMC12360486/.</li>
+<li><strong>Tippett, D. C.; Hillis, A. E. (2016). Vascular aphasia syndromes.</strong> Capítulo do livro <em>Neurobiology of Language</em> que serviu de base para as seções 2 e 3. Intermediário, em inglês.</li>
+</ul>
+<h2 id="referências">Referências</h2><div class="refs">
+<p>BIANCHI, S.; SIMONYAN, K. The speech-ready organization of the motor cortex. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: The MIT Press, 2019. p. 499-508.</p>
+<p>BISHOP, D. V. M. <em>et al.</em> Phase 2 of CATALISE: a multinational and multidisciplinary Delphi consensus study of problems with language development: terminology. <strong>Journal of Child Psychology and Psychiatry</strong>, v. 58, n. 10, p. 1068-1080, 2017. DOI: https://doi.org/10.1111/jcpp.12721.</p>
+<p>BLUMSTEIN, S. E. Psycholinguistic approaches to the study of syndromes and symptoms of aphasia. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 923-933. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00074-2.</p>
+<p>BRADY, M. C. <em>et al.</em> Speech and language therapy for aphasia following stroke. <strong>Cochrane Database of Systematic Reviews</strong>, n. 6, CD000425, 2016. DOI: https://doi.org/10.1002/14651858.CD000425.pub4.</p>
+<p>BROWN, R.; McNEILL, D. The “tip of the tongue” phenomenon. <strong>Journal of Verbal Learning and Verbal Behavior</strong>, v. 5, n. 4, p. 325-337, 1966. DOI: https://doi.org/10.1016/S0022-5371(66)80040-3.</p>
+<p>CROMPTON, C. J. <em>et al.</em> Autistic peer-to-peer information transfer is highly effective. <strong>Autism</strong>, v. 24, n. 7, p. 1704-1712, 2020. DOI: https://doi.org/10.1177/1362361320919286.</p>
+<p>DE RENZI, E.; VIGNOLO, L. A. The Token Test: a sensitive test to detect receptive disturbances in aphasics. <strong>Brain</strong>, v. 85, n. 4, p. 665-678, 1962. DOI: https://doi.org/10.1093/brain/85.4.665.</p>
+<p>DRONKERS, N. F. <em>et al.</em> Paul Broca’s historic cases: high resolution MR imaging of the brains of Leborgne and Lelong. <strong>Brain</strong>, v. 130, n. 5, p. 1432-1441, 2007. DOI: https://doi.org/10.1093/brain/awm042.</p>
+<p>EVANS, J. L.; BROWN, T. T. Specific language impairment. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 899-912. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00072-9.</p>
+<p>FEDORENKO, E.; VARLEY, R. Language and thought are not the same thing: evidence from neuroimaging and neurological patients. <strong>Annals of the New York Academy of Sciences</strong>, v. 1369, n. 1, p. 132-153, 2016. DOI: https://doi.org/10.1111/nyas.13046.</p>
+<p>FRIDRIKSSON, J.; SMITH, K. Neuroplasticity associated with treated aphasia recovery. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 1007-1013. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00080-8.</p>
+<p>GERNSBACHER, M. A.; MORSON, E. M.; GRACE, E. J. Language development in autism. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 879-886. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00070-5.</p>
+<p>GORNO-TEMPINI, M. L. <em>et al.</em> Classification of primary progressive aphasia and its variants. <strong>Neurology</strong>, v. 76, n. 11, p. 1006-1014, 2011. DOI: https://doi.org/10.1212/WNL.0b013e31821103e6.</p>
+<p>GORNO-TEMPINI, M. L.; PRESSMAN, P. Introduction to primary progressive aphasia. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 935-952. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00075-4.</p>
+<p>HICKOK, G.; POEPPEL, D. The cortical organization of speech processing. <strong>Nature Reviews Neuroscience</strong>, v. 8, n. 5, p. 393-402, 2007. DOI: https://doi.org/10.1038/nrn2113.</p>
+<p>KENNY, L. <em>et al.</em> Which terms should be used to describe autism? Perspectives from the UK autism community. <strong>Autism</strong>, v. 20, n. 4, p. 442-462, 2016. DOI: https://doi.org/10.1177/1362361315588200.</p>
+<p>KUNZ, E. M. <em>et al.</em> Inner speech in motor cortex and implications for speech neuroprostheses. <strong>Cell</strong>, v. 188, n. 17, p. 4658-4673.e17, 2025. DOI: https://doi.org/10.1016/j.cell.2025.06.015.</p>
+<p>METZGER, S. L. <em>et al.</em> A high-performance neuroprosthesis for speech decoding and avatar control. <strong>Nature</strong>, v. 620, n. 7976, p. 1037-1046, 2023. DOI: https://doi.org/10.1038/s41586-023-06443-4.</p>
+<p>MILDNER, V. <strong>The cognitive neuroscience of human communication</strong>. New York: Lawrence Erlbaum Associates, 2008.</p>
+<p>MILTON, D. E. M. On the ontological status of autism: the ‘double empathy problem’. <strong>Disability &amp; Society</strong>, v. 27, n. 6, p. 883-887, 2012. DOI: https://doi.org/10.1080/09687599.2012.710008.</p>
+<p>MOHR, J. P. <em>et al.</em> Broca aphasia: pathologic and clinical. <strong>Neurology</strong>, v. 28, n. 4, p. 311-324, 1978. DOI: https://doi.org/10.1212/WNL.28.4.311.</p>
+<p>MORGAN, A. Deciphering genetics of speech-motor disorders. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: The MIT Press, 2019. p. 557-575.</p>
+<p>MOSES, D. A. <em>et al.</em> Neuroprosthesis for decoding speech in a paralyzed person with anarthria. <strong>New England Journal of Medicine</strong>, v. 385, n. 3, p. 217-227, 2021. DOI: https://doi.org/10.1056/NEJMoa2027540.</p>
+<p>NORBURY, C. F. <em>et al.</em> The impact of nonverbal ability on prevalence and clinical presentation of language disorder: evidence from a population study. <strong>Journal of Child Psychology and Psychiatry</strong>, v. 57, n. 11, p. 1247-1257, 2016. DOI: https://doi.org/10.1111/jcpp.12573.</p>
+<p>PULVERMÜLLER, F. <em>et al.</em> Constraint-induced therapy of chronic aphasia after stroke. <strong>Stroke</strong>, v. 32, n. 7, p. 1621-1626, 2001. DOI: https://doi.org/10.1161/01.STR.32.7.1621.</p>
+<p>PULVERMÜLLER, F.; MOHR, B.; TAUB, E. Constraint-induced aphasia therapy: a neuroscience-centered translational method. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 1025-1034. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00082-1.</p>
+<p>SAUR, D. <em>et al.</em> Dynamics of language reorganization after stroke. <strong>Brain</strong>, v. 129, n. 6, p. 1371-1384, 2006. DOI: https://doi.org/10.1093/brain/awl090.</p>
+<p>SCHLAUG, G. Melodic intonation therapy. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 1015-1023. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00081-X.</p>
+<p>SMALL, S. L.; HICKOK, G. The neurobiology of language. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 3-9. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00001-8.</p>
+<p>TIPPETT, D. C.; HILLIS, A. E. Vascular aphasia syndromes. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 913-922. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00073-0.</p>
+<p>TOMBLIN, J. B. <em>et al.</em> Prevalence of specific language impairment in kindergarten children. <strong>Journal of Speech, Language, and Hearing Research</strong>, v. 40, n. 6, p. 1245-1260, 1997. DOI: https://doi.org/10.1044/jslhr.4006.1245.</p>
+<p>WILLETT, F. R. <em>et al.</em> A high-performance speech neuroprosthesis. <strong>Nature</strong>, v. 620, n. 7976, p. 1031-1036, 2023. DOI: https://doi.org/10.1038/s41586-023-06377-x.</p>
+</div>
+<p class="rodape">Material de estudo da disciplina Bases neurais da comunicação humana (UFRN), Prof. Daniel Y. Takahashi. Texto e figuras elaborados para o curso; as fontes estão nas Referências.</p>
+</div>

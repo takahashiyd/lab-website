@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 5 · Palavras e significado — Material de estudo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,600..800&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{--bg:#f6f7f9;--surface:#fff;--fg:#142033;--muted:#566377;--line:#d8dee6;--accent:#0e7c86;--accent2:#c9771a;--soft:#e5f1f2;--soft2:#fbf1e3;
+--display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;--body:"Source Serif 4",Georgia,"Times New Roman",serif;--ui:"Source Sans 3","Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1621;--surface:#172132;--fg:#e6ecf3;--muted:#9aa8b9;--line:#2a3850;--accent:#3db4be;--accent2:#f0a645;--soft:#173740;--soft2:#3a2c17;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:18px/1.65 var(--body)}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 80px}
+.top{font:600 13px/1.4 var(--ui);display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:22px}
+.top a{color:var(--accent);text-decoration:none}
+.eyebrow{font:600 12px/1 ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(30px,6.5vw,46px)/1.08 var(--display);font-stretch:112%;margin:10px 0 8px;text-wrap:balance}
+.sub{font:400 20px/1.4 var(--ui);color:var(--muted);margin:0 0 26px}
+h2{font:750 25px/1.2 var(--display);margin:46px 0 12px;text-wrap:balance}
+h3{font:700 19px/1.3 var(--ui);margin:28px 0 8px}
+p{margin:0 0 16px}
+a{color:var(--accent)}
+ul,ol{padding-left:24px;margin:0 0 16px} li{margin:4px 0}
+figure{margin:26px 0;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;break-inside:avoid}
+figure img{width:100%;height:auto;display:block;border-radius:6px;background:#fff}
+figcaption{font:15px/1.5 var(--ui);color:var(--muted);margin-top:10px}
+.objetivos{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;padding:14px 18px 6px;margin:0 0 30px;font-family:var(--ui)}
+.objetivos::before{content:"Nesta aula você vai aprender a";display:block;font:700 13px/1 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:4px 0 10px}
+.destaque{background:var(--soft2);border-radius:10px;padding:14px 18px 2px;margin:22px 0;font-family:var(--ui);break-inside:avoid}
+.conceitos{background:var(--soft);border-radius:12px;padding:16px 20px 6px;margin:30px 0;font-family:var(--ui)}
+.conceitos::before{content:"Conceitos-chave";display:block;font:700 13px/1 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:4px 0 12px}
+.conceitos dl{margin:0} .conceitos dt{font-weight:700;margin-top:10px} .conceitos dd{margin:2px 0 8px 0;color:var(--fg)}
+details{margin:8px 0 4px;font-family:var(--ui);font-size:16px}
+summary{cursor:pointer;color:var(--accent);font-weight:600}
+details[open] summary{margin-bottom:6px}
+.refs p,#referencias + * p{font-size:15px;line-height:1.5;padding-left:1.4em;text-indent:-1.4em}
+.rodape{margin-top:50px;padding-top:16px;border-top:1px solid var(--line);font:13px/1.5 var(--ui);color:var(--muted)}
+@media print{
+ :root{--bg:#fff;--surface:#fff}
+ body{font-size:11.5pt;line-height:1.5}
+ .wrap{max-width:none;padding:0}
+ .top{display:none}
+ h2{font-size:17pt;margin-top:24pt;break-after:avoid}
+ h1{font-size:28pt}
+ figure{padding:8pt;border-color:#ccc}
+ figure img{max-height:9cm;object-fit:contain}
+ details>summary{display:none}
+ details{margin-left:0;font-size:10.5pt}
+ details::before{content:"Resposta: ";font-weight:700}
+ a{color:inherit;text-decoration:none}
+ .refs p{font-size:10pt}
+ @page{size:A4;margin:18mm 18mm 20mm}
+}
+</style>
+<div class="wrap">
+<nav class="top"><a href="index.html">Material de estudo</a><a href="../aula05.html">Laboratório da aula 5</a><a href="aula04.html">← Aula 4</a><a href="aula06.html">Aula 6 →</a></nav>
+<span class="eyebrow">Bases neurais da comunicação humana · Aula 5 · Material de estudo</span>
+<h1>Palavras e significado</h1>
+<p class="sub">Como o cérebro encontra uma palavra em frações de segundo e onde guarda o que ela quer dizer</p>
+<div class="objetivos">
+<ul>
+<li>Descrever o léxico mental e os três níveis de uma entrada lexical (conceito, lema e forma).</li>
+<li>Explicar como reconhecemos uma palavra falada eliminando candidatas e por que palavras relacionadas se ajudam (priming).</li>
+<li>Comparar as evidências de que o significado é distribuído pelo córtex, com uma parte ancorada nos sistemas sensoriais e motores e um “hub” no lobo temporal anterior.</li>
+<li>Interpretar o N400 como uma medida de quando o cérebro acessa o significado.</li>
+<li>Relacionar os experimentos do laboratório (decisão lexical, Stroop, fluência, frases e mapa do significado) com esses achados.</li>
+</ul>
+</div>
+<h2 id="o-que-é-saber-uma-palavra">1. O que é saber uma palavra</h2>
+<p>Quando você ouve “cachorro”, sabe na hora que é um animal que late, que é um substantivo masculino e que se escreve com “ch” e dois “r”. Esse conhecimento fica guardado na memória de longo prazo, num conjunto que os psicólogos chamam de <strong>léxico mental</strong>: uma espécie de dicionário interno.</p>
+<p>Saber uma palavra envolve vários tipos de conhecimento: a sequência de sons, ligada ao significado, às propriedades gramaticais e à forma escrita (Davis, 2016). Uma maneira útil de organizar isso é dividir cada entrada do léxico em três níveis (Figura 1). O <strong>conceito</strong> é o que a palavra quer dizer. O <strong>lema</strong> reúne as propriedades gramaticais: classe (substantivo, verbo), gênero, como a palavra se combina com outras. A <strong>forma</strong> é a sequência de sons e, para quem lê, a sequência de letras. Na aula 4, no modelo de produção, o falante ia do conceito para a forma. Hoje fazemos o caminho da compreensão: da forma até o conceito.</p>
+<figure>
+<img src="img/aula05/entrada_lexical.png" alt="Figura 1. A entrada lexical de “cachorro” em três níveis: o conceito (o que a palavra quer dizer), o lema (as propriedades gramaticais) e a forma (sons e letras). Fonte: elaborada para o curso a partir de Davis (2016)." />
+<figcaption aria-hidden="true"><strong>Figura 1.</strong> A entrada lexical de “cachorro” em três níveis: o conceito (o que a palavra quer dizer), o lema (as propriedades gramaticais) e a forma (sons e letras). Fonte: elaborada para o curso a partir de Davis (2016).</figcaption>
+</figure>
+<p>Quantas entradas há nesse dicionário? Depende do que se conta. “Dirigir”, “dirigindo” e “motorista” são três palavras ou uma família? Para falantes nativos de inglês, as estimativas vão de 25 mil a 75 mil palavras, conforme o critério (Davis, 2016). O importante é a ordem de grandeza: um adulto conhece <strong>dezenas de milhares</strong> de palavras.</p>
+<p>Isso cria um problema. Uma palavra na fala corrida dura menos de meio segundo, e nesse tempo o ouvinte precisa reconhecer uma entre milhares. Além disso, a fala não volta: diferente da leitura, não dá para “reler” um som que já passou (Davis, 2016). Para estudar como o cérebro resolve isso, vale separar três etapas:</p>
+<ul>
+<li><strong>Acesso:</strong> a forma que chega (sons ou letras) ativa as entradas compatíveis.</li>
+<li><strong>Seleção:</strong> uma das candidatas vence a competição.</li>
+<li><strong>Integração:</strong> o significado da palavra escolhida entra na frase e no contexto.</li>
+</ul>
+<h2 id="encontrar-a-palavra-candidatas-competição-e-rede">2. Encontrar a palavra: candidatas, competição e rede</h2>
+<h3 id="ouvir-é-eliminar-candidatas">Ouvir é eliminar candidatas</h3>
+<p>Imagine ouvir “cachorro” som a som. Depois de /ka/, a palavra ainda pode ser “casa”, “cama”, “cavalo” ou “cachorro”. Depois de /kaʃ/, sobram “cachorro”, “cachoeira”, “cachaça”. Só perto do fim fica uma candidata. A <strong>teoria de coorte</strong>, de William Marslen-Wilson e Alan Welsh, descreve isso: o começo da palavra ativa um conjunto de candidatas com o mesmo início (a “coorte”), e as que deixam de combinar com os sons seguintes saem do conjunto até sobrar uma (Marslen-Wilson; Welsh, 1978; Pisoni; McLennan, 2016). O momento em que só resta uma candidata, e a palavra pode ser identificada, é chamado de <strong>ponto de unicidade</strong> (Hasson; Tremblay, 2016) (Figura 2).</p>
+<figure>
+<img src="img/aula05/coorte.png" alt="Figura 2. A teoria de coorte aplicada a “cachorro”: a cada som, a lista de palavras compatíveis encolhe, até sobrar uma (ponto de unicidade). As palavras e os tempos são ilustrativos. Fonte: elaborada para o curso a partir de Marslen-Wilson e Welsh (1978)." />
+<figcaption aria-hidden="true"><strong>Figura 2.</strong> A teoria de coorte aplicada a “cachorro”: a cada som, a lista de palavras compatíveis encolhe, até sobrar uma (ponto de unicidade). As palavras e os tempos são ilustrativos. Fonte: elaborada para o curso a partir de Marslen-Wilson e Welsh (1978).</figcaption>
+</figure>
+<p>Três detalhes deixam o quadro mais realista. Primeiro, as candidatas <strong>competem</strong>: palavras com muitas “vizinhas” de som parecido exigem mais trabalho para ser reconhecidas (Davis, 2016). Segundo, os modelos atuais, como o TRACE e o modelo de coorte distribuído, deixam que a ativação comece em qualquer ponto da fala, e não só no início da palavra; a versão original da coorte foi revista nesse ponto (Pisoni; McLennan, 2016). Terceiro, o <strong>contexto</strong> ajuda: no estudo original, a informação da frase interagia com a informação sonora desde cedo, e não só depois que a palavra terminava (Marslen-Wilson; Welsh, 1978).</p>
+<p>No cérebro, o reconhecimento da forma sonora das palavras envolve os giros temporais superior e médio, com regiões mais anteriores integrando trechos mais longos da fala. O acesso ao significado recruta também regiões temporais inferiores, ao longo da via ventral que vimos na aula 3 (Davis, 2016).</p>
+<h3 id="palavras-vivem-em-rede">Palavras vivem em rede</h3>
+<p>Depois de encontrar a palavra, como chegamos ao significado? Uma ideia clássica é que os conceitos formam uma <strong>rede semântica</strong>. Cada conceito é um nó, e conceitos relacionados ficam ligados. Quando um nó é ativado, a ativação se espalha para os vizinhos, que ficam “preparados” e mais fáceis de acessar logo em seguida. É a teoria da <strong>propagação da ativação</strong> (Collins; Loftus, 1975) (Figura 3).</p>
+<figure>
+<img src="img/aula05/rede_pt.png" alt="Figura 3. Uma rede semântica: ler “médico” ativa o nó correspondente, e a ativação se espalha para vizinhos como “enfermeira”, “hospital” e “doente”. Nós distantes quase não recebem ativação. Fonte: elaborada para o curso a partir de Collins e Loftus (1975)." />
+<figcaption aria-hidden="true"><strong>Figura 3.</strong> Uma rede semântica: ler “médico” ativa o nó correspondente, e a ativação se espalha para vizinhos como “enfermeira”, “hospital” e “doente”. Nós distantes quase não recebem ativação. Fonte: elaborada para o curso a partir de Collins e Loftus (1975).</figcaption>
+</figure>
+<p>A previsão mais conhecida dessa ideia é o <strong>priming semântico</strong>. Na tarefa de <strong>decisão lexical</strong>, a pessoa vê sequências de letras e decide, o mais rápido possível, se são palavras. David Meyer e Roger Schvaneveldt mostraram duas sequências ao mesmo tempo na tela. A resposta “sim, as duas são palavras” foi mais rápida quando as palavras eram associadas (como pão e manteiga) do que quando não eram (Meyer; Schvaneveldt, 1971). Mais tarde, James Neely apresentou a primeira palavra (o <em>prime</em>) antes da segunda (o alvo) e variou o intervalo entre elas. Os resultados indicaram dois mecanismos: uma propagação da ativação rápida e automática, e um mecanismo lento, de atenção consciente, que entra em jogo quando a pessoa tem tempo de criar expectativas (Neely, 1977). O experimento 1 do laboratório usa um intervalo curto justamente para medir a parte rápida.</p>
+<div class="destaque">
+<p>O priming mostra que o léxico não é uma lista em ordem alfabética. É uma rede em que acessar uma palavra “aquece” as vizinhas. Por isso “enfermeira” é reconhecida mais depressa logo depois de “médico”.</p>
+</div>
+<h3 id="o-significado-como-posição-num-espaço">O significado como posição num espaço</h3>
+<p>Há outra maneira de medir a proximidade entre palavras. O linguista J. R. Firth resumiu a ideia numa frase famosa: você conhecerá uma palavra pela companhia que ela mantém (Zuidema; Le, 2019). Se você lê “tomei uma taça de ___ com o queijo” e “esse ___ tinto é de uva malbec”, consegue adivinhar o que a palavra que falta quer dizer.</p>
+<p>Essa é a base da <strong>semântica distribucional</strong>. Um computador conta, em grandes coleções de textos, com que frequência cada palavra aparece perto de outras. Cada palavra vira uma lista de números, um <strong>vetor</strong>, e palavras de uso parecido ficam próximas nesse espaço (Zuidema; Le, 2019). Na psicologia, o método mais conhecido é a Análise Semântica Latente (LSA); modelos mais recentes, baseados em redes neurais artificiais, <em>preveem</em> as palavras vizinhas em vez de só contá-las (Zuidema; Le, 2019). Na seção 7 veremos que esses vetores servem para prever a atividade do cérebro. Mas falta algo a um vetor feito só de texto: ele não sabe como é tocar num cachorro. A próxima seção pergunta se o cérebro usa esse tipo de experiência.</p>
+<h2 id="parte-do-significado-mora-no-corpo">3. Parte do significado mora no corpo</h2>
+<p>Se o significado de “chutar” incluir a experiência de chutar, ler “chutar” deveria ativar, ao menos um pouco, as áreas que controlam a perna. Olaf Hauk, Ingrid Johnsrude e Friedemann Pulvermüller testaram isso com ressonância magnética funcional (fMRI). Os participantes liam verbos ligados ao rosto (como <em>lick</em>, “lamber”), ao braço (<em>pick</em>, “pegar”) ou à perna (<em>kick</em>, “chutar”). Cada tipo de verbo ativou o córtex motor e pré-motor de forma <strong>somatotópica</strong>, isto é, seguindo o mapa do corpo: as regiões ativadas coincidiam com as que se ativam quando a pessoa move de fato o rosto, o braço ou a perna (Hauk; Johnsrude; Pulvermüller, 2004). É o mesmo córtex motor que, na aula 4, vimos controlar a articulação da fala.</p>
+<p>Uma ativação na fMRI é uma correlação: mostra que a região trabalha durante a tarefa, não que seja necessária. Para testar uma relação de causa, o grupo usou <strong>estimulação magnética transcraniana (TMS)</strong>, que aplica pulsos magnéticos breves sobre o crânio e altera por instantes a atividade da região embaixo. Pulsos sobre a área do braço e sobre a área da perna, no hemisfério esquerdo, afetaram de forma diferente a decisão lexical para palavras de braço e de perna (Pulvermüller <em>et al.</em>, 2005): a estimulação de cada área <strong>facilitou</strong> as palavras do membro correspondente (Hauk, 2016).</p>
+<p>Essa linha de pesquisa sustenta a ideia de <strong>semântica incorporada</strong> (ou ancorada): parte do significado das palavras fica nos mesmos sistemas que usamos para perceber e agir. O assunto, porém, está em debate. Para os críticos, os conceitos são, em algum nível, abstratos e simbólicos, e a informação sensorial e motora apenas os “instancia” durante o uso; a ativação motora poderia ser uma consequência do acesso ao significado, e não parte dele (Mahon; Caramazza, 2008). Uma revisão da área aponta que há estudos sem efeito, grande variação de estímulos e tarefas, e que a evidência mais direta, um prejuízo replicável numa tarefa de significado depois de perturbar o córtex motor (por TMS ou lesão), ainda não foi estabelecida. Por outro lado, há relatos de dificuldades com palavras de ação em pessoas com doença de Parkinson e com lesões por AVC (Hauk, 2016).</p>
+<p>A posição de meio-termo, adotada pelo modelo da seção 5, é que o conhecimento sensorial e motor fica em regiões próximas às que processam essa informação no mundo real, mas isso não basta para explicar tudo o que sabemos sobre um conceito (Patterson; Lambon Ralph, 2016).</p>
+<h2 id="lesões-que-apagam-categorias">4. Lesões que apagam categorias</h2>
+<p>A neuropsicologia, o estudo de pessoas com lesões cerebrais, trouxe algumas das evidências mais surpreendentes sobre a organização do significado. Elizabeth Warrington e Tim Shallice estudaram quatro pacientes que tinham se recuperado parcialmente de uma encefalite por herpes simples. Os quatro identificavam objetos inanimados muito melhor do que <strong>seres vivos e alimentos</strong>, tanto vendo figuras quanto ouvindo palavras (Warrington; Shallice, 1984). Pouco depois, Warrington e Rosaleen McCarthy descreveram o padrão inverso: um paciente com muito mais dificuldade para <strong>objetos</strong> do que para alimentos e seres vivos (Warrington; McCarthy, 1987). Quando dois pacientes mostram déficits opostos, falamos em <strong>dupla dissociação</strong>, um sinal forte de que os dois tipos de conhecimento dependem, ao menos em parte, de recursos diferentes.</p>
+<p>Como explicar esses casos? Há duas propostas principais.</p>
+<ul>
+<li><strong>Hipótese sensório-funcional.</strong> O conhecimento de seres vivos dependeria mais de traços perceptivos (listras, juba, formato), e o de objetos mais de traços de função e de uso (para que serve, como se segura). Uma lesão que atinge mais um tipo de traço prejudicaria mais uma categoria (Warrington; McCarthy, 1987; Hauk, 2016).</li>
+<li><strong>Hipótese do domínio específico.</strong> A evolução teria selecionado sistemas neurais distintos para domínios importantes para a sobrevivência, como seres animados e inanimados. Os déficits refletiriam esses domínios, e não os tipos de traço (Caramazza; Shelton, 1998).</li>
+</ul>
+<p>O debate continua.</p>
+<h2 id="um-hub-para-juntar-tudo-o-modelo-cubo-e-raios">5. Um hub para juntar tudo: o modelo cubo e raios</h2>
+<p>As seções 3 e 4 sugerem que o conhecimento sobre um conceito está espalhado pelo córtex. Mas falta algo. Um chihuahua e um são-bernardo são muito diferentes por fora e são o mesmo tipo de animal; uma baleia parece um peixe e não é. Para captar essas semelhanças “profundas”, parece necessário um lugar onde todas as modalidades se encontrem.</p>
+<p>O <strong>modelo cubo e raios</strong> (<em>hub-and-spoke</em>), desenvolvido por Karalyn Patterson, Matthew Lambon Ralph e colegas, junta as duas ideias (Patterson; Nestor; Rogers, 2007). Várias regiões do córtex, cada uma ligada a uma modalidade, guardam a cor, a forma, o som, o movimento e o nome das coisas. Essas regiões se ligam, pelos <strong>raios</strong>, a um <strong>cubo</strong> (<em>hub</em>) transmodal, que representa a semelhança entre conceitos de um jeito que não depende de como eles aparecem, soam, se movem ou se chamam. Segundo o modelo, esse hub fica no <strong>lobo temporal anterior</strong>, nos dois hemisférios (Patterson; Lambon Ralph, 2016) (Figura 4).</p>
+<figure>
+<img src="img/aula05/cachorro_raios.png" alt="Figura 4. O modelo cubo e raios aplicado a “cachorro”: cada raio leva um tipo de informação (visão, som, ação, cheiro e tato, emoção, palavras, contexto), e o hub no lobo temporal anterior junta essas partes num conceito único. Fonte: elaborada para o curso a partir de Patterson, Nestor e Rogers (2007) e Patterson e Lambon Ralph (2016)." />
+<figcaption aria-hidden="true"><strong>Figura 4.</strong> O modelo cubo e raios aplicado a “cachorro”: cada raio leva um tipo de informação (visão, som, ação, cheiro e tato, emoção, palavras, contexto), e o hub no lobo temporal anterior junta essas partes num conceito único. Fonte: elaborada para o curso a partir de Patterson, Nestor e Rogers (2007) e Patterson e Lambon Ralph (2016).</figcaption>
+</figure>
+<h3 id="a-demência-semântica">A demência semântica</h3>
+<p>A principal evidência a favor do hub vem da <strong>demência semântica</strong>, uma doença neurodegenerativa do espectro das demências frontotemporais, descrita em detalhe por John Hodges e colegas (Hodges <em>et al.</em>, 1992). Nela, os lobos temporais anteriores atrofiam dos dois lados, em geral de forma assimétrica no início (Patterson; Lambon Ralph, 2016). O quadro tem características marcantes:</p>
+<ul>
+<li><strong>A perda atinge todas as categorias e todas as modalidades.</strong> O paciente tem dificuldade com o conceito qualquer que seja a porta de entrada (objeto, figura, palavra falada ou escrita, som do ambiente) e qualquer que seja a forma de resposta (apontar, falar, desenhar) (Patterson; Lambon Ralph, 2016).</li>
+<li><strong>O resto da cognição fica relativamente preservado.</strong> A fonologia, a gramática, a memória do dia a dia e as habilidades visuoespaciais se mantêm bem (Hodges <em>et al.</em>, 1992). Diferente do que ocorre na doença de Alzheimer, os pacientes não têm prejuízo visuoespacial (Patterson; Lambon Ralph, 2016).</li>
+<li><strong>Os erros seguem uma ordem.</strong> Itens familiares e típicos resistem mais. Na nomeação, uma zebra vira “cavalo” ou só “animal”; itens pouco familiares e atípicos levam a respostas sem conteúdo (Patterson; Lambon Ralph, 2016).</li>
+</ul>
+<p>Se o significado estivesse guardado só nas regiões de cada modalidade, seria difícil explicar uma perda tão uniforme sem que essas regiões estivessem lesadas, e elas não estão (Patterson; Lambon Ralph, 2016). Pessoas saudáveis confirmam o quadro: quando a TMS perturba por instantes o lobo temporal anterior, a nomeação de figuras e a compreensão de palavras ficam mais lentas, mas outras tarefas igualmente difíceis, sem significado envolvido, não (Pobric; Jefferies; Lambon Ralph, 2007).</p>
+<p>Por que essa região demorou a aparecer nos estudos de imagem? Porque a fMRI comum perde sinal no lobo temporal anterior, por causa de distorções do campo magnético perto dele. Estudos com tomografia por emissão de pósitrons (PET) e com fMRI corrigida para essas distorções mostram a região ativa em tarefas de significado (Patterson; Lambon Ralph, 2016).</p>
+<div class="destaque">
+<p>O modelo cubo e raios concilia as duas visões. Os <strong>raios</strong> dão razão à semântica incorporada: parte do significado fica perto dos sentidos e da ação. O <strong>hub</strong> explica por que conseguimos generalizar além da aparência e por que a demência semântica apaga o conceito em todas as formas ao mesmo tempo.</p>
+</div>
+<h2 id="quando-o-cérebro-acessa-o-significado-o-n400">6. Quando o cérebro acessa o significado: o N400</h2>
+<p>Até aqui falamos de <em>onde</em> o significado está. A eletroencefalografia (EEG), que registra a atividade elétrica do cérebro no couro cabeludo com precisão de milissegundos, mostra <em>quando</em> ele é acessado.</p>
+<p>Marta Kutas e Steven Hillyard pediram que pessoas lessem frases palavra por palavra. Algumas terminavam de forma sem sentido, como no exemplo clássico “ele passou manteiga no pão quente com meias”. A palavra sem sentido gerou uma onda negativa tardia, que eles chamaram de <strong>N400</strong>. Uma palavra fisicamente estranha (escrita em letras maiores) gerou outra onda, positiva (Kutas; Hillyard, 1980). A lição: o N400 não é uma reação a qualquer surpresa; ele é sensível ao <strong>significado</strong>. Nas figuras deste texto, o negativo está desenhado para cima, uma convenção comum em EEG; por isso o N400 aparece como um “morro”.</p>
+<h3 id="o-n400-mede-expectativa-não-erro">O N400 mede expectativa, não erro</h3>
+<p>Quatro anos depois, os mesmos autores mostraram que o N400 não precisa de uma frase errada. Eles registraram o EEG para palavras que completavam frases com sentido. A amplitude do N400 diminuiu à medida que aumentava a <strong>probabilidade cloze</strong> da palavra, isto é, a proporção de pessoas que completariam a frase com ela. Além disso, palavras inesperadas, mas relacionadas à palavra mais esperada, geraram N400 menor (Kutas; Hillyard, 1984) (Figura 5). Em “tomou café com leite e açúcar”, “açúcar” é muito previsível e deve gerar um N400 pequeno; “biscoito” faz sentido, mas é menos previsível, e deve gerar um N400 maior.</p>
+<figure>
+<img src="img/aula05/cloze_n400.png" alt="Figura 5. Esquema do N400 (negativo para cima). À esquerda, finais de frase com probabilidade cloze alta, média e zero (anômalo); à direita, quanto mais previsível a palavra, menor o N400. As curvas e os valores são ilustrativos, sem amplitudes reais. Fonte: elaborada para o curso a partir de Kutas e Hillyard (1984)." />
+<figcaption aria-hidden="true"><strong>Figura 5.</strong> Esquema do N400 (negativo para cima). À esquerda, finais de frase com probabilidade cloze alta, média e zero (anômalo); à direita, quanto mais previsível a palavra, menor o N400. As curvas e os valores são ilustrativos, sem amplitudes reais. Fonte: elaborada para o curso a partir de Kutas e Hillyard (1984).</figcaption>
+</figure>
+<p>O cérebro não aposta só numa palavra exata. Kara Federmeier e Marta Kutas compararam finais esperados, finais inesperados da mesma categoria do esperado e finais inesperados de outra categoria. Os finais inesperados que compartilhavam traços com o esperado geraram N400 menor (Federmeier; Kutas, 1999). Num exemplo nosso: se a frase pede “palmeiras”, a palavra “pinheiros” (outra árvore) deve custar menos que “tulipas”. O contexto <strong>pré-ativa traços de significado</strong> das palavras prováveis (Federmeier; Kutas; Dickson, 2016).</p>
+<p>O N400 tem outras propriedades importantes (Federmeier; Kutas; Dickson, 2016; Kutas; Federmeier, 2011):</p>
+<ul>
+<li><strong>Não depende da modalidade.</strong> Aparece para palavras escritas e faladas, figuras, rostos, objetos, cenas e sons do ambiente.</li>
+<li><strong>Repetição, priming e contexto mudam a amplitude, não o tempo.</strong> Uma palavra precedida por outra relacionada gera um N400 menor, mas no mesmo momento.</li>
+<li><strong>Tem fontes espalhadas.</strong> Começa por volta de 250 a 300 ms e tem pico pouco antes de 400 ms em adultos jovens. As fontes principais ficam nos lobos temporais medial e anterior, com contribuição de áreas temporais superiores e frontais.</li>
+</ul>
+<p>Antes disso, por volta de 150 ms, o cérebro já classificou o estímulo como “parece uma palavra”, “um rosto” ou “um objeto”. Federmeier, Kutas e Dickson (2016) resumem isso no título do capítulo: uma “progressão comum ao significado em cerca de um terço de segundo”.</p>
+<p><strong>Um debate.</strong> O N400 reflete o <strong>acesso</strong> ao significado guardado na memória, facilitado pelo que o contexto já pré-ativou, ou a <strong>integração</strong> do significado na frase? Lau, Phillips e Poeppel (2008) argumentam que o efeito se deve, ao menos em parte, a um acesso facilitado, e não só à integração. Federmeier, Kutas e Dickson (2016) também tratam o N400 como um marcador do acesso à memória semântica. Swaab, Brown e Hagoort (1997), por outro lado, interpretaram seus resultados como um déficit de integração, como veremos a seguir.</p>
+<h3 id="o-n400-como-janela-para-a-compreensão">O N400 como janela para a compreensão</h3>
+<p>Como o N400 aparece mesmo quando a tarefa não pede nenhum julgamento, ele ajuda a medir compreensão em quem tem dificuldade para responder. Tamara Swaab, Colin Brown e Peter Hagoort registraram o N400 em pessoas com afasia (perda de linguagem depois de uma lesão cerebral) ouvindo frases com finais coerentes ou anômalos. Nos pacientes com problemas leves de compreensão, o efeito N400 era normal. Nos que tinham problemas moderados a graves, ele era menor e chegava mais tarde (Swaab; Brown; Hagoort, 1997).</p>
+<h2 id="onde-fica-o-significado-mapas-com-histórias-e-palavras-nunca-vistas">7. Onde fica o significado: mapas com histórias e palavras nunca vistas</h2>
+<p>Os vetores da seção 2 abriram uma nova forma de estudar o significado com fMRI. Em vez de comparar duas condições (animais contra ferramentas, por exemplo), os pesquisadores descrevem cada palavra por um vetor e treinam um modelo estatístico para prever a atividade cerebral a partir dele (Wehbe; Fyshe; Mitchell, 2019).</p>
+<p>Tom Mitchell e colegas fizeram isso com 60 substantivos concretos. Cada substantivo foi descrito pela frequência com que aparecia, em textos, junto de 25 verbos (como “comer”, “empurrar”, “correr”). O modelo foi treinado com parte das palavras e testado nas que ficaram de fora: dadas duas imagens cerebrais e duas palavras novas, ele precisava dizer qual imagem era de qual palavra. Em nove participantes, acertou muito acima do acaso (Mitchell <em>et al.</em>, 2008; Wehbe; Fyshe; Mitchell, 2019). Os pesos do modelo fazem sentido: a dimensão “comer” prevê atividade numa região do córtex gustativo, “empurrar” no giro pós-central e “correr” numa região temporal ligada à percepção do movimento biológico (Wehbe; Fyshe; Mitchell, 2019). O estudo junta as duas ideias da aula: estatística de textos e sistemas sensório-motores.</p>
+<p>Alexander Huth e colegas foram além e usaram linguagem natural: os participantes ouviram horas de histórias narradas dentro do aparelho de fMRI. Cada palavra foi descrita por um vetor, e um modelo previu a resposta de cada pequeno ponto do córtex. O resultado é um <strong>atlas semântico</strong>: a maioria das áreas do sistema semântico tem preferência por certos domínios de significado (grupos de conceitos relacionados), e os mapas parecem consistentes entre as pessoas (Huth <em>et al.</em>, 2016). Esses mapas se espalham pelos <strong>dois hemisférios</strong>. A semântica das palavras é um dos aspectos da linguagem com organização bilateral, enquanto a construção de estruturas gramaticais parece mais lateralizada à esquerda (Poeppel, 2019).</p>
+<p>Uma ressalva importante: esses mapas mostram onde o significado é <strong>representado</strong> durante a escuta, não onde ele é <strong>necessário</strong>. Para isso, precisamos de lesões e de TMS, como nas seções 4 e 5.</p>
+<div class="destaque">
+<p>Juntando tudo: o significado de “cachorro” não fica num ponto único. Ele é um padrão distribuído pelo córtex, com partes perto dos sentidos e da ação (os raios), um ponto de convergência no lobo temporal anterior (o hub) e um acesso que se desenrola em cerca de 400 ms, guiado pelo contexto (o N400).</p>
+</div>
+<h2 id="o-que-o-laboratório-mostrou">8. O que o laboratório mostrou</h2>
+<p>Os cinco experimentos do laboratório transformam essas ideias em medidas no seu celular. Com poucas tentativas por pessoa, o resultado individual é ruidoso; o que importa é a tendência da turma.</p>
+<p><strong>Experimento 1 · Palavra ou não?</strong> Você leu uma palavra em minúsculas (o <em>prime</em>) e, cerca de um terço de segundo depois, decidiu se uma sequência em maiúsculas era uma palavra. A previsão é uma resposta mais rápida quando o alvo é relacionado ao prime (médico–ENFERMEIRA) do que quando vem depois de uma palavra neutra (Meyer; Schvaneveldt, 1971). Com um intervalo tão curto, o efeito deve refletir sobretudo a propagação automática da ativação (Neely, 1977). O efeito é pequeno: com só 10 tentativas por condição, algumas pessoas terão diferença negativa por acaso, mas a distribuição da turma deve ficar deslocada para valores positivos. No EEG, o priming aparece como um N400 menor para o alvo relacionado (Federmeier; Kutas; Dickson, 2016).</p>
+<p><strong>Experimento 2 · Stroop.</strong> Você tocou na cor da tinta e tentou ignorar o que a palavra dizia. Quando palavra e tinta discordam (VERDE escrito em vermelho), a resposta tende a ficar mais lenta e os erros aumentam. É o efeito descrito por Stroop (1935), um dos mais robustos da psicologia, com centenas de estudos (MacLeod, 1991). Ele mostra que, para um leitor fluente, o significado da palavra chega mesmo quando atrapalha. A explicação exata ainda é debatida: a revisão de MacLeod (1991) considerou insuficientes as versões mais simples da ideia de “leitura automática” e considerou mais promissoras as teorias em que a cor e a palavra são processadas em paralelo.</p>
+<p><strong>Experimento 3 · Animais contra ferramentas.</strong> Em 60 segundos por categoria, você tocou um botão a cada item lembrado. Repare na forma da curva e na ordem dos itens: eles costumam sair em <strong>grupos</strong> (animais da fazenda, depois do mar) com <strong>trocas</strong> de grupo no meio, e esses dois componentes explicam boa parte do desempenho (Troyer; Moscovitch; Winocur, 1997). A fluência por categoria é também um teste clínico: na demência semântica, com o vocabulário empobrecido, listar exemplos de uma categoria, como animais, fica difícil (Hodges <em>et al.</em>, 1992). Cuidado com a interpretação da turma: se você lembrou mais animais do que ferramentas, isso pode refletir o tamanho e a estrutura das duas categorias, e não prova que existam sistemas cerebrais separados. A evidência forte de categorias separáveis vem das duplas dissociações em pacientes (seção 4).</p>
+<p><strong>Experimento 4 · Frases que surpreendem.</strong> A previsão é que finais inesperados mas aceitáveis (“café com leite e biscoito”) sejam julgados um pouco mais devagar do que finais esperados (“… e açúcar”), mesmo fazendo sentido. É uma versão comportamental do efeito da probabilidade cloze no N400 (Kutas; Hillyard, 1984). Atenção: as probabilidades cloze das frases do laboratório não foram medidas; são estimativas do professor.</p>
+<p><strong>Experimento 5 · Mapa do significado.</strong> Ao arrastar as palavras, você pode ter posto “cachorro” perto de “gato” e “lobo” (relação <strong>taxonômica</strong>, por traços em comum) ou perto de “osso”, “coleira” e “latido” (relação <strong>temática</strong>, por aparecerem juntos numa cena). As duas relações existem e há evidência de que dependem de sistemas parcialmente distintos (Mirman; Landrigan; Britt, 2017) (Figura 6). Num estudo com 86 pessoas com afasia depois de AVC, os erros de nomeação taxonômicos (dizer “pera” para uma maçã) se associaram a lesões no lobo temporal anterior esquerdo, e os temáticos (dizer “minhoca” para uma maçã) a lesões na junção temporoparietal (Schwartz <em>et al.</em>, 2011). Não há resposta certa: o mapa é seu.</p>
+<figure>
+<img src="img/aula05/tipo_cena.png" alt="Figura 6. Duas maneiras de organizar as mesmas palavras em torno de “cachorro”: por tipo (taxonômica, à esquerda) e por cena (temática, à direita). Fonte: elaborada para o curso a partir de Mirman, Landrigan e Britt (2017)." />
+<figcaption aria-hidden="true"><strong>Figura 6.</strong> Duas maneiras de organizar as mesmas palavras em torno de “cachorro”: por tipo (taxonômica, à esquerda) e por cena (temática, à direita). Fonte: elaborada para o curso a partir de Mirman, Landrigan e Britt (2017).</figcaption>
+</figure>
+<div class="conceitos">
+<dl>
+<dt><strong>Léxico mental</strong></dt>
+<dd>
+O “dicionário” da memória de longo prazo, com dezenas de milhares de palavras; cada entrada liga forma, propriedades gramaticais (lema) e significado (Davis, 2016).
+</dd>
+<dt><strong>Teoria de coorte</strong></dt>
+<dd>
+Proposta de que o início de uma palavra ativa as candidatas compatíveis e que os sons seguintes eliminam as que deixam de combinar, até o ponto de unicidade (Marslen-Wilson; Welsh, 1978; Hasson; Tremblay, 2016).
+</dd>
+<dt><strong>Propagação da ativação</strong></dt>
+<dd>
+Ideia de que conceitos formam uma rede e que ativar um conceito espalha ativação para os vizinhos (Collins; Loftus, 1975).
+</dd>
+<dt><strong>Priming semântico</strong></dt>
+<dd>
+Reconhecimento mais rápido de uma palavra depois de outra relacionada, como “médico” antes de “enfermeira” (Neely, 1977).
+</dd>
+<dt><strong>Semântica distribucional</strong></dt>
+<dd>
+Abordagem que representa cada palavra por um vetor calculado a partir das palavras que a acompanham nos textos (Zuidema; Le, 2019).
+</dd>
+<dt><strong>Semântica incorporada (ancorada)</strong></dt>
+<dd>
+Visão de que parte do significado é representada nos sistemas sensoriais e motores, como o córtex motor ativado por verbos de ação (Hauk, 2016).
+</dd>
+<dt><strong>Dupla dissociação</strong></dt>
+<dd>
+Quando uma lesão prejudica A e poupa B, e outra prejudica B e poupa A; indica que A e B dependem de recursos ao menos em parte distintos.
+</dd>
+<dt><strong>Modelo cubo e raios (<em>hub-and-spoke</em>)</strong></dt>
+<dd>
+Modelo em que regiões específicas de cada modalidade se ligam a um hub transmodal no lobo temporal anterior, que representa o conceito independente da modalidade (Patterson; Lambon Ralph, 2016).
+</dd>
+<dt><strong>Demência semântica</strong></dt>
+<dd>
+Doença neurodegenerativa com atrofia dos lobos temporais anteriores, que apaga progressivamente o conhecimento dos conceitos em todas as modalidades (Hodges <em>et al.</em>, 1992).
+</dd>
+<dt><strong>N400</strong></dt>
+<dd>
+Onda negativa do EEG com pico perto de 400 ms após uma palavra ou outro estímulo com significado; é menor quanto mais esperado é o significado (Kutas; Federmeier, 2011).
+</dd>
+<dt><strong>Probabilidade cloze</strong></dt>
+<dd>
+Proporção de pessoas que completam uma frase com determinada palavra; mede quanto a palavra é previsível naquele contexto (Kutas; Hillyard, 1984).
+</dd>
+<dt><strong>Relações taxonômicas e temáticas</strong></dt>
+<dd>
+Semelhança por traços em comum (cachorro–lobo) e ligação por aparecerem juntos num evento (cachorro–coleira) (Mirman; Landrigan; Britt, 2017).
+</dd>
+</dl>
+</div>
+<h2 id="para-revisar">Para revisar</h2>
+<ol type="1">
+<li><p>Uma colega diz que reconhecer uma palavra falada é como procurar num dicionário em ordem alfabética, depois de ouvir a palavra inteira. Com base na teoria de coorte, o que está errado nessa descrição?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>O reconhecimento começa já nos primeiros sons: eles ativam ao mesmo tempo todas as palavras compatíveis, e cada som novo elimina candidatas. A palavra pode ser reconhecida no ponto de unicidade, antes de terminar, e o contexto da frase interage com o som desde cedo. Não é uma busca em série depois do fim da palavra.</p>
+</details></li>
+<li><p>Por que o efeito de priming do experimento 1 pode ser negativo para um aluno e, mesmo assim, o resultado da turma confirmar o efeito?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>O efeito é pequeno e, com poucas tentativas por condição, o ruído individual (distração, um toque lento) pode ser maior que ele. Somando muitos alunos, o ruído tende a se cancelar e a distribuição da turma fica deslocada para valores positivos. Um efeito real e pequeno aparece na média, não necessariamente em cada pessoa.</p>
+</details></li>
+<li><p>A fMRI mostra que ler “chutar” ativa a área motora da perna. Por que isso, sozinho, não prova que o córtex motor faz parte do significado de “chutar”? Que tipo de dado ajudaria?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>A fMRI é correlacional: a ativação pode ser uma consequência do acesso ao significado, e não parte dele. Ajudariam dados causais, como TMS ou lesões motoras que prejudiquem de forma replicável a compreensão de verbos de ação. Até agora esses resultados são mistos, e o debate continua.</p>
+</details></li>
+<li><p>O paciente A perdeu muito mais o conhecimento de seres vivos do que de objetos; o paciente B, o contrário. O que esse par de casos permite concluir, e quais são as duas explicações em debate?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>É uma dupla dissociação: os dois tipos de conhecimento dependem, ao menos em parte, de recursos diferentes. A hipótese sensório-funcional diz que seres vivos dependem mais de traços perceptivos e objetos de traços de função e uso. A hipótese do domínio específico diz que a evolução selecionou sistemas para domínios como seres animados e inanimados.</p>
+</details></li>
+<li><p>Por que a demência semântica é considerada a principal evidência a favor de um hub no lobo temporal anterior?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>A atrofia se concentra no lobo temporal anterior, mas a perda atinge o conceito em todas as modalidades (palavra, figura, som, objeto) e em todas as categorias, sempre com o mesmo padrão (itens típicos e familiares resistem mais). Se o significado estivesse só nas regiões de cada modalidade, que estão preservadas, seria difícil explicar uma perda tão uniforme.</p>
+</details></li>
+<li><p>Em “Ela abriu a porta com a chave” e “Ela abriu a porta com a mão”, as duas frases fazem sentido. Qual final deve gerar o N400 maior, e por quê?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>“Mão”, porque é menos previsível que “chave” naquele contexto, isto é, tem probabilidade cloze menor. O N400 acompanha quanto o significado era esperado, e não apenas se a frase está errada.</p>
+</details></li>
+<li><p>O atlas de Huth e colegas mostra significado nos dois hemisférios. Isso contradiz a ideia de que a linguagem é lateralizada à esquerda? Que limite desse tipo de estudo é preciso lembrar?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Não exatamente: mostra que a representação do significado das palavras é bilateral e extensa, enquanto outros aspectos, como a construção gramatical, continuam mais lateralizados. E a fMRI mostra onde o significado é representado, não onde ele é necessário; para isso são precisos estudos de lesão ou estimulação.</p>
+</details></li>
+<li><p>Responda em poucas linhas à pergunta da aula: o significado de “cachorro” fica guardado num único lugar do cérebro?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Não. Partes do conhecimento ficam perto dos sistemas que as captam (forma visual, som do latido, ação de fazer carinho), como sugerem os verbos de ação e os déficits por categoria. Essas partes convergem num hub no lobo temporal anterior, cuja degeneração apaga o conceito em todas as formas. O acesso a esse padrão distribuído leva cerca de 400 ms e depende do contexto (N400).</p>
+</details></li>
+</ol>
+<h2 id="para-saber-mais">Para saber mais</h2>
+<ul>
+<li><strong>Kutas, M.; Federmeier, K. D. (2011). Thirty years and counting: finding meaning in the N400 component of the event-related brain potential (ERP).</strong> Revisão de referência sobre o N400, escrita pela pesquisadora que o descobriu; nível avançado, mas com uma introdução clara. Em inglês; acesso aberto no PubMed Central: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4052444/ .</li>
+<li><strong>Huth, A. G. <em>et al.</em> (2016). Natural speech reveals the semantic maps that tile human cerebral cortex.</strong> O artigo dos mapas semânticos; leia o resumo e veja as figuras. Nível avançado, em inglês. Acesso aberto no PubMed Central: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4852309/ .</li>
+<li><strong>Patterson, K.; Lambon Ralph, M. A. (2016). The hub-and-spoke hypothesis of semantic memory.</strong> Capítulo curto e bem escrito sobre o modelo cubo e raios e a demência semântica, no livro <em>Neurobiology of Language</em>. Nível intermediário, em inglês.</li>
+</ul>
+<h2 id="referências">Referências</h2><div class="refs">
+<p>CARAMAZZA, A.; SHELTON, J. R. Domain-specific knowledge systems in the brain: the animate-inanimate distinction. <strong>Journal of Cognitive Neuroscience</strong>, v. 10, n. 1, p. 1-34, 1998. DOI: https://doi.org/10.1162/089892998563752.</p>
+<p>COLLINS, A. M.; LOFTUS, E. F. A spreading-activation theory of semantic processing. <strong>Psychological Review</strong>, v. 82, n. 6, p. 407-428, 1975. DOI: https://doi.org/10.1037/0033-295X.82.6.407.</p>
+<p>DAVIS, M. H. The neurobiology of lexical access. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 541-555. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00044-4.</p>
+<p>FEDERMEIER, K. D.; KUTAS, M. A rose by any other name: long-term memory structure and sentence processing. <strong>Journal of Memory and Language</strong>, v. 41, n. 4, p. 469-495, 1999. DOI: https://doi.org/10.1006/jmla.1999.2660.</p>
+<p>FEDERMEIER, K. D.; KUTAS, M.; DICKSON, D. S. A common neural progression to meaning in about a third of a second. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 557-567. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00045-6.</p>
+<p>HASSON, U.; TREMBLAY, P. Neurobiology of statistical information processing in the auditory domain. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 527-537. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00043-2.</p>
+<p>HAUK, O. What does it mean? A review of the neuroscientific evidence for embodied lexical semantics. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 777-788. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00062-6.</p>
+<p>HAUK, O.; JOHNSRUDE, I.; PULVERMÜLLER, F. Somatotopic representation of action words in human motor and premotor cortex. <strong>Neuron</strong>, v. 41, n. 2, p. 301-307, 2004. DOI: https://doi.org/10.1016/S0896-6273(03)00838-9.</p>
+<p>HODGES, J. R. <em>et al.</em> Semantic dementia: progressive fluent aphasia with temporal lobe atrophy. <strong>Brain</strong>, v. 115, n. 6, p. 1783-1806, 1992. DOI: https://doi.org/10.1093/brain/115.6.1783.</p>
+<p>HUTH, A. G. <em>et al.</em> Natural speech reveals the semantic maps that tile human cerebral cortex. <strong>Nature</strong>, v. 532, n. 7600, p. 453-458, 2016. DOI: https://doi.org/10.1038/nature17637.</p>
+<p>KUTAS, M.; FEDERMEIER, K. D. Thirty years and counting: finding meaning in the N400 component of the event-related brain potential (ERP). <strong>Annual Review of Psychology</strong>, v. 62, p. 621-647, 2011. DOI: https://doi.org/10.1146/annurev.psych.093008.131123.</p>
+<p>KUTAS, M.; HILLYARD, S. A. Reading senseless sentences: brain potentials reflect semantic incongruity. <strong>Science</strong>, v. 207, n. 4427, p. 203-205, 1980. DOI: https://doi.org/10.1126/science.7350657.</p>
+<p>KUTAS, M.; HILLYARD, S. A. Brain potentials during reading reflect word expectancy and semantic association. <strong>Nature</strong>, v. 307, n. 5947, p. 161-163, 1984. DOI: https://doi.org/10.1038/307161a0.</p>
+<p>LAU, E. F.; PHILLIPS, C.; POEPPEL, D. A cortical network for semantics: (de)constructing the N400. <strong>Nature Reviews Neuroscience</strong>, v. 9, n. 12, p. 920-933, 2008. DOI: https://doi.org/10.1038/nrn2532.</p>
+<p>MacLEOD, C. M. Half a century of research on the Stroop effect: an integrative review. <strong>Psychological Bulletin</strong>, v. 109, n. 2, p. 163-203, 1991. DOI: https://doi.org/10.1037/0033-2909.109.2.163.</p>
+<p>MAHON, B. Z.; CARAMAZZA, A. A critical look at the embodied cognition hypothesis and a new proposal for grounding conceptual content. <strong>Journal of Physiology-Paris</strong>, v. 102, n. 1-3, p. 59-70, 2008. DOI: https://doi.org/10.1016/j.jphysparis.2008.03.004.</p>
+<p>MARSLEN-WILSON, W. D.; WELSH, A. Processing interactions and lexical access during word recognition in continuous speech. <strong>Cognitive Psychology</strong>, v. 10, n. 1, p. 29-63, 1978. DOI: https://doi.org/10.1016/0010-0285(78)90018-X.</p>
+<p>MEYER, D. E.; SCHVANEVELDT, R. W. Facilitation in recognizing pairs of words: evidence of a dependence between retrieval operations. <strong>Journal of Experimental Psychology</strong>, v. 90, n. 2, p. 227-234, 1971. DOI: https://doi.org/10.1037/h0031564.</p>
+<p>MIRMAN, D.; LANDRIGAN, J.-F.; BRITT, A. E. Taxonomic and thematic semantic systems. <strong>Psychological Bulletin</strong>, v. 143, n. 5, p. 499-520, 2017. DOI: https://doi.org/10.1037/bul0000092.</p>
+<p>MITCHELL, T. M. <em>et al.</em> Predicting human brain activity associated with the meanings of nouns. <strong>Science</strong>, v. 320, n. 5880, p. 1191-1195, 2008. DOI: https://doi.org/10.1126/science.1152876.</p>
+<p>NEELY, J. H. Semantic priming and retrieval from lexical memory: roles of inhibitionless spreading activation and limited-capacity attention. <strong>Journal of Experimental Psychology: General</strong>, v. 106, n. 3, p. 226-254, 1977. DOI: https://doi.org/10.1037/0096-3445.106.3.226.</p>
+<p>PATTERSON, K.; LAMBON RALPH, M. A. The hub-and-spoke hypothesis of semantic memory. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 765-775. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00061-4.</p>
+<p>PATTERSON, K.; NESTOR, P. J.; ROGERS, T. T. Where do you know what you know? The representation of semantic knowledge in the human brain. <strong>Nature Reviews Neuroscience</strong>, v. 8, n. 12, p. 976-987, 2007. DOI: https://doi.org/10.1038/nrn2277.</p>
+<p>PISONI, D. B.; McLENNAN, C. T. Spoken word recognition: historical roots, current theoretical issues, and some new directions. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 239-253. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00020-1.</p>
+<p>POBRIC, G.; JEFFERIES, E.; LAMBON RALPH, M. A. Anterior temporal lobes mediate semantic representation: mimicking semantic dementia by using rTMS in normal participants. <strong>Proceedings of the National Academy of Sciences</strong>, v. 104, n. 50, p. 20137-20141, 2007. DOI: https://doi.org/10.1073/pnas.0707383104.</p>
+<p>POEPPEL, D. Key issues and future directions: where have we been and where are we going? In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: The MIT Press, 2019. p. 443-447.</p>
+<p>PULVERMÜLLER, F. <em>et al.</em> Functional links between motor and language systems. <strong>European Journal of Neuroscience</strong>, v. 21, n. 3, p. 793-797, 2005. DOI: https://doi.org/10.1111/j.1460-9568.2005.03900.x.</p>
+<p>SCHWARTZ, M. F. <em>et al.</em> Neuroanatomical dissociation for taxonomic and thematic knowledge in the human brain. <strong>Proceedings of the National Academy of Sciences</strong>, v. 108, n. 20, p. 8520-8524, 2011. DOI: https://doi.org/10.1073/pnas.1014935108.</p>
+<p>STROOP, J. R. Studies of interference in serial verbal reactions. <strong>Journal of Experimental Psychology</strong>, v. 18, n. 6, p. 643-662, 1935. DOI: https://doi.org/10.1037/h0054651.</p>
+<p>SWAAB, T.; BROWN, C.; HAGOORT, P. Spoken sentence comprehension in aphasia: event-related potential evidence for a lexical integration deficit. <strong>Journal of Cognitive Neuroscience</strong>, v. 9, n. 1, p. 39-66, 1997. DOI: https://doi.org/10.1162/jocn.1997.9.1.39.</p>
+<p>TROYER, A. K.; MOSCOVITCH, M.; WINOCUR, G. Clustering and switching as two components of verbal fluency: evidence from younger and older healthy adults. <strong>Neuropsychology</strong>, v. 11, n. 1, p. 138-146, 1997. DOI: https://doi.org/10.1037/0894-4105.11.1.138.</p>
+<p>WARRINGTON, E. K.; McCARTHY, R. A. Categories of knowledge. <strong>Brain</strong>, v. 110, n. 5, p. 1273-1296, 1987. DOI: https://doi.org/10.1093/brain/110.5.1273.</p>
+<p>WARRINGTON, E. K.; SHALLICE, T. Category specific semantic impairments. <strong>Brain</strong>, v. 107, n. 3, p. 829-853, 1984. DOI: https://doi.org/10.1093/brain/107.3.829.</p>
+<p>WEHBE, L.; FYSHE, A.; MITCHELL, T. M. Language processing in the brain: mapping neural activity to language meaning. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: The MIT Press, 2019. p. 325-335.</p>
+<p>ZUIDEMA, W.; LE, P. Vector-based and neural models of semantics. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: The MIT Press, 2019. p. 313-324.</p>
+</div>
+<p class="rodape">Material de estudo da disciplina Bases neurais da comunicação humana (UFRN), Prof. Daniel Y. Takahashi. Texto e figuras elaborados para o curso; as fontes estão nas Referências.</p>
+</div>

@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 1 · O que é comunicação? Um passeio pelo cérebro — Material de estudo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,600..800&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{--bg:#f6f7f9;--surface:#fff;--fg:#142033;--muted:#566377;--line:#d8dee6;--accent:#0e7c86;--accent2:#c9771a;--soft:#e5f1f2;--soft2:#fbf1e3;
+--display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;--body:"Source Serif 4",Georgia,"Times New Roman",serif;--ui:"Source Sans 3","Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1621;--surface:#172132;--fg:#e6ecf3;--muted:#9aa8b9;--line:#2a3850;--accent:#3db4be;--accent2:#f0a645;--soft:#173740;--soft2:#3a2c17;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:18px/1.65 var(--body)}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 80px}
+.top{font:600 13px/1.4 var(--ui);display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:22px}
+.top a{color:var(--accent);text-decoration:none}
+.eyebrow{font:600 12px/1 ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(30px,6.5vw,46px)/1.08 var(--display);font-stretch:112%;margin:10px 0 8px;text-wrap:balance}
+.sub{font:400 20px/1.4 var(--ui);color:var(--muted);margin:0 0 26px}
+h2{font:750 25px/1.2 var(--display);margin:46px 0 12px;text-wrap:balance}
+h3{font:700 19px/1.3 var(--ui);margin:28px 0 8px}
+p{margin:0 0 16px}
+a{color:var(--accent)}
+ul,ol{padding-left:24px;margin:0 0 16px} li{margin:4px 0}
+figure{margin:26px 0;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;break-inside:avoid}
+figure img{width:100%;height:auto;display:block;border-radius:6px;background:#fff}
+figcaption{font:15px/1.5 var(--ui);color:var(--muted);margin-top:10px}
+.objetivos{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;padding:14px 18px 6px;margin:0 0 30px;font-family:var(--ui)}
+.objetivos::before{content:"Nesta aula você vai aprender a";display:block;font:700 13px/1 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:4px 0 10px}
+.destaque{background:var(--soft2);border-radius:10px;padding:14px 18px 2px;margin:22px 0;font-family:var(--ui);break-inside:avoid}
+.conceitos{background:var(--soft);border-radius:12px;padding:16px 20px 6px;margin:30px 0;font-family:var(--ui)}
+.conceitos::before{content:"Conceitos-chave";display:block;font:700 13px/1 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:4px 0 12px}
+.conceitos dl{margin:0} .conceitos dt{font-weight:700;margin-top:10px} .conceitos dd{margin:2px 0 8px 0;color:var(--fg)}
+details{margin:8px 0 4px;font-family:var(--ui);font-size:16px}
+summary{cursor:pointer;color:var(--accent);font-weight:600}
+details[open] summary{margin-bottom:6px}
+.refs p,#referencias + * p{font-size:15px;line-height:1.5;padding-left:1.4em;text-indent:-1.4em}
+.rodape{margin-top:50px;padding-top:16px;border-top:1px solid var(--line);font:13px/1.5 var(--ui);color:var(--muted)}
+@media print{
+ :root{--bg:#fff;--surface:#fff}
+ body{font-size:11.5pt;line-height:1.5}
+ .wrap{max-width:none;padding:0}
+ .top{display:none}
+ h2{font-size:17pt;margin-top:24pt;break-after:avoid}
+ h1{font-size:28pt}
+ figure{padding:8pt;border-color:#ccc}
+ figure img{max-height:9cm;object-fit:contain}
+ details>summary{display:none}
+ details{margin-left:0;font-size:10.5pt}
+ details::before{content:"Resposta: ";font-weight:700}
+ a{color:inherit;text-decoration:none}
+ .refs p{font-size:10pt}
+ @page{size:A4;margin:18mm 18mm 20mm}
+}
+</style>
+<div class="wrap">
+<nav class="top"><a href="index.html">Material de estudo</a><a href="../aula01.html">Laboratório da aula 1</a><a href="aula02.html">Aula 2 →</a></nav>
+<span class="eyebrow">Bases neurais da comunicação humana · Aula 1 · Material de estudo</span>
+<h1>O que é comunicação? Um passeio pelo cérebro</h1>
+<p class="sub">Sinais, códigos e linguagem nos animais e em nós, e o vocabulário mínimo do cérebro para o semestre</p>
+<div class="objetivos">
+<ul>
+<li>Definir comunicação a partir de três peças: sinal, código compartilhado e receptor.</li>
+<li>Distinguir comunicação, linguagem e fala, com exemplos de animais e de pessoas.</li>
+<li>Usar os traços de Hockett para comparar sistemas de comunicação.</li>
+<li>Descrever como um neurônio recebe, soma e envia sinais, e por que as sinapses custam tempo.</li>
+<li>Localizar os quatro lobos, as áreas de Broca e de Wernicke e explicar o que significa dizer que a linguagem “pesa mais” no hemisfério esquerdo.</li>
+</ul>
+</div>
+<h2 id="um-elefante-chamado-comunicação">1. Um elefante chamado comunicação</h2>
+<p>Há uma parábola antiga sobre um grupo de cegos que encontra um elefante. Um toca a tromba e diz que o animal parece uma cobra. Outro toca a perna e jura que é uma árvore. Outro toca a orelha e fala de um leque. Todos têm parte da razão, e nenhum vê o animal inteiro.</p>
+<p>A comunicação humana é um elefante desse tipo. A <strong>linguística</strong> descreve a estrutura dos sinais: sons, palavras, frases. A <strong>psicologia</strong> mede como percebemos, lembramos e produzimos mensagens. A <strong>etologia</strong>, o estudo do comportamento animal, compara espécies e pergunta como os sinais evoluíram. A <strong>neurociência</strong> procura os circuitos que fazem tudo isso funcionar. Peter Hagoort, que organizou um dos livros de referência deste curso, defende que só vamos entender a linguagem se juntarmos vários níveis de descrição: genético, neurobiológico, psicológico e linguístico, além de modelos de computador e estudos com animais (Hagoort, 2019).</p>
+<p>Steven Small e Gregory Hickok, organizadores do outro livro de referência, lembram um ponto de biologia básica: o cérebro humano evoluiu a partir do cérebro de outros primatas, e por isso a comparação com outras espécies é parte do trabalho (Small; Hickok, 2016). Até onde se sabe, nenhuma outra espécie viva tem uma linguagem no sentido pleno (Fitch, 2019), mas muitas se comunicam de formas sofisticadas. É por isso que esta aula começa com macacos, saguis e abelhas, que voltarão o semestre inteiro como ponto de comparação.</p>
+<h2 id="o-que-é-comunicar-sinal-código-e-receptor">2. O que é comunicar: sinal, código e receptor</h2>
+<h3 id="o-modelo-de-shannon">O modelo de Shannon</h3>
+<p>Em 1948, o engenheiro Claude Shannon descreveu um sistema de comunicação em cinco partes: uma <strong>fonte</strong> que produz a mensagem; um <strong>transmissor</strong> que transforma a mensagem num sinal; um <strong>canal</strong> por onde o sinal viaja; um <strong>receptor</strong> que faz a operação inversa e reconstrói a mensagem; e um <strong>destino</strong>, a pessoa ou coisa a quem a mensagem se dirige. No caminho, uma fonte de <strong>ruído</strong> pode estragar o sinal (Shannon, 1948).</p>
+<p>O curso usa uma versão simplificada desse esquema (Figura 1). Alguém (o emissor) tem algo a comunicar. Essa mensagem é <strong>codificada</strong> num sinal físico: um som, um gesto, uma cor, um cheiro, uma dança. O sinal atravessa o ambiente, onde pode sofrer ruído. Do outro lado, o receptor <strong>decodifica</strong> o sinal e muda o que sabe ou o que faz. E o receptor pode responder, virando emissor.</p>
+<figure>
+<img src="img/aula01/modelo_comunicacao.png" alt="Figura 1. O esquema de comunicação usado no curso: o emissor codifica uma mensagem num sinal; o sinal pode sofrer ruído; o receptor o decodifica e muda o que sabe ou faz, e pode responder. Fonte: elaborada para o curso a partir de Shannon (1948)." />
+<figcaption aria-hidden="true"><strong>Figura 1.</strong> O esquema de comunicação usado no curso: o emissor codifica uma mensagem num sinal; o sinal pode sofrer ruído; o receptor o decodifica e muda o que sabe ou faz, e pode responder. Fonte: elaborada para o curso a partir de Shannon (1948).</figcaption>
+</figure>
+<p><strong>Sinal</strong> é algo físico que viaja. <strong>Código</strong> é a regra que liga o sinal ao significado, e emissor e receptor precisam compartilhá-la: “chuva” só quer dizer chuva para quem fala português.</p>
+<h3 id="o-receptor-não-é-uma-máquina-de-copiar">O receptor não é uma máquina de copiar</h3>
+<p>Nas pessoas, a decodificação depende muito do que o receptor já sabe. Pesquisadores da compreensão da fala descrevem o ouvinte como alguém que <strong>infere</strong> o que o falante provavelmente quis dizer, combinando o que ouviu com o que espera ouvir naquele contexto: é o modelo do “canal ruidoso”, inspirado em Shannon (Dahan; Ferreira, 2019). Numa ligação ruim, você completa as palavras que não ouviu.</p>
+<p>Entre as pessoas, comunicar também envolve <strong>intenção</strong>. O filósofo Paul Grice propôs que, quando alguém quer dizer algo, ele quer que o ouvinte perceba essa intenção de comunicar. Stephen Levinson retoma essa ideia de Grice e lembra que os bebês entram muito cedo no jogo da interação: trocas recíprocas com o bebê aparecem a partir dos três meses de vida, muito antes de ele produzir linguagem (Levinson, 2019).</p>
+<h3 id="informação-ou-manipulação">Informação ou manipulação?</h3>
+<p>Nos animais é difícil saber o que o emissor “pretende”, e a área tem um debate antigo (Rossano, 2019). Para a corrente da <strong>informação</strong>, comunicar é codificar e decodificar informação, no espírito de Shannon. Para a da <strong>manipulação</strong>, a seleção natural favoreceu sinais feitos para influenciar os outros, e falar em “informação” seria projetar a comunicação humana nos animais (Rossano, 2019).</p>
+<h3 id="cada-espécie-vive-no-seu-mundo-sensorial">Cada espécie vive no seu mundo sensorial</h3>
+<p>O biólogo Jakob von Uexküll chamou de <strong>Umwelt</strong> o mundo próprio de cada animal: tudo o que ele percebe forma seu mundo de percepção, tudo o que ele faz forma seu mundo de ação, e os dois juntos formam o seu ambiente (Uexküll, 2010). Uma abelha e uma pessoa podem estar no mesmo jardim e viver em mundos muito diferentes. A consequência para a comunicação é direta: um sinal só funciona se cair dentro do mundo sensorial do receptor.</p>
+<div class="destaque">
+<p>Comunicar é usar um sinal, com um código compartilhado, para mudar o que o outro sabe ou faz. O receptor não copia o sinal: ele o interpreta com o que já sabe, dentro do seu próprio mundo sensorial.</p>
+</div>
+<h2 id="dos-alarmes-dos-macacos-às-conversas-dos-saguis">3. Dos alarmes dos macacos às conversas dos saguis</h2>
+<h3 id="os-vervets-e-seus-três-alarmes">Os vervets e seus três alarmes</h3>
+<p>Os macacos-vervet, da África, fogem de cada predador de um jeito: sobem em árvores quando há um leopardo, correm para o mato fechado quando uma águia circula no céu e ficam em pé olhando o chão quando há uma cobra (Fischer; Hage, 2019). Eles também dão chamados de alarme diferentes para cada tipo de predador.</p>
+<p>A pergunta de Robert Seyfarth, Dorothy Cheney e Peter Marler foi: o som sozinho basta? Eles gravaram os alarmes e os tocaram num alto-falante, sem nenhum predador por perto. Os macacos responderam com a fuga certa: subiram em árvores ao ouvir o alarme de leopardo, olharam para o céu ao ouvir o de águia e olharam para baixo ao ouvir o de cobra (Seyfarth; Cheney; Marler, 1980). O som, portanto, carrega informação sobre uma <strong>categoria de perigo</strong>, e não apenas sobre o susto de quem grita. Chamamos isso de <strong>comunicação referencial</strong>.</p>
+<p>O mesmo estudo mostrou um detalhe importante. Os adultos dão alarme quase só para leopardos, águias marciais e pítons. Os filhotes dão alarme de leopardo para vários mamíferos, de águia para muitas aves e de cobra para vários objetos parecidos com cobras, e a classificação melhora com a idade e a experiência (Seyfarth; Cheney; Marler, 1980). A forma dos chamados dos primatas é considerada inata e pouco flexível (Rossano, 2019), mas o <strong>uso</strong> dela se refina com a vida.</p>
+<p>Nem todos concordam sobre o quanto esses alarmes se parecem com palavras. Hoje muitos pesquisadores preferem dizer que eles são <strong>funcionalmente referenciais</strong>: funcionam como se apontassem para algo do mundo, sem que isso prove uma intenção de nomear (Rossano, 2019). Fischer e Hage (2019) acrescentam que vervets produzem sons parecidos com o alarme de cobra também em encontros com outros grupos, e que o repertório quase não muda entre populações, o que afasta esses alarmes dos símbolos humanos, cujos rótulos são escolhidos e aprendidos.</p>
+<h3 id="os-saguis-conversam">Os saguis conversam</h3>
+<p>O sagui-de-tufo-branco é um macaco pequeno e muito vocal. Quando os saguis de uma família se separam, eles emitem chamados de contato, e o chamado de um costuma provocar a resposta do outro (Fischer; Hage, 2019). Medindo essas trocas, Takahashi, Narayanan e Ghazanfar (2013) mostraram que os saguis <strong>se revezam</strong>: um chama, o outro responde, em sequências longas, com uma dinâmica parecida com a proposta para o revezamento na conversa humana. Levinson (2019) mostra que esse revezamento vocal aparece em vários ramos dos primatas, e não só em nós.</p>
+<p>Nos dois primeiros meses de vida, os chamados dos filhotes de sagui mudam de um jeito que lembra o desenvolvimento vocal dos bebês humanos, e essa mudança depende tanto do crescimento do corpo quanto das respostas dos pais (Takahashi <em>et al.</em>, 2015). Quando os pais respondem aos chamados do filhote, o amadurecimento dos chamados se acelera (Fischer; Hage, 2019). Ainda assim, até onde se sabe, primatas não humanos não aprendem a produzir chamados novos (Rossano, 2019). É comunicação vocal rica, mas sem palavras e sem gramática.</p>
+<h2 id="comunicação-linguagem-e-fala">4. Comunicação, linguagem e fala</h2>
+<h3 id="três-conjuntos-diferentes">Três conjuntos diferentes</h3>
+<p>Os três termos não são sinônimos (Figura 2).</p>
+<ul>
+<li><strong>Comunicação</strong> é o conjunto mais amplo: qualquer troca de sinais que muda o que o outro sabe ou faz. O choro do bebê, o semáforo e o alarme do vervet são comunicação.</li>
+<li><strong>Linguagem</strong> é um tipo especial de comunicação: um sistema de símbolos que se combinam por regras para formar um número ilimitado de mensagens novas, inclusive sobre o que não está presente. Tecumseh Fitch resume a ideia assim: uma linguagem permite expressar <em>qualquer</em> pensamento ou sentimento que o emissor seja capaz de ter, e não só alguns temas, como comida ou perigo (Fitch, 2019).</li>
+<li><strong>Fala</strong> é um dos canais da linguagem: o som produzido pelo trato vocal. A escrita e as línguas de sinais são outros canais.</li>
+</ul>
+<figure>
+<img src="img/aula01/venn.png" alt="Figura 2. Comunicação, linguagem e fala. A linguagem é um tipo de comunicação; a fala é um canal que se sobrepõe à linguagem (a conversa falada), mas também pode existir sem ela (o papagaio que repete “bom dia”). Fonte: elaborada para o curso." />
+<figcaption aria-hidden="true"><strong>Figura 2.</strong> Comunicação, linguagem e fala. A linguagem é um tipo de comunicação; a fala é um canal que se sobrepõe à linguagem (a conversa falada), mas também pode existir sem ela (o papagaio que repete “bom dia”). Fonte: elaborada para o curso.</figcaption>
+</figure>
+<h3 id="linguagem-sem-fala-as-línguas-de-sinais">Linguagem sem fala: as línguas de sinais</h3>
+<p>As línguas de sinais das comunidades surdas são línguas naturais completas, e não derivam das línguas faladas pelos ouvintes ao redor (Özyürek; Woll, 2019). No Brasil, a Língua Brasileira de Sinais (Libras) é reconhecida por lei como meio legal de comunicação e expressão, um sistema linguístico de natureza visual-motora com estrutura gramatical própria (Brasil, 2002).</p>
+<p>Um sinal se forma pela combinação de uma configuração de mão, de um lugar no corpo ou no espaço e de um movimento; trocar um desses parâmetros pode mudar o significado, como trocar um som muda “pato” para “gato” (Özyürek; Woll, 2019). Hickok, Bellugi e Klima (1996) estudaram 23 sinalizantes surdos com lesão em um só hemisfério. Mesmo usando um canal visual e espacial, a linguagem deles dependia do hemisfério esquerdo, como a de ouvintes. Lesões no hemisfério direito podem atrapalhar habilidades visuoespaciais, mas não produzem afasia de sinais (Özyürek; Woll, 2019). Conclusão: a especialização do cérebro é para a linguagem, e não para o som.</p>
+<p>O caminho inverso é a <strong>fala sem linguagem</strong>: o papagaio que diz “bom dia” produz fala e talvez se comunique, mas repetir uma frase pronta não é combinar partes para criar mensagens novas.</p>
+<h3 id="os-traços-de-hockett">Os traços de Hockett</h3>
+<p>Em 1960, o linguista Charles Hockett propôs uma lista de 13 <strong>traços de desenho</strong> (<em>design features</em>) da linguagem humana, comparando-a com o canto dos pássaros, a dança das abelhas e os chamados de gibões (Hockett, 1960). Cinco traços separam bem os sistemas (Figura 3):</p>
+<ul>
+<li><strong>Arbitrariedade:</strong> o sinal não se parece com o que significa. A palavra “sal” não é salgada (Hockett, 1960).</li>
+<li><strong>Deslocamento:</strong> falar do que está longe no espaço ou no tempo (Hockett, 1960).</li>
+<li><strong>Produtividade:</strong> dizer coisas que nunca foram ditas e ainda assim ser entendido (Hockett, 1960).</li>
+<li><strong>Dualidade de padrões</strong> (ou dupla articulação): um estoque enorme de unidades com sentido (palavras) é feito de combinações de um estoque pequeno de unidades sem sentido (sons, ou configurações de mão) (Hockett, 1960; Özyürek; Woll, 2019).</li>
+<li><strong>Transmissão tradicional, ou cultural:</strong> as convenções de cada língua passam de geração em geração por aprendizado, e não pelos genes (Hockett, 1960).</li>
+</ul>
+<figure>
+<img src="img/aula01/hockett.png" alt="Figura 3. Cinco traços de Hockett aplicados ao alarme do vervet e à linguagem humana. A coluna da abelha fica em aberto: é a pergunta para casa. Fonte: elaborada para o curso a partir de Hockett (1960)." />
+<figcaption aria-hidden="true"><strong>Figura 3.</strong> Cinco traços de Hockett aplicados ao alarme do vervet e à linguagem humana. A coluna da abelha fica em aberto: é a pergunta para casa. Fonte: elaborada para o curso a partir de Hockett (1960).</figcaption>
+</figure>
+<p>Os alarmes do vervet são arbitrários, mas são poucos, não se combinam em mensagens novas e são dados diante do perigo presente. Na transmissão cultural, a figura marca “em parte”: a forma do som é pouco aprendida, mas o uso correto do alarme melhora com a idade e a experiência (Seyfarth; Cheney; Marler, 1980).</p>
+<h3 id="um-debate-em-aberto-o-que-é-exclusivo-da-linguagem-humana">Um debate em aberto: o que é exclusivo da linguagem humana?</h3>
+<p>Hoje a maioria dos pesquisadores trata a linguagem como um sistema de vários componentes, alguns compartilhados com outras espécies e outros não (Fitch, 2019). O debate é sobre quais componentes são exclusivos. Hauser, Chomsky e Fitch (2002) separaram a faculdade da linguagem “em sentido amplo”, que inclui sistemas sensoriais, motores e conceituais, e a faculdade “em sentido estrito”, que seria só a <strong>recursão</strong>: a capacidade de encaixar estruturas dentro de estruturas, como em “o livro que a amiga que você conheceu me emprestou”. Para eles, só esse núcleo seria exclusivamente humano. Pinker e Jackendoff (2005) discordaram: muitos aspectos da gramática não são recursivos (a fonologia, a morfologia, a concordância, as propriedades das palavras) e também parecem especiais. Para eles, a linguagem é uma adaptação complexa para a comunicação, que evoluiu por partes. A discussão continua.</p>
+<h3 id="para-pensar-em-casa-a-dança-das-abelhas">Para pensar em casa: a dança das abelhas</h3>
+<p>Karl von Frisch decifrou a dança que as abelhas operárias fazem no favo ao voltar de uma fonte de alimento. Na dança do requebrado, a abelha percorre uma linha reta balançando o abdômen. O ângulo dessa linha em relação à vertical do favo indica o ângulo entre o alimento e o sol: se o alimento está na direção do sol, a corrida aponta para cima; se está 40° à esquerda do sol, a corrida se desvia 40° à esquerda da vertical. Distâncias maiores são indicadas por requebrados mais longos (Frisch, 1973). Use os traços de Hockett para responder à pergunta para casa: essa dança é uma linguagem?</p>
+<h2 id="o-cérebro-é-feito-de-células-neurônios-e-sinapses">5. O cérebro é feito de células: neurônios e sinapses</h2>
+<h3 id="neurônios">Neurônios</h3>
+<p>A ideia de que o cérebro funciona pela atividade coordenada de células independentes, os neurônios, chama-se <strong>doutrina do neurônio</strong> e é atribuída ao espanhol Santiago Ramón y Cajal (Mildner, 2008). Cajal dividiu o Prêmio Nobel de Fisiologia ou Medicina de 1906 com o italiano Camillo Golgi, “em reconhecimento ao trabalho sobre a estrutura do sistema nervoso” (Nobel Prize Outreach, 2026).</p>
+<p>Um neurônio típico tem quatro partes (Figura 4). Os <strong>dendritos</strong> recebem a maior parte dos sinais de outros neurônios. O <strong>corpo celular</strong> contém o núcleo. O <strong>axônio</strong> leva o sinal para longe; ele começa no cone de implantação, onde nasce o potencial de ação, e termina em vários terminais que fazem contato com outras células (Mildner, 2008). Cada neurônio pode receber contatos de milhares de outros, com efeitos excitatórios (que aumentam a chance de disparar) ou inibitórios (que diminuem) (Mildner, 2008).</p>
+<figure>
+<img src="img/aula01/neuronio.png" alt="Figura 4. Esquema de um neurônio: dendritos, corpo celular, cone de implantação, axônio coberto por bainha de mielina interrompida pelos nódulos de Ranvier, e terminais. Fonte: elaborada para o curso a partir de Mildner (2008)." />
+<figcaption aria-hidden="true"><strong>Figura 4.</strong> Esquema de um neurônio: dendritos, corpo celular, cone de implantação, axônio coberto por bainha de mielina interrompida pelos nódulos de Ranvier, e terminais. Fonte: elaborada para o curso a partir de Mildner (2008).</figcaption>
+</figure>
+<p>Quantos neurônios temos? Por muito tempo se repetiu “cem bilhões”. Pesquisadores da Universidade Federal do Rio de Janeiro desenvolveram uma técnica nova para contar as células do cérebro, o fracionador isotrópico (Zorzetto, 2012). Resultado: o cérebro de homens adultos tem em média 86,1 bilhões de neurônios e 84,6 bilhões de células não neuronais, como as da glia. Só 19% desses neurônios estão no córtex cerebral (Azevedo <em>et al.</em>, 2009). A recontagem também derrubou a ideia, ainda presente em livros de 2008, de que as células da glia seriam talvez dez vezes mais numerosas que os neurônios (Mildner, 2008; Zorzetto, 2012).</p>
+<h3 id="o-potencial-de-ação">O potencial de ação</h3>
+<p>Em repouso, o interior do neurônio é negativo em relação ao exterior, cerca de −70 milivolts (Mildner, 2008). Quando as entradas excitatórias que chegam ao mesmo tempo, ou em sequência rápida, somam o suficiente para passar de um <strong>limiar</strong>, o neurônio dispara um <strong>potencial de ação</strong>: uma inversão rápida da voltagem, de cerca de −70 para cerca de +50 milivolts, causada pela mudança da permeabilidade da membrana aos íons sódio e potássio (Mildner, 2008). Logo depois do disparo vem o <strong>período refratário</strong>, de 1 a 2 milissegundos, em que um novo potencial de ação não acontece qualquer que seja o estímulo (Mildner, 2008).</p>
+<p>O potencial de ação segue o princípio do “tudo ou nada”: ele acontece ou não acontece. O neurônio não dispara “mais forte” quando a entrada é maior; as mensagens diferem na frequência e no momento dos disparos (Mildner, 2008).</p>
+<h3 id="mielina-e-velocidade">Mielina e velocidade</h3>
+<p>Muitos axônios são envoltos pela <strong>mielina</strong>, uma camada de gordura que os isola (Mildner, 2008). Ela tem interrupções, os nódulos de Ranvier, e o potencial de ação salta de nódulo em nódulo, o que acelera a condução (Purves <em>et al.</em>, 2001). Axônios sem mielina conduzem a cerca de 0,5 a 10 metros por segundo; axônios mielinizados chegam a até 150 metros por segundo (Purves <em>et al.</em>, 2001). A perda de mielina, como na esclerose múltipla, causa vários problemas neurológicos (Purves <em>et al.</em>, 2001).</p>
+<h3 id="sinapses">Sinapses</h3>
+<p>O ponto de contato entre dois neurônios é a <strong>sinapse</strong>. Na maioria das sinapses do cérebro dos mamíferos, as <strong>químicas</strong>, um espaço de 10 a 100 nanômetros, a fenda sináptica, separa as duas células (Mildner, 2008). O potencial de ação chega ao terminal e libera <strong>neurotransmissores</strong> guardados em pequenas bolsas, as vesículas. As moléculas atravessam a fenda e se ligam a receptores da célula seguinte, deixando-a mais perto ou mais longe de disparar. Essa passagem leva menos de 1 milissegundo (Mildner, 2008). Existem também sinapses <strong>elétricas</strong>, em que as membranas se tocam e a transmissão é muito rápida, mas elas são rígidas; as químicas mudam muito com a experiência, ficando mais fortes ou mais fracas (Mildner, 2008). Para Mildner (2008), aprendizado e memória seriam impossíveis num sistema nervoso que tivesse só sinapses elétricas.</p>
+<div class="destaque">
+<p>O “fio” do sistema nervoso é rápido; o que custa tempo são as passagens. Cada sinapse acrescenta uma fração de milissegundo, e uma simples reação a uma luz atravessa muitas camadas de neurônios, decisões e músculos.</p>
+</div>
+<h2 id="um-mapa-do-cérebro-para-o-semestre">6. Um mapa do cérebro para o semestre</h2>
+<h3 id="quatro-lobos-e-alguns-marcos">Quatro lobos e alguns marcos</h3>
+<p>Cada hemisfério cerebral se divide em quatro <strong>lobos</strong>, separados por marcos anatômicos (Figura 5). O <strong>sulco central</strong> separa o lobo frontal, à frente, do parietal, atrás. A <strong>fissura lateral</strong>, ou de Sylvius, separa o lobo temporal dos lobos frontal e parietal. O lobo occipital fica atrás (Mildner, 2008). No fundo da fissura lateral há ainda a ínsula, às vezes chamada de quinto lobo (Mildner, 2008). Os dois hemisférios são ligados por feixes de fibras, e o maior deles é o <strong>corpo caloso</strong> (Mildner, 2008).</p>
+<figure>
+<img src="img/aula01/lobos.png" alt="Figura 5. O hemisfério esquerdo visto de lado, com a frente à esquerda: os quatro lobos, o sulco central, a fissura lateral, o cerebelo e o tronco encefálico. A linha tracejada indica que o limite do lobo occipital não é nítido na superfície lateral. Fonte: elaborada para o curso a partir de Mildner (2008)." />
+<figcaption aria-hidden="true"><strong>Figura 5.</strong> O hemisfério esquerdo visto de lado, com a frente à esquerda: os quatro lobos, o sulco central, a fissura lateral, o cerebelo e o tronco encefálico. A linha tracejada indica que o limite do lobo occipital não é nítido na superfície lateral. Fonte: elaborada para o curso a partir de Mildner (2008).</figcaption>
+</figure>
+<p>Algumas funções para começar:</p>
+<ul>
+<li><strong>Frontal:</strong> fica à frente do sulco central e contém as áreas motoras primárias e secundárias. Cada ponto da área motora primária controla um grupo de músculos do lado oposto do corpo (Mildner, 2008).</li>
+<li><strong>Parietal:</strong> logo atrás do sulco central ficam as áreas que recebem tato, pressão, temperatura, dor e a posição do corpo (Mildner, 2008).</li>
+<li><strong>Temporal:</strong> abaixo da fissura lateral; contém o córtex auditivo, e a parte de trás do giro temporal superior, em geral à esquerda, participa da percepção da fala (Mildner, 2008).</li>
+<li><strong>Occipital:</strong> na parte de trás; contém a área visual primária (Mildner, 2008).</li>
+</ul>
+<p>Embaixo do cérebro ficam o <strong>cerebelo</strong>, que coordena e suaviza os movimentos, e o <strong>tronco encefálico</strong>, que liga o cérebro à medula e cuida de funções vitais como a respiração (Mildner, 2008).</p>
+<h3 id="broca-e-wernicke">Broca e Wernicke</h3>
+<p>A ideia de que a linguagem depende de lugares específicos do cérebro ganhou força com dois médicos do século XIX. Em 1861, Paul Broca examinou Louis Victor Leborgne, um paciente de um hospital de Paris com grande dificuldade para falar: diz-se que ele só produzia a sílaba “tan”. Na autópsia, Broca encontrou uma lesão no <strong>giro frontal inferior esquerdo</strong>, na parte de trás (Small; Hickok, 2016). Depois, Broca reuniu outros pacientes com dificuldade de produzir fala e lesão no lobo frontal esquerdo, à frente da área motora; essa região passou a se chamar <strong>área de Broca</strong> (Mildner, 2008). Em 1874, Carl Wernicke descreveu uma afasia “sensorial”, com problemas de compreensão, causada por lesões na parte de trás do <strong>giro temporal superior</strong>, a <strong>área de Wernicke</strong> (Mildner, 2008). Em 1885, Ludwig Lichtheim organizou esses achados num diagrama de centros ligados por conexões (Small; Hickok, 2016). A aula 2 volta a essa história.</p>
+<p>O cérebro de Leborgne foi preservado até hoje. Em 2007, Nina Dronkers e colegas o examinaram com ressonância magnética de alta resolução. A lesão ia bem além da superfície que Broca descreveu e se estendia para regiões mais profundas, em direção ao meio do cérebro. Os autores também notaram que a região que Broca identificou não coincide exatamente com o que hoje chamamos de “área de Broca” (Dronkers <em>et al.</em>, 2007). A lição é importante para o semestre: Broca e Wernicke são pontos de partida históricos, e a linguagem usa uma rede muito maior.</p>
+<h3 id="o-lado-esquerdo-pesa-mais-mas-não-sozinho">O lado esquerdo pesa mais, mas não sozinho</h3>
+<p>Como saber de que lado fica a linguagem de uma pessoa? Antes de algumas cirurgias no cérebro, como as de epilepsia, os médicos podem usar o <strong>teste de Wada</strong>: um anestésico injetado na artéria carótida de um lado “adormece” por alguns minutos o hemisfério daquele lado. Se a pessoa não consegue falar, recitar ou nomear objetos durante esse tempo, aquele hemisfério é o dominante para a linguagem (Mildner, 2008).</p>
+<p>Na maior e mais citada série clássica de pacientes testados assim (Loring <em>et al.</em>, 1990), Rasmussen e Milner (1977) examinaram pacientes sem sinais de lesão precoce do hemisfério esquerdo. Entre os destros, 96% tinham a linguagem no hemisfério esquerdo e os demais no direito. Entre os canhotos e ambidestros, 70% tinham a linguagem à esquerda; os outros se dividiam igualmente entre representação bilateral e dominância direita, 15% cada (Loring <em>et al.</em>, 1990). A Figura 6 mostra esses números.</p>
+<figure>
+<img src="img/aula01/lateralizacao.png" alt="Figura 6. Hemisfério dominante para a fala, medido pelo teste de Wada em pacientes sem lesão cerebral precoce: destros e canhotos (ou ambidestros). Fonte: elaborada para o curso a partir de Rasmussen e Milner (1977), com os valores conforme Loring et al. (1990)." />
+<figcaption aria-hidden="true"><strong>Figura 6.</strong> Hemisfério dominante para a fala, medido pelo teste de Wada em pacientes sem lesão cerebral precoce: destros e canhotos (ou ambidestros). Fonte: elaborada para o curso a partir de Rasmussen e Milner (1977), com os valores conforme Loring <em>et al.</em> (1990).</figcaption>
+</figure>
+<p>Esses números vêm de pacientes candidatos a cirurgia, que não representam a população inteira, e outros estudos chegam a proporções um pouco diferentes. Loring e colegas (1990), testando 103 candidatos a cirurgia, encontraram linguagem só à esquerda em 79, só à direita em 2 e representação bilateral em 22, e concluíram que a linguagem restrita ao hemisfério direito é rara. Em pessoas saudáveis, Knecht e colegas (2000) mediram a lateralização de 326 voluntários com ultrassom (Doppler transcraniano) enquanto eles geravam palavras. A dominância direita apareceu em 4% dos destros fortes, 15% dos ambidestros e 27% dos canhotos fortes. Ou seja: mesmo entre canhotos, a maioria tem a linguagem à esquerda.</p>
+<p>O hemisfério direito não fica parado. Há bastante evidência de que ele participa do processamento de emoções, e vários estudos o ligam à <strong>prosódia</strong>, a melodia da fala. Mas aqui também há debate: uma hipótese diz que o direito domina toda a prosódia; outra, que ele domina a prosódia emocional e o esquerdo a prosódia linguística (por exemplo, a diferença entre pergunta e afirmação) (Mildner, 2008). As aulas 8 a 10 voltam a esse tema.</p>
+<div class="destaque">
+<p>“A linguagem fica no lado esquerdo” é uma simplificação. O certo é dizer que, na maioria das pessoas, ela depende mais do hemisfério esquerdo; que essa proporção varia com a lateralidade das mãos; e que o hemisfério direito contribui com outras partes da comunicação.</p>
+</div>
+<h2 id="o-que-o-laboratório-mostrou">7. O que o laboratório mostrou</h2>
+<p>Os números exatos da turma variam com o celular, a fila e a prática, mas a direção dos efeitos costuma ser a mesma.</p>
+<p><strong>Experimento 1 · Telefone sem fio.</strong> Uma frase com números, cores e nomes passou por cinco a oito pessoas. O esperado é que a mensagem encolha e fique mais “normal”: detalhes somem ou mudam, aparecem sinônimos, e o sentido geral sobrevive melhor que as palavras exatas. O psicólogo Frederic Bartlett estudou esse fenômeno com a <strong>reprodução serial</strong> de uma história, passada de pessoa em pessoa, e concluiu que lembrar é <strong>reconstruir</strong>, e não copiar (Bartlett, 1932). Volte à Figura 1: a tela do celular é um canal perfeito, então o “ruído” estava dentro de cada cérebro, na codificação e na decodificação. Cada pessoa guardou o sentido e reconstruiu as palavras, como o ouvinte que infere o que o falante quis dizer (Dahan; Ferreira, 2019).</p>
+<p><strong>Experimento 2 · É comunicação? É linguagem?</strong> Na resposta de referência, só a frase em Libras e o bilhete escrito são linguagem. A dança das abelhas, o alarme do vervet, o semáforo, o choro do bebê, a trilha de feromônio da formiga, o chamado do sagui e o papagaio que diz “bom dia” ficam em comunicação (o papagaio, talvez: ele é sobretudo fala sem linguagem). Ficar vermelho de vergonha aparece como “não é comunicação” para muitos, porque é uma pista involuntária. Três casos são de fato debatidos: a dança, o papagaio e o rubor. Se a turma se dividiu, isso é bom sinal: a pergunta útil é qual traço de Hockett está faltando em cada caso.</p>
+<p><strong>Experimento 3 · Tempo de reação.</strong> Na parte A você só tocava quando a cor mudava; na parte B precisava escolher o botão certo. A parte B é mais lenta, e a diferença entre as duas estima o tempo extra de decidir. A ideia de usar o tempo de reação para medir processos mentais remonta ao fisiologista holandês F. C. Donders, que publicou em 1868-1869 um estudo sobre a velocidade dos processos mentais, traduzido para o inglês um século depois (Donders, 1969). Entre a luz chegar ao olho e o dedo tocar a tela, o sinal passa pela retina, pelo córtex visual, por áreas que decidem, pelo córtex motor, pela medula e pelos músculos. Uma parte do tempo medido também vem da própria tela e do toque do celular, por isso a diferença entre A e B é mais confiável que os valores absolutos.</p>
+<p><strong>Experimento 4 · Corrente de neurônios.</strong> A turma fez uma roda e passou um aperto de mão. Faça a conta com uma estimativa grosseira, a mesma da página do laboratório: em cada pessoa, o sinal percorre cerca de 1,5 metro de nervo, da mão à medula e ao cérebro e de volta à outra mão. A 100 metros por segundo, velocidade dentro da faixa dos axônios mielinizados (Purves <em>et al.</em>, 2001), esse trecho levaria só 15 milissegundos. O tempo por pessoa na roda costuma ser bem maior que isso, e cai com a prática. A diferença está nas sinapses, na decisão e na contração do músculo: cada pessoa da roda fez, na verdade, uma reação simples ao toque, o mesmo que o experimento 3 mediu.</p>
+<p><strong>Experimento 5 · Rotule o cérebro.</strong> Os erros mais comuns costumam ser trocar Broca com Wernicke e parietal com occipital. Para fixar: o sulco central separa frontal e parietal; a fissura lateral fica acima do temporal; Broca fica no frontal, à frente da área motora; Wernicke fica no temporal, atrás.</p>
+<div class="conceitos">
+<dl>
+<dt><strong>Comunicação</strong></dt>
+<dd>
+Uso de um sinal, com um código compartilhado, para mudar o que outro indivíduo sabe ou faz (Shannon, 1948; Rossano, 2019).
+</dd>
+<dt><strong>Sinal e código</strong></dt>
+<dd>
+Sinal é o que viaja fisicamente (som, gesto, cor, odor, dança); código é a regra que liga o sinal ao significado, e emissor e receptor precisam compartilhá-la.
+</dd>
+<dt><strong>Umwelt</strong></dt>
+<dd>
+O mundo próprio de cada espécie, formado pelo que ela percebe e pelo que ela faz (Uexküll, 2010).
+</dd>
+<dt><strong>Comunicação referencial</strong></dt>
+<dd>
+Sinal que informa sobre uma categoria do mundo, como os alarmes de leopardo, águia e cobra dos vervets (Seyfarth; Cheney; Marler, 1980); muitos autores preferem “funcionalmente referencial” (Rossano, 2019).
+</dd>
+<dt><strong>Linguagem</strong></dt>
+<dd>
+Sistema de símbolos combinados por regras que permite formar mensagens novas sem limite, sobre qualquer assunto, inclusive o que não está presente (Fitch, 2019).
+</dd>
+<dt><strong>Fala</strong></dt>
+<dd>
+Um dos canais da linguagem, produzido pelo trato vocal; as línguas de sinais e a escrita são outros canais.
+</dd>
+<dt><strong>Traços de Hockett</strong></dt>
+<dd>
+Lista de 13 propriedades da linguagem humana usada para compará-la a outros sistemas, como arbitrariedade, deslocamento, produtividade, dualidade de padrões e transmissão tradicional (Hockett, 1960).
+</dd>
+<dt><strong>Neurônio</strong></dt>
+<dd>
+Célula que recebe sinais nos dendritos, os integra e envia pulsos pelo axônio até outras células (Mildner, 2008).
+</dd>
+<dt><strong>Potencial de ação</strong></dt>
+<dd>
+Pulso elétrico do tipo tudo ou nada que nasce no cone de implantação quando a soma das entradas passa do limiar (Mildner, 2008).
+</dd>
+<dt><strong>Sinapse</strong></dt>
+<dd>
+Ponto de contato entre neurônios; nas sinapses químicas, neurotransmissores atravessam a fenda sináptica e excitam ou inibem a célula seguinte (Mildner, 2008).
+</dd>
+<dt><strong>Áreas de Broca e de Wernicke</strong></dt>
+<dd>
+Regiões clássicas da linguagem no hemisfério esquerdo: giro frontal inferior (Broca) e parte posterior do giro temporal superior (Wernicke) (Mildner, 2008; Small; Hickok, 2016).
+</dd>
+<dt><strong>Lateralização</strong></dt>
+<dd>
+Dependência maior de uma função em relação a um hemisfério; para a linguagem, na maioria das pessoas, o esquerdo (Knecht <em>et al.</em>, 2000).
+</dd>
+</dl>
+</div>
+<h2 id="para-revisar">Para revisar</h2>
+<ol type="1">
+<li><p>Uma colega diz que o modelo de Shannon resolve tudo: basta o canal ser bom para a mensagem chegar intacta. Use o experimento do telefone sem fio para responder.</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>No telefone sem fio, o canal (a tela) era perfeito e mesmo assim a frase mudou. O que mudou a mensagem foi a codificação e a decodificação dentro de cada pessoa: guardamos o sentido e reconstruímos as palavras, como mostrou Bartlett. O receptor interpreta com o que já sabe, e não copia.</p>
+</details></li>
+<li><p>Por que o experimento de Seyfarth, Cheney e Marler precisou tocar gravações sem nenhum predador por perto?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Se houvesse um predador, os macacos poderiam fugir porque o viram, e não por causa do alarme. Tocando só o som, os pesquisadores mostraram que o chamado sozinho basta para provocar a fuga certa. Isso indica que o som carrega informação sobre o tipo de perigo.</p>
+</details></li>
+<li><p>Dê um exemplo de linguagem sem fala e um de fala sem linguagem, e diga o que eles mostram.</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Libras é linguagem sem fala: tem gramática própria e usa as mãos, o rosto e o espaço. O papagaio que repete “bom dia” produz fala sem linguagem, porque não combina partes para criar mensagens novas. Juntos, mostram que a linguagem é um sistema mais abstrato que o canal usado para transmiti-la.</p>
+</details></li>
+<li><p>O que o estudo de sinalizantes surdos com lesões cerebrais acrescenta à discussão sobre o hemisfério esquerdo?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Se o hemisfério esquerdo fosse especializado só em sons rápidos, lesões nele não deveriam afetar uma língua visual. Mas lesões à esquerda causam afasia em sinalizantes, e lesões à direita não. Isso sugere que a especialização é para a linguagem em si, e não para o canal auditivo.</p>
+</details></li>
+<li><p>Os alarmes dos vervets são arbitrários. Por que, mesmo assim, a maioria dos pesquisadores não os chama de linguagem?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Faltam outros traços de Hockett: são poucos sinais, que não se combinam para formar mensagens novas (produtividade), são dados diante do perigo presente (sem deslocamento) e não são feitos de unidades sem sentido (dualidade de padrões). Além disso, a forma dos sons quase não varia entre populações, o que sugere pouco aprendizado.</p>
+</details></li>
+<li><p>Se um axônio mielinizado conduz a dezenas de metros por segundo, por que você levou centenas de milissegundos para reagir à cor na tela?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>A condução pelo axônio é só uma parte pequena do tempo. O sinal atravessa muitas sinapses e etapas: perceber a cor, decidir, programar o movimento, e o músculo ainda precisa contrair. Na escolha entre duas cores, a decisão acrescenta mais tempo.</p>
+</details></li>
+<li><p>Uma reportagem diz que “canhotos têm a linguagem do lado direito do cérebro”. O que está errado?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>A maioria dos canhotos também tem a linguagem principalmente à esquerda. A dominância direita é mais comum em canhotos do que em destros (cerca de 27% dos canhotos fortes contra 4% dos destros fortes, em voluntários saudáveis), mas continua minoritária.</p>
+</details></li>
+<li><p>Por que dizer que “a área de Broca é o centro da fala” é uma simplificação?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>A ressonância do cérebro do próprio paciente de Broca mostrou uma lesão muito mais extensa e profunda do que a área que leva seu nome. E a linguagem depende de uma rede de regiões nos dois hemisférios, ligadas por feixes de fibras, e não de um único centro.</p>
+</details></li>
+</ol>
+<h2 id="para-saber-mais">Para saber mais</h2>
+<ul>
+<li><strong>Zorzetto, R. (2012). Números em revisão.</strong> Reportagem da revista Pesquisa FAPESP sobre a recontagem dos neurônios feita na UFRJ, com a história do método e as ideias que ela pôs em dúvida. Em português, acessível. Acesso aberto: https://revistapesquisa.fapesp.br/números-em-revisão/ .</li>
+<li><strong>Society for Neuroscience. Brain Facts, capítulo 1: Brain Basics.</strong> A leitura da semana: uma introdução ilustrada a neurônios, sinapses e às grandes divisões do cérebro. Em inglês, acessível. Acesso aberto: https://www.brainfacts.org/brain-basics .</li>
+<li><strong>Small, S. L.; Hickok, G. (2016). The neurobiology of language.</strong> Capítulo de abertura do livro <em>Neurobiology of Language</em>, com a história de Broca e Leborgne e uma discussão clara sobre o que é estudar a linguagem como biologia. Em inglês, intermediário (livro disponível com o professor).</li>
+<li><strong>Fitch, W. T. (2019). The comparative approach to the biology and evolution of language.</strong> Explica por que comparar espécies ajuda a entender a linguagem, de Hockett aos estudos atuais. Em inglês, intermediário (livro <em>Human Language</em>, disponível com o professor).</li>
+</ul>
+<h2 id="referências">Referências</h2><div class="refs">
+<p>AZEVEDO, F. A. C. <em>et al.</em> Equal numbers of neuronal and nonneuronal cells make the human brain an isometrically scaled-up primate brain. <strong>Journal of Comparative Neurology</strong>, v. 513, n. 5, p. 532-541, 2009. DOI: https://doi.org/10.1002/cne.21974.</p>
+<p>BARTLETT, F. C. <strong>Remembering</strong>: a study in experimental and social psychology. Cambridge: Cambridge University Press, 1932.</p>
+<p>BRASIL. Lei nº 10.436, de 24 de abril de 2002. Dispõe sobre a Língua Brasileira de Sinais - Libras e dá outras providências. Brasília, DF: Presidência da República, 2002. Disponível em: https://www.planalto.gov.br/ccivil_03/leis/2002/l10436.htm. Acesso em: 3 out. 2026.</p>
+<p>DAHAN, D.; FERREIRA, F. Language comprehension: insights from research on spoken language. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 21-33.</p>
+<p>DONDERS, F. C. On the speed of mental processes. Tradução de W. G. Koster. <strong>Acta Psychologica</strong>, v. 30, p. 412-431, 1969. DOI: https://doi.org/10.1016/0001-6918(69)90065-1.</p>
+<p>DRONKERS, N. F. <em>et al.</em> Paul Broca’s historic cases: high resolution MR imaging of the brains of Leborgne and Lelong. <strong>Brain</strong>, v. 130, n. 5, p. 1432-1441, 2007. DOI: https://doi.org/10.1093/brain/awm042.</p>
+<p>FISCHER, J.; HAGE, S. R. Primate vocalization as a model for human speech: scopes and limits. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 639-656.</p>
+<p>FITCH, W. T. The comparative approach to the biology and evolution of language. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 623-637.</p>
+<p>FRISCH, K. von. <strong>Decoding the language of the bee</strong>. Nobel Lecture, Estocolmo, 12 dez. 1973. Disponível em: https://www.nobelprize.org/uploads/2018/06/frisch-lecture.pdf. Acesso em: 3 out. 2026.</p>
+<p>HAGOORT, P. Introduction. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 1-3.</p>
+<p>HAUSER, M. D.; CHOMSKY, N.; FITCH, W. T. The faculty of language: what is it, who has it, and how did it evolve? <strong>Science</strong>, v. 298, n. 5598, p. 1569-1579, 2002. DOI: https://doi.org/10.1126/science.298.5598.1569.</p>
+<p>HICKOK, G.; BELLUGI, U.; KLIMA, E. S. The neurobiology of sign language and its implications for the neural basis of language. <strong>Nature</strong>, v. 381, n. 6584, p. 699-702, 1996. DOI: https://doi.org/10.1038/381699a0.</p>
+<p>HOCKETT, C. F. The origin of speech. <strong>Scientific American</strong>, v. 203, n. 3, p. 88-96, 1960. DOI: https://doi.org/10.1038/scientificamerican0960-88.</p>
+<p>KNECHT, S. <em>et al.</em> Handedness and hemispheric language dominance in healthy humans. <strong>Brain</strong>, v. 123, n. 12, p. 2512-2518, 2000. DOI: https://doi.org/10.1093/brain/123.12.2512.</p>
+<p>LEVINSON, S. C. Interactional foundations of language: the interaction engine hypothesis. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 189-200.</p>
+<p>LORING, D. W. <em>et al.</em> Cerebral language lateralization: evidence from intracarotid amobarbital testing. <strong>Neuropsychologia</strong>, v. 28, n. 8, p. 831-838, 1990. DOI: https://doi.org/10.1016/0028-3932(90)90007-B.</p>
+<p>MILDNER, V. <strong>The cognitive neuroscience of human communication</strong>. New York: Lawrence Erlbaum Associates, 2008.</p>
+<p>NOBEL PRIZE OUTREACH. The Nobel Prize in Physiology or Medicine 1906. <strong>NobelPrize.org</strong>, 2026. Disponível em: https://www.nobelprize.org/prizes/medicine/1906/summary/. Acesso em: 3 out. 2026.</p>
+<p>ÖZYÜREK, A.; WOLL, B. Language in the visual modality: co-speech gesture and sign language. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 67-83.</p>
+<p>PINKER, S.; JACKENDOFF, R. The faculty of language: what’s special about it? <strong>Cognition</strong>, v. 95, n. 2, p. 201-236, 2005. DOI: https://doi.org/10.1016/j.cognition.2004.08.004.</p>
+<p>PURVES, D. <em>et al.</em> (org.). <strong>Neuroscience</strong>. 2. ed. Sunderland, MA: Sinauer Associates, 2001. Disponível em: https://www.ncbi.nlm.nih.gov/books/NBK10921/. Acesso em: 3 out. 2026.</p>
+<p>RASMUSSEN, T.; MILNER, B. The role of early left-brain injury in determining lateralization of cerebral speech functions. <strong>Annals of the New York Academy of Sciences</strong>, v. 299, n. 1, p. 355-369, 1977. DOI: https://doi.org/10.1111/j.1749-6632.1977.tb41921.x.</p>
+<p>ROSSANO, F. The structure and timing of human versus primate social interaction. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 201-219.</p>
+<p>SEYFARTH, R. M.; CHENEY, D. L.; MARLER, P. Monkey responses to three different alarm calls: evidence of predator classification and semantic communication. <strong>Science</strong>, v. 210, n. 4471, p. 801-803, 1980. DOI: https://doi.org/10.1126/science.7433999.</p>
+<p>SHANNON, C. E. A mathematical theory of communication. <strong>The Bell System Technical Journal</strong>, v. 27, p. 379-423, 623-656, 1948.</p>
+<p>SMALL, S. L.; HICKOK, G. The neurobiology of language. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 3-9. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00001-8.</p>
+<p>TAKAHASHI, D. Y.; NARAYANAN, D. Z.; GHAZANFAR, A. A. Coupled oscillator dynamics of vocal turn-taking in monkeys. <strong>Current Biology</strong>, v. 23, n. 21, p. 2162-2168, 2013. DOI: https://doi.org/10.1016/j.cub.2013.09.005.</p>
+<p>TAKAHASHI, D. Y. <em>et al.</em> The developmental dynamics of marmoset monkey vocal production. <strong>Science</strong>, v. 349, n. 6249, p. 734-738, 2015. DOI: https://doi.org/10.1126/science.aab1058.</p>
+<p>UEXKÜLL, J. von. <strong>A foray into the worlds of animals and humans</strong>: with A theory of meaning. Minneapolis: University of Minnesota Press, 2010.</p>
+<p>ZORZETTO, R. Números em revisão: recontagem de neurônios põe em xeque ideias da neurociência. <strong>Pesquisa FAPESP</strong>, n. 192, fev. 2012. Disponível em: https://revistapesquisa.fapesp.br/números-em-revisão/. Acesso em: 3 out. 2026.</p>
+</div>
+<p class="rodape">Material de estudo da disciplina Bases neurais da comunicação humana (UFRN), Prof. Daniel Y. Takahashi. Texto e figuras elaborados para o curso; as fontes estão nas Referências.</p>
+</div>

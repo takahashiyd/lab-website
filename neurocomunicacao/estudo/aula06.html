@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 6 · Frases e gramática — Material de estudo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,600..800&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{--bg:#f6f7f9;--surface:#fff;--fg:#142033;--muted:#566377;--line:#d8dee6;--accent:#0e7c86;--accent2:#c9771a;--soft:#e5f1f2;--soft2:#fbf1e3;
+--display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;--body:"Source Serif 4",Georgia,"Times New Roman",serif;--ui:"Source Sans 3","Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1621;--surface:#172132;--fg:#e6ecf3;--muted:#9aa8b9;--line:#2a3850;--accent:#3db4be;--accent2:#f0a645;--soft:#173740;--soft2:#3a2c17;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:18px/1.65 var(--body)}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 80px}
+.top{font:600 13px/1.4 var(--ui);display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:22px}
+.top a{color:var(--accent);text-decoration:none}
+.eyebrow{font:600 12px/1 ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(30px,6.5vw,46px)/1.08 var(--display);font-stretch:112%;margin:10px 0 8px;text-wrap:balance}
+.sub{font:400 20px/1.4 var(--ui);color:var(--muted);margin:0 0 26px}
+h2{font:750 25px/1.2 var(--display);margin:46px 0 12px;text-wrap:balance}
+h3{font:700 19px/1.3 var(--ui);margin:28px 0 8px}
+p{margin:0 0 16px}
+a{color:var(--accent)}
+ul,ol{padding-left:24px;margin:0 0 16px} li{margin:4px 0}
+figure{margin:26px 0;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;break-inside:avoid}
+figure img{width:100%;height:auto;display:block;border-radius:6px;background:#fff}
+figcaption{font:15px/1.5 var(--ui);color:var(--muted);margin-top:10px}
+.objetivos{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;padding:14px 18px 6px;margin:0 0 30px;font-family:var(--ui)}
+.objetivos::before{content:"Nesta aula você vai aprender a";display:block;font:700 13px/1 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:4px 0 10px}
+.destaque{background:var(--soft2);border-radius:10px;padding:14px 18px 2px;margin:22px 0;font-family:var(--ui);break-inside:avoid}
+.conceitos{background:var(--soft);border-radius:12px;padding:16px 20px 6px;margin:30px 0;font-family:var(--ui)}
+.conceitos::before{content:"Conceitos-chave";display:block;font:700 13px/1 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:4px 0 12px}
+.conceitos dl{margin:0} .conceitos dt{font-weight:700;margin-top:10px} .conceitos dd{margin:2px 0 8px 0;color:var(--fg)}
+details{margin:8px 0 4px;font-family:var(--ui);font-size:16px}
+summary{cursor:pointer;color:var(--accent);font-weight:600}
+details[open] summary{margin-bottom:6px}
+.refs p,#referencias + * p{font-size:15px;line-height:1.5;padding-left:1.4em;text-indent:-1.4em}
+.rodape{margin-top:50px;padding-top:16px;border-top:1px solid var(--line);font:13px/1.5 var(--ui);color:var(--muted)}
+@media print{
+ :root{--bg:#fff;--surface:#fff}
+ body{font-size:11.5pt;line-height:1.5}
+ .wrap{max-width:none;padding:0}
+ .top{display:none}
+ h2{font-size:17pt;margin-top:24pt;break-after:avoid}
+ h1{font-size:28pt}
+ figure{padding:8pt;border-color:#ccc}
+ figure img{max-height:9cm;object-fit:contain}
+ details>summary{display:none}
+ details{margin-left:0;font-size:10.5pt}
+ details::before{content:"Resposta: ";font-weight:700}
+ a{color:inherit;text-decoration:none}
+ .refs p{font-size:10pt}
+ @page{size:A4;margin:18mm 18mm 20mm}
+}
+</style>
+<div class="wrap">
+<nav class="top"><a href="index.html">Material de estudo</a><a href="../aula06.html">Laboratório da aula 6</a><a href="aula05.html">← Aula 5</a><a href="aula07.html">Aula 7 →</a></nav>
+<span class="eyebrow">Bases neurais da comunicação humana · Aula 6 · Material de estudo</span>
+<h1>Frases e gramática</h1>
+<p class="sub">Como o cérebro transforma uma fila de palavras numa mensagem com estrutura: quem fez o quê a quem</p>
+<div class="objetivos">
+<ul>
+<li>Explicar por que uma frase não é uma lista de palavras.</li>
+<li>Descrever como a estrutura é montada palavra por palavra e o que acontece nas frases labirinto.</li>
+<li>Distinguir o N400 do P600.</li>
+<li>Relacionar a dificuldade das frases encaixadas com a memória de trabalho e com o giro frontal inferior esquerdo.</li>
+<li>Comparar modelos da rede frontotemporal da linguagem (Friederici, Hagoort e o papel do lobo temporal anterior).</li>
+<li>Avaliar se a rede da linguagem é separada das redes usadas em contas e música.</li>
+</ul>
+</div>
+<h2 id="palavras-não-bastam-a-ordem-decide-quem-fez-o-quê">1. Palavras não bastam: a ordem decide quem fez o quê</h2>
+<p>Compare “O cachorro mordeu o carteiro” com “O carteiro mordeu o cachorro”. As palavras são as mesmas; só a ordem mudou, e a ordem diz quem fez a ação (o <strong>agente</strong>) e quem a sofreu (o <strong>paciente</strong>). Esses papéis na cena são chamados de <strong>papéis temáticos</strong>.</p>
+<p>A <strong>sintaxe</strong> é o conjunto de regras que liga as palavras entre si e, com isso, distribui esses papéis. Na aula 5 vimos o significado de cada palavra; hoje a pergunta é como o cérebro junta as palavras numa mensagem com estrutura.</p>
+<p>Em português, a ordem mais comum, chamada <strong>canônica</strong>, é sujeito, verbo e objeto. Frases que fogem dela, como “Foi o carteiro que o cachorro mordeu”, custam mais para processar. Esse custo aparece em línguas tão diferentes quanto chinês, alemão, finlandês e japonês (Meyer; Friederici, 2016).</p>
+<h3 id="frases-reversíveis-quando-o-mundo-não-ajuda">Frases reversíveis: quando o mundo não ajuda</h3>
+<p>Em “O menino comeu a maçã”, o mundo resolve quem fez o quê: maçãs não comem meninos. Em “O menino foi empurrado pela menina”, só a gramática diz quem empurrou. Frases assim, em que os papéis poderiam ser trocados, são chamadas de <strong>reversíveis</strong> e são o teste clássico de compreensão sintática.</p>
+<p>Pessoas com <strong>afasia de Broca</strong> falam com frases simples, quase sem palavras gramaticais e terminações. Elas também erram com frequência justamente as frases reversíveis que não seguem a ordem canônica (Caramazza; Zurif, 1976; Rogalsky, 2016). Daí nasceu a ideia de que a área de Broca seria “o centro da sintaxe”.</p>
+<p>Essa ideia é uma simplificação. Pessoas com afasia de Broca conseguem julgar se uma frase está gramatical mesmo quando não a entendem por completo. Além disso, nem toda pessoa com afasia de Broca tem lesão na área de Broca, e uma lesão na área de Broca não basta para causar essa afasia (Rogalsky, 2016). Voltaremos ao debate na seção 5.</p>
+<h2 id="frases-são-árvores-não-colares-de-palavras">2. Frases são árvores, não colares de palavras</h2>
+<p>Uma frase não é um colar de contas em que cada palavra só se liga à vizinha. As palavras formam grupos, os <strong>constituintes</strong>, que funcionam como unidade. Em “A aluna de Natal leu o livro novo”, o grupo “a aluna de Natal” pode ser trocado por um pronome (“Ela leu o livro novo”). Já “Natal leu” não forma grupo, embora as duas palavras estejam lado a lado. Os constituintes se encaixam uns nos outros, e o resultado é uma estrutura <strong>hierárquica</strong>, que os linguistas desenham como uma árvore (Figura 1). Identificar os constituintes e agrupá-los nessa hierarquia é uma das tarefas centrais da compreensão (Ferreira; Çokal, 2016).</p>
+<figure>
+<img src="img/aula06/arvore.png" alt="Figura 1. Árvore da frase “A aluna de Natal leu o livro novo”. O sujeito (verde-azulado) é um sintagma nominal (SN) que contém um sintagma preposicional (SP); o predicado (laranja) é um sintagma verbal (SV) que contém outro SN. F = frase; Det = determinante; N = nome; V = verbo; P = preposição; Adj = adjetivo. Fonte: elaborada para o curso." />
+<figcaption aria-hidden="true"><strong>Figura 1.</strong> Árvore da frase “A aluna de Natal leu o livro novo”. O sujeito (verde-azulado) é um sintagma nominal (SN) que contém um sintagma preposicional (SP); o predicado (laranja) é um sintagma verbal (SV) que contém outro SN. F = frase; Det = determinante; N = nome; V = verbo; P = preposição; Adj = adjetivo. Fonte: elaborada para o curso.</figcaption>
+</figure>
+<p>Um constituinte pode conter outro do mesmo tipo: “o livro” pode virar “o livro que a aluna leu”, e assim por diante. Essa capacidade de pôr uma estrutura dentro de outra igual se chama <strong>recursão</strong>. Em princípio, ela permite frases de tamanho ilimitado.</p>
+<h3 id="o-cérebro-acompanha-os-constituintes">O cérebro acompanha os constituintes</h3>
+<p>Os constituintes não são só uma invenção dos linguistas. Christophe Pallier, Anne-Dominique Devauchelle e Stanislas Dehaene mostraram, com ressonância magnética funcional (fMRI), sequências de 12 palavras organizadas em constituintes de tamanhos diferentes. Em regiões do hemisfério esquerdo, a atividade cresceu com o tamanho dos constituintes. No giro frontal inferior e no temporal posterior, isso aconteceu mesmo quando as palavras de conteúdo foram trocadas por pseudopalavras (palavras inventadas). No polo temporal, na parte anterior do sulco temporal superior e na junção temporoparietal, o efeito só apareceu com palavras reais (Pallier; Devauchelle; Dehaene, 2011).</p>
+<h3 id="a-concordância-liga-palavras-distantes">A concordância liga palavras distantes</h3>
+<p>Em “As meninas que o professor elogiou ontem saíram cedo”, “saíram” concorda com “meninas”, seis palavras para trás, e não com “o professor”, que está no meio do caminho. Para acertar, o cérebro precisa guardar o traço “plural” e ligar as duas pontas certas da frase. Isso só funciona se ele seguir a árvore, e não a ordem linear das palavras.</p>
+<p>Às vezes essa ligação falha. Kathryn Bock e Carol Miller pediram a falantes de inglês que completassem começos de frases e provocaram <strong>erros de atração</strong>, em que o verbo concorda com o substantivo mais próximo e não com o sujeito (Bock; Miller, 1991). Em português conhecemos bem o fenômeno: “A chave dos armários estão…”.</p>
+<h3 id="e-os-outros-animais">E os outros animais?</h3>
+<p>O canto da baleia-jubarte tem uma hierarquia simples (unidades formam frases, frases formam temas), mas é muito previsível e pode ser descrito como uma cadeia de transições, sem o encaixamento profundo da frase humana. Em experimentos com “gramáticas artificiais”, estorninhos e mandarins-diamante distinguiram sequências do tipo ABAB e AABB, mas os mandarins se apoiavam em pistas locais, como dois sons A seguidos. As conclusões sobre os animais ainda são preliminares, baseadas em poucas espécies (ten Cate; Petkov, 2019).</p>
+<h2 id="a-frase-se-monta-palavra-por-palavra-e-às-vezes-desmorona">3. A frase se monta palavra por palavra (e às vezes desmorona)</h2>
+<p>Algumas frases admitem duas árvores. Em “Vi o homem com o binóculo”, quem tinha o binóculo, eu ou o homem? É uma <strong>ambiguidade global</strong>: a frase inteira tem duas leituras.</p>
+<p>Mais comum é a <strong>ambiguidade local</strong>, que dura só até certo ponto. Leia devagar: “Enquanto os caçadores comiam o coelho fugiu da toca.” Ao chegar em “o coelho”, quase todo mundo entende que os caçadores comiam o coelho. Quando aparece “fugiu”, essa leitura desmorona: “o coelho” é o sujeito de “fugiu”, e a árvore precisa ser refeita (Figura 2). Frases assim são chamadas de <strong>frases labirinto</strong> (em inglês, <em>garden-path sentences</em>), e o conserto é a <strong>reanálise</strong> (Ferreira; Çokal, 2016).</p>
+<figure>
+<img src="img/aula06/reanalise.png" alt="Figura 2. A frase labirinto do experimento 1. Em cima, a primeira análise: “o coelho” é ligado a “comiam” como objeto, e “fugiu” fica sem lugar na árvore. Embaixo, a reanálise: “comiam” fica sem objeto e “o coelho” passa a ser o sujeito de “fugiu”. Fonte: elaborada para o curso a partir de Ferreira e Çokal (2016)." />
+<figcaption aria-hidden="true"><strong>Figura 2.</strong> A frase labirinto do experimento 1. Em cima, a primeira análise: “o coelho” é ligado a “comiam” como objeto, e “fugiu” fica sem lugar na árvore. Embaixo, a reanálise: “comiam” fica sem objeto e “o coelho” passa a ser o sujeito de “fugiu”. Fonte: elaborada para o curso a partir de Ferreira e Çokal (2016).</figcaption>
+</figure>
+<p>Caímos na armadilha porque o cérebro não espera o fim da frase. Praticamente todos os modelos atuais assumem que a interpretação é construída de forma <strong>incremental</strong>, palavra por palavra, e há evidências de que o leitor até antecipa o que vem a seguir (Ferreira; Çokal, 2016). Ganha-se rapidez; às vezes a aposta sai errada.</p>
+<h3 id="duas-famílias-de-teorias">Duas famílias de teorias</h3>
+<p>Como o cérebro escolhe a primeira análise? Há duas grandes respostas (Ferreira; Çokal, 2016).</p>
+<ul>
+<li><strong>Modelo de duas etapas</strong> (ou modelo do labirinto), desenvolvido por Lyn Frazier. O sistema monta uma única árvore usando só regras sintáticas e dois princípios de economia: não criar nós desnecessários e ligar cada palavra nova ao constituinte que está sendo montado. Ligar “o coelho” a “comiam” é a opção mais econômica. Outras informações servem depois, para conferir e corrigir.</li>
+<li><strong>Modelos baseados em restrições.</strong> Várias análises são ativadas ao mesmo tempo, com pesos diferentes, e qualquer fonte de informação pode influenciar a disputa desde o início: a frequência com que um verbo aparece com objeto, a plausibilidade, o contexto (MacDonald; Pearlmutter; Seidenberg, 1994). Como “comer” costuma vir com objeto, a leitura errada ganha força.</li>
+</ul>
+<p>Hoje muitos pesquisadores consideram que as evidências favorecem os modelos interativos, mas há quem argumente que essa conclusão vai um pouco além dos dados (Ferreira; Çokal, 2016). Há consenso de que a <strong>prosódia</strong>, a melodia e as pausas da fala, influencia a análise desde as primeiras etapas (Ferreira; Çokal, 2016). Na escrita, a vírgula faz um papel parecido: “Enquanto os caçadores comiam, o coelho fugiu” não tem labirinto nenhum.</p>
+<h3 id="a-primeira-leitura-não-some">A primeira leitura não some</h3>
+<p>Kiel Christianson e colegas deram a leitores frases como “While the woman bathed the baby played in the crib” (“Enquanto a mulher banhava o bebê brincava no berço”) e depois perguntaram: “A mulher banhou o bebê?”. A maioria respondeu “sim”, embora a frase diga que a mulher se banhava (Christianson <em>et al.</em>, 2001; Ferreira; Çokal, 2016). A reanálise conserta a árvore, mas nem sempre apaga a primeira interpretação. Modelos de processamento <strong>“bom o suficiente”</strong> (<em>good enough</em>) propõem que às vezes nos contentamos com uma interpretação aproximada (Ferreira; Çokal, 2016).</p>
+<div class="destaque">
+<p>Ler e ouvir são apostas contínuas: o cérebro escolhe uma árvore antes de ter toda a informação. Na maioria das frases reais, vírgulas, pausas e contexto evitam o labirinto; os experimentos criam de propósito o pior caso.</p>
+</div>
+<h2 id="dois-tipos-de-erro-duas-ondas-n400-e-p600">4. Dois tipos de erro, duas ondas: N400 e P600</h2>
+<p>O <strong>potencial relacionado a evento</strong> (ERP, aula 2) é a média do eletroencefalograma (EEG) logo depois de um estímulo, como uma palavra. Ele mostra <strong>quando</strong> o cérebro reage, com precisão de milissegundos.</p>
+<h3 id="n400-o-significado-não-encaixa">N400: o significado não encaixa</h3>
+<p>Marta Kutas e Steven Hillyard apresentaram frases palavra por palavra. Quando a última palavra não fazia sentido, como em “He spread the warm bread with socks” (“Ele passou meias no pão quente”), apareceu uma onda negativa tardia, o <strong>N400</strong>. Quando a última palavra fazia sentido mas vinha em letras maiores, a resposta foi outra, uma série de ondas positivas tardias (Kutas; Hillyard, 1980). O N400 não é, portanto, uma reação a qualquer coisa estranha: ele está ligado ao significado. Em adultos jovens, ele começa pouco depois de 200 ms e tem latência muito estável (Bornkessel-Schlesewsky; Staub; Schlesewsky, 2016).</p>
+<h3 id="p600-a-estrutura-precisa-ser-refeita">P600: a estrutura precisa ser refeita</h3>
+<p>Lee Osterhout e Phillip Holcomb registraram o EEG durante a leitura de frases com anomalias e ambiguidades sintáticas. As palavras que não cabiam na estrutura esperada, como o ponto de virada de uma frase labirinto, produziram uma onda positiva tardia, o <strong>P600</strong> (Osterhout; Holcomb, 1992). O P600 e uma negatividade anterior esquerda (LAN) passaram a ser tratados como marcas de processamento morfossintático, isto é, das terminações e da concordância (Bornkessel-Schlesewsky; Staub; Schlesewsky, 2016).</p>
+<figure>
+<img src="img/aula06/erp_esquema.png" alt="Figura 3. Esquema das duas ondas para o experimento 2 do laboratório (amplitudes ilustrativas; negativo para cima, como em muitos artigos da área). À esquerda, um erro de significado (“…ficou muito tímida”) produz o N400. À direita, um erro de concordância (“…ficou muito gostoso”) produz o P600. Fonte: elaborada para o curso a partir de Kutas e Hillyard (1980), Osterhout e Holcomb (1992) e Bornkessel-Schlesewsky, Staub e Schlesewsky (2016)." />
+<figcaption aria-hidden="true"><strong>Figura 3.</strong> Esquema das duas ondas para o experimento 2 do laboratório (amplitudes ilustrativas; negativo para cima, como em muitos artigos da área). À esquerda, um erro de significado (“…ficou muito tímida”) produz o N400. À direita, um erro de concordância (“…ficou muito gostoso”) produz o P600. Fonte: elaborada para o curso a partir de Kutas e Hillyard (1980), Osterhout e Holcomb (1992) e Bornkessel-Schlesewsky, Staub e Schlesewsky (2016).</figcaption>
+</figure>
+<p>Em inglês, “The beavers sometimes <em>melt</em>…” (“Os castores às vezes derretem…”, erro de significado) produz N400, e “…sometimes <em>chewing</em>…” (forma verbal errada) produz P600, registrados no mesmo eletrodo (van Berkum; Nieuwland, 2019). Formas e distribuições diferentes no couro cabeludo sugerem geradores diferentes no cérebro, embora o EEG de superfície não diga com precisão onde eles estão.</p>
+<h3 id="uma-divisão-de-trabalho-mas-não-tão-simples">Uma divisão de trabalho, mas não tão simples</h3>
+<p>O tempo das ondas foi usado para defender ideias opostas. Para Angela Friederici, há etapas em série: primeiro a estrutura local (uma negatividade anterior esquerda precoce, a ELAN, entre 150 e 250 ms), depois significado e morfossintaxe em paralelo (N400 e LAN) e por fim integração e reanálise (P600). Para Peter Hagoort, todas as fontes de informação interagem assim que estão disponíveis. O debate entre modelos modulares e interativos continua aberto (Bornkessel-Schlesewsky; Staub; Schlesewsky, 2016).</p>
+<p>A ideia de “uma onda, um domínio” também foi abalada. Frases gramaticais com papéis temáticos invertidos, como “The hearty meals were devouring…” (“As fartas refeições estavam devorando…”), produzem P600, e não N400, embora o problema seja de significado (Kim; Osterhout, 2005; Bornkessel-Schlesewsky; Staub; Schlesewsky, 2016). Erros de ortografia também podem produzir P600 (Bornkessel-Schlesewsky; Staub; Schlesewsky, 2016). Uma interpretação que vem ganhando força é que o P600 reflete a necessidade de <strong>revisar</strong> a análise estrutural, e não a sintaxe em si (Ferreira; Çokal, 2016).</p>
+<h2 id="frases-encaixadas-a-gramática-permite-a-memória-não">5. Frases encaixadas: a gramática permite, a memória não</h2>
+<p>Leia: “O rato que o gato que o cachorro perseguiu pegou fugiu.” A frase é gramatical: cada “que” abre uma oração dentro da outra, e os três verbos do fim fecham as três. Mesmo assim, quase ninguém a entende de primeira. Já “O menino chamou o cachorro que mordeu o carteiro que trouxe a carta” é fácil. A diferença está em onde as orações se encaixam (Figura 4).</p>
+<figure>
+<img src="img/aula06/exp3_encaixamento.png" alt="Figura 4. Encaixamento no centro × à direita, num exemplo com três níveis (no laboratório, a frase do rato tem dois). Em cima, cada sujeito precisa esperar na memória até o seu verbo aparecer, e as dependências (arcos) ficam abertas ao mesmo tempo. Embaixo, com as mesmas ideias, cada sujeito encontra o seu verbo logo em seguida. Fonte: elaborada para o curso a partir de Gibson (1998)." />
+<figcaption aria-hidden="true"><strong>Figura 4.</strong> Encaixamento no centro × à direita, num exemplo com três níveis (no laboratório, a frase do rato tem dois). Em cima, cada sujeito precisa esperar na memória até o seu verbo aparecer, e as dependências (arcos) ficam abertas ao mesmo tempo. Embaixo, com as mesmas ideias, cada sujeito encontra o seu verbo logo em seguida. Fonte: elaborada para o curso a partir de Gibson (1998).</figcaption>
+</figure>
+<p>Estruturas encaixadas no centro são mais difíceis que as encaixadas à direita, em línguas tão diferentes quanto inglês e japonês (Ferreira; Çokal, 2016). A diferença é explicada pela <strong>memória de trabalho</strong>, o “rascunho” mental em que guardamos informação por alguns segundos. A teoria de Edward Gibson identifica dois custos: <strong>armazenar</strong> elementos incompletos (um sujeito que ainda espera o seu verbo) e <strong>integrar</strong> uma palavra a outra que ficou para trás, custo que cresce com a distância entre elas (Gibson, 1998; Ferreira; Çokal, 2016). Na frase do rato, três sujeitos ficam abertos antes de qualquer verbo aparecer. Quando um dos três verbos de uma frase assim é retirado, os participantes muitas vezes nem percebem a falta (Meyer; Friederici, 2016). A gramática permite encaixar sem limite; a memória, não.</p>
+<h3 id="onde-isso-acontece-no-cérebro">Onde isso acontece no cérebro?</h3>
+<p>Numa meta-análise de estudos de neuroimagem que compararam frases não canônicas ou encaixadas com versões simples, duas regiões apareceram: a área 44 de Brodmann (BA 44), no giro frontal inferior esquerdo, parte da área de Broca, e, de modo menos consistente entre estudos, a parte posterior dos giros temporais médio e superior esquerdos (Meyer; Friederici, 2016). Os autores propõem que a BA 44 estabelece as dependências hierárquicas entre sujeitos, objetos e verbos.</p>
+<p>Aqui a área discorda. Corianne Rogalsky e Gregory Hickok argumentam que parte desse efeito vem da carga de memória de trabalho, porque nas frases não canônicas o objeto fica mais longe do seu verbo (Meyer; Friederici, 2016). Nessa visão, a área de Broca é recrutada sobretudo em situações difíceis, de alta carga (Rogalsky, 2016). Meyer e Friederici respondem com estudos em alemão, hebraico e japonês que mantiveram constante a distância entre o sujeito ou o objeto e o verbo e, mesmo assim, encontraram ativação da BA 44. Hagoort atribui ao giro frontal inferior um papel ainda mais geral, de juntar peças em vários níveis, inclusive dentro das palavras (Hagoort, 2016).</p>
+<h2 id="a-rede-da-linguagem-regiões-e-feixes">6. A rede da linguagem: regiões e feixes</h2>
+<p>A compreensão de frases não depende de um único “centro”, e sim de redes de regiões frontais e temporais ligadas por feixes de substância branca (Friederici, 2016).</p>
+<h3 id="as-vias-de-friederici">As vias de Friederici</h3>
+<p>No modelo de Angela Friederici, quatro vias ligam o córtex frontal ao temporal (Friederici, 2016):</p>
+<ul>
+<li><strong>Via dorsal D1</strong>: do córtex pré-motor ao temporal posterior. Liga sons a movimentos da fala, como ao repetir o que se ouve.</li>
+<li><strong>Via dorsal D2</strong>: da BA 44 ao giro temporal superior posterior, pelo <strong>fascículo arqueado</strong>. Serve às frases sintaticamente complexas.</li>
+<li><strong>Via ventral V1</strong>: das áreas 45 e 47 ao temporal, pelo sistema da cápsula extrema. Associada ao significado.</li>
+<li><strong>Via ventral V2</strong>: do opérculo frontal ao temporal anterior, pelo fascículo uncinado. Proposta para a estrutura local, como juntar um artigo ao nome; sua função ainda é discutida.</li>
+</ul>
+<p>O desenvolvimento apoia essa divisão. Recém-nascidos só têm a via D1. A D2 amadurece tarde, e o grau de mielinização dela acompanha o desempenho das crianças em frases não canônicas (Friederici, 2016).</p>
+<h3 id="o-modelo-muc-de-hagoort">O modelo MUC de Hagoort</h3>
+<p>Peter Hagoort divide o trabalho em três componentes: <strong>Memória</strong>, <strong>Unificação</strong> e <strong>Controle</strong> (MUC). A memória, no córtex temporal e no giro angular, guarda o conhecimento sobre as palavras, inclusive a “pecinha de árvore” que cada uma traz. A unificação, no giro frontal inferior esquerdo, junta essas peças em estruturas maiores, com uma distribuição aproximada: a unificação semântica recruta mais as áreas 47 e 45; a sintática, as áreas 45 e 44; a fonológica, a 44 e a parte ventral da área 6. O controle, no pré-frontal dorsolateral e no cingulado anterior, escolhe a língua certa e organiza os turnos na conversa (Hagoort, 2016).</p>
+<p>Para Hagoort, a unificação não é exclusiva da sintaxe. O giro frontal inferior integra informações de várias fontes: uma palavra ou um gesto incongruentes com a frase aumentam a atividade na mesma região (Hagoort, 2016). Ele lembra também que, em humanos, o fascículo arqueado tem uma projeção proeminente para o lobo temporal, muito menor ou ausente em chimpanzés e macacos (Hagoort, 2016). Isso não quer dizer que o feixe “seja” a sintaxe.</p>
+<h3 id="o-lobo-temporal-anterior-e-a-composição">O lobo temporal anterior e a composição</h3>
+<p>O <strong>lobo temporal anterior</strong> (LTA) responde mais a frases do que a listas de palavras, lidas ou ouvidas, inclusive a frases com pseudopalavras. Mas também é sensível ao significado: anomalias semânticas modulam sua atividade (Rogalsky, 2016). É a região que, na aula 5, vimos funcionar como “hub” de conceitos.</p>
+<p>O teste mais simples de composição é juntar duas palavras. Com magnetoencefalografia (MEG), Douglas Bemis e Liina Pylkkänen compararam expressões mínimas, como “red boat” (“barco vermelho”), com controles sem composição. A composição ativou o LTA esquerdo e, logo depois, o córtex pré-frontal ventromedial (Bemis; Pylkkänen, 2011).</p>
+<p>Se o LTA faz análise sintática ou combina significados ainda é debatido. Pessoas com demência semântica, cuja atrofia começa no polo temporal, em geral não mostram dificuldades sintáticas depois de descontada a perda de vocabulário, mas um estudo mais recente complicou esse quadro. O LTA é uma parte, e não “a sede”, de uma rede frontotemporoparietal maior (Rogalsky, 2016).</p>
+<h2 id="a-rede-da-linguagem-e-o-pensamento">7. A rede da linguagem e o pensamento</h2>
+<p>A rede que organiza hierarquias em frases também organiza contas ou música? Evelina Fedorenko, Michael Behr e Nancy Kanwisher primeiro localizaram as regiões da linguagem <strong>em cada participante</strong>, com fMRI, e depois mediram a resposta dessas mesmas regiões a aritmética, memória de trabalho, controle cognitivo e música. A resposta foi pequena ou nula (Fedorenko; Behr; Kanwisher, 2011) (Figura 5).</p>
+<figure>
+<img src="img/aula06/especificidade.png" alt="Figura 5. Esquema qualitativo da seletividade da rede da linguagem: forte resposta a tarefas com linguagem e resposta perto do repouso em tarefas sem linguagem. As alturas das barras são ilustrativas, não dados. Fonte: elaborada para o curso a partir de Fedorenko, Behr e Kanwisher (2011) e Fedorenko e Varley (2016)." />
+<figcaption aria-hidden="true"><strong>Figura 5.</strong> Esquema qualitativo da seletividade da rede da linguagem: forte resposta a tarefas com linguagem e resposta perto do repouso em tarefas sem linguagem. As alturas das barras são ilustrativas, não dados. Fonte: elaborada para o curso a partir de Fedorenko, Behr e Kanwisher (2011) e Fedorenko e Varley (2016).</figcaption>
+</figure>
+<p>A música ainda é debatida. Estudos de comportamento sugerem que estrutura musical e linguística compartilham recursos, mas o LTA, que responde a frases, não respondeu a melodias quando as duas foram comparadas diretamente (Rogalsky, 2016).</p>
+<p>As lesões contam a mesma história. Rosemary Varley e colegas estudaram três homens com lesões grandes na região perissilviana esquerda, incapazes de entender ou produzir frases gramaticalmente corretas. Ainda assim, faziam cálculos e resolviam problemas com estrutura encaixada, como expressões com parênteses (Varley <em>et al.</em>, 2005; Mildner, 2008) (Figura 6). A estrutura hierárquica da matemática sobreviveu à perda da sintaxe linguística.</p>
+<figure>
+<img src="img/aula06/afasia_contas.png" alt="Figura 6. O contraste do estudo de Varley e colegas: frases reversíveis mal compreendidas, mas contas em que a ordem e os parênteses mudam o resultado resolvidas corretamente. Os exemplos são ilustrativos. Fonte: elaborada para o curso a partir de Varley et al. (2005)." />
+<figcaption aria-hidden="true"><strong>Figura 6.</strong> O contraste do estudo de Varley e colegas: frases reversíveis mal compreendidas, mas contas em que a ordem e os parênteses mudam o resultado resolvidas corretamente. Os exemplos são ilustrativos. Fonte: elaborada para o curso a partir de Varley <em>et al.</em> (2005).</figcaption>
+</figure>
+<p>Uma revisão de estudos de imagem e de pacientes resume a conclusão no título: linguagem e pensamento não são a mesma coisa (Fedorenko; Varley, 2016). Duas ressalvas. Esses pacientes eram adultos que tiveram linguagem a vida toda; os dados não dizem se uma criança chegaria aos mesmos pensamentos sem nenhuma língua. E a estrutura hierárquica não é exclusiva da linguagem, pois aparece também na matemática. Específica parece ser a rede que a usa para montar frases.</p>
+<div class="destaque">
+<p>A rede frontotemporal esquerda que responde a frases quase não responde a contas e música, e pessoas que perderam a gramática ainda fazem contas com parênteses. A linguagem é uma ferramenta poderosa para comunicar pensamentos, mas, no adulto, o pensamento não “roda” dentro dela.</p>
+</div>
+<h2 id="o-que-o-laboratório-mostrou">8. O que o laboratório mostrou</h2>
+<p>Os quatro experimentos do <em>Laboratório de Frases</em> recriam, em pequena escala, achados desta aula. Com poucas tentativas por pessoa, o que importa é o padrão da turma.</p>
+<p><strong>Experimento 1: frases labirinto.</strong> Você leu, palavra por palavra, frases labirinto e as mesmas frases com vírgula depois do verbo. O esperado é um tempo maior em “fugiu” e na palavra seguinte, só na versão sem vírgula: é o custo da reanálise, o mesmo ponto que no EEG produz um P600 (Osterhout; Holcomb, 1992). Muita gente também responde “sim” à pergunta “Os caçadores comeram o coelho?”, sinal de que a primeira interpretação não some (Christianson <em>et al.</em>, 2001). Quem lê muito rápido ou percebe o truque da vírgula pode ter custo perto de zero.</p>
+<p><strong>Experimento 2: certa ou errada?</strong> Erros de concordância (“A sopa da vovó ficou muito gostoso”) e de significado (“…ficou muito tímida”) costumam ser detectados em tempos parecidos. O tempo do dedo mede a decisão e o movimento, não o processo; é o EEG que mostra que os processos diferem (seção 4).</p>
+<p><strong>Experimento 3: frases encaixadas.</strong> A frase do rato costuma levar muito mais tempo, e muita gente erra “Quem pegou o rato?” (o gato); a versão à direita é rápida. É o custo de manter várias dependências abertas na memória (Gibson, 1998).</p>
+<p><strong>Experimento 4: Jabberwocky.</strong> O nome vem de um poema de Lewis Carroll com palavras inventadas. Em “O gupo fulou a trima”, quase todos acham o verbo e quem fez a ação só com pistas gramaticais: ordem, artigos, terminações e concordância. Passiva e relativa costumam ser mais lentas; relativas de objeto (“O tarfo que a mitra brelou sumou”) custam mais que as de sujeito (Ferreira; Çokal, 2016). No estudo de Pallier, o giro frontal inferior e o temporal posterior também acompanharam a estrutura de frases assim (Pallier; Devauchelle; Dehaene, 2011).</p>
+<div class="conceitos">
+<dl>
+<dt><strong>Sintaxe</strong></dt>
+<dd>
+Conjunto de regras que organiza as palavras em estruturas e, com isso, define relações como quem fez o quê a quem.
+</dd>
+<dt><strong>Papel temático</strong></dt>
+<dd>
+O papel de cada participante na cena descrita pela frase, como agente (quem faz) e paciente (quem sofre a ação).
+</dd>
+<dt><strong>Frase reversível</strong></dt>
+<dd>
+Frase em que os dois participantes poderiam trocar de papel (“O menino foi empurrado pela menina”); só a gramática resolve quem fez o quê (Rogalsky, 2016).
+</dd>
+<dt><strong>Constituinte</strong></dt>
+<dd>
+Grupo de palavras que funciona como unidade na frase e pode, por exemplo, ser trocado por um pronome. Os constituintes se encaixam numa estrutura hierárquica (Ferreira; Çokal, 2016).
+</dd>
+<dt><strong>Frase labirinto e reanálise</strong></dt>
+<dd>
+Frase com ambiguidade local que leva a uma primeira análise errada; a reanálise é o conserto da estrutura quando aparece a palavra que não cabe (Ferreira; Çokal, 2016).
+</dd>
+<dt><strong>N400</strong></dt>
+<dd>
+Onda negativa do ERP, por volta de 400 ms, maior para palavras que não se encaixam no significado do contexto (Kutas; Hillyard, 1980).
+</dd>
+<dt><strong>P600</strong></dt>
+<dd>
+Onda positiva tardia do ERP associada a anomalias sintáticas e a pontos de reanálise; também aparece em alguns erros de significado (Osterhout; Holcomb, 1992; Kim; Osterhout, 2005).
+</dd>
+<dt><strong>Encaixamento central</strong></dt>
+<dd>
+Oração colocada no meio de outra, que deixa várias dependências abertas ao mesmo tempo e sobrecarrega a memória de trabalho (Gibson, 1998).
+</dd>
+<dt><strong>Unificação</strong></dt>
+<dd>
+No modelo MUC, a operação de juntar as informações das palavras em estruturas maiores, atribuída ao giro frontal inferior esquerdo (Hagoort, 2016).
+</dd>
+<dt><strong>Rede da linguagem</strong></dt>
+<dd>
+Conjunto de regiões frontais e temporais, sobretudo à esquerda, que responde a frases e pouco a tarefas sem linguagem (Fedorenko; Behr; Kanwisher, 2011).
+</dd>
+</dl>
+</div>
+<h2 id="para-revisar">Para revisar</h2>
+<ol type="1">
+<li><p>Por que frases reversíveis são um bom teste de compreensão sintática, e por que o desempenho de pessoas com afasia de Broca nessas frases não prova que a área de Broca é “o centro da sintaxe”?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Nas frases reversíveis o conhecimento do mundo não ajuda, e só a estrutura diz quem fez o quê. Pessoas com afasia de Broca erram essas frases, mas conseguem julgar a gramaticalidade de frases que não entendem, e a síndrome nem sempre coincide com lesão na área de Broca. A relação entre região e função é mais complexa.</p>
+</details></li>
+<li><p>Explique, com o exemplo do coelho, a diferença entre o modelo de duas etapas e os modelos baseados em restrições.</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>No modelo de duas etapas, o sistema liga “o coelho” a “comiam” porque é a estrutura mais econômica, usando só sintaxe, e corrige depois. Nos modelos de restrições, várias análises competem desde o início, e a leitura errada ganha porque “comer” costuma ter objeto. Os dois preveem o labirinto, mas por razões diferentes.</p>
+</details></li>
+<li><p>No experimento 2, os tempos para detectar erros de concordância e de significado foram parecidos. Isso quer dizer que o cérebro trata os dois erros da mesma forma?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Não. O tempo de reação mede a decisão final. O EEG mostra ondas diferentes em polaridade e tempo (N400 para significado, P600 para estrutura), o que sugere processos e geradores diferentes.</p>
+</details></li>
+<li><p>Por que não é correto dizer que o P600 é “a onda da sintaxe”?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>O P600 também aparece em frases gramaticais com papéis temáticos invertidos e em outras incongruências, como erros de ortografia. Uma interpretação atual é que ele reflete a revisão da análise estrutural, e não a sintaxe em si.</p>
+</details></li>
+<li><p>A frase do rato é gramatical, mas quase incompreensível. O que isso diz sobre a diferença entre a gramática e o seu uso, e qual é o debate sobre o papel da BA 44?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>A gramática permite encaixar sem limite, mas a memória de trabalho limita quantas dependências conseguimos manter abertas. A BA 44 é ativada por frases encaixadas e não canônicas; uns defendem que ela constrói a hierarquia, outros que reflete a carga de memória de trabalho.</p>
+</details></li>
+<li><p>Use duas evidências da aula para discutir se a rede da linguagem é necessária para fazer contas.</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Regiões da linguagem localizadas em cada pessoa quase não respondem a aritmética, música ou controle cognitivo. Pacientes com grave prejuízo da gramática resolvem contas com ordem e parênteses. Os dados vêm de adultos, então não dizem como seria o desenvolvimento sem linguagem.</p>
+</details></li>
+</ol>
+<h2 id="para-saber-mais">Para saber mais</h2>
+<ul>
+<li><strong>Fedorenko, E.; Varley, R. (2016). Language and thought are not the same thing.</strong> Revisão de neuroimagem e de pacientes; base da pergunta para casa. Nível intermediário, em inglês. Acesso aberto no PubMed Central (PMC4874898); DOI: https://doi.org/10.1111/nyas.13046.</li>
+<li><strong>Ferreira, F.; Çokal, D. (2016). Sentence processing.</strong> Capítulo curto e claro sobre frases labirinto e modelos de compreensão de frases. Acessível, em inglês. Em Hickok e Small (org.), <em>Neurobiology of Language</em>.</li>
+<li><strong>Hagoort, P. (2016). MUC (Memory, Unification, Control).</strong> Apresentação do modelo MUC pelo próprio autor, com evidências de imagem e de lesão. Intermediário a avançado, em inglês. No mesmo livro.</li>
+</ul>
+<h2 id="referências">Referências</h2><div class="refs">
+<p>BEMIS, D. K.; PYLKKÄNEN, L. Simple composition: a magnetoencephalography investigation into the comprehension of minimal linguistic phrases. <strong>The Journal of Neuroscience</strong>, v. 31, n. 8, p. 2801-2814, 2011. DOI: https://doi.org/10.1523/JNEUROSCI.5003-10.2011.</p>
+<p>BOCK, K.; MILLER, C. A. Broken agreement. <strong>Cognitive Psychology</strong>, v. 23, n. 1, p. 45-93, 1991. DOI: https://doi.org/10.1016/0010-0285(91)90003-7.</p>
+<p>BORNKESSEL-SCHLESEWSKY, I.; STAUB, A.; SCHLESEWSKY, M. The timecourse of sentence processing in the brain. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 607-620. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00049-3.</p>
+<p>CARAMAZZA, A.; ZURIF, E. B. Dissociation of algorithmic and heuristic processes in language comprehension: evidence from aphasia. <strong>Brain and Language</strong>, v. 3, n. 4, p. 572-582, 1976. DOI: https://doi.org/10.1016/0093-934X(76)90048-1.</p>
+<p>CHRISTIANSON, K. et al. Thematic roles assigned along the garden path linger. <strong>Cognitive Psychology</strong>, v. 42, n. 4, p. 368-407, 2001. DOI: https://doi.org/10.1006/cogp.2001.0752.</p>
+<p>FEDORENKO, E.; BEHR, M. K.; KANWISHER, N. Functional specificity for high-level linguistic processing in the human brain. <strong>Proceedings of the National Academy of Sciences</strong>, v. 108, n. 39, p. 16428-16433, 2011. DOI: https://doi.org/10.1073/pnas.1112937108.</p>
+<p>FEDORENKO, E.; VARLEY, R. Language and thought are not the same thing: evidence from neuroimaging and neurological patients. <strong>Annals of the New York Academy of Sciences</strong>, v. 1369, n. 1, p. 132-153, 2016. DOI: https://doi.org/10.1111/nyas.13046.</p>
+<p>FERREIRA, F.; ÇOKAL, D. Sentence processing. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 265-274. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00022-5.</p>
+<p>FRIEDERICI, A. D. The neuroanatomical pathway model of language: syntactic and semantic networks. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 349-356. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00029-8.</p>
+<p>GIBSON, E. Linguistic complexity: locality of syntactic dependencies. <strong>Cognition</strong>, v. 68, n. 1, p. 1-76, 1998. DOI: https://doi.org/10.1016/S0010-0277(98)00034-1.</p>
+<p>HAGOORT, P. MUC (Memory, Unification, Control): a model on the neurobiology of language beyond single word processing. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 339-347. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00028-6.</p>
+<p>KIM, A.; OSTERHOUT, L. The independence of combinatory semantic processing: evidence from event-related potentials. <strong>Journal of Memory and Language</strong>, v. 52, n. 2, p. 205-225, 2005. DOI: https://doi.org/10.1016/j.jml.2004.10.002.</p>
+<p>KUTAS, M.; HILLYARD, S. A. Reading senseless sentences: brain potentials reflect semantic incongruity. <strong>Science</strong>, v. 207, n. 4427, p. 203-205, 1980. DOI: https://doi.org/10.1126/science.7350657.</p>
+<p>MacDONALD, M. C.; PEARLMUTTER, N. J.; SEIDENBERG, M. S. The lexical nature of syntactic ambiguity resolution. <strong>Psychological Review</strong>, v. 101, n. 4, p. 676-703, 1994. DOI: https://doi.org/10.1037/0033-295X.101.4.676.</p>
+<p>MEYER, L.; FRIEDERICI, A. D. Neural systems underlying the processing of complex sentences. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 597-606. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00048-1.</p>
+<p>MILDNER, V. <strong>The cognitive neuroscience of human communication</strong>. New York: Lawrence Erlbaum Associates, 2008.</p>
+<p>OSTERHOUT, L.; HOLCOMB, P. J. Event-related brain potentials elicited by syntactic anomaly. <strong>Journal of Memory and Language</strong>, v. 31, n. 6, p. 785-806, 1992. DOI: https://doi.org/10.1016/0749-596X(92)90039-Z.</p>
+<p>PALLIER, C.; DEVAUCHELLE, A.-D.; DEHAENE, S. Cortical representation of the constituent structure of sentences. <strong>Proceedings of the National Academy of Sciences</strong>, v. 108, n. 6, p. 2522-2527, 2011. DOI: https://doi.org/10.1073/pnas.1018711108.</p>
+<p>ROGALSKY, C. The role of the anterior temporal lobe in sentence processing. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 587-595. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00047-X.</p>
+<p>TEN CATE, C.; PETKOV, C. I. The grammatical abilities of animals: a comparative overview. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 687-700.</p>
+<p>VAN BERKUM, J. J. A.; NIEUWLAND, M. S. A cognitive neuroscience perspective on language comprehension in context. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 429-442.</p>
+<p>VARLEY, R. A. et al. Agrammatic but numerate. <strong>Proceedings of the National Academy of Sciences</strong>, v. 102, n. 9, p. 3519-3524, 2005. DOI: https://doi.org/10.1073/pnas.0407470102.</p>
+</div>
+<p class="rodape">Material de estudo da disciplina Bases neurais da comunicação humana (UFRN), Prof. Daniel Y. Takahashi. Texto e figuras elaborados para o curso; as fontes estão nas Referências.</p>
+</div>

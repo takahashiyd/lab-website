@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 4 · Produzindo a fala — Material de estudo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,600..800&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{--bg:#f6f7f9;--surface:#fff;--fg:#142033;--muted:#566377;--line:#d8dee6;--accent:#0e7c86;--accent2:#c9771a;--soft:#e5f1f2;--soft2:#fbf1e3;
+--display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;--body:"Source Serif 4",Georgia,"Times New Roman",serif;--ui:"Source Sans 3","Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1621;--surface:#172132;--fg:#e6ecf3;--muted:#9aa8b9;--line:#2a3850;--accent:#3db4be;--accent2:#f0a645;--soft:#173740;--soft2:#3a2c17;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:18px/1.65 var(--body)}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 80px}
+.top{font:600 13px/1.4 var(--ui);display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:22px}
+.top a{color:var(--accent);text-decoration:none}
+.eyebrow{font:600 12px/1 ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(30px,6.5vw,46px)/1.08 var(--display);font-stretch:112%;margin:10px 0 8px;text-wrap:balance}
+.sub{font:400 20px/1.4 var(--ui);color:var(--muted);margin:0 0 26px}
+h2{font:750 25px/1.2 var(--display);margin:46px 0 12px;text-wrap:balance}
+h3{font:700 19px/1.3 var(--ui);margin:28px 0 8px}
+p{margin:0 0 16px}
+a{color:var(--accent)}
+ul,ol{padding-left:24px;margin:0 0 16px} li{margin:4px 0}
+figure{margin:26px 0;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;break-inside:avoid}
+figure img{width:100%;height:auto;display:block;border-radius:6px;background:#fff}
+figcaption{font:15px/1.5 var(--ui);color:var(--muted);margin-top:10px}
+.objetivos{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;padding:14px 18px 6px;margin:0 0 30px;font-family:var(--ui)}
+.objetivos::before{content:"Nesta aula você vai aprender a";display:block;font:700 13px/1 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:4px 0 10px}
+.destaque{background:var(--soft2);border-radius:10px;padding:14px 18px 2px;margin:22px 0;font-family:var(--ui);break-inside:avoid}
+.conceitos{background:var(--soft);border-radius:12px;padding:16px 20px 6px;margin:30px 0;font-family:var(--ui)}
+.conceitos::before{content:"Conceitos-chave";display:block;font:700 13px/1 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:4px 0 12px}
+.conceitos dl{margin:0} .conceitos dt{font-weight:700;margin-top:10px} .conceitos dd{margin:2px 0 8px 0;color:var(--fg)}
+details{margin:8px 0 4px;font-family:var(--ui);font-size:16px}
+summary{cursor:pointer;color:var(--accent);font-weight:600}
+details[open] summary{margin-bottom:6px}
+.refs p,#referencias + * p{font-size:15px;line-height:1.5;padding-left:1.4em;text-indent:-1.4em}
+.rodape{margin-top:50px;padding-top:16px;border-top:1px solid var(--line);font:13px/1.5 var(--ui);color:var(--muted)}
+@media print{
+ :root{--bg:#fff;--surface:#fff}
+ body{font-size:11.5pt;line-height:1.5}
+ .wrap{max-width:none;padding:0}
+ .top{display:none}
+ h2{font-size:17pt;margin-top:24pt;break-after:avoid}
+ h1{font-size:28pt}
+ figure{padding:8pt;border-color:#ccc}
+ figure img{max-height:9cm;object-fit:contain}
+ details>summary{display:none}
+ details{margin-left:0;font-size:10.5pt}
+ details::before{content:"Resposta: ";font-weight:700}
+ a{color:inherit;text-decoration:none}
+ .refs p{font-size:10pt}
+ @page{size:A4;margin:18mm 18mm 20mm}
+}
+</style>
+<div class="wrap">
+<nav class="top"><a href="index.html">Material de estudo</a><a href="../aula04.html">Laboratório da aula 4</a><a href="aula03.html">← Aula 3</a><a href="aula05.html">Aula 5 →</a></nav>
+<span class="eyebrow">Bases neurais da comunicação humana · Aula 4 · Material de estudo</span>
+<h1>Produzindo a fala</h1>
+<p class="sub">Da ideia ao movimento da boca: como o cérebro planeja, executa e confere cada palavra que dizemos</p>
+<div class="objetivos">
+<ul>
+<li>Descrever os três sistemas do corpo que produzem a fala e explicar o modelo fonte–filtro.</li>
+<li>Identificar as principais estruturas do circuito motor da fala, do córtex aos nervos cranianos.</li>
+<li>Explicar as etapas do modelo de Levelt e as evidências que vêm dos lapsos e da ponta da língua.</li>
+<li>Explicar como o retorno auditivo corrige a fala, segundo o modelo DIVA.</li>
+<li>Distinguir afasia, apraxia de fala, disartria e gagueira pela etapa da produção que cada uma atinge.</li>
+<li>Discutir por que os humanos controlam a voz de um jeito que outros primatas não controlam.</li>
+</ul>
+</div>
+<h2 id="falar-é-um-ato-motor">1. Falar é um ato motor</h2>
+<p>Na aula 3 seguimos o som do ouvido até o córtex. Hoje fazemos o caminho inverso: da ideia até o movimento que produz o som. Comecemos pelo corpo. Falar exige coordenar cerca de 100 músculos da respiração, da laringe e da boca, com uma precisão que quase nenhum outro movimento humano alcança (Guenther; Hickok, 2016; Bianchi; Simonyan, 2019). Vale separar três sistemas.</p>
+<ul>
+<li><strong>Respiração.</strong> Os pulmões fornecem o fluxo de ar. Na fala, o que conta é sobretudo a expiração controlada (Tremblay; Deschamps; Gracco, 2016).</li>
+<li><strong>Fonação.</strong> Na laringe, as <strong>pregas vocais</strong> (antes chamadas de “cordas vocais”) vibram com a passagem do ar e produzem um som de altura definida. Sons em que elas vibram são chamados sonoros; sons sem vibração, surdos (Binder, 2016). Ponha a mão na garganta e diga “zzz” e depois “sss”: no primeiro você sente a vibração; no segundo, não.</li>
+<li><strong>Articulação.</strong> Língua, lábios, mandíbula, laringe e véu do palato mudam a forma do tubo que vai das pregas vocais até os lábios, o <strong>trato vocal</strong> (Guenther; Hickok, 2016).</li>
+</ul>
+<h3 id="fonte-e-filtro">Fonte e filtro</h3>
+<p>A maneira mais útil de pensar a voz é o <strong>modelo fonte–filtro</strong>, cuja formulação clássica é de Gunnar Fant (Fant, 1960; Kriengwatana; Beckers, 2019). O som produzido na laringe é a <strong>fonte</strong>. Ele passa por um conjunto de filtros, formado pelos articuladores e pelas cavidades acima da laringe, que lhe dão a forma final (Mildner, 2008). A vibração das pregas vocais produz uma frequência fundamental (F0, que ouvimos como a altura da voz) e <strong>harmônicos</strong>, que são múltiplos dela. O trato vocal decide quais harmônicos saem mais fortes. As faixas reforçadas aparecem no espectrograma como concentrações de energia chamadas <strong>formantes</strong>, numeradas F1, F2, F3 a partir da mais grave (Binder, 2016). As posições de F1 e F2 são as que melhor distinguem as vogais (Mildner, 2008).</p>
+<figure>
+<img src="img/aula04/fonte_filtro.png" alt="Figura 1. O modelo fonte–filtro. A mesma fonte (à esquerda: os harmônicos produzidos pelas pregas vocais) passa por dois filtros diferentes (no meio: as ressonâncias do trato vocal) e produz o /a/ de “pá” ou o /i/ de “pi” (à direita). Fonte: elaborada para o curso a partir de Fant (1960), com o sintetizador do laboratório." />
+<figcaption aria-hidden="true"><strong>Figura 1.</strong> O modelo fonte–filtro. A mesma fonte (à esquerda: os harmônicos produzidos pelas pregas vocais) passa por dois filtros diferentes (no meio: as ressonâncias do trato vocal) e produz o /a/ de “pá” ou o /i/ de “pi” (à direita). Fonte: elaborada para o curso a partir de Fant (1960), com o sintetizador do laboratório.</figcaption>
+</figure>
+<p>Como regra prática, F1 depende do grau de constrição feito pela língua, que acompanha a altura da língua; F2 depende de onde fica essa constrição, e sobe quando ela se aproxima dos lábios. Os próprios autores lembram que essas regras são aproximadas (Guenther; Hickok, 2016). Diga “i-a-u” devagar: no /a/ a boca abre e a língua desce; no /i/ a língua vai para a frente e para cima; no /u/ ela recua. A Figura 1 mostra a consequência: o /a/ tem F1 mais alto que o /i/, e o /i/ tem F2 bem mais alto que o /a/.</p>
+<p>A grande vantagem do modelo é separar duas coisas que ouvimos juntas. A fonte define a altura e a qualidade da voz; o filtro define a vogal. Por isso reconhecemos o mesmo “a” numa voz grave ou aguda. No sussurro, as pregas vocais nem vibram, e mesmo assim a mensagem continua compreensível (Kriengwatana; Beckers, 2019). É o que o experimento 1 do laboratório permite testar com o dedo.</p>
+<h2 id="do-córtex-aos-músculos">2. Do córtex aos músculos</h2>
+<p>Os músculos da fala são comandados por <strong>nervos cranianos</strong>, que saem do tronco encefálico (Tremblay; Deschamps; Gracco, 2016). O trigêmeo (V) move a mandíbula; o facial (VII), os músculos da face, incluindo os lábios; o glossofaríngeo (IX) e o vago (X), a faringe e a laringe; o hipoglosso (XII), a língua (Mildner, 2008). Os neurônios motores da laringe ficam no <strong>núcleo ambíguo</strong>, no tronco encefálico (Bianchi; Simonyan, 2019). Guarde esse nome: ele volta na seção 7.</p>
+<h3 id="o-córtex-motor-ventral">O córtex motor ventral</h3>
+<p>Acima do tronco encefálico, o comando parte do <strong>córtex motor primário</strong>, no giro pré-central. Nos anos 1930, Penfield e colegas estimularam esse giro com pequenas correntes elétricas durante neurocirurgias e montaram um mapa do corpo, o famoso homúnculo. Na parte de baixo do giro, a estimulação produzia sons vocálicos prolongados (“ahhh”), numa região que se sobrepunha à dos lábios e da língua (Bianchi; Simonyan, 2019).</p>
+<p>Registros mais finos, feitos com eletrodos colocados diretamente sobre o córtex (eletrocorticografia), refinaram esse mapa. Bouchard e colegas (2013) mediram a atividade dos diferentes articuladores e encontraram duas regiões ligadas à laringe, uma dorsal e outra ventral (Bianchi; Simonyan, 2019). Esses mapas variam de pessoa para pessoa e se sobrepõem bastante: não há um “ponto” para cada músculo.</p>
+<p>Um detalhe clínico importante: os núcleos motores do tronco encefálico que comandam a fala, com exceção do núcleo facial, recebem projeções importantes do córtex dos <strong>dois</strong> hemisférios. Por isso, uma lesão restrita a um hemisfério costuma causar um problema de fala leve e passageiro, enquanto lesões dos dois lados podem causar um distúrbio grave e persistente (Ziegler; Staiger, 2016).</p>
+<h3 id="um-circuito-não-um-centro">Um circuito, não um centro</h3>
+<p>O córtex motor não trabalha sozinho (Guenther; Hickok, 2016; Tremblay; Deschamps; Gracco, 2016):</p>
+<ul>
+<li><strong>Córtex pré-motor ventral e giro frontal inferior esquerdos</strong> (onde fica a área de Broca) guardam os programas motores das sílabas aprendidas, o “mapa de sons da fala” do modelo DIVA (seção 5).</li>
+<li><strong>Área motora suplementar (AMS) e pré-AMS</strong>, na face medial do lobo frontal, ajudam a selecionar, encadear e iniciar as respostas. Lesões nessa região podem deixar a fala pouco espontânea e de volume baixo (Ziegler; Staiger, 2016).</li>
+<li><strong>Núcleos da base</strong> formam uma alça com o tálamo e a AMS que ajuda a disparar o programa do próximo som no momento certo. Na doença de Parkinson, que afeta esses núcleos, a voz fica baixa e monótona e a articulação perde nitidez (Ziegler; Staiger, 2016).</li>
+<li><strong>Cerebelo</strong> fornece comandos com o tempo preciso. Lesões no cerebelo produzem articulação imprecisa e irregular, fala lenta e sons prolongados (Ziegler; Staiger, 2016).</li>
+</ul>
+<div class="destaque">
+<p>Não existe um “centro da fala”. Existe um circuito: córtex frontal e motor, área motora suplementar, núcleos da base, cerebelo, tálamo e tronco encefálico, em contato constante com o córtex auditivo e somatossensorial (Guenther; Hickok, 2016). Cada parte contribui com algo diferente, e uma lesão em cada parte produz um problema diferente.</p>
+</div>
+<h2 id="da-ideia-ao-plano-o-modelo-de-levelt">3. Da ideia ao plano: o modelo de Levelt</h2>
+<p>Antes de mover a boca é preciso saber o que dizer e montar a sequência de sons. O modelo mais influente dessa preparação é o de Willem Levelt (Levelt, 1989; Levelt; Roelofs; Meyer, 1999). Ele divide a fala em três grandes processos: <strong>conceituação</strong> (montar a mensagem), <strong>formulação</strong> (escolher as palavras e montar a frase e seus sons) e <strong>articulação</strong> (executar o plano), com um <strong>automonitoramento</strong> que acompanha tudo (Roelofs; Ferreira, 2019).</p>
+<p>Para uma palavra só, o caminho tem quatro passos (Figura 2):</p>
+<ol type="1">
+<li><strong>Conceito.</strong> A ideia a expressar: um animal doméstico que mia.</li>
+<li><strong>Lema.</strong> A palavra escolhida, com suas propriedades gramaticais: <em>gato</em>, substantivo, masculino. O lema ainda não diz nada sobre a pronúncia (Dell; Jacobs, 2016).</li>
+<li><strong>Forma sonora.</strong> Os fonemas /g/ /a/ /t/ /u/, organizados em sílabas: <em>ga.tu</em>.</li>
+<li><strong>Articulação.</strong> Os programas motores das sílabas viram movimentos de lábios, língua e laringe.</li>
+</ol>
+<figure>
+<img src="img/aula04/levelt_etapas.png" alt="Figura 2. As quatro etapas da produção de uma palavra no modelo de Levelt: conceito, lema (a palavra com suas propriedades gramaticais, ainda sem som), forma sonora (fonemas e sílabas) e articulação. Fonte: elaborada para o curso a partir de Levelt, Roelofs e Meyer (1999)." />
+<figcaption aria-hidden="true"><strong>Figura 2.</strong> As quatro etapas da produção de uma palavra no modelo de Levelt: conceito, lema (a palavra com suas propriedades gramaticais, ainda sem som), forma sonora (fonemas e sílabas) e articulação. Fonte: elaborada para o curso a partir de Levelt, Roelofs e Meyer (1999).</figcaption>
+</figure>
+<p>O ponto central do modelo é a separação entre o <strong>lema</strong> (sentido e gramática) e a <strong>forma</strong> (os sons). Essa separação veio primeiro do comportamento: dos lapsos e da ponta da língua, que veremos na seção 4 (Dell; Jacobs, 2016).</p>
+<h3 id="competição-entre-palavras">Competição entre palavras</h3>
+<p>No paradigma de <strong>interferência figura–palavra</strong>, a pessoa nomeia uma figura (um gato) tentando ignorar uma palavra escrita ou falada. Quando a palavra é do mesmo campo de sentido (“cachorro”), a nomeação fica mais lenta do que quando não tem relação (“caneta”). Para uns, o lema de “cachorro”, já ativado pela figura, compete com o lema certo. Outros pesquisadores negam que a escolha seja por competição, e o debate continua (Roelofs; Ferreira, 2019).</p>
+<div style="break-before:page">
+
+</div>
+<h3 id="etapas-em-sequência-ou-em-interação">Etapas em sequência ou em interação?</h3>
+<p>Na versão original de Levelt, a forma sonora só era ativada depois que o lema era escolhido (Dell; Jacobs, 2016). Gary Dell propôs um modelo em que a ativação também volta dos sons para as palavras (Dell, 1986). Dois fatos favorecem essa volta: os <strong>erros mistos</strong>, parecidos com a palavra certa no sentido e no som ao mesmo tempo (“rato” no lugar de “gato”), são mais comuns do que o acaso prevê; e as trocas de sons formam palavras reais com mais frequência do que deveriam, o <strong>viés lexical</strong>. Os defensores de Levelt respondem que parte desses vieses vem do automonitoramento. Hoje até o modelo de Levelt aceita que a ativação passe em cascata para as formas antes de o lema ser escolhido (Roelofs; Ferreira, 2019). Os dois lados concordam no essencial: existe um passo para a palavra e outro para os sons.</p>
+<h3 id="onde-e-quando">Onde e quando</h3>
+<p>Uma meta-análise de estudos de imagem, feita por Indefrey e Levelt, propôs um “endereço” para cada etapa: conceitos no lobo temporal anterior e ventral; lemas na porção média do giro temporal médio esquerdo; formas sonoras no temporal superior e médio posterior (área de Wernicke); fonemas na parte posterior do giro frontal inferior (área de Broca); e programas motores das sílabas no giro pré-central ventral (Roelofs; Ferreira, 2019). Medidas de magnetoencefalografia mostram que, ao nomear uma figura, a atividade leva algumas centenas de milissegundos para ir do córtex occipitotemporal, passando pelo temporal médio, até as áreas frontais e pré-centrais. Há quem defenda que as etapas correm mais em paralelo; o debate está aberto (Roelofs; Ferreira, 2019).</p>
+<p>Gregory Hickok resume a organização cerebral em níveis hierárquicos: o acesso léxico-semântico envolve regiões temporais médias e o giro frontal inferior; o nível fonológico, o temporal superior posterior e regiões vizinhas; a articulação, o córtex sensório-motor (Hickok, 2019). Uma peça-chave é a área <strong>Spt</strong>, no fundo da fissura lateral, na fronteira entre os lobos temporal e parietal. Ela é ativada tanto quando ouvimos fala quanto quando a produzimos em silêncio, e funciona como interface entre o som e o movimento (Hickok, 2019). É a mesma via dorsal da aula 3: a produção reaproveita a rede da percepção.</p>
+<h2 id="o-que-os-erros-revelam">4. O que os erros revelam</h2>
+<p>Os lapsos parecem acidentes, mas seguem regras. Victoria Fromkin mostrou, analisando coleções de lapsos, que eles revelam unidades que a linguística descreve: traços dos sons, morfemas, regras fonológicas (Fromkin, 1971). Os lapsos caem em dois grupos, que correspondem às duas etapas do modelo (Dell; Jacobs, 2016):</p>
+<ul>
+<li><strong>Erros de palavra (lema):</strong> trocar uma palavra por outra de sentido próximo (“me passa o garfo” querendo a faca) ou trocar duas palavras de lugar. As palavras trocadas costumam ser da mesma classe gramatical e vir de partes diferentes da frase (Roelofs; Ferreira, 2019).</li>
+<li><strong>Erros de som (forma):</strong> trocar, antecipar ou repetir fonemas entre palavras próximas da mesma parte da frase (“gama de cato” por “cama de gato”) (Roelofs; Ferreira, 2019).</li>
+</ul>
+<figure>
+<img src="img/aula04/lapsos.png" alt="Figura 3. Lapsos classificados pela etapa em que provavelmente aconteceram: na escolha do lema (em cima) ou na montagem da forma sonora (embaixo). Os exemplos em português são ilustrativos. Fonte: elaborada para o curso a partir de Fromkin (1971)." />
+<figcaption aria-hidden="true"><strong>Figura 3.</strong> Lapsos classificados pela etapa em que provavelmente aconteceram: na escolha do lema (em cima) ou na montagem da forma sonora (embaixo). Os exemplos em português são ilustrativos. Fonte: elaborada para o curso a partir de Fromkin (1971).</figcaption>
+</figure>
+<p>Um exemplo clássico em inglês mostra a separação entre os níveis: “how many pies does it take to make an apple?” (“quantas tortas são necessárias para fazer uma maçã?”). <em>Pie</em> e <em>apple</em> trocaram de lugar, mas a marca de plural ficou na posição original e foi parar em <em>pie</em>. A palavra e sua flexão gramatical são encaixadas em momentos diferentes (Roelofs; Ferreira, 2019).</p>
+<h3 id="lapsos-de-laboratório">Lapsos de laboratório</h3>
+<figure>
+<img src="img/aula04/slip.png" alt="Figura 4. A técnica de indução de lapsos usada no experimento 2. Três pares lidos em silêncio, com as consoantes na ordem t… m…, preparam a troca no par que deve ser dito em voz alta. Fonte: elaborada para o curso a partir de Baars, Motley e MacKay (1975)." />
+<figcaption aria-hidden="true"><strong>Figura 4.</strong> A técnica de indução de lapsos usada no experimento 2. Três pares lidos em silêncio, com as consoantes na ordem t… m…, preparam a troca no par que deve ser dito em voz alta. Fonte: elaborada para o curso a partir de Baars, Motley e MacKay (1975).</figcaption>
+</figure>
+<p>Esperar lapsos espontâneos é lento. Bernard Baars, Michael Motley e Donald MacKay usaram uma técnica para provocá-los: a pessoa diz em voz alta um par-alvo (“mesa tola”) logo depois de pares de “preparação” que contêm os sons iniciais da troca (Figura 4). Às vezes sai “tesa mola”. Com essa técnica, eles mostraram que trocas que formam palavras reais saem mais do que trocas que formam não-palavras, quando o contexto tem palavras reais. A interpretação foi que um processo de edição barra as não-palavras antes da fala (Baars; Motley; MacKay, 1975).</p>
+<p>Essa edição é o <strong>automonitoramento</strong>, e há evidências de que ele age antes da fala sair. O intervalo entre um erro e sua interrupção pode ser de só 100 a 150 ms, curto demais para que a pessoa tenha ouvido a própria voz. E, quando os lapsos induzidos formariam palavrões, eles são mais raros, mas a resposta galvânica da pele (um sinal de alerta do corpo) aumenta, como se o erro tivesse sido detectado e barrado por dentro (Roelofs; Ferreira, 2019).</p>
+<h3 id="a-palavra-na-ponta-da-língua">A palavra na ponta da língua</h3>
+<p>Você sabe o que quer dizer, tem certeza de que conhece a palavra, mas ela não sai. Roger Brown e David McNeill provocaram centenas desses estados lendo para estudantes definições de palavras pouco frequentes. Nesse estado, as pessoas sabiam algumas letras da palavra, sobretudo do início, e o número de sílabas (Brown; McNeill, 1966). No modelo de duas etapas, a ponta da língua é ficar preso entre os passos: o lema foi encontrado, mas a forma não chegou inteira (Dell; Jacobs, 2016). Falantes de italiano nesse estado conseguem dizer o gênero gramatical da palavra que não sai, uma informação do lema (Vigliocco; Antonini; Garrett, 1997).</p>
+<h3 id="lesões-que-separam-palavra-e-som">Lesões que separam palavra e som</h3>
+<p>A separação também tem endereço no cérebro. Myrna Schwartz e colegas compararam as lesões de 64 pessoas com afasia (distúrbio de linguagem causado por lesão cerebral) com os erros de sentido que elas cometiam ao nomear figuras (dizer “cachorro” para um gato). A associação mais forte apareceu no lobo temporal anterior esquerdo (Schwartz <em>et al.</em>, 2009). Já a etapa dos sons se associou a lesões numa via mais dorsal, no córtex frontoparietal esquerdo, incluindo os giros pós-central e supramarginal (Schwartz; Dell, 2016).</p>
+<h2 id="ouvir-a-própria-voz">5. Ouvir a própria voz</h2>
+<p>Depois de planejar e executar, o cérebro confere o resultado. Sem audição, como na surdez de nascença, a fala não se desenvolve normalmente. Adultos que ficam surdos continuam inteligíveis por anos, mas os contrastes entre seus sons vão diminuindo (Guenther; Hickok, 2016).</p>
+<h3 id="o-modelo-diva">O modelo DIVA</h3>
+<p>Frank Guenther e colegas construíram o <strong>DIVA</strong>, um modelo de rede neural em que cada componente corresponde a uma região do cérebro (Guenther; Hickok, 2016). Ele tem dois sistemas de controle:</p>
+<ul>
+<li><strong>Controle por antecipação.</strong> O “mapa de sons da fala”, no córtex pré-motor ventral e no giro frontal inferior esquerdos, guarda um programa motor para cada som aprendido (em geral, a sílaba). Ativar esse mapa envia comandos ao córtex motor, diretamente e por uma alça que passa pelo cerebelo.</li>
+<li><strong>Controle por retorno.</strong> O mesmo mapa envia ao córtex auditivo uma previsão de como a sílaba deve soar (o alvo auditivo). Áreas do temporal superior posterior, incluindo a Spt, comparam o alvo com o som que chega. Se houver diferença, um sinal de erro vai ao córtex pré-motor ventral direito, que gera um comando corretivo. Há um sistema parecido para o tato e a posição da boca, no giro supramarginal (Guenther; Hickok, 2016).</li>
+</ul>
+<p>O modelo também explica o aprendizado. No balbucio, o bebê aprende como os comandos se transformam em sons. Depois, ao imitar as sílabas da sua língua, o retorno corrige cada tentativa, e o comando de antecipação melhora a cada repetição. Quando o programa está bem aprendido, a antecipação basta, e o retorno só entra em ação se algo sai do esperado (Guenther; Hickok, 2016).</p>
+<h3 id="quando-a-voz-que-você-ouve-não-é-a-sua">Quando a voz que você ouve não é a sua</h3>
+<p>Para testar o controle por retorno, os pesquisadores alteram a voz da pessoa em tempo real e a devolvem pelo fone. John Houde e Michael Jordan alteraram a vogal que os participantes ouviam, e eles passaram a ajustar a produção para compensar; o ajuste se generalizou para outros contextos e outras vogais (Houde; Jordan, 1998). Essa compensação é automática e em grande parte inconsciente (Guenther; Hickok, 2016). Jason Tourville e colegas, com ressonância magnética funcional, deslocaram o F1 em 30% para cima ou para baixo em tentativas sorteadas. A fala alterada ativou mais o temporal superior posterior dos dois lados e o córtex frontal direito, como o DIVA previa (Tourville; Reilly; Guenther, 2008; Guenther; Hickok, 2016).</p>
+<p>O córtex auditivo também responde <strong>menos</strong> à própria voz enquanto falamos do que à gravação da mesma fala (Houde <em>et al.</em>, 2002). Os autores interpretam isso como um ajuste do córtex auditivo ao som esperado. Em saguis, neurônios do córtex auditivo são suprimidos durante as próprias vocalizações, e essa supressão os deixa mais sensíveis a alterações do retorno (Eliades; Wang, 2008).</p>
+<h3 id="o-retorno-atrasado">O retorno atrasado</h3>
+<p>A manipulação mais antiga é atrasar a voz. Ouvir a própria fala com atraso pode deixá-la mais lenta e até provocar disfluências, como repetições, em quem não tem nenhum problema de fala (Lee, 1951; Watkins; Chesters; Connally, 2016). O experimento 4 do laboratório faz algo parecido com as batidas das mãos, e a demonstração em sala mostra o efeito na fala (Figura 5).</p>
+<figure>
+<img src="img/aula04/daf.png" alt="Figura 5. Retorno auditivo atrasado: a fala captada pelo microfone volta pelos fones com um atraso (no esquema, 200 ms). Fonte: elaborada para o curso a partir de Lee (1951)." />
+<figcaption aria-hidden="true"><strong>Figura 5.</strong> Retorno auditivo atrasado: a fala captada pelo microfone volta pelos fones com um atraso (no esquema, 200 ms). Fonte: elaborada para o curso a partir de Lee (1951).</figcaption>
+</figure>
+<h2 id="quando-a-produção-falha">6. Quando a produção falha</h2>
+<p>Como a fala depende de várias etapas e de um circuito extenso, os distúrbios variam conforme o elo que falha (Figura 6).</p>
+<figure>
+<img src="img/aula04/disturbios.png" alt="Figura 6. Os distúrbios da produção da fala posicionados nas etapas do modelo: a afasia atinge a escolha e a montagem das palavras; a apraxia de fala, a programação dos gestos; a disartria, a execução; a gagueira, o início e o encadeamento dos sons. Fonte: elaborada para o curso a partir de Ziegler e Staiger (2016)." />
+<figcaption aria-hidden="true"><strong>Figura 6.</strong> Os distúrbios da produção da fala posicionados nas etapas do modelo: a afasia atinge a escolha e a montagem das palavras; a apraxia de fala, a programação dos gestos; a disartria, a execução; a gagueira, o início e o encadeamento dos sons. Fonte: elaborada para o curso a partir de Ziegler e Staiger (2016).</figcaption>
+</figure>
+<ul>
+<li><strong>Afasia</strong> é um distúrbio da linguagem: escolher e montar palavras e frases. Os erros de palavra e de som da seção 4 são exemplos.</li>
+<li><strong>Apraxia de fala</strong> é um distúrbio do planejamento motor. Não há fraqueza muscular. Os erros podem ser inconsistentes; a pessoa percebe o problema, tateia em busca da articulação certa antes de falar e corrige a si mesma, o que deixa a fala hesitante (Ziegler; Staiger, 2016). O local da lesão é debatido. Nina Dronkers comparou 25 pacientes com apraxia e encontrou em todos lesão numa parte da ínsula anterior esquerda (Dronkers, 1996). Argye Hillis e colegas, examinando pacientes na fase aguda do AVC, associaram a apraxia ao giro frontal inferior posterior (área de Broca), e não à ínsula (Hillis <em>et al.</em>, 2004). Há mais acordo sobre o papel das regiões pré-motoras e motoras ventrais esquerdas (Ziegler; Staiger, 2016). No DIVA, a apraxia corresponde a um dano no mapa de sons da fala ou nas suas ligações com o córtex motor (Guenther; Hickok, 2016).</li>
+<li><strong>Disartria</strong> é um distúrbio da execução. Seus tipos acompanham o local da lesão: lesões das vias que descem do córtex causam fraqueza com tônus excessivo; lesões do cerebelo, falta de coordenação e de tempo; a doença de Parkinson, movimentos reduzidos, voz baixa e monótona (Ziegler; Staiger, 2016).</li>
+</ul>
+<h3 id="gagueira">Gagueira</h3>
+<p>A <strong>gagueira</strong> do desenvolvimento é um distúrbio da fluência: repetições, prolongamentos e bloqueios, sobretudo no começo das palavras e frases. Quem gagueja sabe o que quer dizer, mas tem dificuldade de avançar na sequência de sons. Ela surge entre 2 e 4 anos e atinge cerca de 1 em cada 20 crianças; a maioria se recupera, e cerca de 1% dos adultos continua gaguejando, com quatro ou cinco homens para cada mulher. Estudos com gêmeos atribuem cerca de 70% da variação no risco a fatores genéticos (Watkins; Chesters; Connally, 2016).</p>
+<p>Nos estudos de imagem aparecem hiperatividade do frontal inferior direito e do cerebelo, menor atividade do córtex auditivo e alterações nos núcleos da base; um achado estrutural confiável é a menor integridade da substância branca sob o córtex sensório-motor esquerdo, perto da fissura lateral (Watkins; Chesters; Connally, 2016). Um fato intrigante ajuda a pensar o mecanismo: a gagueira desaparece ao cantar e diminui ao falar em coro, com metrônomo ou com retorno auditivo alterado. Uma hipótese é que a saída dos núcleos da base para a AMS falha em dar o sinal de tempo para iniciar o próximo som, e o coro e o metrônomo fornecem esse sinal de fora (Watkins; Chesters; Connally, 2016; Guenther; Hickok, 2016).</p>
+<h3 id="um-gene-e-uma-família">Um gene e uma família</h3>
+<p>Na família britânica conhecida como KE, cerca de metade dos membros, ao longo de três gerações, tem apraxia de fala na infância (Morgan, 2019). Cecilia Lai e colegas encontraram a causa: uma mutação no gene <strong>FOXP2</strong> (Lai <em>et al.</em>, 2001), que codifica um fator de transcrição, uma proteína que regula a atividade de outros genes (Morgan, 2019). FOXP2 não é “o gene da linguagem”. O caso mostra que alterar o desenvolvimento do sistema motor da fala basta para comprometer a fala.</p>
+<h2 id="por-que-só-nós-falamos">7. Por que só nós falamos?</h2>
+<p>Macacos vocalizam muito, mas não aprendem sons novos nem controlam a voz como nós. Por quê?</p>
+<h3 id="duas-redes-para-a-voz">Duas redes para a voz</h3>
+<p>Uwe Jürgens propôs que existem duas vias para a vocalização (Jürgens, 2002; Ziegler; Staiger, 2016). A primeira vai do córtex cingulado anterior à substância cinzenta periaquedutal, no mesencéfalo, e daí à formação reticular e aos núcleos motores. Ela produz as vocalizações inatas: choro, gemido, riso. A segunda parte do córtex motor e permite a fala e o canto (Bianchi; Simonyan, 2019). Em humanos, as duas se dissociam: pessoas com lesões dos dois lados do córtex motor podem perder a fala e, mesmo assim, rir e chorar espontaneamente (Ziegler; Staiger, 2016).</p>
+<p>Os macacos não são, porém, escravos dos seus chamados. Macacos rhesus treinados vocalizam em resposta a um sinal visual, e neurônios do córtex pré-frontal ventrolateral, numa região considerada homóloga da área de Broca, disparam antes dessas vocalizações (Hage; Nieder, 2013). O córtex controla <strong>quando</strong> vocalizar, mas os macacos não aprendem a produzir padrões vocais novos (Fischer; Hage, 2019).</p>
+<h3 id="a-via-direta">A via direta</h3>
+<p>Uma diferença anatômica pode explicar parte disso. Em humanos, o córtex motor da laringe parece enviar fibras diretamente ao núcleo ambíguo, como sugeriram estudos anatômicos clássicos (Kuypers, 1958); em outros primatas, essa ligação passa antes pela formação reticular. As evidências humanas ainda vêm de poucos estudos (Bianchi; Simonyan, 2019). Em aves que aprendem o canto, como os pássaros canoros, existe uma projeção direta parecida, do prosencéfalo aos neurônios que comandam o órgão vocal, ausente em aves que não aprendem seus sons. Daí a hipótese de que uma via direta seja condição para o aprendizado vocal. Os mesmos autores notam que essa capacidade varia de forma gradual entre as espécies, e não como “tudo ou nada” (Petkov; Jarvis, 2012).</p>
+<h3 id="e-o-trato-vocal">E o trato vocal?</h3>
+<p>Uma ideia antiga dizia que os macacos não falam porque a garganta não permitiria produzir vogais variadas. Tecumseh Fitch e colegas testaram isso com imagens de raios X do trato vocal de macacos e concluíram que a incapacidade de falar não se deve à anatomia periférica (Fitch <em>et al.</em>, 2016). O espaço de vogais do macaco é menor que o humano, mas basta para uma fala compreensível (de Boer, 2019). O limite está no cérebro.</p>
+<h3 id="saguis-que-aprendem-com-os-pais">Saguis que aprendem com os pais</h3>
+<p>Os saguis, pequenos macacos das Américas, mostram que o retorno social importa mesmo em primatas. Seus chamados mudam muito durante o desenvolvimento, e o retorno vocal dos pais, dado em resposta aos filhotes, acelera essa mudança (Takahashi <em>et al.</em>, 2015). Filhotes com pouco retorno dos pais continuam a produzir padrões vocais infantis (Fischer; Hage, 2019). Não é aprendizado de sons novos, como na fala humana, mas mostra que a voz se desenvolve com o crescimento do corpo e com a interação com os outros.</p>
+<h2 id="o-que-o-laboratório-mostrou">8. O que o laboratório mostrou</h2>
+<p>Os cinco experimentos do Laboratório da Fala percorrem o caminho da aula. Os resultados de uma turma variam; o que importa é entender o que se espera e por quê.</p>
+<p><strong>Experimento 1 (triângulo das vogais).</strong> Ao arrastar o dedo, você mudava F1 e F2 do filtro, e a vogal mudava. Ao trocar a fonte (voz grave, aguda ou sussurro) com o mesmo filtro, a vogal se mantinha; sem o filtro, sobrava um zumbido sem vogal. É o modelo fonte–filtro em ação: a vogal está no filtro (Mildner, 2008). No nosso sintetizador simples, o /u/ soa abafado e costuma ser o mais difícil de achar.</p>
+<p><strong>Experimento 2 (lapsos induzidos).</strong> A técnica é a de Baars, Motley e MacKay (1975). Cada pessoa comete poucos lapsos; somando a turma, espera-se mais trocas nos pares em que o resultado forma palavras (“tesa mola”) do que naqueles em que forma não-palavras (“nubo tave”). Essa diferença é o viés lexical, que pode vir do automonitoramento ou da interação entre os níveis de palavra e de som (Roelofs; Ferreira, 2019). Se você percebeu o erro no meio e corrigiu, viu o monitoramento funcionando. Uma limitação: as respostas eram autorrelatadas, e trocas parciais passam despercebidas.</p>
+<p><strong>Experimento 3 (ponta da língua).</strong> Espera-se que algumas definições tenham deixado a palavra “na ponta da língua” e que, nesses casos, a primeira letra e o número de sílabas sejam acertados com frequência (Brown; McNeill, 1966). Você sabia o sentido e tinha certeza de conhecer a palavra (o lema), mas a forma chegou em pedaços (Dell; Jacobs, 2016).</p>
+<p><strong>Experimento 4 (batidas com retorno atrasado).</strong> Com o clique atrasado, o ritmo tende a ficar mais irregular ou mais lento, porque o que você ouve não bate com o que você fez. O efeito nas batidas pode ser pequeno. Na fala, o atraso deixa a fala mais lenta e provoca disfluências (Lee, 1951; Watkins; Chesters; Connally, 2016).</p>
+<p><strong>Experimento 5 (classifique o lapso).</strong> Separar erros de palavra e de som é, em geral, fácil, porque eles seguem regularidades diferentes (Roelofs; Ferreira, 2019). Os casos difíceis são instrutivos: “um instinto” no lugar de “um extintor” parece um erro de palavra, mas a palavra que entrou foi escolhida pelo som parecido, não pelo sentido.</p>
+<div class="conceitos">
+<dl>
+<dt><strong>Modelo fonte–filtro</strong></dt>
+<dd>
+Descrição da voz como um som produzido na laringe (fonte) que é moldado pelas ressonâncias do trato vocal (filtro) (Fant, 1960; Mildner, 2008).
+</dd>
+<dt><strong>Formante</strong></dt>
+<dd>
+Faixa de frequência reforçada pelo trato vocal; F1 e F2 são os que melhor distinguem as vogais (Mildner, 2008).
+</dd>
+<dt><strong>Núcleo ambíguo</strong></dt>
+<dd>
+Grupo de neurônios motores do tronco encefálico que comanda a musculatura da laringe (Bianchi; Simonyan, 2019).
+</dd>
+<dt><strong>Lema</strong></dt>
+<dd>
+Representação de uma palavra com suas propriedades gramaticais, ainda sem forma sonora (Dell; Jacobs, 2016).
+</dd>
+<dt><strong>Viés lexical</strong></dt>
+<dd>
+Tendência de as trocas de sons produzirem palavras reais mais do que o acaso prevê (Baars; Motley; MacKay, 1975).
+</dd>
+<dt><strong>Ponta da língua</strong></dt>
+<dd>
+Estado em que a pessoa tem o lema, mas recupera só partes da forma sonora (Dell; Jacobs, 2016).
+</dd>
+<dt><strong>Automonitoramento</strong></dt>
+<dd>
+Verificação do próprio plano de fala, antes e depois da articulação, que permite detectar e corrigir erros (Roelofs; Ferreira, 2019).
+</dd>
+<dt><strong>Modelo DIVA</strong></dt>
+<dd>
+Modelo de rede neural do controle motor da fala, com controle por antecipação e por retorno auditivo e somatossensorial (Guenther; Hickok, 2016).
+</dd>
+<dt><strong>Apraxia de fala</strong></dt>
+<dd>
+Distúrbio do planejamento motor da fala, sem fraqueza muscular, com erros inconsistentes e tateio articulatório (Ziegler; Staiger, 2016).
+</dd>
+<dt><strong>Disartria</strong></dt>
+<dd>
+Distúrbio da execução da fala por alteração de força, tônus ou coordenação dos músculos (Ziegler; Staiger, 2016).
+</dd>
+</dl>
+</div>
+<h2 id="para-revisar">Para revisar</h2>
+<ol type="1">
+<li><p>Uma pessoa diz “a” em voz normal e depois sussurrando. Por que reconhecemos a mesma vogal nos dois casos?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Pelo modelo fonte–filtro, a vogal é definida pelo filtro (a forma do trato vocal, que determina os formantes), não pela fonte. No sussurro a fonte muda (ruído de ar em vez da vibração das pregas vocais), mas a boca mantém a mesma forma, e por isso F1 e F2 ficam nas mesmas posições.</p>
+</details></li>
+<li><p>Por que uma lesão no córtex motor de um só hemisfério costuma causar apenas um problema de fala leve, enquanto lesões nos dois lados podem tirar a fala?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Quase todos os núcleos motores do tronco encefálico que comandam a fala recebem projeções do córtex dos dois hemisférios. Se um lado é lesado, o outro ainda envia comandos. Quando os dois lados são lesados, essa compensação desaparece.</p>
+</details></li>
+<li><p>Que evidências comportamentais sustentam a separação entre lema e forma sonora?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Os lapsos se dividem em erros de palavra (trocas de palavras inteiras da mesma classe gramatical) e erros de som (trocas de fonemas entre palavras vizinhas), com regras diferentes. Na ponta da língua, a pessoa sabe o sentido e às vezes o gênero gramatical da palavra, mas só recupera partes da forma, como as primeiras letras.</p>
+</details></li>
+<li><p>No experimento 2, por que as trocas que formam palavras reais tendem a ser mais frequentes? Dê as duas explicações em debate.</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Uma é o automonitoramento: o falante confere o plano antes de falar e barra mais facilmente as não-palavras. A outra é a interação entre níveis (modelo de Dell): a ativação volta dos sons para as palavras e favorece saídas que correspondem a palavras conhecidas.</p>
+</details></li>
+<li><p>Segundo o modelo DIVA, o que acontece quando ouvimos a própria voz com o F1 deslocado?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>O som que chega deixa de coincidir com o alvo auditivo previsto. Áreas do temporal superior posterior detectam o erro e enviam um sinal ao córtex pré-motor direito, que gera um comando corretivo. A pessoa ajusta a articulação para compensar, em geral sem perceber.</p>
+</details></li>
+<li><p>Uma paciente tem fala lenta e arrastada em todas as palavras, com voz fraca. Outra faz erros diferentes a cada tentativa de dizer a mesma palavra, tateia com a boca e percebe os erros. Qual delas tem disartria e qual tem apraxia de fala?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>A primeira tem disartria: o problema está na execução (força e coordenação) e afeta a fala de forma constante. A segunda tem apraxia de fala: os músculos funcionam, mas o planejamento dos gestos falha, o que gera erros inconsistentes e tateio.</p>
+</details></li>
+<li><p>Por que o resultado de Fitch e colegas sobre o trato vocal de macacos é importante para a pergunta “por que só nós falamos”?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Ele enfraquece a explicação puramente anatômica. Se o aparelho periférico permitiria uma fala compreensível, a diferença deve estar no controle neural, por exemplo na ligação direta do córtex motor com os neurônios da laringe, que os humanos parecem ter e os outros primatas não.</p>
+</details></li>
+</ol>
+<h2 id="para-saber-mais">Para saber mais</h2>
+<ul>
+<li><strong>Roelofs, A.; Ferreira, V. S. The architecture of speaking. In: Hagoort, P. (org.). <em>Human Language</em> (2019), cap. 4.</strong> Panorama atual do modelo de Levelt, com os debates sobre lemas, cascata e automonitoramento. Nível intermediário, em inglês; disponível na biblioteca do curso.</li>
+<li><strong>Guenther, F. H.; Hickok, G. Neural models of motor speech control. In: Hickok, G.; Small, S. L. (org.). <em>Neurobiology of Language</em> (2016), cap. 58.</strong> Explica o modelo DIVA e os experimentos com retorno alterado. Nível intermediário a avançado, em inglês.</li>
+<li><strong>Petkov, C. I.; Jarvis, E. D. (2012). Birds, primates, and spoken language origins.</strong> Revisão sobre aprendizado vocal em aves e primatas e a hipótese da via direta. Avançado, em inglês; acesso aberto: https://doi.org/10.3389/fnevo.2012.00012.</li>
+<li><strong>Fitch, W. T. <em>et al.</em> (2016). Monkey vocal tracts are speech-ready.</strong> Artigo curto que testa se a anatomia impediria os macacos de falar. Intermediário, em inglês; acesso aberto: https://doi.org/10.1126/sciadv.1600723.</li>
+</ul>
+<h2 id="referências">Referências</h2><div class="refs">
+<p>BAARS, B. J.; MOTLEY, M. T.; MacKAY, D. G. Output editing for lexical status in artificially elicited slips of the tongue. <strong>Journal of Verbal Learning and Verbal Behavior</strong>, v. 14, n. 4, p. 382-391, 1975. DOI: https://doi.org/10.1016/S0022-5371(75)80017-X.</p>
+<p>BIANCHI, S.; SIMONYAN, K. The speech-ready organization of the motor cortex. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 499-508.</p>
+<p>BINDER, J. R. Phoneme perception. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 447-461. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00037-7.</p>
+<p>BOUCHARD, K. E.; MESGARANI, N.; JOHNSON, K.; CHANG, E. F. Functional organization of human sensorimotor cortex for speech articulation. <strong>Nature</strong>, v. 495, n. 7441, p. 327-332, 2013. DOI: https://doi.org/10.1038/nature11911.</p>
+<p>BROWN, R.; McNEILL, D. The “tip of the tongue” phenomenon. <strong>Journal of Verbal Learning and Verbal Behavior</strong>, v. 5, n. 4, p. 325-337, 1966. DOI: https://doi.org/10.1016/S0022-5371(66)80040-3.</p>
+<p>DE BOER, B. Speech perception and production. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 265-276.</p>
+<p>DELL, G. S. A spreading-activation theory of retrieval in sentence production. <strong>Psychological Review</strong>, v. 93, n. 3, p. 283-321, 1986. DOI: https://doi.org/10.1037/0033-295X.93.3.283.</p>
+<p>DELL, G. S.; JACOBS, C. L. Successful speaking: cognitive mechanisms of adaptation in language production. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 209-219. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00018-3.</p>
+<p>DRONKERS, N. F. A new brain region for coordinating speech articulation. <strong>Nature</strong>, v. 384, n. 6605, p. 159-161, 1996. DOI: https://doi.org/10.1038/384159a0.</p>
+<p>ELIADES, S. J.; WANG, X. Neural substrates of vocalization feedback monitoring in primate auditory cortex. <strong>Nature</strong>, v. 453, n. 7198, p. 1102-1106, 2008. DOI: https://doi.org/10.1038/nature06910.</p>
+<p>FANT, G. <strong>Acoustic theory of speech production</strong>. The Hague: Mouton, 1960.</p>
+<p>FISCHER, J.; HAGE, S. R. Primate vocalization as a model for human speech: scopes and limits. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 639-656.</p>
+<p>FITCH, W. T. et al. Monkey vocal tracts are speech-ready. <strong>Science Advances</strong>, v. 2, n. 12, e1600723, 2016. DOI: https://doi.org/10.1126/sciadv.1600723.</p>
+<p>FROMKIN, V. A. The non-anomalous nature of anomalous utterances. <strong>Language</strong>, v. 47, n. 1, p. 27-52, 1971. DOI: https://doi.org/10.2307/412187.</p>
+<p>GUENTHER, F. H.; HICKOK, G. Neural models of motor speech control. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 725-740. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00058-4.</p>
+<p>HAGE, S. R.; NIEDER, A. Single neurons in monkey prefrontal cortex encode volitional initiation of vocalizations. <strong>Nature Communications</strong>, v. 4, 2409, 2013. DOI: https://doi.org/10.1038/ncomms3409.</p>
+<p>HICKOK, G. Functional anatomy of speech production: from words to motor control. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 381-392.</p>
+<p>HILLIS, A. E. et al. Re-examining the brain regions crucial for orchestrating speech articulation. <strong>Brain</strong>, v. 127, n. 7, p. 1479-1487, 2004. DOI: https://doi.org/10.1093/brain/awh172.</p>
+<p>HOUDE, J. F.; JORDAN, M. I. Sensorimotor adaptation in speech production. <strong>Science</strong>, v. 279, n. 5354, p. 1213-1216, 1998. DOI: https://doi.org/10.1126/science.279.5354.1213.</p>
+<p>HOUDE, J. F. et al. Modulation of the auditory cortex during speech: an MEG study. <strong>Journal of Cognitive Neuroscience</strong>, v. 14, n. 8, p. 1125-1138, 2002. DOI: https://doi.org/10.1162/089892902760807140.</p>
+<p>JÜRGENS, U. Neural pathways underlying vocal control. <strong>Neuroscience &amp; Biobehavioral Reviews</strong>, v. 26, n. 2, p. 235-258, 2002. DOI: https://doi.org/10.1016/S0149-7634(01)00068-9.</p>
+<p>KRIENGWATANA, B. P.; BECKERS, G. J. L. Speech perception: what do nonhuman animals have to say? In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 701-712.</p>
+<p>KUYPERS, H. G. J. M. Corticobulbar connexions to the pons and lower brain-stem in man: an anatomical study. <strong>Brain</strong>, v. 81, n. 3, p. 364-388, 1958. DOI: https://doi.org/10.1093/brain/81.3.364.</p>
+<p>LAI, C. S. L. et al. A forkhead-domain gene is mutated in a severe speech and language disorder. <strong>Nature</strong>, v. 413, n. 6855, p. 519-523, 2001. DOI: https://doi.org/10.1038/35097076.</p>
+<p>LEE, B. S. Artificial stutter. <strong>Journal of Speech and Hearing Disorders</strong>, v. 16, n. 1, p. 53-55, 1951. DOI: https://doi.org/10.1044/jshd.1601.53.</p>
+<p>LEVELT, W. J. M. <strong>Speaking</strong>: from intention to articulation. Cambridge, MA: MIT Press, 1989. DOI: https://doi.org/10.7551/mitpress/6393.001.0001.</p>
+<p>LEVELT, W. J. M.; ROELOFS, A.; MEYER, A. S. A theory of lexical access in speech production. <strong>Behavioral and Brain Sciences</strong>, v. 22, n. 1, p. 1-38, 1999. DOI: https://doi.org/10.1017/S0140525X99001776.</p>
+<p>MILDNER, V. <strong>The cognitive neuroscience of human communication</strong>. New York: Lawrence Erlbaum Associates, 2008.</p>
+<p>MORGAN, A. Deciphering genetics of speech-motor disorders. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 557-576.</p>
+<p>PETKOV, C. I.; JARVIS, E. D. Birds, primates, and spoken language origins: behavioral phenotypes and neurobiological substrates. <strong>Frontiers in Evolutionary Neuroscience</strong>, v. 4, 12, 2012. DOI: https://doi.org/10.3389/fnevo.2012.00012.</p>
+<p>ROELOFS, A.; FERREIRA, V. S. The architecture of speaking. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 35-50.</p>
+<p>SCHWARTZ, M. F. et al. Anterior temporal involvement in semantic word retrieval: voxel-based lesion-symptom mapping evidence from aphasia. <strong>Brain</strong>, v. 132, n. 12, p. 3411-3427, 2009. DOI: https://doi.org/10.1093/brain/awp284.</p>
+<p>SCHWARTZ, M. F.; DELL, G. S. Word production from the perspective of speech errors in aphasia. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 701-715. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00056-0.</p>
+<p>TAKAHASHI, D. Y. et al. The developmental dynamics of marmoset monkey vocal production. <strong>Science</strong>, v. 349, n. 6249, p. 734-738, 2015. DOI: https://doi.org/10.1126/science.aab1058.</p>
+<p>TOURVILLE, J. A.; REILLY, K. J.; GUENTHER, F. H. Neural mechanisms underlying auditory feedback control of speech. <strong>NeuroImage</strong>, v. 39, n. 3, p. 1429-1443, 2008. DOI: https://doi.org/10.1016/j.neuroimage.2007.09.054.</p>
+<p>TREMBLAY, P.; DESCHAMPS, I.; GRACCO, V. L. Neurobiology of speech production: a motor control perspective. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 741-750. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00059-6.</p>
+<p>VIGLIOCCO, G.; ANTONINI, T.; GARRETT, M. F. Grammatical gender is on the tip of Italian tongues. <strong>Psychological Science</strong>, v. 8, n. 4, p. 314-317, 1997. DOI: https://doi.org/10.1111/j.1467-9280.1997.tb00444.x.</p>
+<p>WATKINS, K. E.; CHESTERS, J.; CONNALLY, E. L. The neurobiology of developmental stuttering. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 995-1004. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00079-1.</p>
+<p>ZIEGLER, W.; STAIGER, A. Motor speech impairments. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 985-994. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00078-X.</p>
+</div>
+<p class="rodape">Material de estudo da disciplina Bases neurais da comunicação humana (UFRN), Prof. Daniel Y. Takahashi. Texto e figuras elaborados para o curso; as fontes estão nas Referências.</p>
+</div>

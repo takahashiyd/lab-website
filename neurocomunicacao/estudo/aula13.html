@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 13 · Evolução da comunicação e síntese — Material de estudo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,600..800&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{--bg:#f6f7f9;--surface:#fff;--fg:#142033;--muted:#566377;--line:#d8dee6;--accent:#0e7c86;--accent2:#c9771a;--soft:#e5f1f2;--soft2:#fbf1e3;
+--display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;--body:"Source Serif 4",Georgia,"Times New Roman",serif;--ui:"Source Sans 3","Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1621;--surface:#172132;--fg:#e6ecf3;--muted:#9aa8b9;--line:#2a3850;--accent:#3db4be;--accent2:#f0a645;--soft:#173740;--soft2:#3a2c17;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:18px/1.65 var(--body)}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 80px}
+.top{font:600 13px/1.4 var(--ui);display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:22px}
+.top a{color:var(--accent);text-decoration:none}
+.eyebrow{font:600 12px/1 ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(30px,6.5vw,46px)/1.08 var(--display);font-stretch:112%;margin:10px 0 8px;text-wrap:balance}
+.sub{font:400 20px/1.4 var(--ui);color:var(--muted);margin:0 0 26px}
+h2{font:750 25px/1.2 var(--display);margin:46px 0 12px;text-wrap:balance}
+h3{font:700 19px/1.3 var(--ui);margin:28px 0 8px}
+p{margin:0 0 16px}
+a{color:var(--accent)}
+ul,ol{padding-left:24px;margin:0 0 16px} li{margin:4px 0}
+figure{margin:26px 0;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;break-inside:avoid}
+figure img{width:100%;height:auto;display:block;border-radius:6px;background:#fff}
+figcaption{font:15px/1.5 var(--ui);color:var(--muted);margin-top:10px}
+.objetivos{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;padding:14px 18px 6px;margin:0 0 30px;font-family:var(--ui)}
+.objetivos::before{content:"Nesta aula você vai aprender a";display:block;font:700 13px/1 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:4px 0 10px}
+.destaque{background:var(--soft2);border-radius:10px;padding:14px 18px 2px;margin:22px 0;font-family:var(--ui);break-inside:avoid}
+.conceitos{background:var(--soft);border-radius:12px;padding:16px 20px 6px;margin:30px 0;font-family:var(--ui)}
+.conceitos::before{content:"Conceitos-chave";display:block;font:700 13px/1 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:4px 0 12px}
+.conceitos dl{margin:0} .conceitos dt{font-weight:700;margin-top:10px} .conceitos dd{margin:2px 0 8px 0;color:var(--fg)}
+details{margin:8px 0 4px;font-family:var(--ui);font-size:16px}
+summary{cursor:pointer;color:var(--accent);font-weight:600}
+details[open] summary{margin-bottom:6px}
+.refs p,#referencias + * p{font-size:15px;line-height:1.5;padding-left:1.4em;text-indent:-1.4em}
+.rodape{margin-top:50px;padding-top:16px;border-top:1px solid var(--line);font:13px/1.5 var(--ui);color:var(--muted)}
+@media print{
+ :root{--bg:#fff;--surface:#fff}
+ body{font-size:11.5pt;line-height:1.5}
+ .wrap{max-width:none;padding:0}
+ .top{display:none}
+ h2{font-size:17pt;margin-top:24pt;break-after:avoid}
+ h1{font-size:28pt}
+ figure{padding:8pt;border-color:#ccc}
+ figure img{max-height:9cm;object-fit:contain}
+ details>summary{display:none}
+ details{margin-left:0;font-size:10.5pt}
+ details::before{content:"Resposta: ";font-weight:700}
+ a{color:inherit;text-decoration:none}
+ .refs p{font-size:10pt}
+ @page{size:A4;margin:18mm 18mm 20mm}
+}
+</style>
+<div class="wrap">
+<nav class="top"><a href="index.html">Material de estudo</a><a href="../aula13.html">Laboratório da aula 13</a><a href="aula12.html">← Aula 12</a></nav>
+<span class="eyebrow">Bases neurais da comunicação humana · Aula 13 · Material de estudo</span>
+<h1>Evolução da comunicação e síntese</h1>
+<p class="sub">Como estudar a evolução de algo que não fossiliza, o que compartilhamos com outros animais, o que parece só nosso e como as treze aulas se encaixam</p>
+<div class="objetivos">
+<ul>
+<li>Distinguir homologia de convergência e explicar por que as duas ajudam a estudar a evolução da linguagem.</li>
+<li>Explicar por que o aprendizado vocal é raro, surgiu várias vezes e depende mais do controle neural do que da anatomia da garganta.</li>
+<li>Descrever o que o desenvolvimento vocal e a troca de turnos dos saguis revelam sobre o papel do retorno social.</li>
+<li>Avaliar o que o FOXP2 e os neurônios-espelho dizem (e não dizem) sobre a origem da linguagem.</li>
+<li>Discutir a proposta de que a recursão seria o núcleo exclusivamente humano e as críticas a ela.</li>
+<li>Usar as quatro perguntas de Tinbergen e os traços de Hockett para responder de novo à pergunta da aula 1 sobre a dança das abelhas.</li>
+</ul>
+</div>
+<h2 id="como-estudar-a-evolução-de-algo-que-não-fossiliza">1. Como estudar a evolução de algo que não fossiliza</h2>
+<p>Ossos fossilizam; palavras, não. Nenhum fóssil guarda uma conversa. A saída que a biologia encontrou é o <strong>método comparativo</strong>: comparar características de espécies vivas e interpretar semelhanças e diferenças à luz da árvore da vida, a <strong>filogenia</strong>, hoje reconstruída sobretudo a partir do DNA (Fitch, 2019, p. 623-624).</p>
+<p>O primeiro passo é não tratar a linguagem como um bloco único. Ela depende de vários mecanismos separáveis: ouvir, controlar a voz, aprender sinais, combinar sinais em estruturas, entender a intenção do outro. Muitos desses mecanismos existem em outras espécies, mesmo que a linguagem completa só exista em humanos. É a abordagem de <strong>múltiplos componentes</strong> (Fitch, 2019, p. 623). Cada componente pode ter uma história evolutiva própria, e a comparação é feita componente por componente.</p>
+<p>Duas ideias organizam essa comparação (figura 1). <strong>Homologia</strong> é uma semelhança herdada de um ancestral comum: o braço humano e a asa do morcego têm os mesmos ossos porque vêm do membro anterior de um mesmo ancestral (Fitch, 2019, p. 624). A homologia funciona como uma “máquina do tempo”: se espécies aparentadas têm o mesmo traço, o ancestral comum provavelmente também tinha. É assim que se reconstroem cérebros e comportamentos de espécies extintas, justamente os traços que não fossilizam (Fitch, 2019, p. 624).</p>
+<p><strong>Convergência</strong> (ou analogia) é uma semelhança que surgiu de forma independente em linhagens diferentes. Asas de aves, morcegos e moscas servem para voar, mas o ancestral comum desses animais não voava (Fitch, 2019, p. 625). A convergência tem outro valor: cada surgimento independente é um “experimento” separado da natureza. Se uma capacidade apareceu várias vezes, podemos perguntar o que as espécies que a têm compartilham e testar hipóteses sobre o que a favoreceu (Fitch, 2019, p. 625).</p>
+<figure>
+<img src="img/aula13/homologia.png" alt="Figura 1. Homologia e convergência. À esquerda, um traço presente no ancestral comum (retângulo na base) é herdado por todos os descendentes, como a laringe e o circuito vocal do tronco encefálico. À direita, o aprendizado vocal aparece de forma independente em duas linhagens (pássaros canoros e humanos), enquanto parentes próximos de cada uma (galinha, chimpanzé) não o têm. Fonte: elaborada para o curso a partir de Fitch (2019)." />
+<figcaption aria-hidden="true"><strong>Figura 1.</strong> Homologia e convergência. À esquerda, um traço presente no ancestral comum (retângulo na base) é herdado por todos os descendentes, como a laringe e o circuito vocal do tronco encefálico. À direita, o aprendizado vocal aparece de forma independente em duas linhagens (pássaros canoros e humanos), enquanto parentes próximos de cada uma (galinha, chimpanzé) não o têm. Fonte: elaborada para o curso a partir de Fitch (2019).</figcaption>
+</figure>
+<p>As duas categorias podem se misturar. As asas de aves e morcegos são convergentes <strong>como asas</strong>, mas homólogas <strong>como membros anteriores</strong>, porque os ossos são os mesmos (Fitch, 2019, p. 626-627). Existe ainda a <strong>homologia profunda</strong>: genes reguladores antigos reaproveitados para construir estruturas que surgiram de forma independente. O gene <em>Pax6</em> do camundongo consegue “resgatar” o desenvolvimento do olho de uma mosca mutante, embora olhos de insetos e de vertebrados tenham evoluído separadamente (Fitch, 2019, p. 627). Na seção 4 veremos um caso ligado à fala.</p>
+<div class="destaque">
+<p><strong>A evolução é uma árvore, não uma escada.</strong> É comum imaginar as espécies numa escada, do “primitivo” ao “avançado”, com o humano no topo. Mas todas as espécies vivas tiveram o mesmo tempo de evolução desde o ancestral comum. O ancestral comum de humanos e chimpanzés <strong>não era um chimpanzé</strong>: era uma espécie extinta, cujas capacidades precisam ser reconstruídas por comparação (Fitch, 2019, p. 629). Não faz sentido, portanto, procurar no chimpanzé uma “versão incompleta” da linguagem.</p>
+</div>
+<h2 id="aprender-sons-novos-uma-capacidade-rara-que-surgiu-várias-vezes">2. Aprender sons novos: uma capacidade rara, que surgiu várias vezes</h2>
+<p>Aprender a dizer “obrigado” é algo raro no reino animal: produzir um som novo a partir do que se ouviu. Os pesquisadores separam três tipos de aprendizado ligados à voz (Scharff; Knörnschild; Jarvis, 2019, p. 657): o <strong>aprendizado de produção vocal</strong> (produzir vocalizações novas a partir do que se ouve, ou remodelar as existentes por influência social), o <strong>aprendizado de uso</strong> (aprender em que contexto usar um som, mesmo inato) e o <strong>aprendizado de compreensão</strong> (aprender o que um som significa).</p>
+<p>O aprendizado de produção é o mais raro. Foi documentado em apenas três ordens de aves (pássaros canoros, papagaios e beija-flores) e cinco de mamíferos (humanos, cetáceos, morcegos, elefantes e pinípedes, como as focas) (Scharff; Knörnschild; Jarvis, 2019, p. 657). Esses grupos estão espalhados pela árvore, e na maioria deles a capacidade parece ter surgido de forma independente, por convergência (Fitch, 2019, p. 627, 630). Hoje ela é vista como um <strong>contínuo</strong>: de pequenas modificações de vocalizações (em camundongos, cabras e chimpanzés), passando pela influência social sobre o amadurecimento do repertório (em morcegos e saguis), até a imitação completa do canto de muitos pássaros e da fala humana (Scharff; Knörnschild; Jarvis, 2019, p. 659).</p>
+<h3 id="os-chamados-dos-primatas-mudam-pouco-com-a-experiência">Os chamados dos primatas mudam pouco com a experiência</h3>
+<p>Macacos-de-cheiro criados sem ouvir outros da espécie produziram o repertório completo de chamados e o usaram nos contextos adequados; macacos surdos mostraram apenas pequenas mudanças de intensidade e altura (Fischer; Hage, 2019, p. 645). Macacos criados por mães de outra espécie continuam produzindo os chamados da própria espécie, e grandes primatas criados em casas humanas nunca aprenderam a produzir sequer algumas palavras, apesar de imitarem muitas ações com as mãos (Fitch, 2019, p. 629).</p>
+<p>Isso não quer dizer que não haja controle nenhum. Macacos rhesus treinados aprenderam a vocalizar quando aparecia um sinal numa tela e até a alternar entre dois tipos de chamado conforme o sinal (Fischer; Hage, 2019, p. 648), e áreas do córtex pré-frontal ventrolateral consideradas homólogas da região de Broca participam desse controle (Fischer; Hage, 2019, p. 650). O que os primatas não humanos quase não fazem é <strong>criar</strong> sons novos.</p>
+<p>Por quê? Durante décadas, a explicação popular foi anatômica: a garganta dos macacos não permitiria os sons da fala. Hoje se sabe que primatas abaixam a laringe ao vocalizar e que o trato vocal de um macaco poderia, com o controle adequado, produzir muitas vogais distinguíveis (Fitch, 2019, p. 630). A hipótese mais aceita é neural: humanos têm conexões diretas do córtex motor para os neurônios que controlam a laringe, no tronco encefálico, e os outros primatas não. As aves que aprendem o canto têm uma conexão direta análoga, ausente nas aves que não aprendem (Fitch, 2019, p. 630).</p>
+<h3 id="aves-canoras-e-humanos-chegaram-a-circuitos-parecidos">Aves canoras e humanos chegaram a circuitos parecidos</h3>
+<p>Nas espécies com aprendizado vocal extenso existe uma via especializada no prosencéfalo, com um componente anterior (córtex, núcleos da base e tálamo), necessário para imitar, e um componente posterior, motor, necessário para produzir os sons aprendidos (Scharff; Knörnschild; Jarvis, 2019, p. 670). A semelhança chega ao nível molecular. O núcleo motor do canto (RA) mostra especializações de expressão gênica convergentes com o córtex motor da laringe humano, e um núcleo do estriado necessário para aprender o canto (a Área X) se parece com uma parte do estriado anterior humano ativada durante a fala; essas especializações não aparecem em espécies com pouco ou nenhum aprendizado vocal (Scharff; Knörnschild; Jarvis, 2019, p. 675).</p>
+<p>Os gestos contam outra história. As vocalizações dos primatas não humanos são em grande parte inatas e pouco flexíveis, enquanto os gestos dos grandes primatas são flexíveis, intencionais e ao menos em parte aprendidos (Rossano, 2019, p. 201). Grandes primatas treinados com sinais ou teclados de símbolos aprenderam muitas associações, mas usam os símbolos quase sempre para pedir algo, e raramente para compartilhar informação (Fitch, 2019, p. 632).</p>
+<h2 id="os-saguis-um-primata-que-ajusta-a-voz-com-a-ajuda-dos-pais">3. Os saguis: um primata que ajusta a voz com a ajuda dos pais</h2>
+<p>O sagui-comum (<em>Callithrix jacchus</em>) é um pequeno macaco do Novo Mundo (Takahashi; Fenley; Ghazanfar, 2016); talvez você já tenha visto alguns em praças e quintais. Saguis vivem em grupos familiares, e o pai e os irmãos mais velhos também carregam os filhotes. Quando se separam, filhotes e adultos emitem chamados que ajudam a restabelecer o contato, e o chamado de um costuma provocar a resposta do outro (Fischer; Hage, 2019, p. 645).</p>
+<h3 id="os-chamados-mudam-muito-nos-primeiros-dois-meses">Os chamados mudam muito nos primeiros dois meses</h3>
+<p>Nos primeiros meses, as vocalizações dos filhotes amadurecem: os chamados ficam mais longos, a frequência cai, a <strong>entropia</strong> (uma medida de quão ruidoso é o som) diminui e os intervalos entre chamados aumentam (Fischer; Hage, 2019, p. 645). Takahashi e colegas (2015) acompanharam filhotes nos primeiros dois meses e mostraram que os choros e chamados amadurecem de modo muito parecido com o que acontece com bebês humanos. As mudanças acompanham o crescimento das estruturas vocais e são influenciadas pelo retorno dos pais (Takahashi <em>et al.</em>, 2015).</p>
+<h3 id="a-resposta-dos-pais-acelera-o-desenvolvimento">A resposta dos pais acelera o desenvolvimento</h3>
+<p>Quando o filhote emite um chamado, um dos pais muitas vezes responde logo depois. Uma resposta assim, que vem em seguida ao comportamento do filhote, é chamada de <strong>contingente</strong>. As respostas contingentes dos pais aceleram o amadurecimento dos chamados (Takahashi <em>et al.</em>, 2015; Takahashi; Liao; Ghazanfar, 2017; Fischer; Hage, 2019, p. 645). Takahashi, Liao e Ghazanfar (2017) descreveram esse processo como <strong>aprendizado vocal por reforço social</strong>: a resposta do adulto funciona como uma recompensa social.</p>
+<p>Outro grupo chegou a uma conclusão compatível por outro caminho. Gultekin e Hage (2017) compararam saguis criados normalmente com saguis separados dos pais depois do terceiro mês de vida. Os separados ainda produziam vocalizações típicas de filhotes quando já eram quase adultos. O retorno social, portanto, também ajuda a “podar” o repertório infantil (Gultekin; Hage, 2017; Fischer; Hage, 2019, p. 645). Nos bebês humanos, a interação com os pais também altera as vocalizações: a troca de turnos com o adulto e o retorno dos pais mudam as vocalizações do bebê (Dick <em>et al.</em>, 2016, p. 375), como vimos na aula 11. Mesmo um primata que não imita sons novos usa o retorno social para ajustar a voz; por isso os saguis ficam no meio do contínuo da seção 2.</p>
+<h3 id="saguis-adultos-alternam-a-vez-de-falar">Saguis adultos alternam a vez de falar</h3>
+<p>Saguis adultos trocam chamados com as mesmas características gerais da troca de turnos humana: um de cada vez, evitando falar ao mesmo tempo (figura 2) (Takahashi; Fenley; Ghazanfar, 2016). Takahashi, Narayanan e Ghazanfar (2013) mostraram que essa dinâmica pode ser descrita como dois <strong>osciladores acoplados</strong>. Em termos simples, cada animal tem um ritmo próprio, e os chamados do outro ajustam esse ritmo. A troca de turnos vocal já foi descrita em vários grupos de primatas, de lêmures a gibões, embora de forma irregular ao longo da árvore (Levinson, 2019, p. 195).</p>
+<figure>
+<img src="img/aula13/turnos_sagui.png" alt="Figura 2. Esquema de dois saguis alternando chamados phee ao longo de 30 segundos. Cada chamado tem duas ou três sílabas, e os dois animais se alternam sem sobreposição. Os sons e os intervalos são ilustrativos, não um registro real. Fonte: elaborada para o curso a partir de Takahashi, Narayanan e Ghazanfar (2013)." />
+<figcaption aria-hidden="true"><strong>Figura 2.</strong> Esquema de dois saguis alternando chamados <em>phee</em> ao longo de 30 segundos. Cada chamado tem duas ou três sílabas, e os dois animais se alternam sem sobreposição. Os sons e os intervalos são ilustrativos, não um registro real. Fonte: elaborada para o curso a partir de Takahashi, Narayanan e Ghazanfar (2013).</figcaption>
+</figure>
+<p>A troca de turnos também se desenvolve. Filhotes de sagui passam pela mesma trajetória de mudança que os bebês humanos, na mesma fase da vida; essa maturação depende de o filhote aprender a monitorar a própria voz, e chamados contingentes dos pais provocam chamados mais maduros (Takahashi; Fenley; Ghazanfar, 2016).</p>
+<p>Por que saguis, e não chimpanzés, se parecem conosco nesse ponto? Uma hipótese é a <strong>criação cooperativa</strong>, em que outros membros do grupo, além da mãe, ajudam a cuidar dos filhotes. Pressões desse tipo sobre as duas espécies fariam da troca de turnos de saguis e humanos um caso de <strong>convergência</strong> (Takahashi; Fenley; Ghazanfar, 2016). A interpretação é debatida: Levinson (2019, p. 197) sugere que o ritmo dos turnos humanos foi herdado de uma linhagem antiga de primatas e que a linguagem teve de se adaptar a ele.</p>
+<h2 id="genes-o-foxp2-e-o-mito-do-gene-da-linguagem">4. Genes: o FOXP2 e o mito do “gene da linguagem”</h2>
+<p>A família britânica conhecida pelas iniciais KE chamou a atenção de geneticistas porque, em três gerações, cerca de metade dos membros tinha a mesma dificuldade grave de fala e linguagem, um padrão compatível com a mutação de um único gene herdada de forma dominante (Fisher, 2016, p. 14). As pessoas afetadas têm <strong>apraxia da fala na infância</strong>, um problema no planejamento motor das sequências de movimentos da boca e do rosto, mas as dificuldades se estendem à linguagem oral e escrita (Fisher, 2016, p. 14).</p>
+<p>Lai e colegas (2001) acharam a causa: a troca de uma única letra do DNA num gene chamado <strong>FOXP2</strong>. Ele produz um <strong>fator de transcrição</strong>, uma proteína que se liga ao DNA e regula a atividade de outros genes. A mutação da família KE (R553H) fica no domínio <em>forkhead</em>, a parte da proteína que se liga ao DNA, e prejudica essa ligação; os afetados têm uma cópia normal e uma alterada do gene (Fisher, 2016, p. 14-15). Estudos de imagem cerebral dessas pessoas apontam alterações no estriado, parte dos núcleos da base (Fisher, 2016, p. 19).</p>
+<figure>
+<img src="img/aula13/foxp2.png" alt="Figura 3. Esquema da proteína FOXP2 (715 aminoácidos) com seus domínios principais. Em vermelho, a mutação R553H da família KE, no domínio forkhead, que se liga ao DNA. Em laranja, as duas trocas de aminoácido que surgiram na linhagem humana depois da separação dos chimpanzés e que também estão presentes nos neandertais. Fonte: elaborada para o curso a partir de Fisher (2016)." />
+<figcaption aria-hidden="true"><strong>Figura 3.</strong> Esquema da proteína FOXP2 (715 aminoácidos) com seus domínios principais. Em vermelho, a mutação R553H da família KE, no domínio <em>forkhead</em>, que se liga ao DNA. Em laranja, as duas trocas de aminoácido que surgiram na linhagem humana depois da separação dos chimpanzés e que também estão presentes nos neandertais. Fonte: elaborada para o curso a partir de Fisher (2016).</figcaption>
+</figure>
+<p>O FOXP2 virou manchete como “o gene da linguagem”. A comparação entre espécies mostra por que essa expressão engana:</p>
+<ul>
+<li><strong>O gene é antigo.</strong> Há versões dele em macacos, roedores, morcegos, aves, répteis e peixes. Em humanos e camundongos ele é expresso nas mesmas regiões: camadas profundas do córtex, estriado e cerebelo (Fisher, 2016, p. 17-18).</li>
+<li><strong>Ele participa do aprendizado vocal em aves.</strong> Em mandarins, reduzir o FoxP2 na Área X durante o período de aprendizado levou a uma imitação incompleta e imprecisa do canto do tutor (Fisher, 2016, p. 19). É homologia profunda: o aprendizado vocal surgiu de forma convergente em aves e humanos, mas reaproveitou um gene herdado (Fitch, 2019, p. 627).</li>
+<li><strong>A versão humana mudou pouco.</strong> Duas trocas de aminoácidos surgiram na linhagem humana depois da separação dos chimpanzés. Pensou-se que fossem muito recentes, mas as mesmas trocas foram encontradas em neandertais (Fisher, 2016, p. 20). Uma análise de populações humanas diversas não encontrou sinal de seleção natural recente no FOXP2 (Atkinson <em>et al.</em>, 2018).</li>
+<li><strong>Ele não está sozinho.</strong> Outros genes, como o <em>CNTNAP2</em>, também foram associados a distúrbios de linguagem, e mutações de grande efeito como a da família KE são raras (Fisher, 2016, p. 15, 20).</li>
+</ul>
+<div class="destaque">
+<p>O FOXP2 não é um interruptor que “liga” a linguagem. Explicações baseadas em “genes da gramática” são insustentáveis diante do que se sabe sobre como os genes funcionam (Fisher, 2016, p. 13). O FOXP2 é uma janela para circuitos antigos que ligam o córtex aos núcleos da base, e é uma peça de um quebra-cabeça complexo, não o gatilho único da linguagem (Fisher, 2016, p. 19-20).</p>
+</div>
+<h2 id="neurônios-espelho-uma-ponte-entre-ação-e-linguagem">5. Neurônios-espelho: uma ponte entre ação e linguagem?</h2>
+<p>No início dos anos 1990, pesquisadores que registravam neurônios na área F5 do córtex pré-motor de macacos notaram que alguns disparavam tanto quando o macaco executava uma ação com um objeto quanto quando ele <strong>via</strong> outro indivíduo fazer o mesmo (di Pellegrino <em>et al.</em>, 1992). São os <strong>neurônios-espelho</strong> (Rizzolatti; Rozzi, 2016, p. 63).</p>
+<p>Rizzolatti e Arbib (1998) propuseram que esse mecanismo estaria na origem da linguagem. O sistema espelho ligaria diretamente quem emite e quem recebe uma mensagem: o que conta para um conta para o outro, sem necessidade de acordo prévio. A fala teria evoluído a partir de uma comunicação por gestos, e o sistema espelho seria o mecanismo neural dessa passagem (Rizzolatti; Rozzi, 2016, p. 67). A correspondência entre F5 e a região de Broca, porém, não é simples: os próprios autores consideram possível, mas pouco provável, uma homologia direta entre a região de Broca e a área 44 do macaco, e sugerem que algumas funções de F5 teriam “migrado” para a região de Broca na evolução humana (Rizzolatti; Rozzi, 2016, p. 65-66).</p>
+<p>A proposta recebeu críticas fortes. Hickok (2009) argumentou que nenhum dado de macacos testa diretamente a ideia de que os neurônios-espelho são a base da compreensão das ações e que os dados de humanos pesam fortemente contra ela. O debate lembra o da teoria motora da percepção da fala (aula 3): participar de uma tarefa não é o mesmo que ser necessário para ela.</p>
+<h2 id="o-que-é-exclusivamente-humano">6. O que é exclusivamente humano?</h2>
+<p>Se quase tudo tem algum paralelo em outros animais, o que sobra de exclusivamente humano?</p>
+<p>Hauser, Chomsky e Fitch (2002) propuseram separar duas coisas (figura 4). A <strong>faculdade da linguagem em sentido amplo</strong> (FLB, da sigla em inglês) inclui o sistema sensório-motor, o sistema conceitual-intencional e os mecanismos que permitem gerar infinitas expressões com elementos finitos. A <strong>faculdade da linguagem em sentido estrito</strong> (FLN) seria a parte exclusiva dos humanos e da linguagem, e a hipótese do artigo é que ela inclui apenas a <strong>recursão</strong>: a capacidade de encaixar estruturas dentro de estruturas do mesmo tipo, como em “o livro [que o amigo [que você conheceu] me emprestou] sumiu” (Hauser; Chomsky; Fitch, 2002).</p>
+<figure>
+<img src="img/aula13/hcf.png" alt="Figura 4. A faculdade da linguagem em sentido amplo (FLB) inclui o sistema sensório-motor e o conceitual-intencional, em grande parte compartilhados com outros animais. Dentro dela, a faculdade em sentido estrito (FLN) seria, segundo a hipótese, apenas a recursão, exclusiva dos humanos e da linguagem. Fonte: elaborada para o curso a partir de Hauser, Chomsky e Fitch (2002)." />
+<figcaption aria-hidden="true"><strong>Figura 4.</strong> A faculdade da linguagem em sentido amplo (FLB) inclui o sistema sensório-motor e o conceitual-intencional, em grande parte compartilhados com outros animais. Dentro dela, a faculdade em sentido estrito (FLN) seria, segundo a hipótese, apenas a recursão, exclusiva dos humanos e da linguagem. Fonte: elaborada para o curso a partir de Hauser, Chomsky e Fitch (2002).</figcaption>
+</figure>
+<p>O artigo foi, antes de tudo, um convite à comparação entre espécies. Também gerou um debate intenso: Pinker e Jackendoff (2005) argumentaram que a hipótese de que só a recursão é exclusiva deixa de fora muitos outros aspectos especiais da linguagem, e defenderam que ela é uma adaptação complexa para a comunicação.</p>
+<h3 id="gramáticas-artificiais-os-animais-aprendem-estruturas-encaixadas">Gramáticas artificiais: os animais aprendem estruturas encaixadas?</h3>
+<p>Para testar a recursão em animais, os pesquisadores usam <strong>gramáticas artificiais</strong>: sequências de sílabas sem sentido organizadas por uma regra (figura 5). Na regra (AB)ⁿ, sílabas do tipo A e do tipo B se alternam (ABAB). Na regra AⁿBⁿ, vem um número de A seguido do mesmo número de B (AABB, AAABBB), um padrão que lembra o encaixe de frases.</p>
+<figure>
+<img src="img/aula13/gramaticas.png" alt="Figura 5. Duas gramáticas artificiais. Em (AB)ⁿ, basta saber que depois de A vem B. Em AⁿBⁿ, é preciso casar cada A com um B, como nas frases encaixadas; os arcos ligam os pares. No experimento do laboratório, as sílabas A tinham voz aguda e as B, voz grave. Fonte: elaborada para o curso a partir de Fitch e Hauser (2004)." />
+<figcaption aria-hidden="true"><strong>Figura 5.</strong> Duas gramáticas artificiais. Em (AB)ⁿ, basta saber que depois de A vem B. Em AⁿBⁿ, é preciso casar cada A com um B, como nas frases encaixadas; os arcos ligam os pares. No experimento do laboratório, as sílabas A tinham voz aguda e as B, voz grave. Fonte: elaborada para o curso a partir de Fitch e Hauser (2004).</figcaption>
+</figure>
+<p>Fitch e Hauser (2004) testaram humanos e saguis-cabeça-de-algodão (<em>Saguinus oedipus</em>). Os macacos dominaram a gramática simples, com regras apenas locais, mas não a de estrutura de frase. Gentner e colegas (2006) relataram que estorninhos, um pássaro canoro, aprenderam a distinguir as duas, e mandarins também conseguiram fazer a distinção (ten Cate; Petkov, 2019, p. 696). Mas a análise dos mandarins mostrou que eles resolviam a tarefa usando pistas locais, como a presença de dois A seguidos (que só existe em AⁿBⁿ), e não a estrutura completa (ten Cate; Petkov, 2019, p. 696). A maior parte das alegações de que animais processam estruturas desse tipo foi contestada por explicações mais simples, embora macacos treinados intensamente tenham aprendido uma gramática desse nível com estímulos visuais (Fitch, 2019, p. 631).</p>
+<p>No cérebro humano, as áreas de Brodmann 44 e 45 (parte da região de Broca) são muito maiores que no chimpanzé: a área 44 esquerda é cerca de 6,6 vezes maior e a 45, cerca de 6 vezes. Essas regiões também têm conexões muito mais extensas com os lobos parietal e temporal (Fitch, 2019, p. 631), o que lembra a via dorsal vista na aula 6.</p>
+<h3 id="combinar-chamados-e-compartilhar-intenções">Combinar chamados e compartilhar intenções</h3>
+<p>Animais também combinam sinais. O chapim-japonês, um pássaro, tem um chamado ABC, que faz os outros vasculharem o ambiente, e um chamado D, que faz os outros se aproximarem. A sequência ABC-D provoca as duas respostas; a ordem invertida, nenhuma (ten Cate; Petkov, 2019, p. 691). É uma forma rudimentar de <strong>composicionalidade</strong>: o sentido do todo vem das partes e da ordem.</p>
+<p>Outro candidato a diferença humana está no lado social. Crianças usam a linguagem para compartilhar informação, e humanos têm forte tendência à <strong>atenção conjunta</strong> e à <strong>intencionalidade compartilhada</strong> (fazer coisas juntos, com um objetivo comum), além de sinalizar abertamente que estão tentando comunicar (Fitch, 2019, p. 632). Grandes primatas, por exemplo, não usam o gesto de apontar para informar uns aos outros, algo que todos os humanos fazem (Rossano, 2019, p. 202).</p>
+<div class="destaque">
+<p><strong>A visão de mosaico.</strong> Nenhum animal estudado reúne todos os componentes da linguagem, mas quase todo componente tem algum paralelo: aprendizado vocal nas aves, troca de turnos nos saguis, combinação de chamados nos chapins. Uma resposta possível para “o que é único?” é a <strong>combinação</strong> desses componentes numa só espécie. Se essa combinação veio de um único salto ou do acúmulo de muitos passos continua em debate (Scharff; Knörnschild; Jarvis, 2019, p. 657; ten Cate; Scharff, 2019, p. 713).</p>
+</div>
+<h2 id="síntese-do-curso-quatro-perguntas-e-uma-abelha">7. Síntese do curso: quatro perguntas e uma abelha</h2>
+<p>O etólogo Niko Tinbergen propôs que todo comportamento pode ser estudado por quatro perguntas complementares: <strong>mecanismo</strong> (que processos o produzem?), <strong>desenvolvimento</strong> (como se forma ao longo da vida?), <strong>função</strong> (que vantagem traz?) e <strong>evolução</strong> (qual é a sua história na árvore das espécies?) (Fitch, 2019, p. 626).</p>
+<p>As respostas não competem entre si. Tome a troca de turnos dos saguis. Mecanismo: uma dinâmica de osciladores acoplados (Takahashi; Narayanan; Ghazanfar, 2013). Desenvolvimento: ela amadurece no início da vida, com participação dos pais (Takahashi; Fenley; Ghazanfar, 2016). Função: manter o contato com quem não está à vista (Fischer; Hage, 2019, p. 645). Evolução: talvez uma convergência com humanos ligada à criação cooperativa, talvez uma herança antiga dos primatas (seção 3).</p>
+<p>O curso cabe nessas perguntas: as aulas 3 a 7 trataram de <strong>mecanismos</strong> (do ouvido às palavras, frases e escrita); as aulas 8 a 10 levaram ao corpo, à voz e à conversa, perto da <strong>função</strong>; a aula 11 tratou do <strong>desenvolvimento</strong>; a 12, dos mecanismos vistos pela falha; e esta, da <strong>evolução</strong>.</p>
+<h3 id="de-volta-à-dança-das-abelhas">De volta à dança das abelhas</h3>
+<p>Na aula 1 a pergunta foi: a dança das abelhas é uma linguagem? Os traços que Charles Hockett usou para comparar a linguagem humana com outros sistemas, entre eles o canto dos pássaros e a própria dança (Fitch, 2019, p. 623), ajudam a responder (figura 6).</p>
+<figure>
+<img src="img/aula13/hockett_final.png" alt="Figura 6. Cinco traços de Hockett em seis sistemas de comunicação: ✓ = sim, ½ = em parte, – = não. A tabela é um julgamento feito a partir da literatura, e várias células são debatidas. Fonte: elaborada para o curso a partir de Hockett (1960), Fitch (2019) e Dong e colegas (2023)." />
+<figcaption aria-hidden="true"><strong>Figura 6.</strong> Cinco traços de Hockett em seis sistemas de comunicação: ✓ = sim, ½ = em parte, – = não. A tabela é um julgamento feito a partir da literatura, e várias células são debatidas. Fonte: elaborada para o curso a partir de Hockett (1960), Fitch (2019) e Dong e colegas (2023).</figcaption>
+</figure>
+<ul>
+<li><strong>Deslocamento</strong> (falar do que não está aqui): sim. A dança informa a localização de alimento distante, que as companheiras não estão vendo (Fitch, 2019, p. 623).</li>
+<li><strong>Arbitrariedade</strong> (o sinal não se parece com o que significa): em parte. O ângulo da corrida em relação à vertical do favo corresponde ao ângulo entre o alimento e o sol, e distâncias maiores produzem requebrados mais longos (Frisch, 1974): o sinal acompanha aquilo que representa.</li>
+<li><strong>Produtividade</strong> (mensagens novas, sem limite): limitada. A dança não permite dizer a cor ou a forma das flores, embora as abelhas percebam e lembrem cor e forma (Fitch, 2019, p. 623).</li>
+<li><strong>Dupla articulação</strong> (unidades sem sentido que formam unidades com sentido): não, na avaliação da figura 6.</li>
+<li><strong>Transmissão cultural</strong> (aprender com os outros): em parte. Abelhas que não puderam observar outras dançando antes da primeira dança erraram mais o ângulo e a distância; o erro de ângulo diminuiu com o tempo, o de distância, não (Dong <em>et al.</em>, 2023).</li>
+</ul>
+<p>Uma conclusão defensável é que a dança é um sistema de comunicação referencial, com deslocamento, mas não uma linguagem no sentido humano (Fitch, 2019, p. 623). A pergunta mais interessante, porém, não é “sim ou não”, e sim “<strong>quais componentes</strong> ela compartilha com a linguagem?”.</p>
+<div class="destaque">
+<p><strong>Uma frase para levar.</strong> Não existe “a área da linguagem” nem “o gene da linguagem”. Existe uma rede de regiões que se constrói no desenvolvimento, funciona na interação com outras pessoas, falha de modos específicos quando é lesada e tem uma história evolutiva em mosaico, com partes herdadas, partes convergentes e partes que talvez sejam só nossas.</p>
+</div>
+<h2 id="o-que-o-laboratório-mostrou">8. O que o laboratório mostrou</h2>
+<p><strong>Experimento 1: troca de turnos.</strong> Vocês tocavam na tela quando achavam que um assobio parecido com o <em>phee</em> tinha terminado. Na parte A os chamados tinham sempre a mesma duração; na parte B, não. Na parte A, o esperado é que muitos tenham aprendido o ritmo e passado a antecipar o fim, com intervalos curtos e algumas sobreposições. Na parte B só restava esperar o silêncio, e os intervalos tendem a ser maiores, perto de um tempo de reação simples. Em conversas reais, o intervalo mais comum entre turnos fica em torno de 200 ms, com diferenças pequenas entre dez línguas de cinco continentes. Como planejar e começar a dizer uma palavra leva cerca de 600 ms, e uma oração 1.000 ms ou mais, quem vai falar precisa planejar a resposta enquanto o outro ainda fala, prevendo o conteúdo e o momento em que o turno vai acabar (Levinson, 2019, p. 191; Rossano, 2019, p. 204). Os saguis seguem regras parecidas (alternar, evitar sobreposição), com intervalos bem mais longos; o botão “diálogo de dois saguis” dá uma ideia dessa escala.</p>
+<p><strong>Experimento 2: gramáticas artificiais.</strong> No bloco 1, com (AB)ⁿ, o esperado é um desempenho quase perfeito. No bloco 2, com AⁿBⁿ, muitas pessoas rejeitam com facilidade as sequências alternadas, mas aceitam sequências como AAABB, em que o número de A e de B não bate. Uma regra mais simples (“primeiro os A, depois os B”) acerta quase tudo sem contar. É a crítica feita aos estudos com animais: passar num teste AⁿBⁿ não prova que a estrutura encaixada foi representada (ten Cate; Petkov, 2019, p. 696). Quem rejeitou AAABB provavelmente contou.</p>
+<p><strong>Experimento 3: é linguagem?</strong> A grade de referência (figura 6) é um julgamento, não um gabarito; as discordâncias costumam aparecer nos pontos debatidos, como a arbitrariedade da dança. O esperado é que menos pessoas respondam “linguagem” do que na aula 1. O que importa é a justificativa.</p>
+<p><strong>Experimento 4: homologia ou convergência.</strong> Os erros costumam se concentrar nos casos em que o comportamento e os genes ou circuitos contam histórias diferentes, como o FOXP2 e o estriado: o aprendizado vocal é convergente, mas reaproveita um gene e uma estrutura homólogos (seção 4).</p>
+<p><strong>Experimento 5: uma ideia por aula.</strong> Confusões entre aulas vizinhas são esperadas e mostram o que vale revisar antes da avaliação.</p>
+<div class="conceitos">
+<dl>
+<dt><strong>Método comparativo</strong></dt>
+<dd>
+Estudo de uma característica em várias espécies vivas, interpretado à luz da árvore filogenética, para inferir sua história evolutiva (Fitch, 2019).
+</dd>
+<dt><strong>Homologia</strong></dt>
+<dd>
+Semelhança entre espécies herdada de um ancestral comum, como os ossos do braço humano e da asa do morcego (Fitch, 2019).
+</dd>
+<dt><strong>Convergência (analogia)</strong></dt>
+<dd>
+Semelhança que surgiu de forma independente em linhagens diferentes, como as asas de aves e morcegos como superfícies de voo, ou o aprendizado vocal de aves e humanos (Fitch, 2019).
+</dd>
+<dt><strong>Homologia profunda</strong></dt>
+<dd>
+Uso de genes reguladores antigos, herdados de um ancestral comum, na construção de traços que surgiram de forma convergente, como o FoxP2 no aprendizado do canto e da fala (Fitch, 2019).
+</dd>
+<dt><strong>Aprendizado de produção vocal</strong></dt>
+<dd>
+Capacidade de produzir vocalizações novas a partir do que se ouve, ou de remodelar vocalizações por influência social; é rara e foi documentada em três ordens de aves e cinco de mamíferos (Scharff; Knörnschild; Jarvis, 2019).
+</dd>
+<dt><strong>Resposta contingente</strong></dt>
+<dd>
+Resposta que vem logo depois de um comportamento e depende dele, como o chamado de um pai sagui após o chamado do filhote; acelera o desenvolvimento vocal (Takahashi; Liao; Ghazanfar, 2017).
+</dd>
+<dt><strong>Troca de turnos</strong></dt>
+<dd>
+Alternância na vez de vocalizar, evitando falar ao mesmo tempo; presente na conversa humana e nos chamados de saguis, em escalas de tempo diferentes (Takahashi; Narayanan; Ghazanfar, 2013; Levinson, 2019).
+</dd>
+<dt><strong>FOXP2</strong></dt>
+<dd>
+Gene que codifica um fator de transcrição; sua mutação na família KE causa um distúrbio grave de fala e linguagem, mas ele é antigo, existe em muitos vertebrados e não é um “gene da linguagem” (Fisher, 2016).
+</dd>
+<dt><strong>Neurônios-espelho</strong></dt>
+<dd>
+Neurônios que disparam tanto ao executar uma ação quanto ao ver outro executá-la, descritos na área F5 do macaco; seu papel na origem da linguagem é debatido (Rizzolatti; Rozzi, 2016; Hickok, 2009).
+</dd>
+<dt><strong>FLB e FLN</strong></dt>
+<dd>
+Faculdade da linguagem em sentido amplo (sistemas compartilhados com outros animais) e em sentido estrito (o que seria exclusivo dos humanos e da linguagem, hipoteticamente a recursão) (Hauser; Chomsky; Fitch, 2002).
+</dd>
+<dt><strong>Recursão</strong></dt>
+<dd>
+Encaixe de uma estrutura dentro de outra do mesmo tipo, como uma oração dentro de outra oração (Hauser; Chomsky; Fitch, 2002).
+</dd>
+<dt><strong>Quatro perguntas de Tinbergen</strong></dt>
+<dd>
+Mecanismo, desenvolvimento, função e evolução: quatro modos complementares de explicar um comportamento (Fitch, 2019).
+</dd>
+</dl>
+</div>
+<h2 id="para-revisar">Para revisar</h2>
+<ol type="1">
+<li><p>O chimpanzé é nosso parente mais próximo, mas é o papagaio que imita a fala. Explique por que isso não é uma contradição.</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>O aprendizado vocal não foi herdado de um ancestral comum de humanos e papagaios: ele surgiu de forma independente em algumas linhagens, por convergência. Parentesco próximo não garante semelhança em cada componente. Os chimpanzés têm pouco controle cortical sobre a laringe, enquanto papagaios e humanos têm vias neurais que permitem imitar sons novos.</p>
+</details></li>
+<li><p>Por que a convergência é útil para testar hipóteses sobre a evolução, e não apenas uma curiosidade?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Cada surgimento independente de um traço é um dado separado. Se o aprendizado vocal surgiu em várias linhagens, podemos procurar o que elas têm em comum (circuitos, genes, modo de vida) e testar se essas características acompanham o traço. Traços homólogos, por mais difundidos que sejam, representam um único evento evolutivo.</p>
+</details></li>
+<li><p>Durante muito tempo se disse que macacos não falam porque sua garganta não permite. Que dados enfraqueceram essa explicação e qual é a alternativa?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Primatas abaixam a laringe ao vocalizar, e o trato vocal de um macaco poderia produzir muitas vogais distinguíveis se houvesse controle neural adequado. A alternativa é neural: humanos (e aves que aprendem o canto) têm conexões diretas do córtex motor para os neurônios que controlam o órgão vocal, ausentes nos outros primatas.</p>
+</details></li>
+<li><p>Os saguis não imitam sons novos como os pássaros canoros. Então por que o desenvolvimento vocal deles interessa a quem estuda a fala humana?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Porque mostra que o retorno social contingente ajusta a vocalização mesmo num primata sem imitação vocal extensa. As respostas dos pais aceleram o amadurecimento dos chamados, e a falta desse retorno deixa vocalizações infantis no repertório. Algo parecido acontece com o balbucio dos bebês, o que sugere que o aprendizado vocal é um contínuo, não algo que se tem ou não se tem.</p>
+</details></li>
+<li><p>Explique, usando a ideia de homologia profunda, por que o FOXP2 pode ser homólogo em aves e humanos enquanto o aprendizado vocal é convergente.</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>O gene FOXP2 existe em muitos vertebrados e foi herdado de um ancestral comum (homologia). O aprendizado vocal surgiu de forma independente em aves e humanos (convergência), mas nas duas linhagens os circuitos que o sustentam reaproveitaram esse gene antigo, que atua em circuitos que ligam córtex e estriado. A mesma capacidade pode ser convergente no comportamento e homóloga nos genes.</p>
+</details></li>
+<li><p>Que argumento de Hickok pesa contra a ideia de que os neurônios-espelho explicam a origem da linguagem?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Hickok argumenta que nenhum dado de macacos testa diretamente se os neurônios-espelho são a base da compreensão de ações, e que os dados de humanos pesam contra essa ideia. Mostrar que uma região se ativa ao observar ações não prova que ela é necessária para entendê-las.</p>
+</details></li>
+<li><p>No experimento 2, por que aceitar a sequência AAABB indica que a pessoa usou uma regra mais simples que AⁿBⁿ? O que isso tem a ver com os estudos em animais?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>AAABB segue a regra “primeiro os A, depois os B”, mas tem números diferentes de A e B. Quem a aceita não estava casando cada A com um B. Nos estudos com animais, aves que pareciam ter aprendido AⁿBⁿ usavam pistas locais, como dois A seguidos, o que mostra que acertar o teste não prova que a estrutura encaixada foi representada.</p>
+</details></li>
+<li><p>Responda com as quatro perguntas de Tinbergen: por que os saguis trocam turnos?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Mecanismo: uma dinâmica de osciladores acoplados entre os dois animais. Desenvolvimento: a troca de turnos amadurece no início da vida, com participação dos pais. Função: manter contato com quem não está à vista. Evolução: possivelmente uma convergência com humanos ligada à criação cooperativa (ou, segundo outra visão, uma herança antiga dos primatas). As respostas se complementam.</p>
+</details></li>
+</ol>
+<h2 id="para-saber-mais">Para saber mais</h2>
+<ul>
+<li><strong>Hauser, Chomsky e Fitch (2002), na <em>Science</em>.</strong> O artigo que propôs a distinção FLB/FLN e convidou à pesquisa comparativa. Leitura avançada, em inglês, mas as primeiras páginas são acessíveis. DOI: https://doi.org/10.1126/science.298.5598.1569.</li>
+<li><strong>Gultekin e Hage (2017), na <em>Nature Communications</em>.</strong> Artigo curto mostrando que saguis com pouco retorno dos pais mantêm vocalizações infantis. Nível intermediário, em inglês, de acesso aberto. DOI: https://doi.org/10.1038/ncomms14046.</li>
+<li><strong>Fisher (2016), capítulo 2 de <em>Neurobiology of Language</em>.</strong> A história do FOXP2, da família KE aos modelos animais, e por que ele não é “o gene da linguagem”. Nível intermediário, em inglês.</li>
+<li><strong>Takahashi, Fenley e Ghazanfar (2016), na <em>Philosophical Transactions of the Royal Society B</em>.</strong> O desenvolvimento da troca de turnos em filhotes de sagui e a hipótese da criação cooperativa. Nível intermediário, em inglês. DOI: https://doi.org/10.1098/rstb.2015.0370.</li>
+</ul>
+<h2 id="referências">Referências</h2><div class="refs">
+<p>ATKINSON, E. G. <em>et al.</em> No evidence for recent selection at FOXP2 among diverse human populations. <strong>Cell</strong>, v. 174, n. 6, p. 1424-1435.e15, 2018. DOI: https://doi.org/10.1016/j.cell.2018.06.048.</p>
+<p>DI PELLEGRINO, G. <em>et al.</em> Understanding motor events: a neurophysiological study. <strong>Experimental Brain Research</strong>, v. 91, n. 1, p. 176-180, 1992. DOI: https://doi.org/10.1007/BF00230027.</p>
+<p>DICK, F. <em>et al.</em> Language development. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 373-388. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00031-6.</p>
+<p>DONG, S. <em>et al.</em> Social signal learning of the waggle dance in honey bees. <strong>Science</strong>, v. 379, n. 6636, p. 1015-1018, 2023. DOI: https://doi.org/10.1126/science.ade1702.</p>
+<p>FISCHER, J.; HAGE, S. R. Primate vocalization as a model for human speech: scopes and limits. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 639-656.</p>
+<p>FISHER, S. E. A molecular genetic perspective on speech and language. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 13-24. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00002-X.</p>
+<p>FITCH, W. T. The comparative approach to the biology and evolution of language. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 623-637.</p>
+<p>FITCH, W. T.; HAUSER, M. D. Computational constraints on syntactic processing in a nonhuman primate. <strong>Science</strong>, v. 303, n. 5656, p. 377-380, 2004. DOI: https://doi.org/10.1126/science.1089401.</p>
+<p>FRISCH, K. von. Decoding the language of the bee. <strong>Science</strong>, v. 185, n. 4152, p. 663-668, 1974. DOI: https://doi.org/10.1126/science.185.4152.663.</p>
+<p>GENTNER, T. Q. <em>et al.</em> Recursive syntactic pattern learning by songbirds. <strong>Nature</strong>, v. 440, n. 7088, p. 1204-1207, 2006. DOI: https://doi.org/10.1038/nature04675.</p>
+<p>GULTEKIN, Y. B.; HAGE, S. R. Limiting parental feedback disrupts vocal development in marmoset monkeys. <strong>Nature Communications</strong>, v. 8, 14046, 2017. DOI: https://doi.org/10.1038/ncomms14046.</p>
+<p>HAUSER, M. D.; CHOMSKY, N.; FITCH, W. T. The faculty of language: what is it, who has it, and how did it evolve? <strong>Science</strong>, v. 298, n. 5598, p. 1569-1579, 2002. DOI: https://doi.org/10.1126/science.298.5598.1569.</p>
+<p>HICKOK, G. Eight problems for the mirror neuron theory of action understanding in monkeys and humans. <strong>Journal of Cognitive Neuroscience</strong>, v. 21, n. 7, p. 1229-1243, 2009. DOI: https://doi.org/10.1162/jocn.2009.21189.</p>
+<p>HOCKETT, C. F. The origin of speech. <strong>Scientific American</strong>, v. 203, n. 3, p. 88-96, 1960. DOI: https://doi.org/10.1038/scientificamerican0960-88.</p>
+<p>LAI, C. S. L. <em>et al.</em> A forkhead-domain gene is mutated in a severe speech and language disorder. <strong>Nature</strong>, v. 413, n. 6855, p. 519-523, 2001. DOI: https://doi.org/10.1038/35097076.</p>
+<p>LEVINSON, S. C. Interactional foundations of language: the interaction engine hypothesis. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 189-200.</p>
+<p>PINKER, S.; JACKENDOFF, R. The faculty of language: what’s special about it? <strong>Cognition</strong>, v. 95, n. 2, p. 201-236, 2005. DOI: https://doi.org/10.1016/j.cognition.2004.08.004.</p>
+<p>RIZZOLATTI, G.; ARBIB, M. A. Language within our grasp. <strong>Trends in Neurosciences</strong>, v. 21, n. 5, p. 188-194, 1998. DOI: https://doi.org/10.1016/S0166-2236(98)01260-0.</p>
+<p>RIZZOLATTI, G.; ROZZI, S. Motor cortex and mirror system in monkeys and humans. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 59-72. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00006-7.</p>
+<p>ROSSANO, F. The structure and timing of human versus primate social interaction. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 201-219.</p>
+<p>SCHARFF, C.; KNÖRNSCHILD, M.; JARVIS, E. D. Vocal learning and spoken language: insights from animal models with an emphasis on genetic contributions. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 657-685.</p>
+<p>TAKAHASHI, D. Y. <em>et al.</em> The developmental dynamics of marmoset monkey vocal production. <strong>Science</strong>, v. 349, n. 6249, p. 734-738, 2015. DOI: https://doi.org/10.1126/science.aab1058.</p>
+<p>TAKAHASHI, D. Y.; FENLEY, A. R.; GHAZANFAR, A. A. Early development of turn-taking with parents shapes vocal acoustics in infant marmoset monkeys. <strong>Philosophical Transactions of the Royal Society B</strong>: Biological Sciences, v. 371, n. 1693, 20150370, 2016. DOI: https://doi.org/10.1098/rstb.2015.0370.</p>
+<p>TAKAHASHI, D. Y.; LIAO, D. A.; GHAZANFAR, A. A. Vocal learning via social reinforcement by infant marmoset monkeys. <strong>Current Biology</strong>, v. 27, n. 12, p. 1844-1852.e6, 2017. DOI: https://doi.org/10.1016/j.cub.2017.05.004.</p>
+<p>TAKAHASHI, D. Y.; NARAYANAN, D. Z.; GHAZANFAR, A. A. Coupled oscillator dynamics of vocal turn-taking in monkeys. <strong>Current Biology</strong>, v. 23, n. 21, p. 2162-2168, 2013. DOI: https://doi.org/10.1016/j.cub.2013.09.005.</p>
+<p>TEN CATE, C.; PETKOV, C. I. The grammatical abilities of animals: a comparative overview. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 687-700.</p>
+<p>TEN CATE, C.; SCHARFF, C. Key issues and future directions: the comparative approach to language. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 713-718.</p>
+</div>
+<p class="rodape">Material de estudo da disciplina Bases neurais da comunicação humana (UFRN), Prof. Daniel Y. Takahashi. Texto e figuras elaborados para o curso; as fontes estão nas Referências.</p>
+</div>

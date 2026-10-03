@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 10 · O cérebro social: entendendo outras mentes — Material de estudo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,600..800&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{--bg:#f6f7f9;--surface:#fff;--fg:#142033;--muted:#566377;--line:#d8dee6;--accent:#0e7c86;--accent2:#c9771a;--soft:#e5f1f2;--soft2:#fbf1e3;
+--display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;--body:"Source Serif 4",Georgia,"Times New Roman",serif;--ui:"Source Sans 3","Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1621;--surface:#172132;--fg:#e6ecf3;--muted:#9aa8b9;--line:#2a3850;--accent:#3db4be;--accent2:#f0a645;--soft:#173740;--soft2:#3a2c17;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:18px/1.65 var(--body)}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 80px}
+.top{font:600 13px/1.4 var(--ui);display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:22px}
+.top a{color:var(--accent);text-decoration:none}
+.eyebrow{font:600 12px/1 ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(30px,6.5vw,46px)/1.08 var(--display);font-stretch:112%;margin:10px 0 8px;text-wrap:balance}
+.sub{font:400 20px/1.4 var(--ui);color:var(--muted);margin:0 0 26px}
+h2{font:750 25px/1.2 var(--display);margin:46px 0 12px;text-wrap:balance}
+h3{font:700 19px/1.3 var(--ui);margin:28px 0 8px}
+p{margin:0 0 16px}
+a{color:var(--accent)}
+ul,ol{padding-left:24px;margin:0 0 16px} li{margin:4px 0}
+figure{margin:26px 0;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;break-inside:avoid}
+figure img{width:100%;height:auto;display:block;border-radius:6px;background:#fff}
+figcaption{font:15px/1.5 var(--ui);color:var(--muted);margin-top:10px}
+.objetivos{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;padding:14px 18px 6px;margin:0 0 30px;font-family:var(--ui)}
+.objetivos::before{content:"Nesta aula você vai aprender a";display:block;font:700 13px/1 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:4px 0 10px}
+.destaque{background:var(--soft2);border-radius:10px;padding:14px 18px 2px;margin:22px 0;font-family:var(--ui);break-inside:avoid}
+.conceitos{background:var(--soft);border-radius:12px;padding:16px 20px 6px;margin:30px 0;font-family:var(--ui)}
+.conceitos::before{content:"Conceitos-chave";display:block;font:700 13px/1 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:4px 0 12px}
+.conceitos dl{margin:0} .conceitos dt{font-weight:700;margin-top:10px} .conceitos dd{margin:2px 0 8px 0;color:var(--fg)}
+details{margin:8px 0 4px;font-family:var(--ui);font-size:16px}
+summary{cursor:pointer;color:var(--accent);font-weight:600}
+details[open] summary{margin-bottom:6px}
+.refs p,#referencias + * p{font-size:15px;line-height:1.5;padding-left:1.4em;text-indent:-1.4em}
+.rodape{margin-top:50px;padding-top:16px;border-top:1px solid var(--line);font:13px/1.5 var(--ui);color:var(--muted)}
+@media print{
+ :root{--bg:#fff;--surface:#fff}
+ body{font-size:11.5pt;line-height:1.5}
+ .wrap{max-width:none;padding:0}
+ .top{display:none}
+ h2{font-size:17pt;margin-top:24pt;break-after:avoid}
+ h1{font-size:28pt}
+ figure{padding:8pt;border-color:#ccc}
+ figure img{max-height:9cm;object-fit:contain}
+ details>summary{display:none}
+ details{margin-left:0;font-size:10.5pt}
+ details::before{content:"Resposta: ";font-weight:700}
+ a{color:inherit;text-decoration:none}
+ .refs p{font-size:10pt}
+ @page{size:A4;margin:18mm 18mm 20mm}
+}
+</style>
+<div class="wrap">
+<nav class="top"><a href="index.html">Material de estudo</a><a href="../aula10.html">Laboratório da aula 10</a><a href="aula09.html">← Aula 9</a><a href="aula11.html">Aula 11 →</a></nav>
+<span class="eyebrow">Bases neurais da comunicação humana · Aula 10 · Material de estudo</span>
+<h1>O cérebro social: entendendo outras mentes</h1>
+<p class="sub">Para entender o que alguém quer dizer, o cérebro precisa imaginar o que essa pessoa pensa. E conversar é coordenar duas mentes em frações de segundo.</p>
+<div class="objetivos">
+<ul>
+<li>Explicar por que a comunicação humana não se resume a codificar e decodificar sinais.</li>
+<li>Definir teoria da mente e descrever o teste de crença falsa e o que ele revela sobre o desenvolvimento.</li>
+<li>Identificar as principais regiões da rede de mentalização e discutir os limites do que a neuroimagem mostra.</li>
+<li>Usar as ideias de Grice para explicar implicaturas, pedidos indiretos, ironia e metáfora.</li>
+<li>Descrever a conversa como ação conjunta: a alternância de turnos em cerca de 200 ms, o planejamento durante a escuta e as raízes dessa habilidade em outros primatas.</li>
+</ul>
+</div>
+<h2 id="comunicar-não-é-só-decodificar">1. Comunicar não é só decodificar</h2>
+<p>Imagine que você chega encharcado à parada de ônibus, depois de uma hora de chuva, e um colega diz: “Que dia lindo!”. Ninguém ali acha que ele está elogiando o tempo. Você entende o contrário do que as palavras dizem. Como?</p>
+<p>Uma forma tradicional de pensar a comunicação é o <strong>modelo do código</strong>. O falante transforma uma mensagem em sinais (codifica), os sinais viajam, e o ouvinte faz a operação inversa (decodifica). Se os dois partilham o mesmo código, a mensagem chega igual. Esse modelo vem da teoria da comunicação de Shannon e Weaver, do fim dos anos 1940, e ainda orienta boa parte dos estudos de comunicação animal: o sinal carrega informação e a tarefa de quem percebe é decodificá-lo (Rossano, 2019). Ele explica bem um telégrafo. Explica mal o “que dia lindo!”.</p>
+<p>O filósofo Paul Grice propôs outra ideia, que hoje chamamos de <strong>modelo inferencial</strong>. Para Grice, comunicar é ter a intenção de produzir um efeito na mente do outro <em>e</em> querer que o outro reconheça essa intenção (Levinson, 2019; Bara; Enrici; Adenzato, 2016). O ouvinte não apenas decodifica: ele <em>infere</em> o que o falante quer dizer, juntando o que foi dito, o contexto e o que sabe sobre o falante. A teoria da relevância, de Sperber e Wilson (1986), desenvolveu essa linha. Levinson (2019) dá um exemplo sem palavras. Numa mesa de reunião, você esfrega com força o próprio lábio superior olhando para um colega. Ele entende que tem espuma de café no bigode. Não existe um código para isso. O gesto funciona porque o colega percebe que você quer que ele perceba algo.</p>
+<p>Mesmo frases simples exigem esse tipo de inferência. A mesma forma pode realizar ações muito diferentes: “O que você vai fazer hoje à noite?” pode ser o começo de um convite, e não uma pergunta sobre a sua rotina. Não há correspondência de um para um entre a forma de uma frase e a ação que ela realiza (Levinson, 2019).</p>
+<figure>
+<img src="img/aula10/codigo_inferencia.png" alt="Figura 1. No modelo do código, a mensagem é codificada, transmitida e decodificada igual. No modelo inferencial, o ouvinte combina a frase com o contexto (chuva, cara fechada) e infere a intenção do falante. Fonte: elaborada para o curso a partir de Grice (1975), Sperber e Wilson (1986) e Levinson (2019)." />
+<figcaption aria-hidden="true"><strong>Figura 1.</strong> No modelo do código, a mensagem é codificada, transmitida e decodificada igual. No modelo inferencial, o ouvinte combina a frase com o contexto (chuva, cara fechada) e infere a intenção do falante. Fonte: elaborada para o curso a partir de Grice (1975), Sperber e Wilson (1986) e Levinson (2019).</figcaption>
+</figure>
+<p>Há boas razões para pensar que essa capacidade de comunicar intenções é, em parte, independente da língua. Crianças surdas que crescem sem acesso a uma língua de sinais inventam sistemas de gestos caseiros para se comunicar com a família. Pessoas com afasia grave conseguem sustentar uma comunicação complexa em casa com recursos mínimos, quase só com sinais de concordar e discordar (Levinson, 2019). Em estudos de neuroimagem, gerar uma mensagem para alguém e processar as palavras dessa mensagem dependem de regiões diferentes: num jogo de adivinhar palavras, o córtex pré-frontal medial respondeu à intenção comunicativa, e a região frontal inferior esquerda, da rede da linguagem, respondeu à dificuldade linguística (Bara; Enrici; Adenzato, 2016). Por isso, nesta aula, além da rede da linguagem que você viu nas aulas 5 e 6, entra em cena uma segunda rede: a que usamos para pensar sobre o que os outros pensam.</p>
+<h2 id="teoria-da-mente-o-outro-pode-acreditar-em-algo-falso">2. Teoria da mente: o outro pode acreditar em algo falso</h2>
+<p><strong>Teoria da mente</strong> é a capacidade de reconhecer que as pessoas têm estados mentais (crenças, desejos, intenções, emoções), de atribuir esses estados a si e aos outros, de entender que os estados mentais dos outros podem ser diferentes dos nossos e de usar isso para explicar e prever o que as pessoas fazem (Bara; Enrici; Adenzato, 2016). A expressão se popularizou com um artigo de Premack e Woodruff (1978) que perguntava, já no título, se o chimpanzé tem uma teoria da mente.</p>
+<p>Como saber se alguém atribui crenças aos outros? Se a crença do outro for verdadeira, não dá para separar “o que ele pensa” de “o que é verdade”: basta responder pela realidade. O teste decisivo é o de <strong>crença falsa</strong>. Wimmer e Perner (1983) mostraram a crianças de 3 a 9 anos histórias em que um personagem guarda um objeto num lugar e, enquanto ele não vê, o objeto é levado para outro lugar. A pergunta era: onde o personagem vai procurar? As crianças de 3 e 4 anos erravam. Segundo os autores, a capacidade de representar a relação entre o que duas pessoas sabem surge e se firma “por volta dos 4 aos 6 anos”. Baron-Cohen, Leslie e Frith (1985) adaptaram a tarefa para uma brincadeira com bonecos, que ficou conhecida como o teste de Sally e Ana (Figura 2). Para acertar, a criança precisa dizer que Sally vai procurar na cesta, onde ela <em>acha</em> que a bola está, e não na caixa, onde a bola de fato está.</p>
+<figure>
+<img src="img/aula10/sally_anne.png" alt="Figura 2. O teste de Sally e Ana. Sally guarda a bola na cesta e sai. Ana muda a bola para a caixa. Quando Sally volta, onde ela vai procurar? Fonte: elaborada para o curso a partir de Baron-Cohen, Leslie e Frith (1985)." />
+<figcaption aria-hidden="true"><strong>Figura 2.</strong> O teste de Sally e Ana. Sally guarda a bola na cesta e sai. Ana muda a bola para a caixa. Quando Sally volta, onde ela vai procurar? Fonte: elaborada para o curso a partir de Baron-Cohen, Leslie e Frith (1985).</figcaption>
+</figure>
+<p>Crianças pequenas falham nos testes clássicos de crença falsa até por volta dos 4 anos (Levinson, 2019). Uma meta-análise que reuniu 178 estudos encontrou a mesma progressão com a idade em diferentes países e com diferentes versões da tarefa: os pré-escolares passam de um desempenho abaixo do acaso para um acima do acaso. Para os autores, isso indica uma mudança real na forma como a criança entende a mente, e não um efeito de detalhes da tarefa (Wellman; Cross; Watson, 2001).</p>
+<p>Isso não quer dizer que bebês não percebam nada sobre a mente dos outros. Onishi e Baillargeon (2005) criaram uma tarefa não verbal e concluíram que bebês de 15 meses já preveem o comportamento de uma pessoa com base na crença dela sobre onde um brinquedo está escondido, mesmo quando essa crença é falsa. Como conciliar esse resultado com o erro das crianças de 3 anos? Uma proposta é distinguir uma leitura de mentes <strong>implícita</strong>, automática e presente muito cedo (e também em outras espécies), de uma leitura <strong>explícita</strong>, que a criança consegue expressar numa resposta e que aparece mais tarde (Frith; Frith, 2012; Levinson, 2019).</p>
+<p>A teoria da mente se constrói aos poucos. Por volta dos 9 aos 12 meses, os bebês passam a seguir o olhar dos adultos, a usá-los como referência em situações novas e a imitar o que eles fazem com objetos. Começam a tratar os outros como agentes com objetivos e escolhas próprias (Tomasello, 2003, p. 21). Depois da crença falsa simples vêm formas mais complexas, como a crença de <strong>segunda ordem</strong> (“o Caio acha que a Bia acha que…”), que Perner e Wimmer (1985) estudaram em crianças de 5 a 10 anos.</p>
+<p>A linguagem parece ajudar nesse desenvolvimento. Crianças surdas filhas de pais surdos, que usam fluentemente uma língua de sinais com elas, desenvolvem a teoria da mente bem mais depressa do que crianças surdas filhas de pais ouvintes que não sinalizam com fluência. Há várias explicações em disputa: a conversa obrigaria a criança a trocar de perspectiva o tempo todo; palavras como “achar” e “saber” ajudariam a pensar sobre a mente; frases do tipo “ela acha <em>que</em>…” dariam o formato para representar crenças falsas. A pesquisa ainda não permite escolher entre elas, mas indica com bastante clareza que aprender uma língua facilita entender que os outros têm vidas mentais próprias (Tomasello, 2003, p. 277-279).</p>
+<div class="destaque">
+<p>O teste de crença falsa não mede se a criança “gosta” dos outros ou presta atenção neles. Mede se ela consegue manter na cabeça, ao mesmo tempo, duas versões do mundo: como ele é e como outra pessoa pensa que ele é. Na conversa, fazemos isso o tempo todo.</p>
+</div>
+<p>E o autismo? O estudo de 1985 ficou famoso porque comparou crianças autistas com crianças com síndrome de Down e crianças com desenvolvimento típico. Embora tivessem idade mental mais alta que a dos outros grupos, só as crianças autistas falharam em atribuir crenças aos bonecos (Baron-Cohen; Leslie; Frith, 1985). Estudos posteriores mostraram um quadro mais variado: algumas pessoas autistas passam a atribuir estados mentais mais tarde (Happé, 1993). O teste não serve como diagnóstico nem como resumo de uma pessoa.</p>
+<h2 id="a-rede-de-mentalização">3. A rede de mentalização</h2>
+<p>Quando pensamos sobre o que outra pessoa pensa, um conjunto de regiões cerebrais se ativa de forma bastante consistente. Ele é chamado de <strong>rede de mentalização</strong> ou rede da teoria da mente (Figura 3). As principais regiões são o <strong>córtex pré-frontal medial</strong> (mPFC), na face interna do lobo frontal; o <strong>precuneus</strong>, na face interna do lobo parietal; e, dos dois lados, a parte posterior do <strong>sulco temporal superior</strong> e a vizinha <strong>junção temporoparietal</strong> (TPJ, onde o lobo temporal encontra o parietal) (Bara; Enrici; Adenzato, 2016). Os polos temporais também costumam aparecer (Castelli <em>et al.</em>, 2000).</p>
+<figure>
+<img src="img/aula10/rede_mentalizacao.png" alt="Figura 3. Localização aproximada das principais regiões da rede de mentalização: junção temporoparietal, sulco temporal superior posterior e polo temporal (vista lateral); córtex pré-frontal medial e precuneus (vista medial). Fonte: elaborada para o curso a partir de Castelli et al. (2000) e Bara, Enrici e Adenzato (2016)." />
+<figcaption aria-hidden="true"><strong>Figura 3.</strong> Localização aproximada das principais regiões da rede de mentalização: junção temporoparietal, sulco temporal superior posterior e polo temporal (vista lateral); córtex pré-frontal medial e precuneus (vista medial). Fonte: elaborada para o curso a partir de Castelli <em>et al.</em> (2000) e Bara, Enrici e Adenzato (2016).</figcaption>
+</figure>
+<p>Essa rede aparece com tarefas muito diferentes. Uma das mais elegantes é a de Saxe e Kanwisher (2003). Elas compararam histórias sobre as crenças de um personagem com histórias de controle que também envolviam uma representação falsa, mas sem mente, como uma fotografia que ficou desatualizada. A TPJ respondeu às histórias sobre estados mentais, e não às representações falsas sem mente, nem a histórias que descreviam pessoas fisicamente. Ou seja, ela não responde a “qualquer coisa desatualizada” nem à simples presença de uma pessoa, e sim ao raciocínio sobre o que alguém pensa.</p>
+<p>Castelli e colegas (2000) usaram tomografia por emissão de pósitrons (PET) enquanto voluntários assistiam a animações mudas de formas geométricas. Quando o movimento das formas levava a atribuir estados mentais, e não apenas a descrever ações simples, aumentava a atividade no córtex pré-frontal medial, na TPJ e no sulco temporal superior, nos polos temporais e em áreas visuais. Em jogos de dois jogadores, o mPFC também se ativa mais quando as pessoas acham que estão jogando contra outra pessoa do que contra um computador (Bara; Enrici; Adenzato, 2016).</p>
+<p>Dados de lesão ajudam a mostrar que uma região é necessária, e não só ativada. Pacientes com lesão na TPJ esquerda falharam em tarefas em que precisavam raciocinar sobre a crença de outra pessoa (Samson <em>et al.</em>, 2004).</p>
+<p><strong>Comunicar uma intenção ativa a mesma rede.</strong> O grupo de Bara, em Turim, propõe que essa rede é recrutada de forma progressiva conforme o tipo de intenção. Em estudos com histórias em quadrinhos, entender uma intenção privada (alguém pega um cacho de uvas para comer) ativou a TPJ direita e o precuneus. Intenções sociais acrescentaram o mPFC. Só as intenções comunicativas, com dois personagens interagindo, ativaram a rede inteira, incluindo a TPJ esquerda (Bara; Enrici; Adenzato, 2016). A rede responde também a intenções comunicadas por gestos, e não só por palavras.</p>
+<p>A rede entra também quando <em>produzimos</em> comunicação. No estudo de Sassa e colegas, descrito no mesmo capítulo, as pessoas viam vídeos curtos de alguém usando um objeto e, conforme a instrução, falavam <em>com</em> essa pessoa ou apenas <em>descreviam</em> a cena. As duas condições envolviam falar, e as duas ativaram a região frontal inferior esquerda ligada à produção da linguagem, que não diferiu entre elas. Mas falar com alguém ativou mais o mPFC, as duas TPJ e os polos temporais (Bara; Enrici; Adenzato, 2016).</p>
+<p><strong>Cuidados.</strong> Primeiro, a neuroimagem mostra que uma região participa de uma tarefa, mas não prova que ela é necessária; por isso os estudos com pacientes são importantes (Bara; Enrici; Adenzato, 2016). Segundo, uma região não faz uma coisa só. O córtex temporoparietal, sobretudo à direita, também faz parte de uma rede de atenção que detecta estímulos relevantes, em especial os inesperados (Corbetta; Shulman, 2002). Terceiro, não existe um “centro da teoria da mente”: é uma rede, e o papel de cada região ainda está sendo descrito.</p>
+<h2 id="o-que-se-diz-e-o-que-se-quer-dizer">4. O que se diz e o que se quer dizer</h2>
+<p>A <strong>pragmática</strong> estuda como o sentido depende do uso: quem fala, para quem, em que situação e com que intenção. Em muitos fenômenos pragmáticos, o sentido literal e o pretendido não coincidem: pedidos indiretos, implicaturas, sarcasmo, metáfora e ironia (Bara; Enrici; Adenzato, 2016).</p>
+<p>Grice (1975) propôs que conversar é uma atividade cooperativa. O ouvinte supõe que o falante segue um <strong>princípio de cooperação</strong>: contribuir para a conversa da forma que o propósito da conversa pede. Grice detalhou esse princípio em quatro categorias de máximas: diga o quanto for preciso, nem mais nem menos (<em>quantidade</em>); não diga o que acredita ser falso nem aquilo para o que não tem evidência (<em>qualidade</em>); seja relevante (<em>relação</em>); seja claro, breve e ordenado (<em>modo</em>) (Grice, 1975; Mildner, 2008, p. 212).</p>
+<p>Um exemplo do próprio Grice, adaptado: A diz “Acabou minha gasolina”. B responde: “Tem um posto ali na esquina”. B não disse que o posto está aberto nem que vende gasolina. Mas, se B está cooperando, a resposta só é relevante se o posto puder resolver o problema, e A entende isso (Grice, 1975). Esse conteúdo que o falante comunica sem dizer se chama <strong>implicatura</strong>. Ele é inferido, e não codificado.</p>
+<p>O caso mais interessante é quando o falante <em>viola de propósito</em> uma máxima. Quem diz “que dia lindo!” sob uma tempestade diz algo tão obviamente falso que o ouvinte, supondo que o falante coopera, procura outro sentido (Grice, 1975). A Figura 4 mostra três casos comuns em que o literal e o pretendido se separam.</p>
+<figure>
+<img src="img/aula10/tres_jeitos.png" alt="Figura 4. Três jeitos de dizer uma coisa e querer dizer outra. No pedido indireto, a pergunta sobre capacidade funciona como pedido; na ironia, o elogio ao tempo é uma queixa; na metáfora, “fera” não é um animal. Fonte: elaborada para o curso a partir de Grice (1975)." />
+<figcaption aria-hidden="true"><strong>Figura 4.</strong> Três jeitos de dizer uma coisa e querer dizer outra. No pedido indireto, a pergunta sobre capacidade funciona como pedido; na ironia, o elogio ao tempo é uma queixa; na metáfora, “fera” não é um animal. Fonte: elaborada para o curso a partir de Grice (1975).</figcaption>
+</figure>
+<p><strong>Pedidos indiretos.</strong> “Você pode me passar o sal?” tem forma de pergunta sobre capacidade, mas ninguém responde só “posso”. Respostas indiretas também exigem inferência. Num estudo descrito por Bara, Enrici e Adenzato (2016), respostas indiretas num diálogo falado, em que o sentido do falante ficava implícito, ativaram sobretudo o mPFC e a TPJ direita, em comparação com respostas diretas.</p>
+<p><strong>Ironia.</strong> Na ironia, a intenção comunicativa muitas vezes é o oposto do sentido literal. Para entendê-la, o ouvinte precisa representar o que o falante pensa e sabe; muitas vezes, uma crença de segunda ordem: “ele sabe que eu sei que está chovendo”. Spotorno e colegas (2012) usaram histórias curtas que terminavam com a mesma frase, por exemplo “Hoje à noite fizemos uma apresentação excelente”, dita depois de uma apresentação ótima (sentido literal) ou de uma péssima (ironia). As frases irônicas ativaram mais o mPFC, as duas TPJ e o precuneus, isto é, a rede de mentalização (Bara; Enrici; Adenzato, 2016). Na metáfora, um estudo encontrou aumento de atividade na TPJ direita e no frontal medial superior para frases figuradas em comparação com literais (Bara; Enrici; Adenzato, 2016).</p>
+<p><strong>Literal primeiro?</strong> Há um debate clássico sobre a ordem do processamento. Numa leitura serial do modelo de Grice, o ouvinte calcularia primeiro o sentido literal, perceberia que ele não faz sentido e só então chegaria ao sentido pretendido; a ironia deveria, então, custar sempre mais tempo. Gibbs (1986) mostrou que, quando o contexto apoia a ironia, a mesma frase é lida tão depressa no contexto irônico quanto no literal. Esse resultado favorece a ideia de <strong>acesso direto</strong>: com contexto suficiente, o sentido irônico pode ser construído sem passar antes pelo literal. Giora (1997) propôs uma posição intermediária, a hipótese da <strong>saliência graduada</strong>: o sentido mais saliente (o mais frequente, o mais convencional) é ativado primeiro, seja ele literal ou não. Por isso, uma expressão irônica muito usada, como “Que beleza!” diante de uma notícia ruim, tem o sentido irônico disponível de imediato.</p>
+<p><strong>O papel do hemisfério direito.</strong> Muitos pacientes com lesões no hemisfério direito mantêm uma boa competência gramatical, mas têm dificuldade com o sentido pretendido ou implícito, com sarcasmo, ironia e humor, com a ideia central de uma história e com as regras da conversa. Isso não acontece com todos os pacientes, e problemas parecidos aparecem também depois de lesões pré-frontais esquerdas ou bilaterais. Por isso não dá para dizer que a pragmática “mora” no hemisfério direito (Mildner, 2008, p. 210-212). Pessoas com lesões no córtex pré-frontal medial têm dificuldade em inferir a intenção do falante, e doenças neurodegenerativas que afetam o lobo frontal prejudicam a compreensão de sarcasmo, metáforas e pedidos indiretos (Bara; Enrici; Adenzato, 2016).</p>
+<p><strong>Autismo.</strong> Happé (1993) testou, em pessoas autistas e em crianças com desenvolvimento típico, uma previsão da teoria da relevância: o tipo de linguagem figurada que alguém entende depende do nível de teoria da mente que tem (nenhum, só de primeira ordem ou também de segunda ordem). Os resultados apoiaram a previsão e mostraram uma ligação estreita entre entender pessoas e entender o que elas querem dizer.</p>
+<h2 id="a-conversa-como-ação-conjunta">5. A conversa como ação conjunta</h2>
+<p>A conversa face a face é o ambiente natural da linguagem. É nela que as crianças aprendem a falar e é nela que usamos a maior parte das palavras que dizemos: em média, mais de 15 mil palavras por dia, em rajadas curtas de cerca de dois segundos, alternadas com as dos outros (Levinson, 2019). E a conversa tem uma propriedade surpreendente: a precisão do tempo.</p>
+<p><strong>Turnos em cerca de 200 ms.</strong> Stivers e colegas (2009) mediram o intervalo entre o fim de uma pergunta e o início da resposta em 10 línguas, de comunidades indígenas tradicionais a grandes línguas do mundo. Em todas, as pessoas evitavam falar ao mesmo tempo e evitavam silêncios. As médias variavam entre as línguas, mas dentro de uma faixa de 250 ms em torno da média geral: a diferença é de grau, não de natureza. O intervalo mais comum fica em torno de 200 ms, e a fala sobreposta ocupa só cerca de 5% do tempo de fala (Levinson, 2019).</p>
+<p><strong>Planejar enquanto ouve.</strong> Duzentos milissegundos é muito pouco. Planejar e produzir uma única palavra leva cerca de 600 ms; uma oração, 1 s ou mais. A conta só fecha se o ouvinte começar a planejar a resposta <em>antes</em> de o outro terminar. Para isso, ele precisa prever duas coisas: que ação o turno realiza (uma pergunta? um convite?) e quando o turno vai acabar. A resposta é preparada cedo e guardada até o momento certo (Levinson, 2019). Bögels, Magyari e Levinson (2015) registraram o EEG de pessoas respondendo a perguntas de um quiz. Os sinais de planejamento da resposta começavam assim que a resposta podia ser lembrada, em até meio segundo, às vezes vários segundos antes do fim da pergunta.</p>
+<p><strong>O tempo tem significado.</strong> Como responder rápido é a norma, demorar comunica algo. Depois de um pedido, uma pausa costuma anunciar uma recusa (Levinson, 2019). Respostas preferidas (aceitar, concordar) vêm sem demora, em geral em até 0,2 s; as não preferidas (recusar, discordar) costumam vir com atraso, hesitação e justificativas (Rossano, 2019). Você conhece isso: quando o amigo responde “bom…” depois de um silêncio, você já sabe que vem um “não”.</p>
+<p><strong>Cérebros acoplados.</strong> Stephens, Silbert e Hasson (2010) usaram ressonância magnética funcional para registrar a atividade cerebral de uma pessoa contando uma história e de ouvintes escutando essa história. A atividade dos ouvintes acompanhou a da falante no espaço e no tempo, em geral com um pequeno atraso. Esse acoplamento desapareceu quando a comunicação falhava. Em algumas regiões, a atividade dos ouvintes <em>antecipava</em> a da falante, e quanto maior esse acoplamento antecipatório, melhor a compreensão da história. Não há nada de misterioso aqui: o acoplamento aparece porque o ouvinte reconstrói a mensagem que a falante produziu e, às vezes, prevê o que vem a seguir.</p>
+<p><strong>A máquina de interação.</strong> Levinson (2019) propõe que os humanos têm uma “máquina de interação” (<em>interaction engine</em>): um conjunto de habilidades, instintos e motivações para a interação face a face que vem antes da língua e a torna possível. Ela inclui reconhecer intenções comunicativas, alternar turnos com tempo preciso, organizar a conversa em pares de ações (pergunta e resposta, oferta e aceitação) e reparar mal-entendidos. Três argumentos apoiam a ideia. Ela é universal: alternância de turnos, reparo e sequências de ações têm a mesma organização em línguas não aparentadas, e o “hã?” usado para pedir repetição tem forma parecida em uma dúzia de línguas de cinco continentes. Ela aparece cedo: interações recíprocas entre bebês e cuidadores existem desde pelo menos os 3 meses de vida. E ela tem raízes em outros primatas.</p>
+<p>Rossano (2019) distingue três tipos de alternância de turnos (Figura 5). Na <strong>mimética</strong>, dois animais produzem o mesmo sinal evitando sobreposição. Na <strong>alternada</strong>, sinais diferentes se revezam, como no canto de muitas aves. Na <strong>interpretativa</strong>, cada turno responde ao anterior e muda o contexto do próximo; quando a resposta não é a esperada, quem começou insiste ou corrige. Esse terceiro tipo está bem documentado em humanos, e Rossano descreve trocas gestuais de bonobos, gorilas e orangotangos (sobretudo entre mães e filhotes) com essa estrutura, com respostas que chegam tão rápido quanto na conversa humana.</p>
+<figure>
+<img src="img/aula10/tipos_turnos_pt.png" alt="Figura 5. Três tipos de alternância de turnos. Mimética: o mesmo sinal, falantes diferentes. Alternada: sinais diferentes, um de cada vez. Interpretativa: cada turno responde ao anterior e muda o contexto do próximo, como na conversa humana. Fonte: elaborada para o curso a partir de Rossano (2019)." />
+<figcaption aria-hidden="true"><strong>Figura 5.</strong> Três tipos de alternância de turnos. Mimética: o mesmo sinal, falantes diferentes. Alternada: sinais diferentes, um de cada vez. Interpretativa: cada turno responde ao anterior e muda o contexto do próximo, como na conversa humana. Fonte: elaborada para o curso a partir de Rossano (2019).</figcaption>
+</figure>
+<p><strong>Saguis também alternam turnos.</strong> A alternância vocal de turnos foi descrita em vários ramos dos primatas, de lêmures a gibões (Levinson, 2019). Um exemplo bem estudado é o sagui-de-tufo-branco, <em>Callithrix jacchus</em>, um primata do Novo Mundo. Takahashi, Narayanan e Ghazanfar (2013) mediram as trocas vocais naturais desses saguis. Eles alternam a vez em sequências longas, e essa alternância segue a dinâmica de <strong>osciladores acoplados</strong>, parecida com a proposta para a conversa humana. Os saguis compartilham conosco a criação cooperativa dos filhotes e o hábito de vocalizar muito. Como estão num ramo da árvore evolutiva distante do nosso, os autores interpretam a semelhança como evolução convergente. Isso oferece uma alternativa às hipóteses de que a comunicação humana teria começado pelos gestos. A alternância também se desenvolve nos filhotes: chamados dos pais que respondem aos do filhote fazem o filhote produzir vocalizações mais maduras (Takahashi; Fenley; Ghazanfar, 2016). A escala de tempo é outra, mas a lógica é parecida. Entre os primatas, a alternância vocal parece especialmente associada a espécies que formam pares (Levinson, 2019).</p>
+<h2 id="o-que-o-laboratório-mostrou">6. O que o laboratório mostrou</h2>
+<p>No <em>Laboratório de Mentes</em>, você foi o participante de quatro experimentos. Os resultados da sua turma podem ser diferentes do que se descreve abaixo; o importante é entender o que cada experimento testava e por que se espera esse padrão.</p>
+<p><strong>Experimento 1 · Formas com intenção.</strong> Você viu dois filmes com as mesmas formas e a mesma casa (Figura 6). No filme com história, uma forma persegue as outras; no aleatório, cada forma se move sem relação com as demais. Espera-se que quase todos deem nota mais alta ao filme com história e usem, ao descrevê-lo, verbos de intenção e emoção (“persegue”, “foge”, “tem medo”). Foi o que Heider e Simmel (1944) observaram com o filme original, de um triângulo grande, um pequeno, um círculo e uma casa: dos 34 participantes, só um descreveu o filme quase todo em termos geométricos; os demais contaram as ações de seres animados, quase sempre pessoas. O que dispara essa leitura é o movimento contingente, em que uma forma reage à outra. Como você viu na seção 3, animações assim ativam a rede de mentalização (Castelli <em>et al.</em>, 2000). Se alguém viu intenções também no filme aleatório, isso também é informativo: basta pouca coincidência para o cérebro enxergar agentes.</p>
+<figure>
+<img src="img/aula10/e1_heider.png" alt="Figura 6. Os dois filmes do experimento 1: com história (o triângulo grande persegue; os menores fogem juntos) e com movimento aleatório (mesmas formas e velocidades, sem interação). Fonte: elaborada para o curso a partir de Heider e Simmel (1944)." />
+<figcaption aria-hidden="true"><strong>Figura 6.</strong> Os dois filmes do experimento 1: com história (o triângulo grande persegue; os menores fogem juntos) e com movimento aleatório (mesmas formas e velocidades, sem interação). Fonte: elaborada para o curso a partir de Heider e Simmel (1944).</figcaption>
+</figure>
+<p><strong>Experimento 2 · Ironia ou não?</strong> As mesmas frases apareceram depois de contextos sinceros ou irônicos. Se o sentido literal fosse sempre calculado primeiro, a ironia seria sempre bem mais lenta. Com contexto forte, espera-se acerto alto nas duas condições e uma diferença de tempo pequena, às vezes nula, com muita variação entre pessoas, o que combina melhor com Gibbs (1986) e Giora (1997). As situações ambíguas, sem rosto nem entonação, devem dividir a turma: é aí que a prosódia da aula 9 faria diferença.</p>
+<p><strong>Experimento 3 · Sua vez de falar.</strong> Em metade das perguntas, a resposta podia ser decidida logo no começo; na outra metade, só na última palavra. Espera-se que, nas perguntas “cedo”, o intervalo fique perto do ritmo da conversa e às vezes seja negativo (você respondeu antes do fim), e que, nas perguntas “tarde”, ele seja centenas de milissegundos maior. É o mesmo raciocínio de Bögels, Magyari e Levinson (2015): só dá para responder rápido quando dá para planejar durante a escuta. Lembre as diferenças em relação à conversa real: tocar na tela é mais rápido que falar, e o texto escrito, com o ponto de interrogação, mostra quando a pergunta acaba.</p>
+<p><strong>Experimento 4 · Quem pensa o quê.</strong> Era o teste de Sally e Ana em versão adulta, com perguntas sobre a realidade, sobre uma crença de primeira ordem e sobre uma crença de segunda ordem, como na história do sorveteiro de Perner e Wimmer (1985), adaptada para um pipoqueiro. Adultos quase não erram, mas a pergunta de segunda ordem tende a ser mais lenta. É o mesmo encaixe de crenças que a ironia exige.</p>
+<div class="conceitos">
+<dl>
+<dt><strong>Modelo do código</strong></dt>
+<dd>
+Visão da comunicação como codificar, transmitir e decodificar uma mensagem; não explica como entendemos o que não foi dito (Rossano, 2019).
+</dd>
+<dt><strong>Modelo inferencial</strong></dt>
+<dd>
+Visão, derivada de Grice, em que o ouvinte infere a intenção do falante a partir do que foi dito e do contexto (Levinson, 2019).
+</dd>
+<dt><strong>Intenção comunicativa</strong></dt>
+<dd>
+Intenção de produzir um efeito em alguém por meio do reconhecimento dessa própria intenção (Levinson, 2019).
+</dd>
+<dt><strong>Teoria da mente</strong></dt>
+<dd>
+Capacidade de atribuir estados mentais a si e aos outros, reconhecer que podem diferir dos nossos e usá-los para prever o comportamento (Bara; Enrici; Adenzato, 2016).
+</dd>
+<dt><strong>Crença falsa</strong></dt>
+<dd>
+Crença que não corresponde à realidade; o teste de crença falsa verifica se alguém prevê a ação do outro pela crença dele, e não pelos fatos (Wimmer; Perner, 1983).
+</dd>
+<dt><strong>Crença de segunda ordem</strong></dt>
+<dd>
+Crença sobre a crença de outra pessoa (“ele acha que ela acha que…”) (Perner; Wimmer, 1985).
+</dd>
+<dt><strong>Rede de mentalização</strong></dt>
+<dd>
+Conjunto de regiões ativadas quando pensamos sobre estados mentais: córtex pré-frontal medial, precuneus, sulco temporal superior posterior e junção temporoparietal (Bara; Enrici; Adenzato, 2016).
+</dd>
+<dt><strong>Junção temporoparietal (TPJ)</strong></dt>
+<dd>
+Região onde os lobos temporal e parietal se encontram; responde a histórias sobre o que os personagens pensam (Saxe; Kanwisher, 2003).
+</dd>
+<dt><strong>Implicatura</strong></dt>
+<dd>
+O que o falante comunica além do que diz, inferido supondo que ele coopera (Grice, 1975).
+</dd>
+<dt><strong>Saliência graduada</strong></dt>
+<dd>
+Hipótese de que o sentido mais saliente de uma expressão, literal ou não, é ativado primeiro (Giora, 1997).
+</dd>
+<dt><strong>Alternância de turnos</strong></dt>
+<dd>
+Organização da conversa em que um fala de cada vez, com intervalos típicos de cerca de 200 ms (Stivers <em>et al.</em>, 2009; Levinson, 2019).
+</dd>
+<dt><strong>Máquina de interação</strong></dt>
+<dd>
+Conjunto de habilidades e motivações para a interação face a face, anterior à língua, que a torna possível (Levinson, 2019).
+</dd>
+</dl>
+</div>
+<h2 id="para-revisar">Para revisar</h2>
+<ol type="1">
+<li><p>Por que o modelo do código não basta para explicar como alguém entende “que dia lindo!” debaixo de chuva?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Porque o código (as palavras) diz o contrário do que o falante quer comunicar. Para entender, o ouvinte precisa combinar a frase com o contexto e com o que sabe sobre o falante, e inferir a intenção dele. É o que propõe o modelo inferencial de Grice.</p>
+</details></li>
+<li><p>Por que o teste precisa usar uma crença <em>falsa</em>? O que daria errado com uma crença verdadeira?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Se a crença do outro for verdadeira, a criança pode acertar só olhando para a realidade, sem pensar no que o outro pensa. Só quando a crença é falsa a resposta certa (“na cesta”) é diferente da realidade (“na caixa”), e acertar mostra que ela representou a crença do outro.</p>
+</details></li>
+<li><p>Bebês de 15 meses parecem prever a ação de alguém com crença falsa, mas crianças de 3 anos erram o teste de Sally e Ana. Como esses resultados podem ser conciliados?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Distinguindo uma leitura de mentes implícita, automática e precoce, medida em tarefas não verbais, de uma leitura explícita, que a criança precisa expressar numa resposta e que aparece por volta dos 4 anos. As duas podem ter bases e ritmos de desenvolvimento diferentes.</p>
+</details></li>
+<li><p>Qual é a lógica do controle com a fotografia desatualizada no estudo de Saxe e Kanwisher (2003)?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>A foto desatualizada tem a mesma estrutura lógica de uma crença falsa (representa o mundo de um jeito que deixou de ser verdade), mas não envolve mente. Se uma região responde à crença falsa e não à foto, ela não está lidando com representações desatualizadas em geral, e sim com estados mentais.</p>
+</details></li>
+<li><p>No estudo de Sassa e colegas, falar <em>com</em> alguém e <em>descrever</em> a cena envolviam falar. Por que essa comparação é útil?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Porque a produção da fala está presente nas duas condições; a diferença entre elas isola a intenção comunicativa. A região frontal inferior esquerda da produção respondeu igual nas duas; o mPFC e as TPJ responderam mais quando havia alguém a quem comunicar.</p>
+</details></li>
+<li><p>Use as máximas de Grice para explicar como entendemos uma ironia. Que dado de tempo de leitura desafia a versão serial desse modelo?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>A ironia diz algo obviamente falso; supondo que o falante coopera, o ouvinte busca outro sentido. Na versão serial, o literal vem primeiro e é rejeitado, então a ironia custaria sempre mais tempo. Gibbs (1986) mostrou que, com contexto que apoia a ironia, a frase irônica é lida tão rápido quanto a mesma frase no sentido literal.</p>
+</details></li>
+<li><p>Se produzir uma palavra leva cerca de 600 ms, como conseguimos responder em cerca de 200 ms?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Planejando a resposta enquanto o outro ainda fala. O ouvinte prevê a ação e o fim do turno, começa a preparar a resposta cedo e a guarda até o momento certo. No EEG, o planejamento começa assim que a resposta pode ser lembrada, antes do fim da pergunta.</p>
+</details></li>
+<li><p>Por que a alternância de turnos em saguis interessa a quem estuda a origem da linguagem humana?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Porque mostra que a estrutura temporal da conversa (alternar a vez, com dinâmica de osciladores acoplados) existe num primata vocal distante de nós, que também cria os filhotes de forma cooperativa. Isso sugere evolução convergente ligada à cooperação e oferece uma alternativa vocal às hipóteses de origem gestual.</p>
+</details></li>
+</ol>
+<h2 id="para-saber-mais">Para saber mais</h2>
+<ul>
+<li><strong>Frith, C. D.; Frith, U. (2012). Mechanisms of social cognition. <em>Annual Review of Psychology</em>.</strong> A leitura indicada da aula: uma revisão sobre como aprendemos com os outros e sobre a diferença entre mentalização implícita e explícita. Nível intermediário, em inglês. DOI: https://doi.org/10.1146/annurev-psych-120710-100449.</li>
+<li><strong>Levinson, S. C. (2019). Interactional foundations of language: the interaction engine hypothesis. In: Hagoort, P. (org.). <em>Human language</em>.</strong> Capítulo curto e claro sobre a máquina de interação, os 200 ms e a alternância de turnos nos primatas. Acessível, em inglês.</li>
+<li><strong>Stephens, G. J.; Silbert, L. J.; Hasson, U. (2010). Speaker–listener neural coupling underlies successful communication. <em>PNAS</em>.</strong> O estudo do acoplamento entre falante e ouvinte. Avançado, mas com figuras muito claras. Texto completo gratuito no PubMed Central: https://pmc.ncbi.nlm.nih.gov/articles/PMC2922522/.</li>
+</ul>
+<h2 id="referências">Referências</h2><div class="refs">
+<p>BARA, B. G.; ENRICI, I.; ADENZATO, M. At the core of pragmatics: the neural substrates of communicative intentions. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 675-685. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00054-7.</p>
+<p>BARON-COHEN, S.; LESLIE, A. M.; FRITH, U. Does the autistic child have a “theory of mind”? <strong>Cognition</strong>, v. 21, n. 1, p. 37-46, 1985. DOI: https://doi.org/10.1016/0010-0277(85)90022-8.</p>
+<p>BÖGELS, S.; MAGYARI, L.; LEVINSON, S. C. Neural signatures of response planning occur midway through an incoming question in conversation. <strong>Scientific Reports</strong>, v. 5, 12881, 2015. DOI: https://doi.org/10.1038/srep12881.</p>
+<p>CASTELLI, F. et al. Movement and mind: a functional imaging study of perception and interpretation of complex intentional movement patterns. <strong>NeuroImage</strong>, v. 12, n. 3, p. 314-325, 2000. DOI: https://doi.org/10.1006/nimg.2000.0612.</p>
+<p>CORBETTA, M.; SHULMAN, G. L. Control of goal-directed and stimulus-driven attention in the brain. <strong>Nature Reviews Neuroscience</strong>, v. 3, n. 3, p. 201-215, 2002. DOI: https://doi.org/10.1038/nrn755.</p>
+<p>FRITH, C. D.; FRITH, U. Mechanisms of social cognition. <strong>Annual Review of Psychology</strong>, v. 63, p. 287-313, 2012. DOI: https://doi.org/10.1146/annurev-psych-120710-100449.</p>
+<p>GIBBS, R. W. On the psycholinguistics of sarcasm. <strong>Journal of Experimental Psychology: General</strong>, v. 115, n. 1, p. 3-15, 1986. DOI: https://doi.org/10.1037/0096-3445.115.1.3.</p>
+<p>GIORA, R. Understanding figurative and literal language: the graded salience hypothesis. <strong>Cognitive Linguistics</strong>, v. 8, n. 3, p. 183-206, 1997. DOI: https://doi.org/10.1515/cogl.1997.8.3.183.</p>
+<p>GRICE, H. P. Logic and conversation. In: COLE, P.; MORGAN, J. L. (org.). <strong>Syntax and semantics</strong>: v. 3: speech acts. New York: Academic Press, 1975. p. 41-58.</p>
+<p>HAPPÉ, F. G. E. Communicative competence and theory of mind in autism: a test of relevance theory. <strong>Cognition</strong>, v. 48, n. 2, p. 101-119, 1993. DOI: https://doi.org/10.1016/0010-0277(93)90026-R.</p>
+<p>HEIDER, F.; SIMMEL, M. An experimental study of apparent behavior. <strong>The American Journal of Psychology</strong>, v. 57, n. 2, p. 243-259, 1944. DOI: https://doi.org/10.2307/1416950.</p>
+<p>LEVINSON, S. C. Interactional foundations of language: the interaction engine hypothesis. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 189-200.</p>
+<p>MILDNER, V. <strong>The cognitive neuroscience of human communication</strong>. New York: Lawrence Erlbaum Associates, 2008.</p>
+<p>ONISHI, K. H.; BAILLARGEON, R. Do 15-month-old infants understand false beliefs? <strong>Science</strong>, v. 308, n. 5719, p. 255-258, 2005. DOI: https://doi.org/10.1126/science.1107621.</p>
+<p>PERNER, J.; WIMMER, H. “John thinks that Mary thinks that…”: attribution of second-order beliefs by 5- to 10-year-old children. <strong>Journal of Experimental Child Psychology</strong>, v. 39, n. 3, p. 437-471, 1985. DOI: https://doi.org/10.1016/0022-0965(85)90051-7.</p>
+<p>PREMACK, D.; WOODRUFF, G. Does the chimpanzee have a theory of mind? <strong>Behavioral and Brain Sciences</strong>, v. 1, n. 4, p. 515-526, 1978. DOI: https://doi.org/10.1017/S0140525X00076512.</p>
+<p>ROSSANO, F. The structure and timing of human versus primate social interaction. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 201-219.</p>
+<p>SAMSON, D. et al. Left temporoparietal junction is necessary for representing someone else’s belief. <strong>Nature Neuroscience</strong>, v. 7, n. 5, p. 499-500, 2004. DOI: https://doi.org/10.1038/nn1223.</p>
+<p>SAXE, R.; KANWISHER, N. People thinking about thinking people: the role of the temporo-parietal junction in “theory of mind”. <strong>NeuroImage</strong>, v. 19, n. 4, p. 1835-1842, 2003. DOI: https://doi.org/10.1016/S1053-8119(03)00230-1.</p>
+<p>SPERBER, D.; WILSON, D. <strong>Relevance</strong>: communication and cognition. Oxford: Blackwell, 1986.</p>
+<p>SPOTORNO, N. et al. Neural evidence that utterance-processing entails mentalizing: the case of irony. <strong>NeuroImage</strong>, v. 63, n. 1, p. 25-39, 2012. DOI: https://doi.org/10.1016/j.neuroimage.2012.06.046.</p>
+<p>STEPHENS, G. J.; SILBERT, L. J.; HASSON, U. Speaker–listener neural coupling underlies successful communication. <strong>Proceedings of the National Academy of Sciences of the United States of America</strong>, v. 107, n. 32, p. 14425-14430, 2010. DOI: https://doi.org/10.1073/pnas.1008662107.</p>
+<p>STIVERS, T. et al. Universals and cultural variation in turn-taking in conversation. <strong>Proceedings of the National Academy of Sciences of the United States of America</strong>, v. 106, n. 26, p. 10587-10592, 2009. DOI: https://doi.org/10.1073/pnas.0903616106.</p>
+<p>TAKAHASHI, D. Y.; FENLEY, A. R.; GHAZANFAR, A. A. Early development of turn-taking with parents shapes vocal acoustics in infant marmoset monkeys. <strong>Philosophical Transactions of the Royal Society B: Biological Sciences</strong>, v. 371, n. 1693, 20150370, 2016. DOI: https://doi.org/10.1098/rstb.2015.0370.</p>
+<p>TAKAHASHI, D. Y.; NARAYANAN, D. Z.; GHAZANFAR, A. A. Coupled oscillator dynamics of vocal turn-taking in monkeys. <strong>Current Biology</strong>, v. 23, n. 21, p. 2162-2168, 2013. DOI: https://doi.org/10.1016/j.cub.2013.09.005.</p>
+<p>TOMASELLO, M. <strong>Constructing a language</strong>: a usage-based theory of language acquisition. Cambridge, MA: Harvard University Press, 2003.</p>
+<p>WELLMAN, H. M.; CROSS, D.; WATSON, J. Meta-analysis of theory-of-mind development: the truth about false belief. <strong>Child Development</strong>, v. 72, n. 3, p. 655-684, 2001. DOI: https://doi.org/10.1111/1467-8624.00304.</p>
+<p>WIMMER, H.; PERNER, J. Beliefs about beliefs: representation and constraining function of wrong beliefs in young children’s understanding of deception. <strong>Cognition</strong>, v. 13, n. 1, p. 103-128, 1983. DOI: https://doi.org/10.1016/0010-0277(83)90004-5.</p>
+</div>
+<p class="rodape">Material de estudo da disciplina Bases neurais da comunicação humana (UFRN), Prof. Daniel Y. Takahashi. Texto e figuras elaborados para o curso; as fontes estão nas Referências.</p>
+</div>

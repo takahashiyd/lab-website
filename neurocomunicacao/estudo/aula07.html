@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 7 · Leitura e escrita — Material de estudo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,600..800&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{--bg:#f6f7f9;--surface:#fff;--fg:#142033;--muted:#566377;--line:#d8dee6;--accent:#0e7c86;--accent2:#c9771a;--soft:#e5f1f2;--soft2:#fbf1e3;
+--display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;--body:"Source Serif 4",Georgia,"Times New Roman",serif;--ui:"Source Sans 3","Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1621;--surface:#172132;--fg:#e6ecf3;--muted:#9aa8b9;--line:#2a3850;--accent:#3db4be;--accent2:#f0a645;--soft:#173740;--soft2:#3a2c17;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:18px/1.65 var(--body)}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 80px}
+.top{font:600 13px/1.4 var(--ui);display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:22px}
+.top a{color:var(--accent);text-decoration:none}
+.eyebrow{font:600 12px/1 ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(30px,6.5vw,46px)/1.08 var(--display);font-stretch:112%;margin:10px 0 8px;text-wrap:balance}
+.sub{font:400 20px/1.4 var(--ui);color:var(--muted);margin:0 0 26px}
+h2{font:750 25px/1.2 var(--display);margin:46px 0 12px;text-wrap:balance}
+h3{font:700 19px/1.3 var(--ui);margin:28px 0 8px}
+p{margin:0 0 16px}
+a{color:var(--accent)}
+ul,ol{padding-left:24px;margin:0 0 16px} li{margin:4px 0}
+figure{margin:26px 0;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;break-inside:avoid}
+figure img{width:100%;height:auto;display:block;border-radius:6px;background:#fff}
+figcaption{font:15px/1.5 var(--ui);color:var(--muted);margin-top:10px}
+.objetivos{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;padding:14px 18px 6px;margin:0 0 30px;font-family:var(--ui)}
+.objetivos::before{content:"Nesta aula você vai aprender a";display:block;font:700 13px/1 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:4px 0 10px}
+.destaque{background:var(--soft2);border-radius:10px;padding:14px 18px 2px;margin:22px 0;font-family:var(--ui);break-inside:avoid}
+.conceitos{background:var(--soft);border-radius:12px;padding:16px 20px 6px;margin:30px 0;font-family:var(--ui)}
+.conceitos::before{content:"Conceitos-chave";display:block;font:700 13px/1 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:4px 0 12px}
+.conceitos dl{margin:0} .conceitos dt{font-weight:700;margin-top:10px} .conceitos dd{margin:2px 0 8px 0;color:var(--fg)}
+details{margin:8px 0 4px;font-family:var(--ui);font-size:16px}
+summary{cursor:pointer;color:var(--accent);font-weight:600}
+details[open] summary{margin-bottom:6px}
+.refs p,#referencias + * p{font-size:15px;line-height:1.5;padding-left:1.4em;text-indent:-1.4em}
+.rodape{margin-top:50px;padding-top:16px;border-top:1px solid var(--line);font:13px/1.5 var(--ui);color:var(--muted)}
+@media print{
+ :root{--bg:#fff;--surface:#fff}
+ body{font-size:11.5pt;line-height:1.5}
+ .wrap{max-width:none;padding:0}
+ .top{display:none}
+ h2{font-size:17pt;margin-top:24pt;break-after:avoid}
+ h1{font-size:28pt}
+ figure{padding:8pt;border-color:#ccc}
+ figure img{max-height:9cm;object-fit:contain}
+ details>summary{display:none}
+ details{margin-left:0;font-size:10.5pt}
+ details::before{content:"Resposta: ";font-weight:700}
+ a{color:inherit;text-decoration:none}
+ .refs p{font-size:10pt}
+ @page{size:A4;margin:18mm 18mm 20mm}
+}
+</style>
+<div class="wrap">
+<nav class="top"><a href="index.html">Material de estudo</a><a href="../aula07.html">Laboratório da aula 7</a><a href="aula06.html">← Aula 6</a><a href="aula08.html">Aula 8 →</a></nav>
+<span class="eyebrow">Bases neurais da comunicação humana · Aula 7 · Material de estudo</span>
+<h1>Leitura e escrita</h1>
+<p class="sub">Como um cérebro que evoluiu sem escrita aprende a ler, e o que acontece quando a leitura falha</p>
+<div class="objetivos">
+<ul>
+<li>Explicar por que a leitura é uma invenção cultural recente e o que é o “paradoxo da leitura”.</li>
+<li>Descrever como os olhos percorrem o texto e por que só uma pequena região do campo visual enxerga as letras com nitidez.</li>
+<li>Localizar a área da forma visual das palavras e explicar a hipótese da reciclagem neuronal, incluindo o debate sobre ela.</li>
+<li>Usar o modelo de duas rotas para explicar a leitura de palavras conhecidas, palavras irregulares e pseudopalavras.</li>
+<li>Comparar dislexias adquiridas (depois de uma lesão) com a dislexia do desenvolvimento e explicar por que a ortografia da língua muda o modo como a dislexia aparece.</li>
+<li>Relacionar os cinco experimentos do laboratório com esses achados.</li>
+</ul>
+</div>
+<h2 id="uma-invenção-recente-lida-por-um-cérebro-antigo">1. Uma invenção recente lida por um cérebro antigo</h2>
+<p>Falar é universal. Toda criança que cresce ouvindo uma língua aprende a falar sem aulas. Ler é diferente. A escrita foi inventada há cerca de 6 mil anos, e a leitura só se tornou uma habilidade comum a grande parte das pessoas há menos de 200 anos (Andrews; Reichle, 2019). A escrita não sofreu pressão evolutiva, e por isso a leitura precisa usar regiões do cérebro que já existiam para outras funções, como a linguagem falada e o reconhecimento de objetos (Eden <em>et al.</em>, 2016). Alguns pesquisadores chegaram a chamar aprender a ler de “um ato não natural” (Andrews; Reichle, 2019).</p>
+<p>Aqui aparece um paradoxo. Se não existe um circuito próprio para a leitura, seria de esperar que cada pessoa lesse com um pedaço diferente do cérebro. Não é o que acontece. Em leitores fluentes, palavras escritas ativam a mesma pequena região do córtex visual do hemisfério esquerdo, em línguas tão diferentes quanto o inglês e o chinês (Andrews; Reichle, 2019). Stanislas Dehaene e Laurent Cohen chamaram de paradoxal essa constância de um mapa cerebral para uma invenção cultural, e propuseram uma resposta: a <strong>reciclagem neuronal</strong>, que é o fio condutor desta aula (Dehaene; Cohen, 2007).</p>
+<h3 id="os-olhos-leem-aos-saltos">Os olhos leem aos saltos</h3>
+<p>Quando você lê esta linha, tem a impressão de que os olhos deslizam de forma contínua. Não é assim. Os olhos param por 200 a 250 milissegundos, em média (uma <strong>fixação</strong>), e então saltam para a frente (uma <strong>sacada</strong>), em média uns 8 caracteres. Durante o salto, nenhuma informação útil é extraída (Andrews; Reichle, 2019).</p>
+<p>O motivo dos saltos está na retina. Só a <strong>fóvea</strong>, a região central da retina, enxerga com nitidez suficiente para distinguir letras. Em cada fixação, apenas uns 7 a 8 caracteres caem nessa região de alta acuidade (Andrews; Reichle, 2019). O que fica um pouco mais longe, na <strong>parafóvea</strong>, é visto de forma mais grosseira. Mesmo assim, essa visão grosseira é útil: ela ajuda a decidir para onde o olho vai saltar e já adianta parte do reconhecimento da próxima palavra. Quando um experimento limita artificialmente o leitor à visão da fóvea, a velocidade e a precisão da compreensão caem muito (Andrews; Reichle, 2019).</p>
+<p>Há um segundo limite, além da nitidez. Fora da fóvea, letras vizinhas atrapalham o reconhecimento umas das outras. Esse fenômeno se chama <strong>aglomeração visual</strong> (em inglês, <em>crowding</em>): é um efeito perceptivo que prejudica o reconhecimento das letras e depende do espaçamento entre elas (Zorzi <em>et al.</em>, 2012). Bouma (1970) estudou essas interações no reconhecimento de letras na parafóvea, e a regra que leva o seu nome diz que a distância necessária para escapar da interferência dos vizinhos cresce com a distância entre a letra e o ponto fixado (Chanceaux; Grainger, 2013). Você mediu esse efeito no experimento 4.</p>
+<h2 id="a-área-da-forma-visual-das-palavras">2. A área da forma visual das palavras</h2>
+<h3 id="ler-é-reconhecer-objetos-pequenos-parecidos-e-rápidos">Ler é reconhecer objetos pequenos, parecidos e rápidos</h3>
+<p>Reconhecer um rosto, uma cadeira ou uma letra é tarefa da <strong>via visual ventral</strong>, que vai do córtex occipital (na nuca) até a face inferior do lobo temporal. Ler é um caso extremo desse problema: as letras são pequenas, muito parecidas entre si (“rn” e “m”, “c” e “e”) e precisam ser reconhecidas em frações de segundo. Por isso o código neural das palavras precisa ser abstrato, já que reconhecemos uma palavra em qualquer posição, fonte e tamanho, e ao mesmo tempo muito sensível à identidade e à ordem das letras (Dehaene <em>et al.</em>, 2005).</p>
+<p>Em leitores, uma região dessa via responde de forma especial às palavras escritas. Ela fica no <strong>córtex occipitotemporal ventral esquerdo</strong>, na porção média do giro fusiforme esquerdo, e recebeu o nome de <strong>área da forma visual das palavras</strong> (em inglês, <em>visual word form area</em>, VWFA) (Cohen <em>et al.</em>, 2000; Eden <em>et al.</em>, 2016). Um estudo clássico apresentou palavras ora no lado esquerdo, ora no lado direito do campo visual. As áreas visuais iniciais (provavelmente a área V4) responderam no hemisfério oposto ao lado da palavra, como esperado. A VWFA esquerda respondeu da mesma forma aos dois lados. Em dois pacientes com lesão na parte posterior do corpo caloso (o feixe de fibras que liga os dois hemisférios), a VWFA só era ativada por palavras do lado direito do campo visual: a informação do outro lado não conseguia atravessar (Cohen <em>et al.</em>, 2000). Uma meta-análise de estudos em inglês e outras línguas europeias, em chinês e em japonês encontrou uma rede comum de leitura, com algumas diferenças entre os sistemas de escrita; a VWFA teve localização “notavelmente consistente” em todos eles (Bolger; Perfetti; Schneider, 2005).</p>
+<p>O nome “área da forma visual das palavras” gerou debate. Price e Devlin (2003) mostraram que a mesma região é ativada em tarefas que não envolvem palavras escritas, como nomear cores e figuras, ler em braile e repetir palavras ouvidas, e argumentaram que é enganoso chamá-la de área das palavras. Do outro lado, a constância da sua localização entre pessoas e sistemas de escrita sugere um sistema cortical ajustado pela experiência com palavras escritas (Andrews; Reichle, 2019). Uma forma de conciliar os lados, apoiada pelos estudos com crianças da seção 3: a região se especializa para a escrita, mas não trabalha só para ela.</p>
+<h3 id="uma-hierarquia-de-detectores">Uma hierarquia de detectores</h3>
+<p>Como uma sequência de traços vira uma palavra? Há forte consenso entre as teorias atuais de que o reconhecimento é <strong>hierárquico</strong>: traços simples (uma barra horizontal) ativam letras, letras podem ativar unidades maiores (como sílabas e morfemas) e, por fim, a forma escrita de uma palavra conhecida, guardada num <strong>léxico ortográfico</strong> (o “dicionário” das formas escritas que você conhece) (Rastle, 2016). Dehaene e colegas propuseram que essa hierarquia corresponde a uma sequência de regiões no caminho occipitotemporal: uma hierarquia de “detectores de combinações locais”, cada um sensível a fragmentos cada vez maiores das palavras (Dehaene <em>et al.</em>, 2005) (Figura 1). Em leitores típicos, crianças e adultos, a preferência por palavras em comparação com sequências de símbolos falsos cresce de trás para a frente no córtex occipitotemporal esquerdo. Em crianças com dislexia, esse gradiente aparece alterado (Eden <em>et al.</em>, 2016).</p>
+<figure>
+<img src="img/aula07/hierarquia.png" alt="Figura 1. Esquema da hierarquia de detectores no córtex occipitotemporal esquerdo: de trás para a frente, cada nível responde a unidades maiores (traços, junções, fragmentos de letras, letras, letras abstratas, bigramas e sílabas, morfemas e palavras). As regiões indicadas embaixo são aproximadas. Fonte: elaborada para o curso a partir de Dehaene et al. (2005)." />
+<figcaption aria-hidden="true"><strong>Figura 1.</strong> Esquema da hierarquia de detectores no córtex occipitotemporal esquerdo: de trás para a frente, cada nível responde a unidades maiores (traços, junções, fragmentos de letras, letras, letras abstratas, bigramas e sílabas, morfemas e palavras). As regiões indicadas embaixo são aproximadas. Fonte: elaborada para o curso a partir de Dehaene <em>et al.</em> (2005).</figcaption>
+</figure>
+<p>Dois detalhes dessa hierarquia ajudam a entender o laboratório. O primeiro é que os leitores representam <strong>letras abstratas</strong>: “A” e “a” não se parecem, mas ativam a mesma letra, independentemente da fonte, do tamanho, da caixa, da cor ou da posição na retina (Rastle, 2016). Por isso o texto em maiúsculas alternadas do experimento 2 custa pouco.</p>
+<p>O segundo é que o código da <strong>posição das letras</strong> é aproximado. Se o cérebro guardasse cada letra numa “casinha” fixa (primeira, segunda, terceira…), duas sequências que mudam as mesmas duas posições de uma palavra estariam igualmente distantes dela. Compare CADRENO (o E e o R de CADERNO trocaram de lugar) com CADFVNO (o E e o R foram substituídos por F e V). As duas mudam a quarta e a quinta posições, mas CADRENO lembra muito mais CADERNO. Em experimentos de <strong>pré-ativação mascarada</strong> (<em>masked priming</em>), uma sequência aparece rápido demais para ser percebida conscientemente e logo depois vem a palavra-alvo. Uma sequência com letras trocadas acelera o reconhecimento da palavra mais do que uma sequência com letras substituídas, mesmo quando as letras trocadas não são vizinhas: <em>caniso</em> ajuda a reconhecer CASINO (Perea; Lupker, 2004; Rastle, 2016). Curiosamente, esse efeito não é universal: em hebraico, uma escrita em que muitas palavras diferentes compartilham as mesmas letras, ele não aparece (Rastle, 2016).</p>
+<h3 id="a-palavra-ajuda-a-ver-a-letra">A palavra ajuda a ver a letra</h3>
+<p>Em 1969, Reicher mostrou algo surpreendente. Uma sequência de letras aparecia por um instante e era coberta por uma máscara. Depois, a pessoa escolhia qual de duas letras tinha aparecido numa posição. A letra era identificada muito melhor quando fazia parte de uma palavra do que quando fazia parte de uma sequência sem sentido (Reicher, 1969; Rastle, 2016). É o <strong>efeito de superioridade da palavra</strong>. Um benefício parecido aparece para pseudopalavras pronunciáveis (TARK em comparação com ATRK, no inglês) (Rastle, 2016).</p>
+<p>O <strong>modelo de ativação interativa</strong> explica esse resultado com informação que circula nos dois sentidos. Traços ativam letras, letras ativam palavras, e as palavras ativadas devolvem ativação às suas letras (McClelland; Rumelhart, 1981). Assim, o conhecimento de “cima” (as palavras que você conhece) melhora a percepção de “baixo” (as letras). Esse modelo e as suas variantes ainda são a base das teorias de reconhecimento visual de palavras (Rastle, 2016). Você testou essa ideia no experimento 1.</p>
+<div class="destaque">
+<p>Ler não é “fotografar” palavras inteiras pelo contorno. É montar a palavra a partir das letras, numa hierarquia em que o conhecimento das palavras ajuda a ver as letras. As letras são abstratas (A = a) e a posição delas é codificada de forma aproximada.</p>
+</div>
+<h2 id="reciclagem-neuronal-o-que-muda-no-cérebro-de-quem-aprende-a-ler">3. Reciclagem neuronal: o que muda no cérebro de quem aprende a ler</h2>
+<p>A hipótese da <strong>reciclagem neuronal</strong> propõe que invenções culturais recentes demais para terem influenciado a evolução da nossa espécie, como a leitura e a aritmética, “invadem” circuitos cerebrais evolutivamente mais antigos e herdam muitas das restrições estruturais desses circuitos (Dehaene; Cohen, 2007). Para a leitura, o circuito reciclado é a parte da via ventral que reconhece formas visuais.</p>
+<h3 id="um-estudo-com-brasileiros-e-portugueses">Um estudo com brasileiros e portugueses</h3>
+<p>Se a hipótese estiver certa, aprender a ler deveria mudar a resposta dessa região. Dehaene e colegas (2010) testaram a ideia com 63 adultos de Portugal e do Brasil: 10 não sabiam ler, 22 se alfabetizaram já adultos e 31 aprenderam a ler na infância. A ativação do fusiforme esquerdo por frases escritas cresceu fortemente com o desempenho em leitura, inclusive em quem aprendeu a ler adulto. No mesmo ponto, apareceu uma pequena competição com os rostos: a resposta a rostos diminuiu com a alfabetização, enquanto no fusiforme direito ela aumentou. A alfabetização também melhorou a resposta de áreas visuais iniciais, até a área V1, a padrões horizontais, e aumentou a ativação à fala numa região auditiva, o plano temporal (Dehaene <em>et al.</em>, 2010) (Figura 2).</p>
+<figure>
+<img src="img/aula07/reciclagem.png" alt="Figura 2. Esquema qualitativo dos resultados de Dehaene et al. (2010): no occipitotemporal esquerdo, a resposta a frases escritas cresce com a alfabetização e a resposta a rostos diminui um pouco; no hemisfério direito, a resposta a rostos aumenta. As barras não são os dados do artigo. Fonte: elaborada para o curso a partir de Dehaene et al. (2010)." />
+<figcaption aria-hidden="true"><strong>Figura 2.</strong> Esquema qualitativo dos resultados de Dehaene <em>et al.</em> (2010): no occipitotemporal esquerdo, a resposta a frases escritas cresce com a alfabetização e a resposta a rostos diminui um pouco; no hemisfério direito, a resposta a rostos aumenta. As barras não são os dados do artigo. Fonte: elaborada para o curso a partir de Dehaene <em>et al.</em> (2010).</figcaption>
+</figure>
+<p>Estudos com crianças acompanhadas ao longo da alfabetização mostram como isso acontece. Dez crianças de 6 anos fizeram ressonância magnética funcional 6 ou 7 vezes, antes e durante o primeiro ano escolar. Respostas específicas a palavras escritas surgiram no local da VWFA nos primeiros meses de escola, junto com o salto na leitura. Os pontos do córtex que se tornaram VWFA eram, antes da alfabetização, pouco especializados (respondiam um pouco a ferramentas) e ficavam perto, mas separados, dos pontos que respondem a rostos. As respostas às outras categorias ficaram quase estáveis (Dehaene-Lambertz; Monzalvo; Dehaene, 2018). A leitura parece ocupar um terreno ainda pouco comprometido, em vez de expulsar os rostos. E por que exatamente ali? A resposta parece estar nas conexões. Em crianças examinadas aos 5 anos, antes de aprender a ler, e de novo aos 8, o local onde a VWFA apareceu aos 8 pôde ser previsto pelo padrão de conexões daquele ponto com o resto do cérebro aos 5, mas não pelas suas respostas funcionais (Saygin <em>et al.</em>, 2016).</p>
+<h3 id="capacidades-que-os-primatas-já-tinham">Capacidades que os primatas já tinham</h3>
+<p>Se a leitura recicla um sistema antigo, parte dela deveria existir em outros primatas. Grainger e colegas (2012) treinaram babuínos a separar palavras inglesas de quatro letras de sequências parecidas que não eram palavras. Os animais, que não têm linguagem, aprenderam a tarefa usando informação sobre quais letras aparecem onde, e trataram palavras nunca vistas como palavras com mais frequência do que as não palavras. O desempenho acompanhou a frequência dos pares de letras nas palavras (Grainger <em>et al.</em>, 2012). A parte visual da leitura, portanto, pode ser adquirida sem linguagem; ligar as formas aos sons e significados é outra história.</p>
+<h3 id="desaprender-o-espelho">Desaprender o espelho</h3>
+<p>O sistema visual tende a tratar um objeto e a sua imagem no espelho como a mesma coisa. Para reconhecer objetos, isso é útil: um peixe nadando para a esquerda ou para a direita é o mesmo peixe. Para a leitura, essa <strong>generalização em espelho</strong> é um problema, porque “b” e “d”, ou “p” e “q”, são letras diferentes (Figura 3). Kolinsky e colegas (2011) compararam adultos analfabetos com leitores do alfabeto latino, incluindo pessoas alfabetizadas já adultas. Os analfabetos mostraram alguma sensibilidade às diferenças de espelho, mas foram muito piores que todos os outros grupos quando a tarefa exigia prestar atenção a elas. A conclusão dos autores é que aprender uma escrita com letras espelhadas leva o leitor iniciante a “quebrar” a invariância ao espelho típica do sistema visual, e que isso vale também para figuras que não são letras (Kolinsky <em>et al.</em>, 2011). É por isso que o texto espelhado do experimento 2 é tão difícil.</p>
+<figure>
+<img src="img/aula07/espelho.png" alt="Figura 3. À esquerda, um peixe e o seu reflexo são o mesmo objeto: generalizar o espelho ajuda a reconhecer objetos. À direita, b, d, p e q são quatro letras diferentes: na leitura, o espelho muda o significado. Fonte: elaborada para o curso a partir de Kolinsky et al. (2011)." />
+<figcaption aria-hidden="true"><strong>Figura 3.</strong> À esquerda, um peixe e o seu reflexo são o mesmo objeto: generalizar o espelho ajuda a reconhecer objetos. À direita, b, d, p e q são quatro letras diferentes: na leitura, o espelho muda o significado. Fonte: elaborada para o curso a partir de Kolinsky <em>et al.</em> (2011).</figcaption>
+</figure>
+<h2 id="duas-rotas-para-ler-em-voz-alta">4. Duas rotas para ler em voz alta</h2>
+<p>Leia em voz alta: “táxi”, “casa”, “tamelo”. A primeira é uma palavra conhecida com uma pronúncia que a regra mais comum não prevê (o “x” tem som de “ks”). A segunda é conhecida e regular. A terceira não existe, mas você a leu sem dificuldade. Como um mesmo sistema faz as três coisas?</p>
+<p>O <strong>modelo de dupla rota</strong> propõe caminhos que funcionam em paralelo (Coltheart <em>et al.</em>, 2001; Coslett; Turkeltaub, 2016) (Figura 4):</p>
+<ul>
+<li><strong>Rota lexical:</strong> a palavra escrita é reconhecida no léxico ortográfico, que dá acesso à pronúncia guardada no <strong>léxico fonológico</strong>, passando ou não pelo significado. É a única rota que acerta palavras irregulares, como “táxi”.</li>
+<li><strong>Rota fonológica (não lexical):</strong> converte letras ou grupos de letras em sons por regras, aplicadas em série, sem consultar o léxico. É a única que consegue ler palavras novas e pseudopalavras, como “tamelo”.</li>
+</ul>
+<p>Na versão computacional, chamada DRC (do inglês <em>dual route cascaded</em>), a informação flui pelas rotas em cascata, e as duas interagem (Rastle, 2016; Coslett; Turkeltaub, 2016). O modelo reproduz muitos efeitos da leitura normal, como os de frequência, regularidade e comprimento (Coltheart <em>et al.</em>, 2001; Coslett; Turkeltaub, 2016). Palavras regulares conhecidas podem ser lidas pelas duas rotas.</p>
+<figure>
+<img src="img/aula07/duas_rotas.png" alt="Figura 4. O modelo de duas rotas: depois da análise visual das letras, a rota lexical passa pelo léxico ortográfico (com ou sem o significado) até o léxico fonológico; a rota fonológica converte letras em sons por regras. Fonte: elaborada para o curso a partir de Coltheart et al. (2001)." />
+<figcaption aria-hidden="true"><strong>Figura 4.</strong> O modelo de duas rotas: depois da análise visual das letras, a rota lexical passa pelo léxico ortográfico (com ou sem o significado) até o léxico fonológico; a rota fonológica converte letras em sons por regras. Fonte: elaborada para o curso a partir de Coltheart <em>et al.</em> (2001).</figcaption>
+</figure>
+<p>Há uma alternativa importante. O <strong>modelo do triângulo</strong>, um modelo conexionista, usa uma única rede que liga três tipos de representação (ortografia, fonologia e significado), sem regras explícitas e sem uma lista de palavras: o conhecimento fica distribuído nas conexões, aprendidas com a experiência (Coslett; Turkeltaub, 2016; Andrews; Reichle, 2019). Os dois tipos de modelo simulam boa parte dos dados, às vezes por razões diferentes, e ainda se discute qual deles reproduz melhor os padrões dos pacientes (Andrews; Reichle, 2019; Coslett; Turkeltaub, 2016). Para esta aula, a versão de duas rotas é uma boa forma de organizar os fatos.</p>
+<p>E o português? As ortografias variam muito. Nas ortografias “rasas”, como o finlandês, as letras correspondem diretamente aos sons; nas “profundas”, como o inglês, a correspondência é inconsistente e depende do contexto (Andrews; Reichle, 2019). Para ler, o português é bem mais regular que o inglês, mas tem exceções, como as várias leituras do “x” (xícara, táxi, exame, próximo) e o timbre aberto ou fechado de “e” e “o” sem acento (olho, molho). Para escrever, é menos regular (sessão, seção, cessão). Num estudo em 12 países europeus, na maioria deles as crianças já liam com precisão e fluência no fim do primeiro ano escolar. As exceções foram o francês, o português (de Portugal), o dinamarquês e, sobretudo, o inglês, em que o desenvolvimento foi mais de duas vezes mais lento que nas ortografias rasas. Os autores atribuem as diferenças à profundidade ortográfica e à complexidade das sílabas da língua (Seymour; Aro; Erskine, 2003).</p>
+<h2 id="quando-uma-lesão-desmonta-a-leitura">5. Quando uma lesão desmonta a leitura</h2>
+<p>O estudo de pessoas que perderam a capacidade de ler depois de uma lesão cerebral, as <strong>dislexias adquiridas</strong>, começou no fim do século XIX, com o neurologista francês Joseph Dejerine (Coslett; Turkeltaub, 2016).</p>
+<h3 id="uma-rota-de-cada-vez">Uma rota de cada vez</h3>
+<p>Na <strong>dislexia fonológica</strong>, descrita em 1979, o procedimento que converte letras em sons está prejudicado. O paciente lê bem a maioria das palavras conhecidas (85 a 95% em alguns casos), regulares ou irregulares, mas tem enorme dificuldade com pseudopalavras, que muitas vezes transforma em palavras parecidas (“tamelo” vira “camelo”). Ela aparece com lesões em várias regiões ao redor do sulco lateral do hemisfério esquerdo (região perissilviana), em especial o temporal superior e os giros angular e supramarginal, e às vezes o frontal inferior (Coslett; Turkeltaub, 2016).</p>
+<p>Na <strong>dislexia de superfície</strong>, acontece o contrário. A pessoa lê bem palavras regulares e pseudopalavras, mas erra as irregulares, lendo-as “pela regra”, sobretudo as pouco frequentes. Em português, seria ler “táxi” como “táchi”. Ela é rara após lesões focais e aparece sobretudo em doenças degenerativas. É característica da <strong>demência semântica</strong>, em que a pessoa perde aos poucos o conhecimento sobre o mundo, com atrofia do lobo temporal esquerdo; a atrofia do temporal anterior se associa aos erros com palavras irregulares (Coslett; Turkeltaub, 2016).</p>
+<p>Quando uma lesão prejudica a capacidade A e poupa a B, e outra lesão faz o contrário, fala-se em <strong>dupla dissociação</strong>. É o argumento clássico de que as duas capacidades dependem de mecanismos ao menos em parte separados. Foi com base em padrões como esses que Marshall e Newcombe concluíram, em 1973, que a pronúncia de palavras escritas pode ser obtida por dois procedimentos distintos (Coslett; Turkeltaub, 2016) (Figura 5). Existe ainda a <strong>dislexia profunda</strong>, em que, além da falha grave com pseudopalavras, o paciente comete erros de significado (ler “castelo” como “cavaleiro”) e lê melhor palavras concretas, fáceis de imaginar, do que abstratas (Coslett; Turkeltaub, 2016).</p>
+<figure>
+<img src="img/aula07/dislexias_adquiridas.png" alt="Figura 5. Padrões típicos das duas dislexias adquiridas centrais. Na dislexia de superfície, falham as palavras irregulares; na fonológica, falham as pseudopalavras. As barras ilustram o padrão, não os dados de um paciente. Fonte: elaborada para o curso a partir de Coslett e Turkeltaub (2016)." />
+<figcaption aria-hidden="true"><strong>Figura 5.</strong> Padrões típicos das duas dislexias adquiridas centrais. Na dislexia de superfície, falham as palavras irregulares; na fonológica, falham as pseudopalavras. As barras ilustram o padrão, não os dados de um paciente. Fonte: elaborada para o curso a partir de Coslett e Turkeltaub (2016).</figcaption>
+</figure>
+<h3 id="alexia-pura-escrever-sem-conseguir-ler">Alexia pura: escrever sem conseguir ler</h3>
+<p>Em 1892, Dejerine descreveu um paciente que não conseguia ler, nem em voz alta nem para compreender, mas continuava a escrever muito bem. Como outros pacientes descritos depois, ele não conseguia ler o que ele mesmo tinha escrito (Coslett; Turkeltaub, 2016). Esse quadro se chama <strong>alexia pura</strong> ou alexia sem agrafia.</p>
+<p>Dejerine o explicou como uma <strong>desconexão</strong> com duas partes. Uma lesão posterior esquerda priva o hemisfério esquerdo da informação visual. Uma segunda lesão, no esplênio do corpo caloso (a parte de trás desse feixe), impede que a informação vista pelo hemisfério direito chegue às estruturas do hemisfério esquerdo que reconhecem palavras, que para Dejerine ficavam no giro angular (Coslett; Turkeltaub, 2016). Hoje se sabe que a lesão da própria VWFA também pode causar alexia pura. Na maioria dos casos descritos, as fibras vizinhas também podem ter sido atingidas, mas num deles o AVC ficou restrito ao córtex. Em outro caso, uma cirurgia que lesou as fibras que levam informação à VWFA, poupando a própria área, também causou dislexia, o que apoia a explicação de Dejerine. Uma hipótese razoável é que tanto a desconexão quanto a lesão direta da região possam causar o quadro (Coslett; Turkeltaub, 2016).</p>
+<p>Muitos desses pacientes leem soletrando as letras uma a uma, “letra por letra”. A assinatura é o <strong>efeito de comprimento</strong>: palavras longas levam mais tempo para ser lidas do que as curtas (Coslett; Turkeltaub, 2016).</p>
+<h2 id="dislexia-do-desenvolvimento">6. Dislexia do desenvolvimento</h2>
+<h3 id="o-que-é">O que é</h3>
+<p>A <strong>dislexia do desenvolvimento</strong> é uma dificuldade em reconhecer palavras escritas com precisão e/ou fluência, com escrita (ortografia) e decodificação ruins. Ela é inesperada diante das outras capacidades cognitivas da pessoa e de um ensino adequado (Eden <em>et al.</em>, 2016). Ou seja, não é falta de inteligência nem de esforço. É o transtorno de aprendizagem mais comum. Estima-se que afete de 5% a 12% da população de língua inglesa, com taxas um pouco menores em outras línguas e sistemas de escrita, e é de duas a três vezes mais frequente em meninos (Eden <em>et al.</em>, 2016). Tem forte componente hereditário: estima-se uma chance de 30% a 50% de ser passada de pai ou mãe para filho, e vários genes candidatos já foram identificados (Eden <em>et al.</em>, 2016).</p>
+<h3 id="o-núcleo-fonológico">O núcleo fonológico</h3>
+<p>A explicação mais aceita é um <strong>déficit fonológico</strong>: uma dificuldade em perceber, segmentar e manipular os sons da fala, que atrapalha a ligação entre letras e sons. Ele aparece em três medidas: a <strong>consciência fonológica</strong> (por exemplo, dizer como fica “prato” sem o “r”), a <strong>nomeação rápida</strong> (nomear depressa uma série de letras ou números) e a memória verbal de curto prazo (Eden <em>et al.</em>, 2016). Quatro evidências sugerem que a consciência fonológica fraca é causa, e não só consequência, da dislexia: ela prevê a leitura futura; já aparece na pré-escola; é encontrada mesmo quando se compara a criança disléxica com crianças mais novas que leem no mesmo nível; e treiná-la costuma melhorar a decodificação (Eden <em>et al.</em>, 2016). Esse déficit provavelmente não explica tudo, e existem outras teorias, ligadas à percepção auditiva, ao tempo motor, ao cerebelo e a vias visuais (Eden <em>et al.</em>, 2016).</p>
+<p>No cérebro, a leitura depende de uma rede do hemisfério esquerdo com três partes: o córtex occipitotemporal ventral (onde fica a VWFA), o córtex temporoparietal e o frontal inferior. Meta-análises encontram em pessoas com dislexia menos atividade nas regiões occipitotemporal e temporoparietal esquerdas, além de diferenças na substância branca temporoparietal esquerda, onde passam fibras que ligam as regiões posteriores às frontais (Eden <em>et al.</em>, 2016).</p>
+<div class="destaque">
+<p>Cuidado com causa e efeito. Ler muda o cérebro, e quem tem dislexia lê menos. Parte das diferenças cerebrais pode ser consequência de ler menos, e não a causa da dislexia. Por isso os melhores estudos acompanham crianças antes da alfabetização ou comparam crianças disléxicas com crianças mais novas que leem no mesmo nível. Num estudo desse tipo, poucas das diferenças de anatomia encontradas na comparação com crianças da mesma idade continuaram aparecendo na comparação com crianças do mesmo nível de leitura (Eden <em>et al.</em>, 2016).</p>
+</div>
+<h3 id="mesmo-cérebro-sintoma-diferente">Mesmo cérebro, sintoma diferente</h3>
+<p>A ortografia da língua muda o modo como a dislexia aparece. Em alemão, em que a correspondência entre letras e sons é muito consistente, a dislexia aparece sobretudo como leitura lenta e problemas de escrita (Eden <em>et al.</em>, 2016). Em inglês, os erros de leitura são mais marcantes. Paulesu e colegas (2001) compararam disléxicos italianos, franceses e ingleses. Os italianos, que usam uma ortografia rasa, leram melhor que os outros, mas todos tiveram o mesmo prejuízo em tarefas fonológicas em relação aos seus controles. Durante a leitura, os três grupos mostraram a mesma redução de atividade numa região temporal do hemisfério esquerdo. A conclusão dos autores: a dislexia tem uma base neurocognitiva universal, e as diferenças entre países vêm das ortografias (Paulesu <em>et al.</em>, 2001).</p>
+<h3 id="o-que-ajuda">O que ajuda</h3>
+<p>Intervenções que treinam a consciência fonológica e a ligação entre letras e sons costumam trazer ganhos na decodificação (Eden <em>et al.</em>, 2016). O cérebro muda junto. Uma meta-análise de estudos de neuroimagem de intervenção encontrou, depois do treino, aumento de atividade no tálamo esquerdo, no frontal inferior esquerdo e direito (junto à ínsula), no occipital médio esquerdo e no cíngulo posterior direito; os autores pedem cautela, porque os estudos são poucos e os métodos variam (Barquero; Davis; Cutting, 2014). Esses aumentos são discutidos como “normalização” ou “compensação” (outras regiões assumem parte do trabalho) (Eden <em>et al.</em>, 2016). Algumas crianças com dislexia também sofrem mais com a aglomeração visual. Num grande grupo de crianças italianas e francesas com dislexia, simplesmente aumentar o espaçamento entre as letras melhorou a leitura de textos na hora, sem treino (Zorzi <em>et al.</em>, 2012).</p>
+<h2 id="o-que-o-laboratório-mostrou">7. O que o laboratório mostrou</h2>
+<p>Os experimentos tinham poucas tentativas por condição; o resultado individual varia, e o que importa é o padrão da turma.</p>
+<p><strong>Experimento 1 (palavra relâmpago).</strong> Você viu quatro letras por uma fração de segundo e escolheu qual de duas letras estava numa posição. As duas opções formavam palavras (CASA/CAMA), então adivinhar a palavra não ajudava. O esperado é acertar mais quando as letras formam uma palavra do que quando estão embaralhadas, e muitas vezes até mais do que quando a letra aparece sozinha. É o efeito de superioridade da palavra (Reicher, 1969), explicado pela ativação que volta das palavras para as letras (McClelland; Rumelhart, 1981).</p>
+<p><strong>Experimento 2 (textos estranhos).</strong> Cada formato testa uma propriedade da leitura. As maiúsculas alternadas costumam custar pouco, porque o sistema representa letras abstratas (Rastle, 2016). O texto espelhado costuma ser o mais lento, porque o leitor precisou “quebrar” a generalização em espelho para as letras (Kolinsky <em>et al.</em>, 2011). As letras embaralhadas custam tempo. O famoso texto segundo o qual “uma pesquisa de Cambridge” mostrou que a ordem das letras não importa é um boato: essa pesquisa não existiu. Com rastreamento dos olhos, Rayner e colegas (2006) mostraram que há sempre um custo. Trocar letras do meio das palavras deixou a leitura 12% mais lenta; trocar letras do fim, 26%; e trocar letras do início, 36% (Rayner <em>et al.</em>, 2006).</p>
+<p><strong>Experimento 3 (é palavra?).</strong> O esperado é que as letras trocadas (CADRENO) enganem mais e sejam rejeitadas mais devagar do que as substituídas, porque o código de posição das letras é aproximado (Perea; Lupker, 2004; Rastle, 2016).</p>
+<p><strong>Experimento 4 (visão de canto).</strong> Com os olhos fixos no ponto, a letra sozinha deve ser reconhecida bem e a letra cercada de vizinhos próximos, bem pior. Se os vizinhos ficam afastados, o reconhecimento melhora. É a aglomeração visual (Bouma, 1970; Zorzi <em>et al.</em>, 2012). Não é falta de nitidez: a letra sozinha, do mesmo tamanho e no mesmo lugar, é vista. Se você moveu os olhos, a diferença pode ter sumido.</p>
+<p><strong>Experimento 5 (duas rotas).</strong> As pseudopalavras devem ter sido lidas mais devagar que as palavras. Pelo modelo de duas rotas, palavras conhecidas podem usar a rota lexical, enquanto pseudopalavras só podem ser lidas pela rota não lexical, que aplica regras em série (Coltheart <em>et al.</em>, 2001; Coslett; Turkeltaub, 2016). Se a conversão é feita pedaço por pedaço, é de esperar que o comprimento pese mais nas pseudopalavras do que nas palavras. A medida é grosseira (inclui o tempo de tocar na tela), então compare o padrão, não os números exatos.</p>
+<div class="conceitos">
+<dl>
+<dt><strong>Fixação e sacada</strong></dt>
+<dd>
+Na leitura, os olhos param por 200 a 250 ms, em média (fixação), e saltam uns 8 caracteres (sacada); durante o salto não se extrai informação útil (Andrews; Reichle, 2019).
+</dd>
+<dt><strong>Fóvea</strong></dt>
+<dd>
+Região central da retina, a única com nitidez suficiente para distinguir letras; cobre uns 7 a 8 caracteres numa fixação (Andrews; Reichle, 2019).
+</dd>
+<dt><strong>Aglomeração visual (<em>crowding</em>)</strong></dt>
+<dd>
+Piora no reconhecimento de uma letra fora da fóvea causada por letras vizinhas próximas; diminui quando o espaçamento aumenta (Bouma, 1970; Zorzi <em>et al.</em>, 2012).
+</dd>
+<dt><strong>Área da forma visual das palavras (VWFA)</strong></dt>
+<dd>
+Região na porção média do giro fusiforme esquerdo que, em leitores, responde fortemente a palavras escritas, venham elas de qualquer lado do campo visual (Cohen <em>et al.</em>, 2000; Dehaene <em>et al.</em>, 2010).
+</dd>
+<dt><strong>Reciclagem neuronal</strong></dt>
+<dd>
+Hipótese de que invenções culturais, como a leitura, ocupam circuitos cerebrais mais antigos e herdam as suas restrições (Dehaene; Cohen, 2007).
+</dd>
+<dt><strong>Letras abstratas</strong></dt>
+<dd>
+Representação da identidade da letra independente da fonte, do tamanho e da caixa (A = a) (Rastle, 2016).
+</dd>
+<dt><strong>Efeito de superioridade da palavra</strong></dt>
+<dd>
+Uma letra é identificada melhor dentro de uma palavra do que dentro de uma sequência sem sentido (Reicher, 1969).
+</dd>
+<dt><strong>Modelo de dupla rota</strong></dt>
+<dd>
+Modelo de leitura em voz alta com uma rota lexical, que reconhece palavras conhecidas, e uma rota não lexical, que converte letras em sons por regras (Coltheart <em>et al.</em>, 2001).
+</dd>
+<dt><strong>Profundidade ortográfica</strong></dt>
+<dd>
+O quanto a escrita de uma língua se afasta de uma correspondência regular entre letras e sons; o finlandês é raso e o inglês é profundo (Andrews; Reichle, 2019).
+</dd>
+<dt><strong>Dupla dissociação</strong></dt>
+<dd>
+Quando uma lesão prejudica a capacidade A e poupa a B, e outra faz o contrário; sugere mecanismos ao menos em parte separados, como nas dislexias de superfície e fonológica (Coslett; Turkeltaub, 2016).
+</dd>
+<dt><strong>Alexia pura</strong></dt>
+<dd>
+Perda da leitura com a escrita preservada, por desconexão entre a entrada visual e a VWFA ou por lesão da própria região; a leitura passa a ser letra por letra (Coslett; Turkeltaub, 2016).
+</dd>
+<dt><strong>Dislexia do desenvolvimento</strong></dt>
+<dd>
+Dificuldade em ler palavras com precisão ou fluência, inesperada diante das outras capacidades e do ensino recebido; seu núcleo mais aceito é um déficit fonológico (Eden <em>et al.</em>, 2016).
+</dd>
+</dl>
+</div>
+<h2 id="para-revisar">Para revisar</h2>
+<ol type="1">
+<li><p>Por que a leitura é chamada de invenção cultural, e o que é o “paradoxo da leitura”?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>A escrita tem cerca de 6 mil anos e a leitura em massa menos de 200, tempo curto demais para a evolução criar um circuito próprio; por isso ler exige ensino explícito. O paradoxo é que, mesmo assim, os leitores fluentes usam a mesma pequena região do córtex occipitotemporal esquerdo, em escritas muito diferentes. A hipótese da reciclagem neuronal propõe uma resposta: a leitura ocupa um pedaço da via visual ventral que já existia.</p>
+</details></li>
+<li><p>Se a fóvea enxerga só uns 7 a 8 caracteres por vez, por que a visão fora dela não é inútil na leitura?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>A informação mais grosseira da parafóvea ajuda a decidir para onde o olho vai saltar e já adianta parte do reconhecimento da próxima palavra. Quando um experimento limita o leitor à fóvea, a leitura e a compreensão pioram muito. Mas, por causa da nitidez menor e da aglomeração visual, a identificação precisa das letras exige trazer a palavra até a fóvea.</p>
+</details></li>
+<li><p>CADRENO e CADFVNO mudam as mesmas duas posições de CADERNO. Por que a primeira engana mais, e o que isso diz sobre o código das letras?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>CADRENO conserva todas as letras de CADERNO, só que duas delas em posições trocadas. Se o cérebro codificasse cada letra numa posição fixa, as duas sequências estariam igualmente distantes da palavra. Como a versão com letras trocadas ativa muito mais a palavra original, conclui-se que o código de posição das letras é aproximado.</p>
+</details></li>
+<li><p>No estudo com adultos brasileiros e portugueses, o que mudou no cérebro com a alfabetização, e por que esse resultado apoia a reciclagem neuronal?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>A ativação do fusiforme esquerdo por frases escritas cresceu com o desempenho em leitura, mesmo em quem aprendeu a ler adulto, e a resposta a rostos no mesmo ponto diminuiu um pouco. Isso mostra que uma região já usada para reconhecer formas visuais foi parcialmente reaproveitada para a escrita, como prevê a hipótese.</p>
+</details></li>
+<li><p>Um paciente lê “táxi” como “táchi”, mas lê bem “tamelo”. Outro lê “táxi” corretamente, mas transforma “tamelo” em “camelo”. Qual rota está prejudicada em cada um?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>O primeiro tem dislexia de superfície: a rota lexical falha e ele lê pela regra, o que só erra as palavras irregulares. O segundo tem dislexia fonológica: a conversão letra-som falha, então ele lê palavras conhecidas pela rota lexical, mas não consegue ler pseudopalavras e as transforma em palavras parecidas. Juntos, os dois formam uma dupla dissociação.</p>
+</details></li>
+<li><p>Como alguém com alexia pura pode escrever uma carta e não conseguir lê-la?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>A linguagem e a escrita estão preservadas; o que falha é a chegada da forma visual das palavras ao sistema que as reconhece, por desconexão entre o córtex visual e a VWFA ou por lesão da própria região. O paciente passa a ler letra por letra, e palavras mais longas levam mais tempo.</p>
+</details></li>
+<li><p>Por que disléxicos italianos podem ler com mais precisão que disléxicos ingleses, se a base neural parece ser a mesma?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>O núcleo da dislexia é fonológico, e os disléxicos dos três países estudados mostraram o mesmo prejuízo fonológico e a mesma redução de atividade temporal esquerda. No italiano, as correspondências entre letras e sons são regulares, então a conversão letra-som acaba acertando, ainda que devagar. No inglês, a ortografia é profunda e a regra falha com frequência, de modo que os erros aparecem mais.</p>
+</details></li>
+<li><p>Uma pesquisa mostra menos atividade temporoparietal esquerda em adultos com dislexia. Por que isso não prova que essa diferença causou a dislexia?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Ler muda o cérebro, e pessoas com dislexia leem menos. A diferença pode ser consequência da menor experiência com a leitura. Para separar causa e efeito, é preciso estudar crianças antes da alfabetização ou comparar disléxicos com crianças mais novas que leem no mesmo nível.</p>
+</details></li>
+</ol>
+<h2 id="para-saber-mais">Para saber mais</h2>
+<ul>
+<li><strong>Dehaene, S. <em>Os neurônios da leitura</em>: como a ciência explica a nossa capacidade de ler (Penso, 2012; tradução de Leonor Scliar-Cabral).</strong> Livro de divulgação, em português, escrito pelo principal autor da hipótese da reciclagem neuronal. Acessível; comece pela introdução.</li>
+<li><strong>Dehaene-Lambertz; Monzalvo; Dehaene (2018).</strong> Acompanha crianças durante o primeiro ano de alfabetização e mostra a VWFA surgindo. Avançado, em inglês, de acesso aberto: https://doi.org/10.1371/journal.pbio.2004103.</li>
+<li><strong>Barquero; Davis; Cutting (2014).</strong> Revisão e meta-análise sobre o que muda no cérebro depois de intervenções em leitura. Intermediário, em inglês, de acesso aberto: https://doi.org/10.1371/journal.pone.0083668.</li>
+<li><strong>Rayner <em>et al.</em> (2006).</strong> Artigo de duas páginas que desmonta o boato da “pesquisa de Cambridge” com dados de movimentos oculares. Acessível, em inglês; há uma cópia de acesso aberto no repositório da Universidade de Leicester.</li>
+</ul>
+<h2 id="referências">Referências</h2><div class="refs">
+<p>ANDREWS, S.; REICHLE, E. D. The cognitive architecture of reading: the organization of an acquired skill. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: MIT Press, 2019. p. 51-66.</p>
+<p>BARQUERO, L. A.; DAVIS, N.; CUTTING, L. E. Neuroimaging of reading intervention: a systematic review and activation likelihood estimate meta-analysis. <strong>PLoS ONE</strong>, v. 9, n. 1, e83668, 2014. DOI: https://doi.org/10.1371/journal.pone.0083668.</p>
+<p>BOLGER, D. J.; PERFETTI, C. A.; SCHNEIDER, W. Cross-cultural effect on the brain revisited: universal structures plus writing system variation. <strong>Human Brain Mapping</strong>, v. 25, n. 1, p. 92-104, 2005. DOI: https://doi.org/10.1002/hbm.20124.</p>
+<p>BOUMA, H. Interaction effects in parafoveal letter recognition. <strong>Nature</strong>, v. 226, n. 5241, p. 177-178, 1970. DOI: https://doi.org/10.1038/226177a0.</p>
+<p>CHANCEAUX, M.; GRAINGER, J. Constraints on letter-in-string identification in peripheral vision: effects of number of flankers and deployment of attention. <strong>Frontiers in Psychology</strong>, v. 4, 119, 2013. DOI: https://doi.org/10.3389/fpsyg.2013.00119.</p>
+<p>COHEN, L. <em>et al.</em> The visual word form area: spatial and temporal characterization of an initial stage of reading in normal subjects and posterior split-brain patients. <strong>Brain</strong>, v. 123, n. 2, p. 291-307, 2000. DOI: https://doi.org/10.1093/brain/123.2.291.</p>
+<p>COLTHEART, M. <em>et al.</em> DRC: a dual route cascaded model of visual word recognition and reading aloud. <strong>Psychological Review</strong>, v. 108, n. 1, p. 204-256, 2001. DOI: https://doi.org/10.1037/0033-295X.108.1.204.</p>
+<p>COSLETT, H. B.; TURKELTAUB, P. Acquired dyslexia. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 791-803. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00063-8.</p>
+<p>DEHAENE, S.; COHEN, L. Cultural recycling of cortical maps. <strong>Neuron</strong>, v. 56, n. 2, p. 384-398, 2007. DOI: https://doi.org/10.1016/j.neuron.2007.10.004.</p>
+<p>DEHAENE, S. <em>et al.</em> The neural code for written words: a proposal. <strong>Trends in Cognitive Sciences</strong>, v. 9, n. 7, p. 335-341, 2005. DOI: https://doi.org/10.1016/j.tics.2005.05.004.</p>
+<p>DEHAENE, S. <em>et al.</em> How learning to read changes the cortical networks for vision and language. <strong>Science</strong>, v. 330, n. 6009, p. 1359-1364, 2010. DOI: https://doi.org/10.1126/science.1194140.</p>
+<p>DEHAENE-LAMBERTZ, G.; MONZALVO, K.; DEHAENE, S. The emergence of the visual word form: longitudinal evolution of category-specific ventral visual areas during reading acquisition. <strong>PLoS Biology</strong>, v. 16, n. 3, e2004103, 2018. DOI: https://doi.org/10.1371/journal.pbio.2004103.</p>
+<p>EDEN, G. F. <em>et al.</em> Developmental dyslexia. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 815-826. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00065-1.</p>
+<p>GRAINGER, J. <em>et al.</em> Orthographic processing in baboons (<em>Papio papio</em>). <strong>Science</strong>, v. 336, n. 6078, p. 245-248, 2012. DOI: https://doi.org/10.1126/science.1218152.</p>
+<p>KOLINSKY, R. <em>et al.</em> Enantiomorphy through the looking glass: literacy effects on mirror-image discrimination. <strong>Journal of Experimental Psychology: General</strong>, v. 140, n. 2, p. 210-238, 2011. DOI: https://doi.org/10.1037/a0022168.</p>
+<p>McCLELLAND, J. L.; RUMELHART, D. E. An interactive activation model of context effects in letter perception: I. An account of basic findings. <strong>Psychological Review</strong>, v. 88, n. 5, p. 375-407, 1981. DOI: https://doi.org/10.1037/0033-295X.88.5.375.</p>
+<p>PAULESU, E. <em>et al.</em> Dyslexia: cultural diversity and biological unity. <strong>Science</strong>, v. 291, n. 5511, p. 2165-2167, 2001. DOI: https://doi.org/10.1126/science.1057179.</p>
+<p>PEREA, M.; LUPKER, S. J. Can CANISO activate CASINO? Transposed-letter similarity effects with nonadjacent letter positions. <strong>Journal of Memory and Language</strong>, v. 51, n. 2, p. 231-246, 2004. DOI: https://doi.org/10.1016/j.jml.2004.05.005.</p>
+<p>PRICE, C. J.; DEVLIN, J. T. The myth of the visual word form area. <strong>NeuroImage</strong>, v. 19, n. 3, p. 473-481, 2003. DOI: https://doi.org/10.1016/S1053-8119(03)00084-3.</p>
+<p>RASTLE, K. Visual word recognition. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 255-264. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00021-3.</p>
+<p>RAYNER, K. <em>et al.</em> Raeding wrods with jubmled lettres: there is a cost. <strong>Psychological Science</strong>, v. 17, n. 3, p. 192-193, 2006. DOI: https://doi.org/10.1111/j.1467-9280.2006.01684.x.</p>
+<p>REICHER, G. M. Perceptual recognition as a function of meaningfulness of stimulus material. <strong>Journal of Experimental Psychology</strong>, v. 81, n. 2, p. 275-280, 1969. DOI: https://doi.org/10.1037/h0027768.</p>
+<p>SAYGIN, Z. M. <em>et al.</em> Connectivity precedes function in the development of the visual word form area. <strong>Nature Neuroscience</strong>, v. 19, n. 9, p. 1250-1255, 2016. DOI: https://doi.org/10.1038/nn.4354.</p>
+<p>SEYMOUR, P. H. K.; ARO, M.; ERSKINE, J. M. Foundation literacy acquisition in European orthographies. <strong>British Journal of Psychology</strong>, v. 94, n. 2, p. 143-174, 2003. DOI: https://doi.org/10.1348/000712603321661859.</p>
+<p>ZORZI, M. <em>et al.</em> Extra-large letter spacing improves reading in dyslexia. <strong>Proceedings of the National Academy of Sciences of the United States of America</strong>, v. 109, n. 28, p. 11455-11459, 2012. DOI: https://doi.org/10.1073/pnas.1205566109.</p>
+</div>
+<p class="rodape">Material de estudo da disciplina Bases neurais da comunicação humana (UFRN), Prof. Daniel Y. Takahashi. Texto e figuras elaborados para o curso; as fontes estão nas Referências.</p>
+</div>

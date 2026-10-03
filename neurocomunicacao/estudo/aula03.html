@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 3 · Ouvindo a fala — Material de estudo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,600..800&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{--bg:#f6f7f9;--surface:#fff;--fg:#142033;--muted:#566377;--line:#d8dee6;--accent:#0e7c86;--accent2:#c9771a;--soft:#e5f1f2;--soft2:#fbf1e3;
+--display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;--body:"Source Serif 4",Georgia,"Times New Roman",serif;--ui:"Source Sans 3","Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1621;--surface:#172132;--fg:#e6ecf3;--muted:#9aa8b9;--line:#2a3850;--accent:#3db4be;--accent2:#f0a645;--soft:#173740;--soft2:#3a2c17;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:18px/1.65 var(--body)}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 80px}
+.top{font:600 13px/1.4 var(--ui);display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:22px}
+.top a{color:var(--accent);text-decoration:none}
+.eyebrow{font:600 12px/1 ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(30px,6.5vw,46px)/1.08 var(--display);font-stretch:112%;margin:10px 0 8px;text-wrap:balance}
+.sub{font:400 20px/1.4 var(--ui);color:var(--muted);margin:0 0 26px}
+h2{font:750 25px/1.2 var(--display);margin:46px 0 12px;text-wrap:balance}
+h3{font:700 19px/1.3 var(--ui);margin:28px 0 8px}
+p{margin:0 0 16px}
+a{color:var(--accent)}
+ul,ol{padding-left:24px;margin:0 0 16px} li{margin:4px 0}
+figure{margin:26px 0;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;break-inside:avoid}
+figure img{width:100%;height:auto;display:block;border-radius:6px;background:#fff}
+figcaption{font:15px/1.5 var(--ui);color:var(--muted);margin-top:10px}
+.objetivos{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;padding:14px 18px 6px;margin:0 0 30px;font-family:var(--ui)}
+.objetivos::before{content:"Nesta aula você vai aprender a";display:block;font:700 13px/1 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:4px 0 10px}
+.destaque{background:var(--soft2);border-radius:10px;padding:14px 18px 2px;margin:22px 0;font-family:var(--ui);break-inside:avoid}
+.conceitos{background:var(--soft);border-radius:12px;padding:16px 20px 6px;margin:30px 0;font-family:var(--ui)}
+.conceitos::before{content:"Conceitos-chave";display:block;font:700 13px/1 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:4px 0 12px}
+.conceitos dl{margin:0} .conceitos dt{font-weight:700;margin-top:10px} .conceitos dd{margin:2px 0 8px 0;color:var(--fg)}
+details{margin:8px 0 4px;font-family:var(--ui);font-size:16px}
+summary{cursor:pointer;color:var(--accent);font-weight:600}
+details[open] summary{margin-bottom:6px}
+.refs p,#referencias + * p{font-size:15px;line-height:1.5;padding-left:1.4em;text-indent:-1.4em}
+.rodape{margin-top:50px;padding-top:16px;border-top:1px solid var(--line);font:13px/1.5 var(--ui);color:var(--muted)}
+@media print{
+ :root{--bg:#fff;--surface:#fff}
+ body{font-size:11.5pt;line-height:1.5}
+ .wrap{max-width:none;padding:0}
+ .top{display:none}
+ h2{font-size:17pt;margin-top:24pt;break-after:avoid}
+ h1{font-size:28pt}
+ figure{padding:8pt;border-color:#ccc}
+ figure img{max-height:9cm;object-fit:contain}
+ details>summary{display:none}
+ details{margin-left:0;font-size:10.5pt}
+ details::before{content:"Resposta: ";font-weight:700}
+ a{color:inherit;text-decoration:none}
+ .refs p{font-size:10pt}
+ @page{size:A4;margin:18mm 18mm 20mm}
+}
+</style>
+<div class="wrap">
+<nav class="top"><a href="index.html">Material de estudo</a><a href="../aula03.html">Laboratório da aula 3</a><a href="aula02.html">← Aula 2</a><a href="aula04.html">Aula 4 →</a></nav>
+<span class="eyebrow">Bases neurais da comunicação humana · Aula 3 · Material de estudo</span>
+<h1>Ouvindo a fala</h1>
+<p class="sub">Do ar que vibra no ouvido aos fonemas que o cérebro reconhece</p>
+<div class="objetivos">
+<ul>
+<li>Ler um espectrograma e reconhecer nele o envelope, os formantes e as transições de formantes.</li>
+<li>Descrever como o ouvido e a cóclea transformam a pressão do ar em um mapa de frequências.</li>
+<li>Seguir a via auditiva até o córtex e explicar o que é tonotopia.</li>
+<li>Explicar o problema da invariância e a percepção categórica dos fonemas.</li>
+<li>Resumir o que os registros diretos no córtex mostraram sobre o giro temporal superior.</li>
+<li>Comparar as vias ventral e dorsal e discutir a lateralização da fala, a escuta dicótica e o efeito McGurk.</li>
+</ul>
+</div>
+<h2 id="a-fala-é-um-sinal-que-muda-a-cada-poucos-milissegundos">1. A fala é um sinal que muda a cada poucos milissegundos</h2>
+<p>Quando alguém diz “bom dia”, o que chega ao seu ouvido é só ar empurrado e puxado muito rápido. Essa variação de pressão ao longo do tempo é a <strong>forma de onda</strong>, o único dado que o ouvido recebe (Arnal; Poeppel; Giraud, 2016). A olho nu, ela diz pouco. Por isso os pesquisadores usam outra representação, o <strong>espectrograma</strong>: o tempo fica no eixo horizontal, a frequência no eixo vertical, e a cor (ou o tom de cinza) mostra quanta energia há em cada frequência a cada instante (Arnal; Poeppel; Giraud, 2016).</p>
+<p>O ouvido humano capta sons de cerca de 20 Hz a 20.000 Hz, mas a maior parte da informação usada para reconhecer a fala está abaixo de 8.000 Hz (Arnal; Poeppel; Giraud, 2016). Três tipos de informação aparecem no espectrograma de uma frase.</p>
+<p><strong>O envelope.</strong> É a subida e a descida lenta da intensidade, que marca o ritmo das sílabas. A fala natural tem por volta de cinco sílabas por segundo (Sjerps; Chang, 2019), e as flutuações de energia do envelope têm pico em cerca de 4 a 6 Hz (Arnal; Poeppel; Giraud, 2016). O envelope sozinho carrega muita coisa. Se trocarmos o conteúdo de cada faixa de frequência por ruído e mantivermos só o envelope de poucas faixas (até mesmo quatro), a frase continua compreensível. Esse som se chama <strong>fala vocodificada</strong> (Shannon <em>et al.</em>, 1995; Arnal; Poeppel; Giraud, 2016). O implante coclear mostra o mesmo princípio: nele, cerca de 15 a 20 eletrodos fazem o papel de milhares de células sensoriais, e mesmo assim a maioria dos usuários chega a entender bem a fala (Arnal; Poeppel; Giraud, 2016).</p>
+<p><strong>A voz.</strong> As pregas vocais vibram em uma frequência básica, a <strong>frequência fundamental</strong> (F0), que vai de cerca de 100 Hz na voz de um homem adulto a cerca de 300 Hz na de uma criança. Ela aparece como finas listras verticais no espectrograma (Arnal; Poeppel; Giraud, 2016). A vibração produz também <strong>harmônicos</strong>, múltiplos da fundamental (Binder, 2016).</p>
+<p><strong>Os formantes.</strong> A garganta, a boca, a língua e os lábios formam um tubo cuja forma muda o tempo todo. Esse tubo reforça alguns harmônicos e abafa outros. As faixas reforçadas aparecem como bandas horizontais escuras, os <strong>formantes</strong>, numerados F1, F2, F3 a partir do mais grave (Binder, 2016). As consoantes oclusivas, como /b/, /d/ e /g/, mudam rapidamente a forma do tubo, e os formantes se deslocam logo depois que a boca se abre. Essas <strong>transições de formantes</strong> costumam durar de 20 a 50 ms. Fricativas como /s/ e /f/ aparecem como ruído agudo, e nasais como /m/ e /n/ têm energia concentrada em frequências baixas (Binder, 2016).</p>
+<div class="destaque">
+<p>A fala carrega informação em duas escalas de tempo ao mesmo tempo. Eventos curtos, como as transições de formantes e as explosões das consoantes, duram de 20 a 80 ms. As sílabas duram de 150 a 300 ms (Arnal; Poeppel; Giraud, 2016). O cérebro precisa acompanhar as duas escalas em paralelo.</p>
+</div>
+<p>A pergunta que guia o resto da aula é: como o cérebro extrai fonemas estáveis desse sinal, que nunca se repete exatamente igual?</p>
+<h2 id="do-ar-à-cóclea-o-ouvido-decompõe-o-som-em-frequências">2. Do ar à cóclea: o ouvido decompõe o som em frequências</h2>
+<p>O som passa por três etapas antes de virar sinal nervoso. O <strong>ouvido externo</strong> (o pavilhão e o canal) leva o som até o tímpano. O <strong>ouvido médio</strong> resolve um problema físico: o som viaja no ar, mas o ouvido interno é cheio de líquido, que resiste muito mais ao movimento (tem impedância maior). Três ossículos (martelo, bigorna e estribo) funcionam como alavanca, e a diferença de área entre o tímpano, grande, e a janela oval, pequena, concentra a força. Assim o ouvido médio “casa” o ar com o líquido (Mildner, 2008). Pense em empurrar um tambor grande e entregar toda a força numa porta pequena.</p>
+<p>O <strong>ouvido interno</strong> contém a <strong>cóclea</strong>, um tubo enrolado em espiral. Dentro dela corre a <strong>membrana basilar</strong>, sobre a qual ficam as células receptoras (Mildner, 2008). A membrana tem cerca de 30 mm de comprimento (Formisano, 2019). Cada frequência faz vibrar mais um ponto diferente dela: os agudos fazem vibrar a <strong>base</strong>, perto da janela oval, e os graves fazem vibrar o <strong>ápice</strong>, na ponta da espiral (Arnal; Poeppel; Giraud, 2016; Mildner, 2008). O espaçamento das frequências ao longo da membrana é aproximadamente logarítmico (Formisano, 2019), ou seja, de 100 para 200 Hz e de 1.000 para 2.000 Hz a distância na membrana é parecida. A Figura 1 mostra a membrana desenrolada.</p>
+<figure>
+<img src="img/aula03/coclea.png" alt="Figura 1. A membrana basilar desenrolada, da base (perto da janela oval, estreita e rígida) ao ápice (larga e flexível). Cada ponto vibra mais com uma frequência; os agudos ficam na base e os graves no ápice, numa escala aproximadamente logarítmica. Fonte: elaborada para o curso a partir de Arnal, Poeppel e Giraud (2016) e Formisano (2019)." />
+<figcaption aria-hidden="true"><strong>Figura 1.</strong> A membrana basilar desenrolada, da base (perto da janela oval, estreita e rígida) ao ápice (larga e flexível). Cada ponto vibra mais com uma frequência; os agudos ficam na base e os graves no ápice, numa escala aproximadamente logarítmica. Fonte: elaborada para o curso a partir de Arnal, Poeppel e Giraud (2016) e Formisano (2019).</figcaption>
+</figure>
+<p>Por isso se diz que a cóclea funciona como um <strong>banco de filtros</strong>: ela separa o som em muitos canais de frequência que se sobrepõem (Formisano, 2019). As fibras do nervo auditivo herdam essa organização, e cada uma responde melhor a uma <strong>frequência característica</strong> (Formisano, 2019). O nervo coclear tem de 30.000 a 40.000 fibras (Mildner, 2008). O resultado é que o cérebro não recebe uma forma de onda. Ele recebe algo parecido com um espectrograma: quanta energia há em cada faixa de frequência, a cada instante (Formisano, 2019). Esse mapa ordenado de frequências chama-se <strong>tonotopia</strong>, e ele se mantém até o córtex (Arnal; Poeppel; Giraud, 2016).</p>
+<p>Com a idade, muita gente perde audição; essa perda ligada ao envelhecimento se chama <strong>presbiacusia</strong> (Gates; Mills, 2005). O experimento 1 do laboratório testou a ideia, apresentada na aula, de que ela começa pelos agudos, codificados na base da cóclea.</p>
+<h3 id="a-nota-fantasma-a-altura-é-uma-construção-do-cérebro">A nota fantasma: a altura é uma construção do cérebro</h3>
+<p>O experimento 4 tocou quatro sons (Figura 2). O som A é um tom puro de 200 Hz. O som B tem 200 Hz e seus harmônicos. Os sons C e D não têm nenhuma energia em 200 Hz, só harmônicos mais altos. Mesmo assim, ouvimos a mesma altura (o mesmo “grave” ou “agudo”) em A, C e D. O cérebro deduz a fundamental pelo espaçamento regular dos harmônicos. Esse fenômeno é a <strong>fundamental ausente</strong>. Em saguis, Bendor e Wang (2005) encontraram, numa região vizinha ao córtex auditivo primário, neurônios que respondem do mesmo jeito a um tom puro e a um som com fundamental ausente de mesma altura.</p>
+<figure>
+<img src="img/aula03/fundamental.png" alt="Figura 2. Os quatro sons da demonstração da nota fantasma. Em C e D não há energia em 200 Hz (linha tracejada), mas a altura percebida continua a de A. Fonte: elaborada para o curso com os parâmetros do laboratório." />
+<figcaption aria-hidden="true"><strong>Figura 2.</strong> Os quatro sons da demonstração da nota fantasma. Em C e D não há energia em 200 Hz (linha tracejada), mas a altura percebida continua a de A. Fonte: elaborada para o curso com os parâmetros do laboratório.</figcaption>
+</figure>
+<p>O telefone fixo dá um exemplo do dia a dia. Ele transmite só a faixa de cerca de 200 a 3.600 Hz, e mesmo assim entendemos a fala sem esforço (Arnal; Poeppel; Giraud, 2016). A fundamental de uma voz masculina, perto de 100 Hz, fica fora dessa faixa, mas continuamos ouvindo uma voz grave.</p>
+<h2 id="do-tronco-cerebral-ao-córtex-auditivo">3. Do tronco cerebral ao córtex auditivo</h2>
+<p>Do nervo auditivo até o córtex há várias estações: <strong>núcleo coclear</strong>, <strong>complexo olivar superior</strong>, <strong>colículo inferior</strong> (no mesencéfalo) e <strong>corpo geniculado medial</strong> (no tálamo) (Formisano, 2019; Mildner, 2008). Comparada às outras modalidades sensoriais, a via auditiva tem mais caminhos paralelos e mais sinapses no tronco cerebral, onde já acontece muito processamento (Mildner, 2008).</p>
+<p><strong>O complexo olivar superior compara os dois ouvidos.</strong> É o primeiro ponto em que se detectam diferenças entre o que chega ao ouvido direito e ao esquerdo. Seus neurônios percebem diferenças de tempo de chegada de poucos microssegundos e diferenças de intensidade. É assim que localizamos de onde vem um som (Mildner, 2008).</p>
+<p><strong>A maior parte da informação cruza.</strong> Cada ouvido envia sinais aos dois hemisférios, mas cerca de dois terços da informação vão para o lado oposto e um terço para o mesmo lado (Mildner, 2008). Esse cruzamento ajuda a explicar o experimento 3, a escuta dicótica (seção 6).</p>
+<h3 id="o-giro-de-heschl">O giro de Heschl</h3>
+<p>O córtex auditivo ocupa a face superior do <strong>giro temporal superior</strong> (em inglês, STG), escondida dentro da <strong>fissura de Sylvius</strong> (o sulco lateral). O <strong>córtex auditivo primário</strong> fica no <strong>giro de Heschl</strong>, que atravessa essa face em diagonal (Formisano, 2019; Sjerps; Chang, 2019). Como está escondido, ele só aparece em reconstruções tridimensionais do cérebro. Sua forma varia muito entre pessoas e entre hemisférios; às vezes ele é duplicado (Formisano, 2019). Atrás dele fica o <strong>plano temporal</strong>, que costuma ter superfície maior no hemisfério esquerdo, uma das assimetrias anatômicas mais citadas em relação à linguagem (Formisano, 2019). Ao longo do STG e do <strong>sulco temporal superior</strong> (STS), logo abaixo, também há respostas fortes a sons (Formisano, 2019).</p>
+<h3 id="a-tonotopia-se-repete-no-córtex">A tonotopia se repete no córtex</h3>
+<p>No córtex auditivo primário, neurônios com a mesma frequência preferida ficam juntos, e a preferência muda de forma ordenada ao longo da superfície. Em macacos, três campos (A1, R e RT) formam um <strong>núcleo</strong> (<em>core</em>); cada um tem um mapa de frequências, e mapas vizinhos são espelhados. O núcleo é cercado por um <strong>cinturão</strong> (<em>belt</em>), cujos neurônios respondem menos a tons puros e preferem sons mais complexos (Formisano, 2019), e depois por um <strong>paracinturão</strong> (<em>parabelt</em>) (Binder, 2016). Em humanos, a ressonância magnética funcional de alta resolução mostrou dois mapas de frequência em espelho sobre o giro de Heschl (Formisano <em>et al.</em>, 2003), um padrão confirmado por muitos estudos, embora a orientação exata dos mapas ainda seja discutida (Formisano, 2019). E, como nos macacos, as regiões mais afastadas do córtex primário, no STG lateral e no STS, respondem mais à fala do que a sons simples (Binder, 2016).</p>
+<p>Duas observações ligam essa organização à fala. Primeiro, as regiões que preferem voz e fala ficam nas partes do mapa que preferem frequências baixas, onde está a maior parte da energia da fala (Formisano, 2019). Segundo, o córtex parece analisar como o espectrograma muda no tempo. Para entender a fala, as modulações temporais mais importantes ficam entre cerca de 1 e 7 Hz (Formisano, 2019), justamente o ritmo das sílabas.</p>
+<h2 id="dos-sons-aos-fonemas-invariância-e-categorias">4. Dos sons aos fonemas: invariância e categorias</h2>
+<h3 id="o-problema-da-invariância">O problema da invariância</h3>
+<p>Um <strong>fonema</strong> é a menor unidade sonora que muda o sentido de uma palavra: trocar /p/ por /b/ transforma “pato” em “bato”. O fonema é uma categoria abstrata. Cada vez que alguém o pronuncia, o som sai um pouco diferente, e ele muda conforme os sons vizinhos, o sotaque e o falante (Binder, 2016).</p>
+<p>O exemplo clássico é o /d/. Antes de “i”, o segundo formante sobe durante a transição; antes de “u”, ele desce (Figura 3). Não existe um pedaço do sinal que seja “o /d/” em todos os contextos (Binder, 2016). Isso acontece por causa da <strong>coarticulação</strong>: enquanto produzimos a consoante, a língua e os lábios já se preparam para a vogal seguinte.</p>
+<figure>
+<img src="img/aula03/coarticulacao.png" alt="Figura 3. Trilhas esquemáticas do primeiro e do segundo formante em “di” e “du”. O F2 sobe em “di” e desce em “du”, mas ouvimos o mesmo /d/. Fonte: elaborada para o curso a partir de Binder (2016)." />
+<figcaption aria-hidden="true"><strong>Figura 3.</strong> Trilhas esquemáticas do primeiro e do segundo formante em “di” e “du”. O F2 sobe em “di” e desce em “du”, mas ouvimos o mesmo /d/. Fonte: elaborada para o curso a partir de Binder (2016).</figcaption>
+</figure>
+<p>Falantes diferentes acrescentam mais variação. Uma criança e um homem adulto têm tratos vocais de tamanhos diferentes, e os valores absolutos dos formantes mudam. Uma pista mais estável parece ser a razão entre os formantes, e não seu valor absoluto (Binder, 2016).</p>
+<p>Esse quebra-cabeça levou Liberman e colegas (1967) a propor a <strong>teoria motora da percepção da fala</strong>: identificaríamos os fonemas pelos gestos articulatórios do falante, e não pelos sons em si. A teoria é debatida até hoje. Estudos posteriores encontraram pistas acústicas mais estáveis do que se pensava, como a forma geral do espectro no momento em que a consoante é liberada (Binder, 2016). A via dorsal (seção 6) retoma, de forma mais modesta, a ideia de que perceber a fala envolve o sistema que a produz.</p>
+<h3 id="percepção-categórica">Percepção categórica</h3>
+<p>Uma solução do cérebro para a variabilidade é ouvir categorias. Em experimentos clássicos dos anos 1950, pesquisadores sintetizaram sílabas que mudavam em passos acústicos iguais de uma consoante para outra. Os ouvintes não ouviam uma mudança gradual, e sim um som e depois uma troca brusca para outro. Além disso, distinguiam mal dois sons da mesma categoria e bem dois sons separados pela mesma distância física, mas de categorias diferentes. Isso é a <strong>percepção categórica</strong> (Binder, 2016).</p>
+<p>O experimento 2 do laboratório reproduziu essa ideia com sete sílabas entre “ba” e “da” (Figura 4). Só o início de F2 e de F3 mudava, em passos iguais, nos primeiros 45 ms.</p>
+<figure>
+<img src="img/aula03/continuo.png" alt="Figura 4. Os sete passos do contínuo “ba”–“da” usado no laboratório. F1 é igual em todos; só o início de F2 (de 900 a 1.800 Hz) e de F3 (de 2.000 a 2.900 Hz) muda, nos primeiros 45 ms. Fonte: elaborada para o curso com os parâmetros do sintetizador do laboratório." />
+<figcaption aria-hidden="true"><strong>Figura 4.</strong> Os sete passos do contínuo “ba”–“da” usado no laboratório. F1 é igual em todos; só o início de F2 (de 900 a 1.800 Hz) e de F3 (de 2.000 a 2.900 Hz) muda, nos primeiros 45 ms. Fonte: elaborada para o curso com os parâmetros do sintetizador do laboratório.</figcaption>
+</figure>
+<p>As fronteiras entre categorias dependem da língua aprendida na infância. Falantes de inglês, por exemplo, não distinguem duas oclusivas do híndi que, para falantes de híndi, são fonemas diferentes, com fronteira categórica nítida (Binder, 2016). O sistema de percepção de fonemas se “afina” durante o desenvolvimento, tema da aula 11. Mas fronteiras categóricas não são exclusivas de humanos. Chinchilas treinadas a separar /da/ de /ta/ classificaram sílabas intermediárias com uma fronteira parecida com a de adultos falantes de inglês (Kuhl; Miller, 1975). Isso sugere que parte das categorias da fala aproveita propriedades gerais da audição dos mamíferos.</p>
+<h3 id="o-que-esperamos-ouvir-muda-o-que-ouvimos">O que esperamos ouvir muda o que ouvimos</h3>
+<p>Na <strong>fala senoidal</strong>, uma frase é reduzida a três ou quatro assobios que seguem os formantes. Quem ouve sem aviso escuta apitos eletrônicos; quem é avisado de que se trata de fala passa a ouvir os sons da fala, com o mesmo estímulo físico (Remez <em>et al.</em>, 1981; Binder, 2016). Estudos de imagem que compararam o cérebro antes e depois de as pessoas aprenderem a ouvir esses sons como fonemas encontraram mais atividade no <strong>STS posterior esquerdo</strong> depois do treino (Binder, 2016). O que percebemos depende tanto do que esperamos quanto do que entra pelo ouvido.</p>
+<h2 id="registros-diretos-no-córtex-o-giro-temporal-superior">5. Registros diretos no córtex: o giro temporal superior</h2>
+<h3 id="a-eletrocorticografia">A eletrocorticografia</h3>
+<p>Algumas pessoas com epilepsia que não responde a remédios precisam de cirurgia para retirar o tecido onde as crises começam. Para localizá-lo, os médicos às vezes colocam grades de eletrodos diretamente sobre o córtex, e o paciente fica internado de alguns dias a algumas semanas esperando as crises. Nesse período, quem consentiu antes da cirurgia pode participar de tarefas de pesquisa. Esse método é a <strong>eletrocorticografia</strong> (ECoG) (Leonard; Chang, 2016).</p>
+<p>Os eletrodos ficam a poucos milímetros uns dos outros e registram a atividade milissegundo a milissegundo, uma combinação que nem a ressonância (lenta) nem o EEG de couro cabeludo (espacialmente borrado) oferecem. A medida mais usada é a atividade de alta frequência, o <strong>gama alto</strong> (tipicamente entre 60 e 200 Hz), que acompanha o disparo de neurônios perto do eletrodo e se correlaciona com o sinal da ressonância funcional. O método tem limites: os eletrodos ficam só onde os médicos precisam deles, raramente nos dois hemisférios, e os cérebros estudados têm epilepsia (Leonard; Chang, 2016).</p>
+<h3 id="o-stg-ouve-em-categorias">O STG ouve em categorias</h3>
+<p>Chang e colegas (2010) tocaram para pacientes com ECoG um contínuo sintetizado de /ba/ a /da/ a /ga/, parecido com o do laboratório. Os padrões de atividade no STG posterior não mudavam em passos iguais: agrupavam-se nas mesmas categorias que as pessoas relatam ouvir. A diferença entre categorias era máxima por volta de 110 ms depois do início do som (Leonard; Chang, 2016). Ou seja, o STG faz o que vocês fizeram no experimento 2: transforma passos acústicos iguais em categorias.</p>
+<h3 id="o-stg-se-organiza-por-traços-fonéticos">O STG se organiza por traços fonéticos</h3>
+<p>Mesgarani e colegas (2014) registraram o STG com ECoG enquanto pacientes ouviam centenas de frases naturais em inglês (Leonard; Chang, 2016). Cada eletrodo não respondia a um fonema isolado, mas a um grupo de fonemas com um <strong>traço fonético</strong> em comum. Um eletrodo respondia a todas as oclusivas (/b/, /d/, /g/, /p/, /t/, /k/); outro às fricativas sibilantes (/s/, /z/, /ʃ/); outro às nasais; outros a grupos de vogais (Sjerps; Chang, 2019). Essa seletividade vem da sintonia a padrões acústicos típicos de cada classe: energia espalhada por muitas frequências nas oclusivas, componentes agudos nas fricativas, frequências baixas nas nasais. Por isso traços com pistas acústicas fortes, como o modo de articulação, organizam as respostas mais do que o ponto de articulação (Sjerps; Chang, 2019).</p>
+<p>As respostas do STG à fala aparecem cedo, entre cerca de 50 e 150 ms depois do estímulo (Leonard; Chang, 2016). Ao longo do lobo temporal há um gradiente: quanto mais anterior e ventral a região, mais ela prefere sons parecidos com fala (Sjerps; Chang, 2019).</p>
+<h3 id="a-atenção-escolhe-uma-voz-a-festa-de-coquetel">A atenção escolhe uma voz: a festa de coquetel</h3>
+<p>Numa festa barulhenta, conseguimos acompanhar uma voz entre muitas: é o chamado problema da festa de coquetel, estudado desde os experimentos de Cherry (1953) com duas mensagens faladas ao mesmo tempo. Mesgarani e Chang (2012) tocaram duas vozes ao mesmo tempo para pacientes com ECoG e pediram que relatassem o que uma delas dizia. A partir da atividade do STG, reconstruíram o espectrograma que o cérebro estava representando. Ele refletia só a voz atendida, como se a outra não tivesse sido ouvida (Leonard; Chang, 2016).</p>
+<div class="destaque">
+<p>O giro temporal superior não é um microfone. Ele não grava todo o som que chega; ele representa traços fonéticos, organizados em categorias e já filtrados por aquilo a que você presta atenção.</p>
+</div>
+<h2 id="duas-vias-dois-hemisférios-e-o-rosto-de-quem-fala">6. Duas vias, dois hemisférios e o rosto de quem fala</h2>
+<h3 id="o-modelo-de-duas-vias">O modelo de duas vias</h3>
+<p>Depois da análise acústica, a informação da fala precisa ir para dois lugares: para o sistema que entende o significado e para o sistema que controla a boca. Hickok e Poeppel (2007) propuseram um <strong>modelo de duas vias</strong>. A análise espectrotemporal acontece nos dois hemisférios, no STG dorsal, e a representação dos fonemas envolve o STS. Depois, a informação se divide (Hickok; Poeppel, 2016):</p>
+<ul>
+<li>A <strong>via ventral</strong> (“o quê”) vai do som ao significado, por estruturas das partes superior e média do lobo temporal. Ela é <strong>bilateral</strong>. Por isso uma lesão em um só hemisfério costuma poupar boa parte do reconhecimento de palavras ouvidas, enquanto lesões nos dois lados do lobo temporal superior podem causar <strong>surdez verbal</strong>: a pessoa ouve sons, mas não reconhece a fala (Hickok; Poeppel, 2016; Binder, 2016).</li>
+<li>A <strong>via dorsal</strong> (“como”) vai do som à articulação. Ela passa por uma área chamada <strong>Spt</strong>, na fronteira entre os lobos parietal e temporal, dentro da fissura de Sylvius, e chega ao lobo frontal. É <strong>fortemente lateralizada à esquerda</strong>. Ela liga o som aos movimentos da fala, o que é necessário, por exemplo, para a criança aprender a reproduzir os sons da língua. Lesões nessa região estão associadas à <strong>afasia de condução</strong>, em que a pessoa entende bem, mas comete muitos erros de sons ao falar (Hickok; Poeppel, 2016).</li>
+</ul>
+<p>As primeiras propostas viam a via dorsal auditiva como uma via espacial (“onde”), como na visão; hoje há certo consenso de que ela faz a integração entre audição e movimento (Hickok; Poeppel, 2016). Mas a área ainda discute a lateralização. Alguns estudos de imagem que comparam fala inteligível com controles acústicos encontram respostas predominantemente à esquerda, o que levou alguns autores a defender uma rede de percepção da fala inteiramente lateralizada à esquerda. Outros encontram ativação nos dois hemisférios mesmo depois de descontar a acústica, e o debate continua (Hickok; Poeppel, 2016).</p>
+<h3 id="escuta-dicótica-o-ouvido-direito-costuma-vencer">Escuta dicótica: o ouvido direito costuma vencer</h3>
+<p>Na <strong>escuta dicótica</strong>, cada ouvido recebe um som diferente ao mesmo tempo. Na versão original do teste, Kimura (1961) apresentava três números falados a um ouvido e, ao mesmo tempo, três números diferentes ao outro, e o ouvido direito saía na frente (Mildner, 2008). A explicação clássica usa o cruzamento da via auditiva (Figura 5). As vias cruzadas têm mais fibras, e quando os dois ouvidos competem as vias do mesmo lado são parcial ou totalmente suprimidas. A sílaba do ouvido direito vai direto ao hemisfério esquerdo, onde a linguagem é processada na maioria das pessoas; a do ouvido esquerdo chega primeiro ao hemisfério direito e precisa atravessar o corpo caloso, perdendo qualidade no caminho (Mildner, 2008). Nem todos aceitam essa explicação: para Efron, a vantagem viria de uma tendência a prestar mais atenção a um lado do que ao outro (Mildner, 2008).</p>
+<figure>
+<img src="img/aula03/dicotica.png" alt="Figura 5. Escuta dicótica. Cada ouvido recebe uma sílaba diferente. As vias cruzadas (setas cheias) predominam sobre as diretas (tracejadas), e a sílaba do ouvido direito chega primeiro ao hemisfério esquerdo. Fonte: elaborada para o curso a partir de Kimura (1961) e Mildner (2008)." />
+<figcaption aria-hidden="true"><strong>Figura 5.</strong> Escuta dicótica. Cada ouvido recebe uma sílaba diferente. As vias cruzadas (setas cheias) predominam sobre as diretas (tracejadas), e a sílaba do ouvido direito chega primeiro ao hemisfério esquerdo. Fonte: elaborada para o curso a partir de Kimura (1961) e Mildner (2008).</figcaption>
+</figure>
+<p>A vantagem do ouvido direito é uma medida indireta e imperfeita da lateralização. O teste de Wada, que anestesia um hemisfério por vez, indica linguagem à esquerda em mais de 90% dos destros e em cerca de 70% dos canhotos (Mildner, 2008). Já no teste dicótico, quando ele é repetido, só cerca de metade das pessoas mostra uma vantagem do ouvido direito consistente e estatisticamente significativa (Mildner, 2008).</p>
+<h3 id="ver-muda-o-que-você-ouve-o-efeito-mcgurk">Ver muda o que você ouve: o efeito McGurk</h3>
+<p>A percepção da fala não é só auditiva. Ver o rosto de quem fala ajuda muito quando há ruído (Sumby; Pollack, 1954; Beauchamp, 2016). Às vezes a visão chega a mudar o que ouvimos. No <strong>efeito McGurk</strong>, descoberto por acaso, o som “ba” é combinado com o vídeo de uma boca dizendo “ga”, e muitas pessoas ouvem “da”, uma sílaba que não está nem no som nem na imagem (McGurk; MacDonald, 1976; Beauchamp, 2016).</p>
+<p>As diferenças entre pessoas são enormes. Com os mesmos vídeos, há quem nunca tenha a ilusão e quem a tenha em todas as tentativas (Beauchamp, 2016). A região que integra o que vemos e o que ouvimos na fala é o <strong>STS posterior</strong>. Quanto mais o STS esquerdo de uma pessoa responde aos vídeos de McGurk, mais ela tende a ter a ilusão (Beauchamp, 2016). E pulsos de estimulação magnética transcraniana (TMS) no STS, dados perto do início da sílaba, reduzem a ilusão sem atrapalhar a percepção de outros estímulos (Beauchamp; Nath; Pasalar, 2010).</p>
+<h2 id="o-que-o-laboratório-mostrou">7. O que o laboratório mostrou</h2>
+<p>Os experimentos do Laboratório de Escuta reproduzem, em pequena escala, achados desta aula. Os resultados de uma turma são ruidosos (celulares e fones diferentes, poucas tentativas por pessoa), então o que importa é o padrão geral e se ele se parece com o esperado.</p>
+<p><strong>Experimento 1 · Até onde você ouve?</strong> Um tom subia de 8.000 a 20.000 Hz, e cada um marcava quando deixava de ouvi-lo. Espera-se que, em média, o grupo mais jovem pare em frequências mais altas que o de mais idade, com bastante sobreposição, se a perda ligada à idade começa pela base da cóclea, como vimos na aula (seção 2). Mas há uma <strong>variável de confusão</strong>: alto-falantes de celular e muitos fones não reproduzem bem os agudos mais altos. Se o aparelho corta antes do ouvido, o limite medido é o do aparelho. Para separar as duas explicações, seria preciso usar o mesmo equipamento calibrado para todos (aula 2).</p>
+<p><strong>Experimento 2 · Ba ou da?</strong> Na parte A, cada um classificou 28 sílabas (os sete passos da Figura 4, quatro vezes cada). Espera-se uma curva em degrau: os primeiros passos quase sempre “ba”, os últimos quase sempre “da” e uma troca brusca no meio. Na parte B, deve ser mais fácil distinguir o par que atravessa a fronteira do que pares dentro de uma categoria. As duas coisas juntas são a marca da percepção categórica (seção 4), e o STG mostra o mesmo padrão (seção 5). Se alguém não encontrou fronteira, a causa provável é a qualidade do som sintetizado naquele aparelho, e não a ausência do fenômeno.</p>
+<p><strong>Experimento 3 · Escuta dicótica.</strong> Em 12 tentativas, cada ouvido recebia uma sílaba diferente. Espera-se que a maioria relate mais vezes a sílaba do ouvido direito, mas não todos: a medida é instável, nem todos têm linguagem à esquerda, e fones trocados de lado invertem o resultado (para isso existia o botão “Testar fones”).</p>
+<p><strong>Experimento 4 · A nota fantasma.</strong> Espera-se que todos ouçam a mesma altura em A, C e D (Figura 2). Um detalhe curioso: alto-falantes pequenos reproduzem mal os graves, e então até o som A chega ao ouvido em parte pelos harmônicos. Ainda assim a altura ouvida é a mesma, porque o cérebro a calcula pelo espaçamento dos harmônicos.</p>
+<p><strong>Ilusões para a turma.</strong> No vídeo do efeito McGurk, espere grande variação entre colegas: uns ouvem o som, outros a sílaba da imagem, outros uma fusão. A média da turma esconde essa variação individual. (No clipe de reserva, da BBC, a boca diz “fa” em vez de “ga”, e muitos passam a ouvir “fa”.) Na fala senoidal, quase todos ouvem apitos na primeira vez e palavras depois de ouvir a frase original.</p>
+<div class="conceitos">
+<dl>
+<dt><strong>Espectrograma</strong></dt>
+<dd>
+Representação do som com o tempo no eixo horizontal, a frequência no vertical e a energia em cores ou tons de cinza (Arnal; Poeppel; Giraud, 2016).
+</dd>
+<dt><strong>Envelope</strong></dt>
+<dd>
+Variação lenta da intensidade da fala, que marca o ritmo das sílabas; tem pico em cerca de 4 a 6 Hz (Arnal; Poeppel; Giraud, 2016).
+</dd>
+<dt><strong>Formante</strong></dt>
+<dd>
+Faixa de frequências reforçada pela forma do trato vocal; os formantes definem as vogais, e suas transições ajudam a distinguir consoantes (Binder, 2016).
+</dd>
+<dt><strong>Tonotopia</strong></dt>
+<dd>
+Organização ordenada por frequência, que começa na membrana basilar e se mantém ao longo da via auditiva até o córtex (Arnal; Poeppel; Giraud, 2016; Formisano, 2019).
+</dd>
+<dt><strong>Giro de Heschl</strong></dt>
+<dd>
+Giro do lobo temporal, escondido na fissura de Sylvius, onde fica o córtex auditivo primário (Formisano, 2019).
+</dd>
+<dt><strong>Fundamental ausente</strong></dt>
+<dd>
+Percepção da altura correspondente a uma frequência fundamental que não está presente no som; o cérebro a deduz pelo espaçamento dos harmônicos (Bendor; Wang, 2005).
+</dd>
+<dt><strong>Coarticulação e problema da invariância</strong></dt>
+<dd>
+Cada fonema é produzido de forma diferente conforme os sons vizinhos, de modo que não tem uma assinatura acústica fixa (Binder, 2016).
+</dd>
+<dt><strong>Percepção categórica</strong></dt>
+<dd>
+Tendência a ouvir um contínuo acústico como categorias separadas, distinguindo melhor os sons na fronteira do que dentro de uma categoria (Binder, 2016).
+</dd>
+<dt><strong>Traço fonético</strong></dt>
+<dd>
+Propriedade compartilhada por um grupo de fonemas, como ser oclusiva, fricativa ou nasal; eletrodos do STG respondem a traços, e não a fonemas isolados (Sjerps; Chang, 2019).
+</dd>
+<dt><strong>Eletrocorticografia (ECoG)</strong></dt>
+<dd>
+Registro feito com eletrodos colocados sobre o córtex de pacientes em monitorização para cirurgia de epilepsia (Leonard; Chang, 2016).
+</dd>
+<dt><strong>Modelo de duas vias</strong></dt>
+<dd>
+Proposta de que a fala segue uma via ventral, bilateral, do som ao significado, e uma via dorsal, lateralizada à esquerda, do som à articulação (Hickok; Poeppel, 2007).
+</dd>
+<dt><strong>Escuta dicótica</strong></dt>
+<dd>
+Teste em que cada ouvido recebe um som diferente ao mesmo tempo; a vantagem do ouvido direito para a fala reflete, de forma indireta, a dominância do hemisfério esquerdo (Mildner, 2008).
+</dd>
+<dt><strong>Efeito McGurk</strong></dt>
+<dd>
+Ilusão em que a imagem da boca muda a sílaba ouvida; mostra que a percepção da fala integra visão e audição (Beauchamp, 2016).
+</dd>
+</dl>
+</div>
+<h2 id="para-revisar">Para revisar</h2>
+<ol type="1">
+<li><p>Uma colega diz que “a fala é só uma sequência de letras faladas, uma depois da outra”. Use o espectrograma e a coarticulação para explicar por que isso não é verdade.</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>No espectrograma, a fala é um fluxo contínuo, sem pausas entre fonemas. Por causa da coarticulação, cada fonema muda conforme os vizinhos: o F2 do /d/ sobe antes de “i” e desce antes de “u”. Não há um pedaço fixo do sinal para cada “letra”; o cérebro precisa extrair categorias de um sinal que varia.</p>
+</details></li>
+<li><p>Por que o limite de audição para agudos costuma cair com a idade, e por que o experimento 1 não basta para medir esse efeito numa turma?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Os agudos são codificados na base da cóclea, que, segundo a ideia apresentada na aula, é a primeira região a se desgastar com a idade (presbiacusia). Mas cada pessoa usou o próprio celular e fone, e muitos aparelhos não reproduzem bem os agudos mais altos. O limite medido pode ser o do equipamento, uma variável de confusão; seria preciso usar o mesmo equipamento calibrado para todos.</p>
+</details></li>
+<li><p>Por que se diz que o córtex auditivo recebe um “espectrograma neural”, e não a forma de onda?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>A cóclea funciona como um banco de filtros: cada ponto da membrana basilar vibra mais com uma frequência, e as fibras do nervo auditivo herdam essa preferência. O que sobe pela via auditiva é a energia em cada faixa de frequência ao longo do tempo, organizada de forma tonotópica até o córtex.</p>
+</details></li>
+<li><p>No experimento 2, os sete passos eram fisicamente iguais. Que resultado na parte B (iguais ou diferentes) mostraria percepção categórica, e que resultado de ECoG mostra o mesmo no cérebro?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>A discriminação deveria ser melhor no par que atravessa a fronteira entre “ba” e “da” do que em pares da mesma categoria, mesmo com a mesma distância física. Chang e colegas (2010) mostraram que os padrões de atividade do STG para um contínuo /ba/–/da/–/ga/ se agrupam em categorias, e não em passos iguais.</p>
+</details></li>
+<li><p>Um paciente com lesão no hemisfério esquerdo entende palavras ouvidas razoavelmente bem, mas comete muitos erros de sons ao falar. Como o modelo de duas vias explica esse quadro?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>A via ventral, do som ao significado, é bilateral, então o hemisfério direito ainda sustenta boa parte do reconhecimento de palavras. A produção dos sons depende da via dorsal, do som à articulação, que é lateralizada à esquerda e passa pela área Spt. Uma lesão nessa via produz um quadro como a afasia de condução.</p>
+</details></li>
+<li><p>Na escuta dicótica, por que aparece a vantagem do ouvido direito, e por que o placar da turma não dá 100%?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>As vias cruzadas predominam quando os ouvidos competem, então a sílaba do ouvido direito vai direto ao hemisfério esquerdo, dominante para a linguagem na maioria das pessoas. Não dá 100% porque nem todos têm linguagem à esquerda, a medida é instável (só cerca de metade mostra vantagem consistente ao repetir o teste), e atenção ou fones trocados alteram o resultado.</p>
+</details></li>
+<li><p>Por que ver o rosto de quem fala ajuda a entender num bar barulhento? Use dois resultados da aula.</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>O ruído mascara pistas curtas que distinguem consoantes, como as transições de formantes do experimento 2, e o rosto dá parte dessa informação por outro canal (os lábios se fecham no /b/, por exemplo). O efeito McGurk mostra que o cérebro combina automaticamente o que vê e o que ouve, no STS posterior. Além disso, a atenção seleciona a voz seguida já no STG (festa de coquetel).</p>
+</details></li>
+</ol>
+<h2 id="para-saber-mais">Para saber mais</h2>
+<ul>
+<li><strong>Hickok, G.; Poeppel, D. Neural basis of speech perception. In: <em>Neurobiology of Language</em> (2016), cap. 25.</strong> A leitura indicada da aula: apresenta o modelo de duas vias e sua relação com as afasias. Nível intermediário, em inglês; disponível na pasta do curso.</li>
+<li><strong>Leonard, M. K.; Chang, E. F. Direct cortical neurophysiology of speech perception. In: <em>Neurobiology of Language</em> (2016), cap. 39.</strong> Leitura opcional sobre ECoG, percepção categórica no STG e festa de coquetel. Nível intermediário, em inglês.</li>
+<li><strong>Hickok, G.; Poeppel, D. The cortical organization of speech processing. <em>Nature Reviews Neuroscience</em>, 2007.</strong> O artigo de revisão em que o modelo de duas vias foi apresentado. Avançado, em inglês. DOI: https://doi.org/10.1038/nrn2113.</li>
+<li><strong>Demonstração de fala senoidal do MRC Cognition and Brain Sciences Unit (Cambridge).</strong> Página gratuita, usada na aula, para ouvir de novo os assobios e a frase original: https://www.mrc-cbu.cam.ac.uk/people/matt-davis/sine-wave-speech/.</li>
+</ul>
+<h2 id="referências">Referências</h2><div class="refs">
+<p>ARNAL, L. H.; POEPPEL, D.; GIRAUD, A.-L. A neurophysiological perspective on speech processing in “The Neurobiology of Language”. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 463-478. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00038-9.</p>
+<p>BEAUCHAMP, M. S. Audiovisual speech integration: neural substrates and behavior. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 515-526. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00042-0.</p>
+<p>BEAUCHAMP, M. S.; NATH, A. R.; PASALAR, S. fMRI-guided transcranial magnetic stimulation reveals that the superior temporal sulcus is a cortical locus of the McGurk effect. <strong>The Journal of Neuroscience</strong>, v. 30, n. 7, p. 2414-2417, 2010. DOI: https://doi.org/10.1523/JNEUROSCI.4865-09.2010.</p>
+<p>BENDOR, D.; WANG, X. The neuronal representation of pitch in primate auditory cortex. <strong>Nature</strong>, v. 436, n. 7054, p. 1161-1165, 2005. DOI: https://doi.org/10.1038/nature03867.</p>
+<p>BINDER, J. R. Phoneme perception. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 447-461. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00037-7.</p>
+<p>CHANG, E. F. <em>et al.</em> Categorical speech representation in human superior temporal gyrus. <strong>Nature Neuroscience</strong>, v. 13, n. 11, p. 1428-1432, 2010. DOI: https://doi.org/10.1038/nn.2641.</p>
+<p>CHERRY, E. C. Some experiments on the recognition of speech, with one and with two ears. <strong>The Journal of the Acoustical Society of America</strong>, v. 25, n. 5, p. 975-979, 1953. DOI: https://doi.org/10.1121/1.1907229.</p>
+<p>FORMISANO, E. The “speech ready” auditory cortex. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: The MIT Press, 2019. p. 481-498.</p>
+<p>FORMISANO, E. <em>et al.</em> Mirror-symmetric tonotopic maps in human primary auditory cortex. <strong>Neuron</strong>, v. 40, n. 4, p. 859-869, 2003. DOI: https://doi.org/10.1016/S0896-6273(03)00669-X.</p>
+<p>GATES, G. A.; MILLS, J. H. Presbycusis. <strong>The Lancet</strong>, v. 366, n. 9491, p. 1111-1120, 2005. DOI: https://doi.org/10.1016/S0140-6736(05)67423-5.</p>
+<p>HICKOK, G.; POEPPEL, D. The cortical organization of speech processing. <strong>Nature Reviews Neuroscience</strong>, v. 8, n. 5, p. 393-402, 2007. DOI: https://doi.org/10.1038/nrn2113.</p>
+<p>HICKOK, G.; POEPPEL, D. Neural basis of speech perception. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 299-310. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00025-0.</p>
+<p>KIMURA, D. Cerebral dominance and the perception of verbal stimuli. <strong>Canadian Journal of Psychology</strong>, v. 15, n. 3, p. 166-171, 1961. DOI: https://doi.org/10.1037/h0083219.</p>
+<p>KUHL, P. K.; MILLER, J. D. Speech perception by the chinchilla: voiced-voiceless distinction in alveolar plosive consonants. <strong>Science</strong>, v. 190, n. 4209, p. 69-72, 1975. DOI: https://doi.org/10.1126/science.1166301.</p>
+<p>LEONARD, M. K.; CHANG, E. F. Direct cortical neurophysiology of speech perception. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of language</strong>. London: Academic Press, 2016. p. 479-489. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00039-0.</p>
+<p>LIBERMAN, A. M. <em>et al.</em> Perception of the speech code. <strong>Psychological Review</strong>, v. 74, n. 6, p. 431-461, 1967. DOI: https://doi.org/10.1037/h0020279.</p>
+<p>McGURK, H.; MacDONALD, J. Hearing lips and seeing voices. <strong>Nature</strong>, v. 264, n. 5588, p. 746-748, 1976. DOI: https://doi.org/10.1038/264746a0.</p>
+<p>MESGARANI, N.; CHANG, E. F. Selective cortical representation of attended speaker in multi-talker speech perception. <strong>Nature</strong>, v. 485, n. 7397, p. 233-236, 2012. DOI: https://doi.org/10.1038/nature11020.</p>
+<p>MESGARANI, N. <em>et al.</em> Phonetic feature encoding in human superior temporal gyrus. <strong>Science</strong>, v. 343, n. 6174, p. 1006-1010, 2014. DOI: https://doi.org/10.1126/science.1245994.</p>
+<p>MILDNER, V. <strong>The cognitive neuroscience of human communication</strong>. New York: Lawrence Erlbaum Associates, 2008.</p>
+<p>REMEZ, R. E. <em>et al.</em> Speech perception without traditional speech cues. <strong>Science</strong>, v. 212, n. 4497, p. 947-949, 1981. DOI: https://doi.org/10.1126/science.7233191.</p>
+<p>SHANNON, R. V. <em>et al.</em> Speech recognition with primarily temporal cues. <strong>Science</strong>, v. 270, n. 5234, p. 303-304, 1995. DOI: https://doi.org/10.1126/science.270.5234.303.</p>
+<p>SJERPS, M. J.; CHANG, E. F. The cortical processing of speech sounds in the temporal lobe. In: HAGOORT, P. (org.). <strong>Human language</strong>: from genes and brains to behavior. Cambridge, MA: The MIT Press, 2019. p. 361-379.</p>
+<p>SUMBY, W. H.; POLLACK, I. Visual contribution to speech intelligibility in noise. <strong>The Journal of the Acoustical Society of America</strong>, v. 26, n. 2, p. 212-215, 1954. DOI: https://doi.org/10.1121/1.1907309.</p>
+</div>
+<p class="rodape">Material de estudo da disciplina Bases neurais da comunicação humana (UFRN), Prof. Daniel Y. Takahashi. Texto e figuras elaborados para o curso; as fontes estão nas Referências.</p>
+</div>

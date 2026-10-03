@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 2 · Como sabemos? História e métodos — Material de estudo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,600..800&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{--bg:#f6f7f9;--surface:#fff;--fg:#142033;--muted:#566377;--line:#d8dee6;--accent:#0e7c86;--accent2:#c9771a;--soft:#e5f1f2;--soft2:#fbf1e3;
+--display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;--body:"Source Serif 4",Georgia,"Times New Roman",serif;--ui:"Source Sans 3","Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1621;--surface:#172132;--fg:#e6ecf3;--muted:#9aa8b9;--line:#2a3850;--accent:#3db4be;--accent2:#f0a645;--soft:#173740;--soft2:#3a2c17;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:18px/1.65 var(--body)}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 80px}
+.top{font:600 13px/1.4 var(--ui);display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:22px}
+.top a{color:var(--accent);text-decoration:none}
+.eyebrow{font:600 12px/1 ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(30px,6.5vw,46px)/1.08 var(--display);font-stretch:112%;margin:10px 0 8px;text-wrap:balance}
+.sub{font:400 20px/1.4 var(--ui);color:var(--muted);margin:0 0 26px}
+h2{font:750 25px/1.2 var(--display);margin:46px 0 12px;text-wrap:balance}
+h3{font:700 19px/1.3 var(--ui);margin:28px 0 8px}
+p{margin:0 0 16px}
+a{color:var(--accent)}
+ul,ol{padding-left:24px;margin:0 0 16px} li{margin:4px 0}
+figure{margin:26px 0;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;break-inside:avoid}
+figure img{width:100%;height:auto;display:block;border-radius:6px;background:#fff}
+figcaption{font:15px/1.5 var(--ui);color:var(--muted);margin-top:10px}
+.objetivos{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;padding:14px 18px 6px;margin:0 0 30px;font-family:var(--ui)}
+.objetivos::before{content:"Nesta aula você vai aprender a";display:block;font:700 13px/1 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:4px 0 10px}
+.destaque{background:var(--soft2);border-radius:10px;padding:14px 18px 2px;margin:22px 0;font-family:var(--ui);break-inside:avoid}
+.conceitos{background:var(--soft);border-radius:12px;padding:16px 20px 6px;margin:30px 0;font-family:var(--ui)}
+.conceitos::before{content:"Conceitos-chave";display:block;font:700 13px/1 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:4px 0 12px}
+.conceitos dl{margin:0} .conceitos dt{font-weight:700;margin-top:10px} .conceitos dd{margin:2px 0 8px 0;color:var(--fg)}
+details{margin:8px 0 4px;font-family:var(--ui);font-size:16px}
+summary{cursor:pointer;color:var(--accent);font-weight:600}
+details[open] summary{margin-bottom:6px}
+.refs p,#referencias + * p{font-size:15px;line-height:1.5;padding-left:1.4em;text-indent:-1.4em}
+.rodape{margin-top:50px;padding-top:16px;border-top:1px solid var(--line);font:13px/1.5 var(--ui);color:var(--muted)}
+@media print{
+ :root{--bg:#fff;--surface:#fff}
+ body{font-size:11.5pt;line-height:1.5}
+ .wrap{max-width:none;padding:0}
+ .top{display:none}
+ h2{font-size:17pt;margin-top:24pt;break-after:avoid}
+ h1{font-size:28pt}
+ figure{padding:8pt;border-color:#ccc}
+ figure img{max-height:9cm;object-fit:contain}
+ details>summary{display:none}
+ details{margin-left:0;font-size:10.5pt}
+ details::before{content:"Resposta: ";font-weight:700}
+ a{color:inherit;text-decoration:none}
+ .refs p{font-size:10pt}
+ @page{size:A4;margin:18mm 18mm 20mm}
+}
+</style>
+<div class="wrap">
+<nav class="top"><a href="index.html">Material de estudo</a><a href="../aula02.html">Laboratório da aula 2</a><a href="aula01.html">← Aula 1</a><a href="aula03.html">Aula 3 →</a></nav>
+<span class="eyebrow">Bases neurais da comunicação humana · Aula 2 · Material de estudo</span>
+<h1>Como sabemos? História e métodos</h1>
+<p class="sub">Do paciente que só dizia “tan” às imagens do cérebro: o que cada método mostra e o que ele não consegue mostrar</p>
+<div class="objetivos">
+<ul>
+<li>Contar como os casos de Broca e Wernicke levaram ao primeiro mapa da linguagem no cérebro.</li>
+<li>Explicar o modelo clássico (Lichtheim, Wernicke–Geschwind) e as previsões que ele faz.</li>
+<li>Usar a lógica da dissociação simples e da dissociação dupla para interpretar casos de lesão.</li>
+<li>Comparar o que cada método (EEG, MEG, PET, fMRI, TMS, ECoG, Wada) mede, e seus limites.</li>
+<li>Distinguir “participar” de “ser necessário” e explicar por que a convergência de métodos dá as conclusões mais firmes.</li>
+</ul>
+</div>
+<h2 id="de-broca-a-wernicke-o-primeiro-mapa">1. De Broca a Wernicke: o primeiro mapa</h2>
+<h3 id="como-se-descobre-o-que-uma-parte-do-cérebro-faz">Como se descobre o que uma parte do cérebro faz?</h3>
+<p>Hoje a pergunta é: <strong>como alguém descobriu o que cada parte do cérebro faz?</strong> Não dá para abrir a cabeça de uma pessoa saudável e olhar o que acontece quando ela fala. A história da área é uma história de métodos indiretos, cada um com seus pontos cegos.</p>
+<p>No começo do século XIX, Franz Joseph Gall achava que as capacidades mentais deixavam marcas no formato do crânio, ideia que deu origem à frenologia, hoje uma pseudociência. Pierre Flourens, ao contrário, defendia que percepção e ações voluntárias dependiam do cérebro como um todo. E Jean-Baptiste Bouillaud reuniu muitos casos de lesão frontal com perda da fala (Mildner, 2008, p. 46). E um médico do interior da França, Marc Dax, notou que, entre 40 pacientes com lesão cerebral e problemas de fala, nenhum tinha lesão no hemisfério direito; o relato passou despercebido (Mildner, 2008, p. 47).</p>
+<h3 id="leborgne-o-paciente-tan">Leborgne, o paciente “tan”</h3>
+<p>O paciente Louis Victor Leborgne chegou ao hospital de Bicêtre, em Paris, com uma enorme dificuldade de falar: dizia apenas a sílaba “tan”, às vezes repetida (“tan, tan”) e quase sempre acompanhada de gestos (Small; Hickok, 2016; Domanski, 2013). Depois que ele morreu, o médico Paul Broca fez a autópsia e encontrou uma lesão na parte posterior do giro frontal inferior esquerdo. Broca apresentou o caso à Sociedade de Antropologia de Paris em 1861. Um segundo paciente, Lelong, falava só cinco palavras e tinha uma lesão parecida (Small; Hickok, 2016). Broca reuniu depois outros pacientes que tinham perdido a fala, todos com lesão no hemisfério esquerdo, à frente da área motora (Mildner, 2008, p. 47). A região ganhou o nome de <strong>área de Broca</strong>.</p>
+<p><strong>Afasia</strong> é o nome geral de um distúrbio da linguagem causado por lesão cerebral em quem antes falava normalmente. Na <strong>afasia de Broca</strong>, a fala é escassa, lenta, com esforço e “telegráfica”, sem artigos e conjunções, e a compreensão fica relativamente preservada (Mildner, 2008, p. 231). É o primeiro método da área: descrever o sintoma em vida e procurar a lesão na autópsia (Mildner, 2008, p. 51).</p>
+<p>Os cérebros de Leborgne e Lelong estão guardados até hoje. Em 2007, eles foram examinados com ressonância de alta resolução (Dronkers <em>et al.</em>, 2007): as imagens confirmaram a lesão frontal e mostraram que ela atingia estruturas mais profundas e a substância branca abaixo do córtex, que Broca não podia ver (Small; Hickok, 2016). É a primeira lição de método da aula: <strong>uma lesão natural raramente respeita os limites de uma única área.</strong></p>
+<h3 id="wernicke-e-a-compreensão">Wernicke e a compreensão</h3>
+<p>Em 1874, Carl Wernicke descreveu pacientes com um quadro quase oposto (Small; Hickok, 2016). A lesão ficava na parte posterior do giro temporal superior esquerdo, perto do córtex auditivo. Eles falavam com fluência, rápido e sem esforço, mas a fala era cheia de palavras trocadas e quase sem sentido, e eles compreendiam mal o que ouviam e liam (Mildner, 2008, p. 232). É a <strong>afasia de Wernicke</strong>, e a região ficou conhecida como <strong>área de Wernicke</strong>.</p>
+<p>Wernicke foi além: se um centro percebe a fala e outro a produz, uma lesão que corte a ligação entre eles deveria produzir um terceiro quadro: a <strong>afasia de condução</strong>, em que a pessoa compreende e fala com relativa fluência, mas tem grande dificuldade para <strong>repetir</strong> o que ouve (Mildner, 2008, p. 31, 232).</p>
+<h2 id="o-modelo-clássico-centros-ligados-por-feixes">2. O modelo clássico: centros ligados por feixes</h2>
+<h3 id="o-diagrama-de-lichtheim">O diagrama de Lichtheim</h3>
+<p>Em 1885, Ludwig Lichtheim transformou essas ideias num diagrama (Lichtheim, 1885): um centro motor (Broca), um centro auditivo (Wernicke) e um campo de conceitos, ligados entre si, ao ouvido e à boca. Cada ponto do diagrama é um lugar possível de lesão, com um padrão previsto de fala, compreensão e repetição (Small; Hickok, 2016).</p>
+<p>A força do diagrama é fazer <strong>previsões testáveis</strong>. Se a via entre o centro auditivo e o motor estiver intacta, mas a ligação com os conceitos estiver cortada, a pessoa deveria repetir sem entender o que repete. Esse quadro existe: é a <strong>afasia transcortical sensorial</strong>. No caso simétrico, a <strong>afasia transcortical motora</strong>, a pessoa entende e repete, mas quase não inicia a fala por conta própria (Mildner, 2008, p. 233).</p>
+<h3 id="geschwind-e-as-síndromes-de-desconexão">Geschwind e as síndromes de desconexão</h3>
+<p>Em 1965, Norman Geschwind retomou os modelos de centros e deu destaque às <strong>conexões</strong>: muitos sintomas viriam de cortar a ligação entre regiões intactas (Geschwind, 1965; Small; Hickok, 2016). Daí o nome <strong>modelo de Wernicke–Geschwind</strong> (Figura 1). Para repetir uma palavra ouvida, o sinal iria do córtex auditivo à área de Wernicke e, pelo <strong>fascículo arqueado</strong>, à área de Broca e ao córtex motor. O fascículo arqueado é o principal feixe de substância branca da via superior, ou dorsal, entre essas regiões (Przeździk <em>et al.</em>, 2019). Para ler em voz alta, a entrada seria o córtex visual, e o sinal passaria pelo <strong>giro angular</strong> antes de chegar à área de Wernicke (Mildner, 2008, p. 76).</p>
+<figure>
+<img src="img/aula02/wg_modelo.png" alt="Figura 1. O modelo de Wernicke–Geschwind: para repetir, o sinal vai do córtex auditivo primário (A1) à área de Wernicke e, pelo fascículo arqueado, à área de Broca; para ler em voz alta, entra pelo córtex visual primário (V1) e passa pelo giro angular. Fonte: elaborada para o curso a partir de Geschwind (1965) e Mildner (2008)." />
+<figcaption aria-hidden="true"><strong>Figura 1.</strong> O modelo de Wernicke–Geschwind: para repetir, o sinal vai do córtex auditivo primário (A1) à área de Wernicke e, pelo fascículo arqueado, à área de Broca; para ler em voz alta, entra pelo córtex visual primário (V1) e passa pelo giro angular. Fonte: elaborada para o curso a partir de Geschwind (1965) e Mildner (2008).</figcaption>
+</figure>
+<p>Um exemplo clássico de desconexão é a <strong>alexia sem agrafia</strong>, descrita por Joseph Déjerine em 1892. Após uma lesão no lobo occipital esquerdo e em parte do corpo caloso, a pessoa escreve, mas não lê nem o que acabou de escrever: a informação visual não alcança mais o giro angular esquerdo (Mildner, 2008, p. 237).</p>
+<h2 id="a-lógica-do-método-de-lesão-e-seus-limites">3. A lógica do método de lesão e seus limites</h2>
+<h3 id="dissociação-simples-e-dissociação-dupla">Dissociação simples e dissociação dupla</h3>
+<p>O paciente A, com lesão frontal, produz frases muito mal e compreende palavras quase normalmente: uma <strong>dissociação simples</strong>. Talvez produzir frases seja só <strong>mais difícil</strong>, e qualquer lesão afete primeiro a tarefa difícil.</p>
+<p>O paciente B, com lesão temporal, mostra o padrão inverso. Juntos, A e B formam uma <strong>dissociação dupla</strong> (Figura 2): a dificuldade não explica os dois casos, e as funções dependem, ao menos em parte, de sistemas diferentes. Obter duplas dissociações entre funções e regiões é o objetivo central da análise de lesões (Small; Hickok, 2016).</p>
+<figure>
+<img src="img/aula02/dissociacao.png" alt="Figura 2. Dissociação simples (esquerda): o paciente A vai mal numa tarefa e bem na outra. Dissociação dupla (direita): o paciente B mostra o padrão inverso. Dados fictícios. Fonte: elaborada para o curso a partir de Small e Hickok (2016)." />
+<figcaption aria-hidden="true"><strong>Figura 2.</strong> Dissociação simples (esquerda): o paciente A vai mal numa tarefa e bem na outra. Dissociação dupla (direita): o paciente B mostra o padrão inverso. Dados fictícios. Fonte: elaborada para o curso a partir de Small e Hickok (2016).</figcaption>
+</figure>
+<div class="destaque">
+<p>A grande força do método de lesão é mostrar que uma região é <strong>necessária</strong> para uma função: sem ela, a função falha. Os métodos que medem atividade (EEG, fMRI) mostram que uma região <strong>participa</strong> de uma tarefa, o que é diferente. Uma região pode se ativar numa tarefa sem ser indispensável para ela (Mildner, 2008, p. 61-63).</p>
+</div>
+<h3 id="por-que-a-lesão-é-um-experimento-imperfeito">Por que a lesão é um experimento imperfeito</h3>
+<p>O método de lesão tem limites sérios (Mildner, 2008, p. 52-53):</p>
+<ul>
+<li><strong>A natureza escolhe a lesão, não o cientista.</strong> Num acidente vascular cerebral (AVC), os sintomas de uma síndrome aparecem juntos porque dependem de regiões irrigadas pela mesma artéria, e não necessariamente porque formam uma unidade funcional (Tippett; Hillis, 2016).</li>
+<li><strong>O cérebro se reorganiza.</strong> A recuperação é maior nas primeiras semanas e meses; a relação entre lesão e sintoma fica mais confiável cerca de um ano depois da lesão.</li>
+<li><strong>Caso único ou grupo?</strong> Um caso não permite generalizar; médias de grupo apagam a variação individual.</li>
+</ul>
+<h3 id="por-que-o-modelo-clássico-é-simples-demais">Por que o modelo clássico é simples demais</h3>
+<p>O modelo de Wernicke–Geschwind ainda ajuda a estimar onde está uma lesão (Mildner, 2008, p. 78), mas é só uma primeira aproximação.</p>
+<p><strong>A área de Broca não basta para a afasia de Broca.</strong> J. P. Mohr e colegas analisaram 20 casos documentados: um infarto restrito à área de Broca e arredores causava mutismo seguido de melhora rápida, enquanto a afasia de Broca duradoura exigia um infarto bem maior, que incluía a ínsula e regiões vizinhas (Mohr <em>et al.</em>, 1978). O mesmo vale para Wernicke: lesões restritas à sua área dão um quadro passageiro (Mildner, 2008, p. 232).</p>
+<p><strong>A área de Broca não é só “produção”.</strong> Pacientes com afasia de Broca entendem frases cujo sentido pode ser adivinhado pelas palavras principais, mas erram quando só a estrutura gramatical diz quem fez o quê (Mildner, 2008, p. 231). Achados desse tipo, associados ao trabalho de Caramazza e Zurif (1976), levaram à ideia de que a região participa da sintaxe. <strong>Essa interpretação é debatida</strong>: Hickok e Poeppel (2016) lembram que a ligação entre área de Broca e compreensão sintática vem sendo seriamente questionada. A região também participa de memória de trabalho verbal e de funções não linguísticas (Tippett; Hillis, 2016).</p>
+<p><strong>Há mais feixes e mais regiões.</strong> Além do fascículo arqueado (via dorsal), há vias ventrais entre os lobos temporal e frontal, como o fascículo fronto-occipital inferior e o uncinado. A via dorsal é fortemente lateralizada à esquerda; a ventral é mais bilateral (Przeździk <em>et al.</em>, 2019).</p>
+<p><strong>Os mapas variam de pessoa para pessoa.</strong> George Ojemann e colegas estimularam eletricamente o córtex de 117 pacientes durante cirurgias. Os pontos em que a estimulação atrapalhava a nomeação formavam mosaicos pequenos, de 1 a 2 cm², muito menores que as áreas clássicas e com grande variação entre pessoas (Ojemann <em>et al.</em>, 1989). Alguns ficavam bem fora das áreas previstas pelo modelo (Mildner, 2008, p. 77).</p>
+<h2 id="medir-o-tempo-de-donders-ao-eeg">4. Medir o tempo: de Donders ao EEG</h2>
+<h3 id="a-subtração-de-donders">A subtração de Donders</h3>
+<p>F. C. Donders teve uma ideia simples: medir quanto tempo leva um processo mental <strong>subtraindo</strong> tempos de reação de tarefas que diferem por uma etapa (Donders, 1969). Numa tarefa simples, a pessoa aperta um botão assim que qualquer estímulo aparece: basta perceber e mover. Numa tarefa de escolha, cada estímulo pede uma resposta diferente, e é preciso também identificar o estímulo e escolher a resposta. A diferença entre as duas estima o tempo dessas etapas (Figura 3). Sem a subtração, o tempo da decisão e o do movimento ficam somados no tempo de reação (Mildner, 2008, p. 63-64).</p>
+<figure>
+<img src="img/aula02/donders.png" alt="Figura 3. A subtração de Donders. A tarefa simples (A) inclui perceber e mover; a tarefa vai/não vai (C) acrescenta identificar a forma; a tarefa de escolha (B) acrescenta também escolher a mão. B − A estima o tempo de decisão. Valores ilustrativos. Fonte: elaborada para o curso a partir de Donders (1969)." />
+<figcaption aria-hidden="true"><strong>Figura 3.</strong> A subtração de Donders. A tarefa simples (A) inclui perceber e mover; a tarefa vai/não vai (C) acrescenta identificar a forma; a tarefa de escolha (B) acrescenta também escolher a mão. B − A estima o tempo de decisão. Valores ilustrativos. Fonte: elaborada para o curso a partir de Donders (1969).</figcaption>
+</figure>
+<p>A subtração supõe que acrescentar uma etapa não muda as outras, o que nem sempre é verdade. A mesma lógica sobrevive nas imagens do cérebro: tarefa menos controle (Mildner, 2008, p. 57, 61).</p>
+<h3 id="o-eeg-e-os-potenciais-relacionados-a-eventos">O EEG e os potenciais relacionados a eventos</h3>
+<p>O <strong>eletroencefalograma (EEG)</strong> registra, com eletrodos no couro cabeludo, a atividade elétrica do cérebro. Ele soma a atividade de muitíssimos neurônios, além de sinais da pele, dos músculos e dos olhos (Mildner, 2008, p. 59). A resposta a uma palavra é pequena e fica escondida nesse fundo. Para encontrá-la, os pesquisadores repetem o mesmo tipo de estímulo muitas vezes e tiram a <strong>média</strong> dos trechos de EEG alinhados ao estímulo. O ruído varia de uma tentativa para outra e se cancela; a resposta se repete e fica. O resultado é o <strong>potencial relacionado a eventos (ERP)</strong>; em geral, de 10 a 100 repetições bastam (Mildner, 2008, p. 59) (Figura 4).</p>
+<figure>
+<img src="img/aula02/erp_media.png" alt="Figura 4. Por que o EEG precisa de média. Com uma tentativa, as curvas são dominadas pelo ruído; com 40 ou 100, aparece uma onda negativa perto de 400 ms só para a palavra inesperada (a N400). Por convenção comum em ERP, o negativo está para cima. Dados simulados. Fonte: elaborada para o curso a partir de Kutas e Hillyard (1980)." />
+<figcaption aria-hidden="true"><strong>Figura 4.</strong> Por que o EEG precisa de média. Com uma tentativa, as curvas são dominadas pelo ruído; com 40 ou 100, aparece uma onda negativa perto de 400 ms só para a palavra inesperada (a N400). Por convenção comum em ERP, o negativo está para cima. Dados simulados. Fonte: elaborada para o curso a partir de Kutas e Hillyard (1980).</figcaption>
+</figure>
+<p>Em 1980, Marta Kutas e Steven Hillyard registraram o EEG de pessoas lendo frases. Quando uma palavra não fazia sentido no contexto, surgia uma onda negativa tardia, a <strong>N400</strong>; uma palavra apenas fisicamente estranha (escrita em letras maiores) produzia uma onda positiva. A N400, portanto, não é reação a qualquer surpresa, e sim ao significado (Kutas; Hillyard, 1980). Seu pico fica perto de 400 ms depois da palavra (Mildner, 2008, p. 59). Erros de gramática produzem outro efeito, positivo e mais tardio, medido entre 500 e 800 ms: a <strong>P600</strong>. Em inglês, “os castores às vezes derretem” gera N400, e “os castores às vezes mastigando” gera P600 (Van Berkum; Nieuwland, 2019).</p>
+<p>O ponto forte do EEG é o <strong>tempo</strong> (milissegundos); o fraco é o <strong>lugar</strong>: o sinal no couro cabeludo não diz bem de onde vem (Mildner, 2008, p. 59). O <strong>magnetoencefalograma (MEG)</strong> registra os campos magnéticos gerados pelas mesmas correntes, com precisão temporal na ordem de 1 ms; localiza melhor que o EEG porque o crânio quase não afeta os campos magnéticos (Mildner, 2008, p. 60-61).</p>
+<h2 id="medir-o-lugar-pet-e-fmri">5. Medir o lugar: PET e fMRI</h2>
+<p>A <strong>tomografia por emissão de pósitrons (PET)</strong> mede o fluxo de sangue no cérebro. A pessoa recebe uma pequena dose de um marcador radioativo, como água com oxigênio-15, que se acumula nas regiões em proporção ao fluxo sanguíneo local (Mildner, 2008, p. 61). A PET esteve entre as primeiras aplicações das imagens funcionais ao estudo da linguagem, com estudos do processamento de palavras isoladas (Petersen <em>et al.</em>, 1988; Small; Hickok, 2016). Ela tem resolução espacial de 3 a 4 mm, mas é lenta (até cerca de 60 s por medida) e expõe a pessoa a radiação (Mildner, 2008, p. 61).</p>
+<p>A <strong>ressonância magnética funcional (fMRI)</strong> dispensa o marcador radioativo (Small; Hickok, 2016). Ela aproveita uma propriedade do sangue: a hemoglobina sem oxigênio tem propriedades magnéticas diferentes da hemoglobina com oxigênio. Quando uma região trabalha mais, chega a ela mais oxigênio do que ela consome, o que altera o sinal: é o <strong>sinal BOLD</strong> (do inglês <em>blood oxygenation level dependent</em>). A fMRI tem boa resolução espacial (1 a 2 mm), não usa radiação e pode ser repetida muitas vezes. Mas mede a atividade neural de forma <strong>indireta</strong> e <strong>lenta</strong>: as primeiras mudanças aparecem segundos depois do início da atividade (Mildner, 2008, p. 57). E o aparelho é barulhento (Mildner, 2008, p. 56), o que complica estudos com sons.</p>
+<p>Duas armadilhas: o resultado depende da tarefa de controle escolhida, e a PET e a fMRI mostram todas as regiões ativas, não só as indispensáveis (Mildner, 2008, p. 61-63).</p>
+<h2 id="perturbar-e-registrar-diretamente">6. Perturbar e registrar diretamente</h2>
+<h3 id="estimulação-magnética-transcraniana-tms">Estimulação magnética transcraniana (TMS)</h3>
+<p>Em 1985, Barker e colegas estimularam o córtex motor com um pulso magnético, sem abrir o crânio (Barker; Jalinous; Freeston, 1985). Na <strong>TMS</strong>, uma bobina sobre o crânio induz corrente no córtex logo abaixo, numa área de cerca de 1 a 1,5 cm² (Mildner, 2008, p. 55). Isso perturba por um instante o funcionamento da região, uma “lesão virtual” que permite testar <strong>necessidade</strong> em pessoas saudáveis.</p>
+<p>Um exemplo é o <strong>efeito McGurk</strong>, ilusão em que ver os lábios muda a sílaba que ouvimos (aula 3). Beauchamp e colegas localizaram com fMRI, em cada participante, a parte do sulco temporal superior que responde à fala ouvida e vista, e aplicaram a TMS ali. A ilusão, relatada em quase todas as tentativas sem TMS, caiu para cerca de metade; a TMS fora desse ponto não teve efeito (Beauchamp, 2016). O efeito só apareceu numa janela de 100 ms antes a 100 ms depois do início do som (Beauchamp; Nath; Pasalar, 2010). A TMS diz, então, também <strong>quando</strong> a região é necessária.</p>
+<p>Limites: a TMS só alcança o córtex da superfície, tem efeitos breves e um pequeno risco de crise convulsiva (Mildner, 2008, p. 55); e, como o pulso faz clique e é sentido na pele, é preciso estimular também um ponto de controle (Beauchamp, 2016).</p>
+<h3 id="estimulação-e-registro-direto-no-córtex">Estimulação e registro direto no córtex</h3>
+<p>Em cirurgias de epilepsia, o paciente pode ficar acordado, porque o cérebro não tem receptores de dor. Desde os trabalhos de Penfield e Roberts, de 1959, o cirurgião estimula pontos do córtex enquanto o paciente nomeia figuras; se a nomeação falha, aquele ponto é poupado (Mildner, 2008, p. 54).</p>
+<p>Nesses pacientes também se pode registrar a atividade com eletrodos colocados sobre o córtex: é a <strong>eletrocorticografia (ECoG)</strong>, que permite estudar pequenas populações de neurônios (Small; Hickok, 2016). O preço: só existe em quem já precisa da cirurgia.</p>
+<h3 id="o-teste-de-wada">O teste de Wada</h3>
+<p>No <strong>teste de Wada</strong>, um anestésico (amobarbital sódico) é injetado na artéria carótida de um lado e “desliga” por alguns minutos o hemisfério daquele lado, e o paciente tenta recitar sequências e nomear objetos. Ele é feito antes de cirurgias, para saber qual hemisfério domina a linguagem. Com o hemisfério esquerdo anestesiado, cerca de 95% dos destros e 70% dos canhotos ficam sem falar por alguns minutos. Entre os 30% restantes dos canhotos, cerca de metade tem a fala à direita e metade tem controle bilateral (Mildner, 2008, p. 55). A maioria dos canhotos, portanto, também tem a linguagem à esquerda.</p>
+<h3 id="dois-hemisférios-campos-visuais-e-cérebro-dividido">Dois hemisférios: campos visuais e cérebro dividido</h3>
+<p>O que está à direita do ponto que você fixa chega primeiro ao hemisfério esquerdo, e vice-versa; o <strong>corpo caloso</strong>, feixe que liga os hemisférios, junta as duas informações em dezenas de milissegundos. Como o olho leva de 150 a 200 ms para sair do ponto de fixação, uma palavra mostrada por menos tempo de um lado permite medir diferenças. Nesse tipo de teste, de 60% a 70% dos destros mostram vantagem para palavras no campo visual direito, isto é, enviadas ao hemisfério esquerdo (Mildner, 2008, p. 67).</p>
+<p>Em pacientes que tiveram o corpo caloso cortado para tratar epilepsia grave, a separação aparece de forma dramática (Figura 5). Se o paciente apalpa um objeto com a mão esquerda, fora da vista, a informação vai ao hemisfério direito, que não consegue passá-la ao esquerdo, e ele não sabe dizer o nome do objeto (Mildner, 2008, p. 53-54). O hemisfério direito isolado reconhece muitas palavras escritas, mas em geral não nomeia, com grande variação entre pacientes (Mildner, 2008, p. 168-170).</p>
+<figure>
+<img src="img/aula02/hemicampos.png" alt="Figura 5. Campos visuais e hemisférios. No cérebro intacto (esquerda), a palavra à esquerda (CASA) chega ao hemisfério direito e passa ao esquerdo pelo corpo caloso. Com o corpo caloso cortado (direita), só a palavra que chega ao hemisfério esquerdo (LUVA) pode ser dita. Fonte: elaborada para o curso a partir de Mildner (2008)." />
+<figcaption aria-hidden="true"><strong>Figura 5.</strong> Campos visuais e hemisférios. No cérebro intacto (esquerda), a palavra à esquerda (CASA) chega ao hemisfério direito e passa ao esquerdo pelo corpo caloso. Com o corpo caloso cortado (direita), só a palavra que chega ao hemisfério esquerdo (LUVA) pode ser dita. Fonte: elaborada para o curso a partir de Mildner (2008).</figcaption>
+</figure>
+<h2 id="lesões-hoje-e-a-força-da-convergência">7. Lesões hoje e a força da convergência</h2>
+<h3 id="o-método-de-broca-atualizado">O método de Broca, atualizado</h3>
+<p>Hoje a tomografia e a ressonância mostram a lesão em vida (Small; Hickok, 2016). Tippett e Hillis (2016) descrevem um paciente com afasia de Wernicke cuja ressonância de difusão, que mostra o tecido já lesado, revelava só uma lesão mínima na ínsula. A ressonância de perfusão mostrou que a área de Wernicke recebia muito pouco sangue; com o tratamento, o fluxo voltou e a afasia desapareceu até o terceiro dia. A afasia aguda reflete o tecido que <strong>não está funcionando</strong>, não só o tecido morto.</p>
+<p>No <strong>mapeamento lesão-comportamento voxel a voxel</strong>, o cérebro é dividido em pequenos cubos (voxels), e a lesão em cada um é associada estatisticamente aos déficits de muitos pacientes. Esses estudos ligam, por exemplo, dificuldades de nomeação e repetição à via dorsal e de compreensão à via ventral (Tippett; Hillis, 2016).</p>
+<h3 id="nenhum-método-vê-tudo">Nenhum método vê tudo</h3>
+<p>Cada método tem um ponto forte e um ponto cego (Figura 6): EEG e MEG dizem <strong>quando</strong>; a fMRI, <strong>onde</strong>; lesões e TMS, <strong>se uma região é necessária</strong>; a ECoG mede de perto, mas só em pacientes cirúrgicos. Por isso, a maioria dos autores concorda que os resultados mais confiáveis vêm da combinação de vários métodos (Mildner, 2008, p. 51).</p>
+<figure>
+<img src="img/aula02/resolucao.png" alt="Figura 6. Resolução espacial (eixo vertical) e temporal (eixo horizontal) dos principais métodos, em escala logarítmica e com valores aproximados. Contínuo: medem atividade; tracejado: perturbam e mostram necessidade; laranja: invasivos. Fonte: elaborada para o curso a partir de Mildner (2008)." />
+<figcaption aria-hidden="true"><strong>Figura 6.</strong> Resolução espacial (eixo vertical) e temporal (eixo horizontal) dos principais métodos, em escala logarítmica e com valores aproximados. Contínuo: medem atividade; tracejado: perturbam e mostram necessidade; laranja: invasivos. Fonte: elaborada para o curso a partir de Mildner (2008).</figcaption>
+</figure>
+<h3 id="um-exemplo-de-convergência-a-afasia-de-condução">Um exemplo de convergência: a afasia de condução</h3>
+<p>O modelo clássico explicava a afasia de condução como desconexão no fascículo arqueado. Bradley Buchsbaum e colegas testaram a ideia com dois métodos. Sobrepuseram as lesões de pacientes com afasia de condução: a região de maior sobreposição, comum a 12 de 14 pacientes, ficava no córtex da junção entre os lobos temporal e parietal. Depois compararam essa região com a fMRI de uma tarefa de ouvir e repetir fala. As duas coincidiam numa área chamada <strong>Spt</strong>, que liga o que ouvimos aos movimentos da fala (Buchsbaum <em>et al.</em>, 2011; Hickok; Poeppel, 2016).</p>
+<p>A conclusão é que a afasia de condução pode resultar de dano a uma região do córtex, e não só de desconexão (Hickok; Poeppel, 2016). O tema ainda é debatido: muitos estudos apontam lesões da ínsula e do fascículo arqueado (Mildner, 2008, p. 232). Mas o caso mostra a força da convergência: quando a lesão (necessidade) e a fMRI (localização) apontam para o mesmo lugar, a conclusão fica mais firme do que com qualquer método sozinho.</p>
+<div class="destaque">
+<p>Diante de uma manchete como “cientistas encontram o centro da gramática”, pergunte: que método foi usado? Mostra participação ou necessidade? Qual foi o controle? Outros métodos concordam?</p>
+</div>
+<h2 id="o-que-o-laboratório-mostrou">8. O que o laboratório mostrou</h2>
+<p>Com poucas tentativas por pessoa, os resultados individuais são ruidosos; o que importa é a tendência da turma.</p>
+<p><strong>Experimento 1 · Tempo de decisão.</strong> A tarefa de escolha (B) deve ser mais lenta que a simples (A), e a diferença B − A estima o tempo de identificar e escolher, como na subtração de Donders. O atraso da tela do celular entra nas duas tarefas e some na subtração.</p>
+<p><strong>Experimento 2 · Dupla dissociação.</strong> Os pacientes eram fictícios. O Sr. Antônio (lesão frontal) e a Dona Beatriz (lesão temporal) formavam uma dupla dissociação; o Sr. Carlos não repetia (afasia de condução); a Dona Dalva escrevia, mas não lia (alexia sem agrafia). Pacientes reais são menos “limpos”.</p>
+<p><strong>Experimento 3 · Média do EEG.</strong> Com uma tentativa, não se via a N400; com dezenas, ela aparecia (Mildner, 2008, p. 59).</p>
+<p><strong>Experimento 4 · Qual hemisfério lê mais rápido?</strong> As palavras piscavam por menos tempo do que o necessário para mover os olhos. Na média da turma, espera-se uma pequena vantagem para palavras à direita do +, que chegam primeiro ao hemisfério esquerdo (Mildner, 2008, p. 67). Com poucas tentativas, empates e resultados invertidos são normais.</p>
+<p><strong>Experimento 5 · Qual método?</strong> <strong>Quando</strong> → EEG/MEG; <strong>onde</strong> → fMRI; <strong>é necessário?</strong> → lesão ou TMS; <strong>onde e quando, em detalhe</strong> → registros no córtex, só em pacientes cirúrgicos. O erro mais comum é escolher fMRI para perguntas de necessidade.</p>
+<div style="break-before:page">
+
+</div>
+<div class="conceitos">
+<dl>
+<dt><strong>Afasia de Broca</strong></dt>
+<dd>
+Fala escassa, lenta e telegráfica, com compreensão relativamente preservada; a forma duradoura exige lesões maiores que a área de Broca (Mohr <em>et al.</em>, 1978).
+</dd>
+<dt><strong>Afasia de condução</strong></dt>
+<dd>
+Dificuldade marcante para repetir, com compreensão relativamente boa; explicada classicamente como desconexão e hoje também como dano cortical na região Spt (Hickok; Poeppel, 2016).
+</dd>
+<dt><strong>Dissociação dupla</strong></dt>
+<dd>
+Uma lesão prejudica a função X e poupa Y, e outra faz o contrário; indica que X e Y dependem, ao menos em parte, de sistemas diferentes (Small; Hickok, 2016).
+</dd>
+<dt><strong>Modelo de Wernicke–Geschwind</strong></dt>
+<dd>
+Modelo clássico em que centros ligados por feixes, como o fascículo arqueado, explicam as afasias e as síndromes de desconexão (Geschwind, 1965; Mildner, 2008).
+</dd>
+<dt><strong>Potencial relacionado a eventos (ERP)</strong></dt>
+<dd>
+Resposta elétrica a um tipo de estímulo, obtida pela média de muitos trechos de EEG alinhados ao estímulo (Mildner, 2008).
+</dd>
+<dt><strong>N400</strong></dt>
+<dd>
+Onda negativa com pico perto de 400 ms após uma palavra que não combina com o contexto (Kutas; Hillyard, 1980).
+</dd>
+<dt><strong>Sinal BOLD</strong></dt>
+<dd>
+Mudança no sinal da ressonância causada pela variação da proporção de hemoglobina oxigenada quando uma região aumenta sua atividade; base da fMRI (Mildner, 2008).
+</dd>
+<dt><strong>Estimulação magnética transcraniana (TMS)</strong></dt>
+<dd>
+Pulso magnético sobre o crânio que perturba brevemente o córtex abaixo da bobina; testa necessidade em pessoas saudáveis (Barker; Jalinous; Freeston, 1985; Mildner, 2008).
+</dd>
+</dl>
+</div>
+<h2 id="para-revisar">Para revisar</h2>
+<ol type="1">
+<li><p>Um paciente com lesão frontal vai mal em produzir frases e bem em compreender palavras. Por que isso, sozinho, não prova que produzir e compreender usam sistemas diferentes? O que faltaria?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>É uma dissociação simples: talvez produzir frases seja só mais difícil, e qualquer lesão afete primeiro a tarefa difícil. Faltaria um paciente com o padrão inverso (compreende mal, produz bem); essa dissociação dupla afasta a explicação pela dificuldade.</p>
+</details></li>
+<li><p>Segundo o modelo de Lichtheim, o que acontece com a repetição numa afasia transcortical sensorial, e por quê?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>A repetição fica preservada, porque a via entre o centro auditivo e o motor está intacta. O que falta é a ligação com os conceitos: o paciente repete sem entender.</p>
+</details></li>
+<li><p>Por que o EEG precisa tirar a média de muitas tentativas, e por que, mesmo assim, ele não diz bem onde no cérebro acontece a N400?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>A resposta é menor que a atividade de fundo; a média cancela o ruído, que varia, e preserva a resposta, que se repete. Mas cada eletrodo soma sinais de muitas fontes, por isso o EEG localiza mal.</p>
+</details></li>
+<li><p>Uma pesquisa de fMRI mostra que uma região se ativa quando lemos verbos. Que método você usaria para saber se ela é necessária para entender verbos, e por quê?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>TMS sobre a região em pessoas saudáveis, ou o estudo de pacientes com lesão ali. A fMRI mostra participação; só perturbar a região, por um instante ou de forma permanente, mostra se a função falha sem ela.</p>
+</details></li>
+<li><p>Um colega canhoto diz que, por ser canhoto, sua linguagem deve estar no hemisfério direito. O que o teste de Wada diz sobre isso?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Que provavelmente não: cerca de 70% dos canhotos têm a fala no hemisfério esquerdo. A linguagem à direita ou bilateral é mais comum em canhotos do que em destros, mas continua minoria.</p>
+</details></li>
+<li><p>Por que o estudo de Buchsbaum e colegas sobre a afasia de condução é um bom exemplo de convergência de métodos?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Juntou dois métodos com pontos cegos diferentes, a sobreposição de lesões (necessidade) e a fMRI (localização), e os dois apontaram para a mesma região (Spt).</p>
+</details></li>
+</ol>
+<h2 id="para-saber-mais">Para saber mais</h2>
+<ul>
+<li><strong>Small, S. L.; Hickok, G. (2016). The neurobiology of language.</strong> Capítulo de abertura do livro <em>Neurobiology of Language</em> (disponível com o professor). Vai de Broca aos métodos atuais em poucas páginas. Nível intermediário.</li>
+<li><strong>Mildner, V. (2008). <em>The Cognitive Neuroscience of Human Communication</em>, capítulos 3 e 4.</strong> História da neurolinguística e catálogo dos métodos, com seus limites (disponível com o professor). Nível acessível.</li>
+<li><strong>Beauchamp, M. S.; Nath, A. R.; Pasalar, S. (2010).</strong> Artigo curto (quatro páginas) que mostra fMRI e TMS trabalhando juntas no efeito McGurk. Acesso aberto: https://doi.org/10.1523/JNEUROSCI.4865-09.2010 (também no PubMed Central, PMC2844713). Nível avançado.</li>
+</ul>
+<h2 id="referências">Referências</h2><div class="refs">
+<p>BARKER, A. T.; JALINOUS, R.; FREESTON, I. L. Non-invasive magnetic stimulation of human motor cortex. <strong>The Lancet</strong>, v. 325, n. 8437, p. 1106-1107, 1985. DOI: https://doi.org/10.1016/S0140-6736(85)92413-4.</p>
+<p>BEAUCHAMP, M. S. Audiovisual speech integration: neural substrates and behavior. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of Language</strong>. London: Academic Press, 2016. p. 515-526. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00042-0.</p>
+<p>BEAUCHAMP, M. S.; NATH, A. R.; PASALAR, S. fMRI-guided transcranial magnetic stimulation reveals that the superior temporal sulcus is a cortical locus of the McGurk effect. <strong>Journal of Neuroscience</strong>, v. 30, n. 7, p. 2414-2417, 2010. DOI: https://doi.org/10.1523/JNEUROSCI.4865-09.2010.</p>
+<p>BUCHSBAUM, B. R. <em>et al.</em> Conduction aphasia, sensory-motor integration, and phonological short-term memory: an aggregate analysis of lesion and fMRI data. <strong>Brain and Language</strong>, v. 119, n. 3, p. 119-128, 2011. DOI: https://doi.org/10.1016/j.bandl.2010.12.001.</p>
+<p>CARAMAZZA, A.; ZURIF, E. B. Dissociation of algorithmic and heuristic processes in language comprehension: evidence from aphasia. <strong>Brain and Language</strong>, v. 3, n. 4, p. 572-582, 1976. DOI: https://doi.org/10.1016/0093-934X(76)90048-1.</p>
+<p>DOMANSKI, C. W. Mysterious “Monsieur Leborgne”: the mystery of the famous patient in the history of neuropsychology is explained. <strong>Journal of the History of the Neurosciences</strong>, v. 22, n. 1, p. 47-52, 2013. DOI: https://doi.org/10.1080/0964704X.2012.667528.</p>
+<p>DONDERS, F. C. On the speed of mental processes. <strong>Acta Psychologica</strong>, v. 30, p. 412-431, 1969. DOI: https://doi.org/10.1016/0001-6918(69)90065-1.</p>
+<p>DRONKERS, N. F. <em>et al.</em> Paul Broca’s historic cases: high resolution MR imaging of the brains of Leborgne and Lelong. <strong>Brain</strong>, v. 130, n. 5, p. 1432-1441, 2007. DOI: https://doi.org/10.1093/brain/awm042.</p>
+<p>GESCHWIND, N. Disconnexion syndromes in animals and man. <strong>Brain</strong>, v. 88, n. 2, p. 237-294, 1965. DOI: https://doi.org/10.1093/brain/88.2.237.</p>
+<p>HICKOK, G.; POEPPEL, D. Neural basis of speech perception. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of Language</strong>. London: Academic Press, 2016. p. 299-310. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00025-0.</p>
+<p>KUTAS, M.; HILLYARD, S. A. Reading senseless sentences: brain potentials reflect semantic incongruity. <strong>Science</strong>, v. 207, n. 4427, p. 203-205, 1980. DOI: https://doi.org/10.1126/science.7350657.</p>
+<p>LICHTHEIM, L. On aphasia. <strong>Brain</strong>, v. 7, n. 4, p. 433-484, 1885. DOI: https://doi.org/10.1093/brain/7.4.433.</p>
+<p>MILDNER, V. <strong>The Cognitive Neuroscience of Human Communication</strong>. New York: Lawrence Erlbaum Associates, 2008.</p>
+<p>MOHR, J. P. <em>et al.</em> Broca aphasia: pathologic and clinical. <strong>Neurology</strong>, v. 28, n. 4, p. 311-324, 1978. DOI: https://doi.org/10.1212/WNL.28.4.311.</p>
+<p>OJEMANN, G. <em>et al.</em> Cortical language localization in left, dominant hemisphere: an electrical stimulation mapping investigation in 117 patients. <strong>Journal of Neurosurgery</strong>, v. 71, n. 3, p. 316-326, 1989. DOI: https://doi.org/10.3171/jns.1989.71.3.0316.</p>
+<p>PETERSEN, S. E. <em>et al.</em> Positron emission tomographic studies of the cortical anatomy of single-word processing. <strong>Nature</strong>, v. 331, n. 6157, p. 585-589, 1988. DOI: https://doi.org/10.1038/331585a0.</p>
+<p>PRZEŹDZIK, I. <em>et al.</em> The human language connectome. In: HAGOORT, P. (org.). <strong>Human Language</strong>: from genes and brains to behavior. Cambridge, MA: The MIT Press, 2019. p. 467-480.</p>
+<p>SMALL, S. L.; HICKOK, G. The neurobiology of language. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of Language</strong>. London: Academic Press, 2016. p. 3-9. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00001-8.</p>
+<p>TIPPETT, D. C.; HILLIS, A. E. Vascular aphasia syndromes. In: HICKOK, G.; SMALL, S. L. (org.). <strong>Neurobiology of Language</strong>. London: Academic Press, 2016. p. 913-922. DOI: https://doi.org/10.1016/B978-0-12-407794-2.00073-0.</p>
+<p>VAN BERKUM, J. J. A.; NIEUWLAND, M. S. A cognitive neuroscience perspective on language comprehension in context. In: HAGOORT, P. (org.). <strong>Human Language</strong>: from genes and brains to behavior. Cambridge, MA: The MIT Press, 2019. p. 429-442.</p>
+</div>
+<p class="rodape">Material de estudo da disciplina Bases neurais da comunicação humana (UFRN), Prof. Daniel Y. Takahashi. Texto e figuras elaborados para o curso; as fontes estão nas Referências.</p>
+</div>
