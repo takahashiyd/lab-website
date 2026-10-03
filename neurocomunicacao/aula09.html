@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laboratório de Prosódia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: a single lab-notebook column; each experiment is a numbered protocol card; teacher mode swaps in a projector board */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#142033; --muted:#5b6879; --line:#d8dee6;
+  --accent:#0e7c86; --accent-ink:#ffffff; --you:#c9771a; --soft:#e5f1f2; --warn:#a33a2a;
+  --screen:#f7f9fb;
+  --display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --screen:#0b111a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --screen:#0b111a; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:17px/1.5 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-inline:18px;padding-block:28px 64px;display:grid;gap:22px}
+header{display:grid;gap:8px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(34px,8vw,54px)/1 var(--display);font-stretch:118%;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font:750 24px/1.15 var(--display);font-stretch:108%;margin:0;text-wrap:balance}
+h3{font:700 16px/1.2 var(--display);margin:0}
+p{margin:0;max-width:65ch}
+.lead{color:var(--muted)}
+.phones{display:flex;gap:10px;align-items:flex-start;background:var(--soft);border-radius:10px;padding:12px 14px;font-size:15px}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{font:600 14px/1 var(--body);color:var(--fg);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:var(--surface)}
+nav a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.exp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:14px;min-width:0}
+.num{font:600 13px/1 var(--mono);color:var(--muted)}
+.tag{display:inline-block;font:600 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 7px;border-radius:5px;background:var(--soft);color:var(--accent)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+button{font:700 16px/1 var(--display);border:0;border-radius:10px;padding:14px 18px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px;touch-action:manipulation}
+button.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+button.big{flex:1 1 120px;font-size:24px;padding:20px 10px;font-stretch:112%}
+button.emo{flex:1 1 100px;font-size:19px;padding:16px 6px}
+button.tone{flex:1 1 70px;font-size:22px;padding:16px 4px}
+button.ok{background:var(--accent)!important;color:var(--accent-ink)!important}
+button.bad{background:var(--warn)!important;color:#fff!important}
+button:disabled{opacity:.4;cursor:default}
+button.ok:disabled,button.bad:disabled{opacity:1}
+.readout{font:500 15px/1.4 var(--mono);color:var(--muted)}
+.result{border-top:1px dashed var(--line);padding-top:14px;display:grid;gap:10px}
+.report{background:var(--soft);border-radius:10px;padding:12px 14px;font-size:16px}
+.report b{font:700 20px/1.2 var(--display);color:var(--you)}
+.why{font-size:15px;color:var(--muted)}
+.chart{width:100%;height:auto;display:block}
+.chart text{fill:var(--muted);font:18px var(--mono)}
+.chart .ax{stroke:var(--line)}
+.chart .ln{fill:none;stroke:var(--you);stroke-width:4}
+.chart .dot{fill:var(--you)}
+.chart .bar{fill:var(--you)}
+.chart .bar.alt{fill:var(--accent)}
+.chart .val{fill:var(--fg);font:700 19px var(--mono)}
+.screen{background:var(--screen);border:1px solid var(--line);border-radius:12px;min-height:110px;display:grid;place-items:center;text-align:center;padding:14px;user-select:none;-webkit-user-select:none}
+.screen .big{font:800 clamp(30px,9vw,44px)/1.1 var(--display);font-stretch:112%}
+.screen .small{font-size:15px;color:var(--muted)}
+.phrase{font:400 clamp(20px,5.4vw,26px)/1.35 Georgia,"Times New Roman",serif}
+.tonebox{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tonebox button{display:grid;gap:4px;padding:12px 2px;font-size:19px}
+.tonebox small{font:600 12px/1.1 var(--body);opacity:.85;overflow-wrap:anywhere}
+.tonebox svg{width:100%;height:34px}
+.links a{color:var(--accent);font-weight:600}
+footer{font-size:13px;color:var(--muted)}
+/* teacher board */
+#prof{display:grid;gap:18px;max-width:1180px}
+.board{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:10px;min-width:0;align-content:start}
+.bars{display:grid;gap:6px}
+.bar{display:grid;grid-template-columns:104px 1fr 34px 34px 40px;gap:6px;align-items:center;font-size:14px}
+.bar .lab{font:500 13px var(--mono);color:var(--muted)}
+.bar .track{height:22px;background:var(--bg);border-radius:4px;overflow:hidden}
+.bar .fill{height:100%;background:var(--accent);width:0;transition:width .25s;display:block}
+.bar .fill.b{background:var(--you)}
+.bar .n{font:700 15px var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.bar button{padding:0;min-height:30px;font-size:18px;border-radius:7px}
+.legend{display:flex;gap:14px;font-size:13px;color:var(--muted)}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:5px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap" id="student">
+  <header>
+    <span class="eyebrow">Bases neurais da comunicação humana · Aula 9</span>
+    <h1>Laboratório de Prosódia</h1>
+    <p class="lead">Cinco experimentos sobre a melodia da fala. As vozes são sintetizadas no seu celular, sem palavras: só sobra a prosódia. Você é o participante. No fim de cada experimento, informe o resultado ao professor.</p>
+    <div class="phones"><span>Use fones se tiver, com volume médio. Sem fones, aproxime o celular do ouvido. O experimento 4 é feito em voz alta, com a turma.</span></div>
+    <nav aria-label="Experimentos"><a href="#e1">1 · Pergunta?</a><a href="#e2">2 · Que emoção?</a><a href="#e3">3 · Tons do mandarim</a><a href="#e4">4 · Cinco emoções</a><a href="#e5">5 · Fala vira canção</a></nav>
+  </header>
+
+  <!-- E1 -->
+  <section class="exp" id="e1">
+    <div class="row"><span class="num">EXPERIMENTO 1</span><span class="tag">≈ 4 min</span></div>
+    <h2>Pergunta ou afirmação?</h2>
+    <p>Você vai ouvir a mesma sequência de cinco sílabas, como alguém falando do outro lado da parede. Só muda a melodia da última sílaba, em 7 passos iguais. Responda se soou como <b>afirmação</b> ou como <b>pergunta</b>.</p>
+    <div class="row">
+      <button id="e1go">Começar (28 sons)</button>
+      <span class="readout" id="e1p"></span>
+    </div>
+    <div class="row" id="e1btn" hidden>
+      <button disabled class="big" data-r="a">afirmação .</button><button disabled class="big" data-r="p">pergunta ?</button>
+    </div>
+    <div class="result" id="e1res" hidden>
+      <svg class="chart" id="e1chart" viewBox="0 0 640 300" role="img" aria-label="Sua curva de identificação"></svg>
+      <div class="report" id="e1rep"></div>
+      <p class="why">A diferença física entre passos vizinhos é sempre a mesma, mas a resposta costuma virar de repente: a subida final é uma pista <b>linguística</b>, usada como categoria. Em português, a pergunta de sim/não sem palavra interrogativa depende só dessa melodia.</p>
+    </div>
+  </section>
+
+  <!-- E2 -->
+  <section class="exp" id="e2">
+    <div class="row"><span class="num">EXPERIMENTO 2</span><span class="tag">≈ 4 min</span></div>
+    <h2>Que emoção é essa?</h2>
+    <p>Sílabas sem sentido, ditas com uma de cinco emoções. O sintetizador só muda a altura média, a variação da altura, a velocidade, a intensidade e a qualidade da voz. Escolha a emoção. Você pode ouvir cada som duas vezes.</p>
+    <div class="row">
+      <button id="e2go">Começar (15 sons)</button>
+      <button id="e2again" class="ghost" disabled>Ouvir de novo</button>
+      <span class="readout" id="e2p"></span>
+    </div>
+    <div class="row" id="e2btn" hidden>
+      <button disabled class="emo" data-r="alegria">alegria</button><button disabled class="emo" data-r="tristeza">tristeza</button><button disabled class="emo" data-r="raiva">raiva</button><button disabled class="emo" data-r="medo">medo</button><button disabled class="emo" data-r="neutro">neutro</button>
+    </div>
+    <div class="result" id="e2res" hidden>
+      <svg class="chart" id="e2chart" viewBox="0 0 640 300" role="img" aria-label="Acertos por emoção"></svg>
+      <div class="report" id="e2rep"></div>
+      <p class="why">Sem palavras e sem rosto, você ainda acerta bem acima do acaso (3 de 15). Cada emoção muda o corpo de quem fala, e o corpo muda a voz: raiva deixa a voz alta e tensa, tristeza a deixa lenta, grave e monótona. Quais emoções você confundiu?</p>
+    </div>
+  </section>
+
+  <!-- E3 -->
+  <section class="exp" id="e3">
+    <div class="row"><span class="num">EXPERIMENTO 3</span><span class="tag">≈ 5 min</span></div>
+    <h2>Os quatro tons do mandarim</h2>
+    <p>Em mandarim, a sílaba <i>ma</i> muda de significado conforme a melodia. Primeiro ouça cada tom algumas vezes. Depois identifique 24 sílabas em dois blocos de 12, com resposta certa depois de cada uma. Você aprende de um bloco para o outro?</p>
+    <h3>Parte A · Conheça os tons (toque à vontade)</h3>
+    <div class="tonebox" id="e3learn"></div>
+    <h3>Parte B · Teste com retorno</h3>
+    <div class="row">
+      <button id="e3go">Começar bloco 1</button>
+      <button id="e3again" class="ghost" disabled>Ouvir de novo</button>
+      <span class="readout" id="e3p"></span>
+    </div>
+    <div class="row" id="e3btn" hidden>
+      <button disabled class="tone" data-r="1">1 · mā</button><button disabled class="tone" data-r="2">2 · má</button><button disabled class="tone" data-r="3">3 · mǎ</button><button disabled class="tone" data-r="4">4 · mà</button>
+    </div>
+    <div class="result" id="e3res" hidden>
+      <svg class="chart" id="e3chart" viewBox="0 0 640 300" role="img" aria-label="Acertos por tom e por bloco"></svg>
+      <div class="report" id="e3rep"></div>
+      <p class="why">Para quem fala mandarim, a altura da voz é parte da palavra, como uma vogal. Falantes nativos processam os tons mais com o hemisfério <b>esquerdo</b>; quem não fala uma língua tonal trata a mesma melodia como música ou emoção, mais à direita. A confusão mais comum de quem aprende é entre o tom 2 (sobe) e o tom 3 (desce e sobe).</p>
+    </div>
+  </section>
+
+  <!-- E4 -->
+  <section class="exp" id="e4">
+    <div class="row"><span class="num">EXPERIMENTO 4</span><span class="tag">com a turma · ≈ 8 min</span></div>
+    <h2>Uma frase, cinco emoções</h2>
+    <p>Voluntários vão à frente e dizem sempre a mesma frase neutra, com uma emoção secreta. A turma ouve <b>de olhos fechados</b> e vota.</p>
+    <div class="screen"><span class="phrase">“Amanhã eu vou ao centro da cidade.”</span></div>
+    <h3>Se você vai falar</h3>
+    <div class="row"><button id="e4draw" class="ghost">Sortear minha emoção secreta</button><button id="e4hide" class="ghost" hidden>Esconder</button></div>
+    <div class="screen" id="e4secret" hidden><span class="big" id="e4emo"></span><span class="small">Diga a frase com essa emoção. Não faça caretas: a turma está de olhos fechados.</span></div>
+    <h3>Se você está ouvindo</h3>
+    <p class="readout" id="e4p">Rodada 1 de 5 · marque seu palpite</p>
+    <div class="row" id="e4guess">
+      <button class="emo" data-r="alegria">alegria</button><button class="emo" data-r="tristeza">tristeza</button><button class="emo" data-r="raiva">raiva</button><button class="emo" data-r="medo">medo</button><button class="emo" data-r="neutro">neutro</button>
+    </div>
+    <p class="readout" id="e4p2" hidden>Agora marque a emoção revelada por quem falou</p>
+    <div class="row" id="e4truth" hidden>
+      <button class="emo ghost" data-r="alegria">alegria</button><button class="emo ghost" data-r="tristeza">tristeza</button><button class="emo ghost" data-r="raiva">raiva</button><button class="emo ghost" data-r="medo">medo</button><button class="emo ghost" data-r="neutro">neutro</button>
+    </div>
+    <div class="result" id="e4res" hidden>
+      <div class="report" id="e4rep"></div>
+      <p class="why">Vozes reais carregam mais pistas que o sintetizador (respiração, ritmo, risadinhas), mas também mais ruído: cada pessoa expressa a emoção do seu jeito. Compare com o experimento 2.</p>
+      <div class="row"><button id="e4reset" class="ghost">Nova série de 5</button></div>
+    </div>
+  </section>
+
+  <!-- E5 -->
+  <section class="exp" id="e5">
+    <div class="row"><span class="num">EXPERIMENTO 5</span><span class="tag">demonstração · 3 min</span></div>
+    <h2>Quando a fala vira canção</h2>
+    <p>Ouça uma frase falada uma vez. Depois ouça a mesma frase repetida oito vezes, idêntica. Por fim, oito repetições em que a frase sobe ou desce um pouquinho a cada vez. Em qual delas a fala começou a soar como <b>canto</b>?</p>
+    <div class="row">
+      <button id="e5one" class="ghost">Ouvir uma vez</button>
+      <button id="e5same">Repetir igual (8×)</button>
+      <button id="e5tr" class="ghost">Repetir transposta (8×)</button>
+      <button id="e5stop" class="ghost" disabled>Parar</button>
+    </div>
+    <p class="readout" id="e5p"></p>
+    <div class="row" id="e5btn">
+      <button class="emo ghost" data-r="igual">só na igual</button><button class="emo ghost" data-r="ambas">nas duas</button><button class="emo ghost" data-r="transposta">só na transposta</button><button class="emo ghost" data-r="nenhuma">em nenhuma</button>
+    </div>
+    <div class="result" id="e5res" hidden>
+      <div class="report" id="e5rep"></div>
+      <p class="why">Diana Deutsch descobriu a ilusão ao repetir um trecho de gravação: depois de algumas repetições, a frase “canta”. Quando cada repetição é transposta, a ilusão quase não aparece (Deutsch e colegas, 2011). Repetir chama a atenção para as alturas exatas, e o cérebro passa a tratá-las como notas. Ouça o original: <a href="https://philomel.com/phantom_words/sometimes.php" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600">“sometimes behave so strangely”</a>.</p>
+    </div>
+  </section>
+
+  <footer>Os sons são sintetizados no seu aparelho; nenhuma resposta sai do celular. Professor: abra esta página com <span style="font-family:var(--mono)">#professor</span> no fim do link para o placar da turma.</footer>
+</div>
+
+<!-- Teacher board -->
+<div class="wrap" id="prof" hidden>
+  <header>
+    <span class="eyebrow">Placar da turma · Aula 9</span>
+    <h1>Resultados da turma</h1>
+    <p class="lead">Peça que levantem a mão por categoria e registre com + e −. Os números ficam salvos neste navegador.</p>
+    <div class="row"><button class="ghost" id="reset">Zerar placar</button><span class="readout" id="resetMsg"></span><a href="#" id="toStudent" style="color:var(--accent);font-weight:600">Ver página dos alunos</a></div>
+  </header>
+  <div class="board" id="board"></div>
+</div>
+
+<script>
+(()=>{
+let ctx=null;
+function ac(){ if(!ctx){ctx=new (window.AudioContext||window.webkitAudioContext)();} if(ctx.state==='suspended')ctx.resume(); return ctx; }
+
+/* ---------- formant synthesizer with an f0 contour (Aula 3 synth + pitch, breath, jitter, tremor) ---------- */
+const SR=22050;
+const VOW={a:[750,1250,2600],e:[480,1850,2550],i:[300,2250,2950],o:[480,900,2500],u:[330,800,2400]};
+const CONS={m:[[250,1100,2300],.2],n:[[250,1600,2600],.2],l:[[350,1150,2700],.45]};
+function reson(x,F,bw){const n=x.length,y=new Float32Array(n);const C=-Math.exp(-2*Math.PI*bw/SR),e=2*Math.exp(-Math.PI*bw/SR);let y1=0,y2=0;
+  for(let i=0;i<n;i++){const f=typeof F==='number'?F:F[i];const B=e*Math.cos(2*Math.PI*f/SR);const A=1-B-C;const v=A*x[i]+B*y1+C*y2;y[i]=v;y2=y1;y1=v;}return y;}
+function interp(t,pts){if(t<=pts[0][0])return pts[0][1];const L=pts.length;if(t>=pts[L-1][0])return pts[L-1][1];
+  let j=0;while(pts[j+1][0]<t)j++;let u=(t-pts[j][0])/(pts[j+1][0]-pts[j][0]);u=(1-Math.cos(Math.PI*u))/2;return pts[j][1]+(pts[j+1][1]-pts[j][1])*u;}
+let seed=1;const rnd=()=>{seed=(seed*16807)%2147483647;return seed/2147483647;};
+const gauss=()=>{let u=0,v=0;while(u===0)u=rnd();v=rnd();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);};
+// sylls: [[cons, vowel, dur]]; targets: [[st_start, st_end]] semitones per syllable
+function plan(sylls,targets,base,rate=1){const durs=sylls.map(s=>s[2]/rate);const pts=[];let t0=0;
+  durs.forEach((d,k)=>{pts.push([t0+.25*d,base*Math.pow(2,targets[k][0]/12)]);pts.push([t0+.92*d,base*Math.pow(2,targets[k][1]/12)]);t0+=d;});return{durs,pts};}
+function utter(sylls,durs,pts,o={}){const fs=o.fs||1,tilt=o.tilt||100,breath=o.breath||0,jit=o.jitter||0,trem=o.trem||0,amp=o.amp||.7;seed=o.seed||7;
+  const T=durs.reduce((a,b)=>a+b,0),n=Math.floor(T*SR);const F=[new Float32Array(n),new Float32Array(n),new Float32Array(n)],A=new Float32Array(n).fill(1);
+  let s0=0,prevV=VOW[sylls[0][1]];
+  sylls.forEach(([c,v],k)=>{const d=durs[k],i0=Math.floor(s0*SR),i1=Math.min(n,Math.floor((s0+d)*SR)),V=VOW[v];
+    for(let i=i0;i<i1;i++){const u=i/SR-s0;
+      if(c){const [Cf,ca]=CONS[c],cd=Math.min(.07,.35*d);const kk=Math.max(0,Math.min(1,(u-cd)/.045));for(let r=0;r<3;r++)F[r][i]=Cf[r]+(V[r]-Cf[r])*kk;A[i]=ca+(1-ca)*kk;}
+      else{const kk=Math.min(1,u/.05);for(let r=0;r<3;r++)F[r][i]=prevV[r]+(V[r]-prevV[r])*kk;}}
+    prevV=V;s0+=d;});
+  const a=1-Math.exp(-1/(.008*SR));for(let r=0;r<3;r++){let v=F[r][0];for(let i=0;i<n;i++){v+=a*(F[r][i]-v);F[r][i]=v;}}
+  {const w=Math.floor(.008*SR),B=new Float32Array(n);let acc=0;for(let i=0;i<n+w;i++){if(i<n)acc+=A[i];if(i-w>=0)acc-=A[i-w];const j=i-Math.floor(w/2);if(j>=0&&j<n)B[j]=acc/w;}for(let i=0;i<n;i++)A[i]=B[i]||A[i];}
+  let src=new Float32Array(n);let ph=0,jj=1;
+  for(let i=0;i<n;i++){const t=i/SR;const f0=interp(t,pts)*(1+trem*Math.sin(2*Math.PI*6.5*t));ph+=f0*jj/SR;if(ph>=1){ph-=1;src[i]=1;jj=1+jit*gauss();}}
+  src=reson(src,0,tilt);let rms=0;for(let i=0;i<n;i++)rms+=src[i]*src[i];rms=Math.sqrt(rms/n)+1e-9;
+  for(let i=0;i<n;i++)src[i]=src[i]/rms+breath*1.5*gauss();
+  const s1=F[0].map(v=>v*fs),s2=F[1].map(v=>v*fs),s3=F[2].map(v=>v*fs);
+  let x=reson(src,s1,70);x=reson(x,s2,90);x=reson(x,s3,130);x=reson(x,3400*fs,200);x=reson(x,4000*fs,250);
+  const out=new Float32Array(n);let m=0,p=0;
+  for(let i=0;i<n;i++){const t=i/SR;const env=Math.min(1,t/.015)*Math.min(1,(T-t)/.08)*A[i];const v=(x[i]-p)*env;p=x[i];out[i]=v;m=Math.max(m,Math.abs(v));}
+  for(let i=0;i<n;i++)out[i]=out[i]/m*.8*amp;return out;}
+const VOICES={A:[115,1.0],B:[205,1.14]};
+/* E1 stimuli */
+const E1_SYL=[['','e',.16],['l','a',.17],['m','o',.17],['n','e',.17],['m','a',.30]];
+const e1targets=k=>[[0,1],[2,2.5],[1.5,1],[.5,0],[-.5,-6+14*k/6]];
+function e1stim(k,voice){const[b,fs]=VOICES[voice];const{durs,pts}=plan(E1_SYL,e1targets(k),b);return utter(E1_SYL,durs,pts,{fs,seed:3});}
+/* E2 stimuli */
+const EMO={neutro:{m:1,r:1,rate:1,amp:.7,tilt:100,breath:0,jitter:.004,trem:0,fin:0,acc:0},
+ alegria:{m:1.35,r:2,rate:1.15,amp:.85,tilt:140,breath:.02,jitter:.005,trem:0,fin:1,acc:1},
+ raiva:{m:1.18,r:1.5,rate:1.22,amp:1,tilt:280,breath:0,jitter:.012,trem:0,fin:-3,acc:2.5},
+ medo:{m:1.55,r:.55,rate:1.4,amp:.55,tilt:120,breath:.12,jitter:.03,trem:.04,fin:1,acc:0},
+ tristeza:{m:.84,r:.3,rate:.68,amp:.42,tilt:55,breath:.12,jitter:.01,trem:0,fin:-2,acc:0}};
+const E2_PH=[[['','a',.15],['l','e',.2],['m','a',.16],['n','o',.15],['l','i',.22],['m','a',.26]],
+ [['','o',.15],['m','e',.2],['n','i',.16],['l','a',.15],['m','o',.22],['n','e',.26]],
+ [['','e',.15],['n','a',.2],['l','o',.16],['m','i',.15],['n','a',.22],['l','u',.26]]];
+const E2_T=[[0,.5],[1,2.5],[1.5,1],[.5,0],[0,1.5],[.5,-3]],ACC=[0,1,0,0,1,0];
+function e2stim(emo,ph,voice){const p=EMO[emo],[b,fs]=VOICES[voice];
+  const tg=E2_T.map(([a,c],k)=>{let a2=a*p.r,b2=c*p.r;if(ACC[k]){a2+=p.acc;b2+=p.acc*.4;}if(k===E2_T.length-1)b2+=p.fin;return[a2,b2];});
+  const{durs,pts}=plan(E2_PH[ph],tg,b*p.m,p.rate);return utter(E2_PH[ph],durs,pts,{fs,tilt:p.tilt,breath:p.breath,jitter:p.jitter,trem:p.trem,amp:p.amp,seed:11+ph});}
+/* E3 stimuli: Mandarin tones on /ma/ (Chao levels 1–5) */
+const TONES={1:[[[0,5],[1,5]],.42],2:[[[0,3],[.25,2.8],[1,5]],.44],3:[[[0,2],[.45,1],[.7,1.1],[1,4]],.55],4:[[[0,5],[1,1]],.33]};
+function tone(k,voice){const[b,fs]=VOICES[voice];const[p,d]=TONES[k];const lv=L=>b*Math.pow(2,(L-3)*2.2/12);
+  return utter([['m','a',d]],[d],p.map(([u,L])=>[.06+u*(d-.1),lv(L)]),{fs,seed:5});}
+/* E5 stimuli */
+const D_SYL=[['','a',.17],['m','a',.17],['n','e',.2],['l','o',.17],['m','u',.22],['n','a',.18],['l','a',.3]];
+const D_T=[[2,4],[4,3],[3,0],[0,-1],[2,5],[5,2],[1,-4]];
+function demo(shift){const{durs,pts}=plan(D_SYL,D_T.map(([a,b])=>[a+shift,b+shift]),120);return utter(D_SYL,durs,pts,{seed:9});}
+
+const cache={};const get=(key,fn)=>cache[key]||(cache[key]=fn());
+let live=[];
+function play(a,delay=0){const c=ac();const b=c.createBuffer(1,a.length,SR);b.getChannelData(0).set(a);
+  const s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(c.currentTime+delay);live.push(s);return a.length/SR+delay;}
+function stopAll(){live.forEach(s=>{try{s.stop();}catch(e){}});live=[];}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const $=id=>document.getElementById(id);
+function waitChoice(box){return new Promise(res=>{const bs=[...box.querySelectorAll('button')];bs.forEach(b=>{b.disabled=false;b.classList.remove('ok','bad');});
+  const h=e=>{bs.forEach(b=>{b.disabled=true;b.removeEventListener('click',h);});res([e.currentTarget.dataset.r,e.currentTarget]);};bs.forEach(b=>b.addEventListener('click',h));});}
+const W=640,H=300;
+function axes(L,R,T,B){const y=v=>T+(1-v)*(H-T-B);
+  return `<line class="ax" x1="${L}" y1="${y(0)}" x2="${W-R}" y2="${y(0)}"/><line class="ax" x1="${L}" y1="${y(.5)}" x2="${W-R}" y2="${y(.5)}" stroke-dasharray="3 4"/><line class="ax" x1="${L}" y1="${y(1)}" x2="${W-R}" y2="${y(1)}"/>`+
+  `<text x="${L-8}" y="${y(1)+6}" text-anchor="end">100%</text><text x="${L-8}" y="${y(.5)+6}" text-anchor="end">50%</text><text x="${L-8}" y="${y(0)+6}" text-anchor="end">0%</text>`;}
+
+/* ---------- E1 question vs statement ---------- */
+let e1run=false;
+$('e1go').onclick=async()=>{if(e1run)return;e1run=true;ac();$('e1go').disabled=true;$('e1btn').hidden=false;$('e1res').hidden=true;
+  const id={};for(let s=0;s<7;s++)id[s]={p:0,n:0};
+  const tr=shuffle([].concat(...[0,1,2,3].map(r=>[0,1,2,3,4,5,6].map(k=>[k,r%2?'B':'A']))));
+  for(let t=0;t<tr.length;t++){$('e1p').textContent=`${t+1} / ${tr.length}`;await sleep(450);const[k,v]=tr[t];play(get('e1'+k+v,()=>e1stim(k,v)));
+    const[r]=await waitChoice($('e1btn'));id[k].n++;if(r==='p')id[k].p++;}
+  $('e1btn').hidden=true;$('e1p').textContent='Concluído.';
+  const p=[0,1,2,3,4,5,6].map(i=>id[i].p/id[i].n);const L=70,R=24,T=44,B=56;const x=i=>L+i*(W-L-R)/6,y=v=>T+(1-v)*(H-T-B);
+  let g=axes(L,R,T,B);for(let i=0;i<7;i++)g+=`<text x="${x(i)}" y="${H-32}" text-anchor="middle">${i+1}</text>`;
+  g+=`<text x="${x(0)}" y="${H-6}" text-anchor="middle">cai</text><text x="${x(6)}" y="${H-6}" text-anchor="middle">sobe</text><text x="${(L+W-R)/2}" y="${H-6}" text-anchor="middle">passo (fim da frase)</text>`;
+  g+=`<polyline class="ln" points="${p.map((v,i)=>x(i)+','+y(v)).join(' ')}"/>`+p.map((v,i)=>`<circle class="dot" cx="${x(i)}" cy="${y(v)}" r="6"/>`).join('');
+  g+=`<text x="${L}" y="22" style="fill:var(--you)">● % de respostas “pergunta”</text>`;$('e1chart').innerHTML=g;
+  const b=p.findIndex(v=>v>=.5);const mono=p.every((v,i)=>i===0||v>=p[i-1]-.26);
+  $('e1rep').innerHTML=(b<1||!mono||p[6]<.5)?`Sua curva não tem uma fronteira clara. Informe <b>sem fronteira</b>.`:`Sua fronteira afirmação → pergunta fica no passo <b>${b+1}</b>. Informe esse número ao professor.`;
+  $('e1res').hidden=false;$('e1go').disabled=false;$('e1go').textContent='Refazer';e1run=false;};
+
+/* ---------- E2 emotion from prosody ---------- */
+const EMOS=['alegria','tristeza','raiva','medo','neutro'];let e2cur=null,e2run=false,e2rep=0;
+$('e2again').onclick=()=>{if(e2cur&&e2rep<1){e2rep++;play(e2cur);if(e2rep>=1)$('e2again').disabled=true;}};
+$('e2go').onclick=async()=>{if(e2run)return;e2run=true;ac();$('e2go').disabled=true;$('e2btn').hidden=false;$('e2res').hidden=true;
+  const ok={},conf={};EMOS.forEach(e=>{ok[e]=0;conf[e]={};EMOS.forEach(f=>conf[e][f]=0);});
+  const tr=shuffle([].concat(...EMOS.map(e=>[0,1,2].map(ph=>[e,ph,Math.random()<.5?'A':'B']))));
+  for(let t=0;t<tr.length;t++){$('e2p').textContent=`${t+1} / ${tr.length}`;await sleep(500);const[e,ph,v]=tr[t];
+    e2cur=get('e2'+e+ph+v,()=>e2stim(e,ph,v));e2rep=0;$('e2again').disabled=false;play(e2cur);
+    const[r]=await waitChoice($('e2btn'));$('e2again').disabled=true;conf[e][r]++;if(r===e)ok[e]++;}
+  $('e2btn').hidden=true;$('e2p').textContent='Concluído.';e2cur=null;
+  const tot=EMOS.reduce((s,e)=>s+ok[e],0);const L=40,R=20,T=34,B=46,bw=(W-L-R)/5;const y=v=>T+(1-v/3)*(H-T-B);
+  let g=`<line class="ax" x1="${L}" y1="${y(0)}" x2="${W-R}" y2="${y(0)}"/><line class="ax" x1="${L}" y1="${y(.6)}" x2="${W-R}" y2="${y(.6)}" stroke-dasharray="3 4"/><text x="${W-R}" y="${y(.6)-6}" text-anchor="end">acaso</text>`;
+  EMOS.forEach((e,i)=>{const x0=L+i*bw+bw*.18;g+=`<rect class="bar" x="${x0}" y="${y(ok[e])}" width="${bw*.64}" height="${y(0)-y(ok[e])}" rx="4"/><text class="val" x="${x0+bw*.32}" y="${y(ok[e])-8}" text-anchor="middle">${ok[e]}/3</text><text x="${x0+bw*.32}" y="${H-14}" text-anchor="middle">${e}</text>`;});
+  $('e2chart').innerHTML=g;
+  const best=EMOS.slice().sort((a,b)=>ok[b]-ok[a])[0],worst=EMOS.slice().sort((a,b)=>ok[a]-ok[b])[0];
+  let cf='',cm=0;EMOS.forEach(e=>EMOS.forEach(f=>{if(e!==f&&conf[e][f]>cm){cm=conf[e][f];cf=`${e} → ${f}`;}}));
+  const bin=tot<=3?'0–3':tot<=6?'4–6':tot<=9?'7–9':tot<=12?'10–12':'13–15';
+  $('e2rep').innerHTML=`Você acertou <b>${tot} de 15</b> (acaso: 3). Informe a faixa <b>${bin}</b>, a emoção mais fácil (<b>${best}</b>) e a mais difícil (<b>${worst}</b>).${cm?` Sua confusão mais comum: ${cf}.`:''}`;
+  $('e2res').hidden=false;$('e2go').disabled=false;$('e2go').textContent='Refazer';e2run=false;};
+
+/* ---------- E3 Mandarin tones ---------- */
+const TN={1:['mā','mãe'],2:['má','cânhamo'],3:['mǎ','cavalo'],4:['mà','xingar']};
+const tpath=k=>{const[p]=TONES[k];let d='';for(let i=0;i<=20;i++){const u=i/20,L=interp(u,p);d+=(i?'L':'M')+(4+u*92).toFixed(1)+','+(32-(L-1)*7).toFixed(1);}return d;};
+$('e3learn').innerHTML=[1,2,3,4].map(k=>`<button class="ghost" data-k="${k}"><svg viewBox="0 0 100 36" aria-hidden="true"><path d="${tpath(k)}" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>${k} · ${TN[k][0]}<small>“${TN[k][1]}”</small></button>`).join('');
+let learnV=0;$('e3learn').querySelectorAll('button').forEach(b=>b.onclick=()=>{ac();const v=(learnV++)%2?'B':'A';play(get('t'+b.dataset.k+v,()=>tone(+b.dataset.k,v)));});
+let e3block=0,e3res=[],e3run=false,e3cur=null;
+$('e3again').onclick=()=>{if(e3cur)play(e3cur);};
+$('e3go').onclick=async()=>{if(e3run)return;e3run=true;ac();if(e3block>=2){e3block=0;e3res=[];}
+  $('e3go').disabled=true;$('e3btn').hidden=false;const blk=e3block;const r={ok:0,per:{1:[0,0],2:[0,0],3:[0,0],4:[0,0]},conf:{}};
+  const tr=shuffle([].concat(...[1,2,3,4].map(k=>[[k,'A'],[k,'B'],[k,Math.random()<.5?'A':'B']])));
+  for(let t=0;t<tr.length;t++){$('e3p').textContent=`bloco ${blk+1} · ${t+1} / ${tr.length}`;await sleep(550);const[k,v]=tr[t];
+    e3cur=get('t'+k+v,()=>tone(k,v));$('e3again').disabled=false;play(e3cur);
+    const[ans,btn]=await waitChoice($('e3btn'));r.per[k][1]++;
+    if(+ans===k){r.ok++;r.per[k][0]++;btn.classList.add('ok');}else{btn.classList.add('bad');$('e3btn').querySelector(`[data-r="${k}"]`).classList.add('ok');const key=`${k}→${ans}`;r.conf[key]=(r.conf[key]||0)+1;}
+    await sleep(750);$('e3btn').querySelectorAll('button').forEach(b=>b.classList.remove('ok','bad'));}
+  $('e3again').disabled=true;e3cur=null;e3res.push(r);e3block++;$('e3btn').hidden=true;
+  $('e3p').textContent=e3block<2?`Bloco 1: ${r.ok} de 12. Respire e faça o bloco 2.`:'Concluído.';
+  $('e3go').disabled=false;$('e3go').textContent=e3block<2?'Começar bloco 2':'Refazer';e3run=false;
+  if(e3block===2)draw3();};
+function draw3(){const L=40,R=20,T=40,B=46,gw=(W-L-R)/4;const y=v=>T+(1-v)*(H-T-B);
+  let g=`<line class="ax" x1="${L}" y1="${y(0)}" x2="${W-R}" y2="${y(0)}"/><line class="ax" x1="${L}" y1="${y(.25)}" x2="${W-R}" y2="${y(.25)}" stroke-dasharray="3 4"/><text x="${W-R}" y="21" text-anchor="end">- - acaso</text>`;
+  g+=`<rect class="bar alt" x="${L}" y="8" width="14" height="14"/><text x="${L+20}" y="21">bloco 1</text><rect class="bar" x="${L+130}" y="8" width="14" height="14"/><text x="${L+150}" y="21">bloco 2</text>`;
+  [1,2,3,4].forEach((k,i)=>{[0,1].forEach(b=>{const[o,n]=e3res[b].per[k];const v=n?o/n:0;const x0=L+i*gw+gw*.14+b*gw*.36;
+    g+=`<rect class="bar${b?'':' alt'}" x="${x0}" y="${y(v)}" width="${gw*.34}" height="${y(0)-y(v)}" rx="3"/>`;});
+    g+=`<text x="${L+i*gw+gw/2}" y="${H-14}" text-anchor="middle">tom ${k}</text>`;});
+  $('e3chart').innerHTML=g;
+  const a=e3res[0].ok,b=e3res[1].ok;const bin=v=>v<=6?'≤ 6':v<=8?'7–8':v<=10?'9–10':'11–12';
+  const all={};e3res.forEach(r=>Object.entries(r.conf).forEach(([k,v])=>all[k]=(all[k]||0)+v));const top=Object.entries(all).sort((p,q)=>q[1]-p[1])[0];
+  $('e3rep').innerHTML=`Bloco 1: <b>${a}/12</b> · bloco 2: <b>${b}/12</b>. Informe as duas faixas: bloco 1 <b>${bin(a)}</b>, bloco 2 <b>${bin(b)}</b>.${top?` Sua confusão mais comum: tom ${top[0].replace('→',' ouvido como tom ')}.`:''}`;
+  $('e3res').hidden=false;}
+
+/* ---------- E4 five emotions, live ---------- */
+const PRETTY={alegria:'ALEGRIA',tristeza:'TRISTEZA',raiva:'RAIVA',medo:'MEDO',neutro:'NEUTRO'};let lastDraw=null;
+$('e4draw').onclick=()=>{let e;do{e=EMOS[Math.floor(Math.random()*5)];}while(e===lastDraw);lastDraw=e;$('e4emo').textContent=PRETTY[e];$('e4secret').hidden=false;$('e4hide').hidden=false;$('e4draw').textContent='Sortear outra';};
+$('e4hide').onclick=()=>{$('e4secret').hidden=true;$('e4hide').hidden=true;};
+let e4=[],e4g=null;
+function e4ui(){const r=e4.length;$('e4p').textContent=`Rodada ${r+1} de 5 · marque seu palpite`;}
+$('e4guess').querySelectorAll('button').forEach(b=>b.onclick=()=>{if(e4.length>=5)return;e4g=b.dataset.r;
+  $('e4guess').querySelectorAll('button').forEach(x=>{x.disabled=true;x.classList.toggle('ok',x===b);});$('e4p2').hidden=false;$('e4truth').hidden=false;});
+$('e4truth').querySelectorAll('button').forEach(b=>b.onclick=()=>{if(!e4g)return;e4.push([e4g,b.dataset.r]);e4g=null;
+  $('e4guess').querySelectorAll('button').forEach(x=>{x.disabled=false;x.classList.remove('ok');});$('e4p2').hidden=true;$('e4truth').hidden=true;
+  if(e4.length<5){e4ui();return;}
+  $('e4guess').querySelectorAll('button').forEach(x=>x.disabled=true);$('e4p').textContent='Série concluída.';
+  const ok=e4.filter(([g,t])=>g===t).length;const miss=e4.filter(([g,t])=>g!==t).map(([g,t])=>`${t} ouvida como ${g}`);
+  $('e4rep').innerHTML=`Você acertou <b>${ok} de 5</b> (acaso: 1). Informe <b>${ok}</b>.${miss.length?` Erros: ${miss.join('; ')}.`:' Nenhum erro!'}`;$('e4res').hidden=false;});
+$('e4reset').onclick=()=>{e4=[];e4g=null;$('e4res').hidden=true;$('e4guess').querySelectorAll('button').forEach(x=>{x.disabled=false;x.classList.remove('ok');});e4ui();};
+
+/* ---------- E5 speech-to-song ---------- */
+function loop(transp){stopAll();ac();const sh=[0,2/3,-2/3,4/3,-4/3,2/3,-4/3,4/3].map(v=>v*2);let t=0.05;
+  for(let r=0;r<8;r++){const s=transp?sh[r]:0;const a=get('d'+s,()=>demo(s));t=play(a,t)+.45;}
+  $('e5stop').disabled=false;$('e5p').textContent=transp?'Tocando 8 repetições transpostas…':'Tocando 8 repetições idênticas…';
+  clearTimeout(loop.tm);loop.tm=setTimeout(()=>{$('e5stop').disabled=true;$('e5p').textContent='Fim. Quando a frase começou a soar como canto?';},t*1000);}
+$('e5one').onclick=()=>{stopAll();ac();play(get('d0',()=>demo(0)),.05);};
+$('e5same').onclick=()=>loop(false);$('e5tr').onclick=()=>loop(true);
+$('e5stop').onclick=()=>{stopAll();clearTimeout(loop.tm);$('e5stop').disabled=true;$('e5p').textContent='Parado.';};
+const E5TXT={igual:'só na igual',ambas:'nas duas',transposta:'só na transposta',nenhuma:'em nenhuma'};
+$('e5btn').querySelectorAll('button').forEach(b=>b.onclick=()=>{$('e5btn').querySelectorAll('button').forEach(x=>x.classList.toggle('ok',x===b));
+  $('e5rep').innerHTML=`Informe: virou canção <b>${E5TXT[b.dataset.r]}</b>.`;$('e5res').hidden=false;});
+
+/* ---------- teacher board ---------- */
+const BOARD=[
+ {k:'e1',t:'1 · Fronteira afirmação → pergunta',cats:['passo 1','passo 2','passo 3','passo 4','passo 5','passo 6','passo 7','sem fronteira']},
+ {k:'e2',t:'2 · Emoção sintética: acertos (de 15)',cats:['0–3','4–6','7–9','10–12','13–15']},
+ {k:'e2b',t:'2 · Emoção mais fácil e mais difícil',two:['mais fácil','mais difícil'],cats:['alegria','tristeza','raiva','medo','neutro']},
+ {k:'e3',t:'3 · Tons do mandarim (de 12)',two:['bloco 1','bloco 2'],cats:['≤ 6','7–8','9–10','11–12']},
+ {k:'e4',t:'4 · Cinco emoções ao vivo: acertos',cats:['0','1','2','3','4','5']},
+ {k:'e5',t:'5 · A fala virou canção…',cats:['só na igual','nas duas','só na transposta','em nenhuma']}];
+let S={};try{S=JSON.parse(localStorage.getItem('prosodia-placar')||'{}')}catch(e){S={}}
+const save=()=>{try{localStorage.setItem('prosodia-placar',JSON.stringify(S))}catch(e){}};
+function renderBoard(){const host=$('board');host.innerHTML='';
+  BOARD.forEach(p=>{const div=document.createElement('div');div.className='panel';
+    const series=p.two?[0,1]:[0];let max=1;series.forEach(s=>p.cats.forEach((_,i)=>max=Math.max(max,(S[p.k+s+'_'+i]||0))));
+    let h=`<h2>${p.t}</h2>`;if(p.two)h+=`<div class="legend"><span><i class="sw" style="background:var(--accent)"></i>${p.two[0]}</span><span><i class="sw" style="background:var(--you)"></i>${p.two[1]}</span></div>`;
+    h+='<div class="bars">';
+    p.cats.forEach((c,i)=>series.forEach(s=>{const key=p.k+s+'_'+i,v=S[key]||0;
+      h+=`<div class="bar"><span class="lab">${s===0?c:''}</span><span class="track"><span class="fill${s?' b':''}" style="width:${100*v/max}%"></span></span><button class="ghost" data-k="${key}" data-d="-1" aria-label="menos ${c}">−</button><button data-k="${key}" data-d="1" aria-label="mais ${c}">+</button><span class="n">${v}</span></div>`;}));
+    div.innerHTML=h+'</div>';host.appendChild(div);});
+  host.querySelectorAll('button[data-k]').forEach(b=>b.onclick=()=>{const k=b.dataset.k;S[k]=Math.max(0,(S[k]||0)+(+b.dataset.d));save();renderBoard();});}
+let armed=false;$('reset').onclick=()=>{if(!armed){armed=true;$('reset').textContent='Confirmar: zerar tudo';$('resetMsg').textContent='';return;}
+  S={};save();renderBoard();armed=false;$('reset').textContent='Zerar placar';$('resetMsg').textContent='Placar zerado.';};
+$('toStudent').onclick=e=>{e.preventDefault();location.hash='';route();};
+function route(){const t=location.hash==='#professor';$('prof').hidden=!t;$('student').hidden=t;if(t)renderBoard();}
+window.addEventListener('hashchange',route);route();
+})();
+</script>
+
+<script src="config.js"></script>
+<script src="registro.js" data-aula="9"></script>

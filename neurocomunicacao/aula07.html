@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laboratório de Leitura</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: a single lab-notebook column; each experiment is a numbered protocol card with a stimulus "screen"; teacher mode swaps in a projector board */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#142033; --muted:#5b6879; --line:#d8dee6;
+  --accent:#0e7c86; --accent-ink:#ffffff; --you:#c9771a; --soft:#e5f1f2; --warn:#a33a2a;
+  --screen:#f7f9fb; --screen-fg:#142033;
+
+  --display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73;
+  --screen:#0b111a; --screen-fg:#e6ecf3;
+ color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73;
+  --screen:#0b111a; --screen-fg:#e6ecf3;
+ color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:17px/1.5 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-inline:18px;padding-block:28px 64px;display:grid;gap:22px}
+header{display:grid;gap:8px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(34px,8vw,54px)/1 var(--display);font-stretch:118%;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font:750 24px/1.15 var(--display);font-stretch:108%;margin:0;text-wrap:balance}
+h3{font:700 16px/1.2 var(--display);margin:0}
+p{margin:0;max-width:65ch}
+.lead{color:var(--muted)}
+.phones{display:flex;gap:10px;align-items:flex-start;background:var(--soft);border-radius:10px;padding:12px 14px;font-size:15px}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{font:600 14px/1 var(--body);color:var(--fg);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:var(--surface)}
+nav a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.exp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:14px;min-width:0}
+.num{font:600 13px/1 var(--mono);color:var(--muted)}
+.tag{display:inline-block;font:600 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 7px;border-radius:5px;background:var(--soft);color:var(--accent)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+button{font:700 16px/1 var(--display);border:0;border-radius:10px;padding:14px 18px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px;touch-action:manipulation}
+button.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+button.big{flex:1 1 120px;font-size:24px;padding:20px 10px;font-stretch:112%}
+button:disabled{opacity:.4;cursor:default}
+.readout{font:500 15px/1.4 var(--mono);color:var(--muted)}
+.result{border-top:1px dashed var(--line);padding-top:14px;display:grid;gap:10px}
+.report{background:var(--soft);border-radius:10px;padding:12px 14px;font-size:16px}
+.report b{font:700 20px/1.2 var(--display);color:var(--you)}
+.why{font-size:15px;color:var(--muted)}
+.chart{width:100%;height:auto;display:block}
+.chart text{fill:var(--muted);font:19px var(--mono)}
+.chart .ax{stroke:var(--line)}
+.chart .bar{fill:var(--you)}
+.chart .bar.alt{fill:var(--accent)}
+.chart .val{fill:var(--fg);font:700 21px var(--mono)}
+/* stimulus screen */
+.screen{position:relative;background:var(--screen);color:var(--screen-fg);border:1px solid var(--line);border-radius:12px;min-height:150px;display:grid;place-items:center;overflow:hidden;user-select:none;-webkit-user-select:none}
+.screen .stim{font:700 clamp(30px,10vw,46px)/1 var(--mono);letter-spacing:.06em}
+.screen .fix{font:500 34px/1 var(--mono);color:var(--muted)}
+.screen .hint{font-size:15px;color:var(--muted);padding:0 16px;text-align:center}
+.sent{font:400 clamp(19px,5.2vw,24px)/1.4 Georgia,"Times New Roman",serif;padding:18px 16px;text-align:left;max-width:100%}
+.sent.mirror{transform:scaleX(-1)}
+#e4scr{min-height:120px;display:block}
+#e4scr .dot{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--you);top:50%;margin-top:-6px;left:6%}
+#e4scr .lt{position:absolute;top:50%;font:700 24px/1 var(--mono);transform:translate(-50%,-50%)}
+.opts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.opts button{font:700 24px/1 var(--mono);padding:16px 4px}
+.links a{color:var(--accent);font-weight:600}
+footer{font-size:13px;color:var(--muted)}
+/* teacher board */
+#prof{display:grid;gap:18px;max-width:1180px}
+.board{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:10px;min-width:0;align-content:start}
+.bars{display:grid;gap:6px}
+.bar{display:grid;grid-template-columns:118px 1fr 34px 34px 40px;gap:6px;align-items:center;font-size:14px}
+.bar .lab{font:500 13px var(--mono);color:var(--muted)}
+.bar .track{height:22px;background:var(--bg);border-radius:4px;overflow:hidden}
+.bar .fill{height:100%;background:var(--accent);width:0;transition:width .25s;display:block}
+.bar .n{font:700 15px var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.bar button{padding:0;min-height:30px;font-size:18px;border-radius:7px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap" id="student">
+  <header>
+    <span class="eyebrow">Bases neurais da comunicação humana · Aula 7</span>
+    <h1>Laboratório de Leitura</h1>
+    <p class="lead">Cinco experimentos curtos sobre como um cérebro que evoluiu sem escrita consegue ler. Você é o participante. No fim de cada um, informe o resultado ao professor.</p>
+    <div class="phones"><span>Segure o celular na vertical, a uns 30 cm dos olhos, e responda o mais rápido que puder sem chutar. O experimento 5 pede para ler em voz baixa. Faça os experimentos na ordem, quando o professor pedir.</span></div>
+    <nav aria-label="Experimentos"><a href="#e1">1 · Palavra relâmpago</a><a href="#e2">2 · Textos estranhos</a><a href="#e3">3 · É palavra?</a><a href="#e4">4 · Visão de canto</a><a href="#e5">5 · Duas rotas</a></nav>
+  </header>
+
+  <!-- E1 -->
+  <section class="exp" id="e1">
+    <div class="row"><span class="num">EXPERIMENTO 1</span><span class="tag">≈ 4 min · 24 tentativas</span></div>
+    <h2>Palavra relâmpago</h2>
+    <p>Olhe para a cruz. Quatro letras piscam por uma fração de segundo e são cobertas por ####. Depois, diga qual destas duas letras estava na posição marcada. Às vezes as letras formam uma palavra, às vezes estão embaralhadas, e às vezes aparece só a letra. O tempo de exibição se ajusta para ficar difícil: é normal achar que está chutando.</p>
+    <div class="screen" id="e1scr"><span class="hint">Toque em Começar.</span></div>
+    <div class="row"><button id="e1go">Começar</button><span class="readout" id="e1p"></span></div>
+    <div class="opts" id="e1btn" hidden style="grid-template-columns:repeat(2,1fr)"><button data-r="0" class="ghost"></button><button data-r="1" class="ghost"></button></div>
+    <div class="result" id="e1res" hidden>
+      <svg class="chart" id="e1chart" viewBox="0 0 640 300" role="img" aria-label="Acertos por condição"></svg>
+      <div class="report" id="e1rep"></div>
+      <p class="why">As letras eram as mesmas e a pergunta era a mesma, e mesmo assim a maioria acerta mais quando elas formam uma palavra, até mais do que quando a letra aparece sozinha. É o <b>efeito de superioridade da palavra</b> (Reicher, 1969). O nível das palavras devolve ativação para o nível das letras: reconhecer GATO ajuda a ver o T. Na área da forma visual das palavras, sequências de letras frequentes na língua respondem mais que sequências raras.</p>
+    </div>
+  </section>
+
+  <!-- E2 -->
+  <section class="exp" id="e2">
+    <div class="row"><span class="num">EXPERIMENTO 2</span><span class="tag">≈ 4 min · 12 frases</span></div>
+    <h2>Textos estranhos</h2>
+    <p>Cada frase aparece escrita de um jeito: normal, com maiúsculas alternadas, espelhada ou com as letras do meio embaralhadas. Leia e responda se ela é <b>verdadeira</b> ou <b>falsa</b>. O app mede quanto tempo você leva por palavra.</p>
+    <div class="screen" id="e2scr" style="min-height:170px"><span class="hint">Toque em Começar.</span></div>
+    <div class="row"><button id="e2go">Começar</button><span class="readout" id="e2p"></span></div>
+    <div class="row" id="e2btn" hidden><button class="big" data-r="V">verdadeira</button><button class="big ghost" data-r="F">falsa</button></div>
+    <div class="result" id="e2res" hidden>
+      <svg class="chart" id="e2chart" viewBox="0 0 640 300" role="img" aria-label="Milissegundos por palavra em cada formato"></svg>
+      <div class="report" id="e2rep"></div>
+      <p class="why">Nenhum formato muda o que está escrito, só a forma visual. O espelho custa caro porque a leitura teve de <b>desligar</b> a generalização em espelho que o sistema visual usa para objetos e rostos. As maiúsculas alternadas custam pouco porque a área da forma visual das palavras representa letras abstratas (A = a). As letras embaralhadas são lidas razoavelmente quando as palavras são curtas e previsíveis, mas custam tempo. A famosa “pesquisa de Cambridge” exagera.</p>
+    </div>
+  </section>
+
+  <!-- E3 -->
+  <section class="exp" id="e3">
+    <div class="row"><span class="num">EXPERIMENTO 3</span><span class="tag">≈ 3 min · 32 itens</span></div>
+    <h2>É palavra?</h2>
+    <p>Aparece uma sequência de letras. Responda o mais rápido possível: é uma <b>palavra do português escrita corretamente</b>? Metade são palavras; a outra metade são palavras com duas letras trocadas de lugar ou com duas letras substituídas por outras. Mantenha os polegares sobre os dois botões.</p>
+    <div class="screen" id="e3scr"><span class="hint">Toque em Começar.</span></div>
+    <div class="row"><button id="e3go">Começar</button><span class="readout" id="e3p"></span></div>
+    <div class="row" id="e3btn" hidden><button class="big" data-r="sim">palavra</button><button class="big ghost" data-r="nao">não é palavra</button></div>
+    <div class="result" id="e3res" hidden>
+      <svg class="chart" id="e3chart" viewBox="0 0 640 300" role="img" aria-label="Tempo e erros por tipo de item"></svg>
+      <div class="report" id="e3rep"></div>
+      <p class="why">CADRENO e CAFVENO estão igualmente longe de CADERNO: as duas mudam duas posições. Mesmo assim, letras <b>trocadas</b> enganam muito mais que letras <b>substituídas</b>. O código de posição das letras no cérebro é aproximado: CADRENO tem todas as letras de CADERNO, quase no lugar, e acaba ativando a palavra verdadeira (Perea &amp; Lupker, 2004). É isso que torna o texto embaralhado legível — até certo ponto.</p>
+    </div>
+  </section>
+
+  <!-- E4 -->
+  <section class="exp" id="e4">
+    <div class="row"><span class="num">EXPERIMENTO 4</span><span class="tag">≈ 3 min · 24 tentativas</span></div>
+    <h2>Visão de canto</h2>
+    <p>Mantenha os olhos <b>fixos no ponto laranja</b> durante toda a tentativa. Uma letra pisca à direita por 150 ms, sozinha ou entre outras letras. Escolha qual era a letra do meio. Se mover os olhos, o experimento perde o sentido.</p>
+    <div class="screen" id="e4scr"><span class="dot"></span><span class="hint" id="e4hint" style="position:absolute;left:14%;right:8%;top:50%;transform:translateY(-50%)">Toque em Começar e olhe para o ponto.</span></div>
+    <div class="row"><button id="e4go">Começar</button><span class="readout" id="e4p"></span></div>
+    <div class="opts" id="e4btn" hidden><button class="ghost" data-r=""></button><button class="ghost" data-r=""></button><button class="ghost" data-r=""></button><button class="ghost" data-r=""></button></div>
+    <div class="result" id="e4res" hidden>
+      <svg class="chart" id="e4chart" viewBox="0 0 640 300" role="img" aria-label="Acertos por condição"></svg>
+      <div class="report" id="e4rep"></div>
+      <p class="why">A letra tinha o mesmo tamanho e a mesma posição. O que piora o reconhecimento são os vizinhos: fora da fóvea, o sistema visual junta traços próximos e as letras se embaralham. Isso é <b>aglomeração visual</b> (crowding). É por isso que lemos com sacadas, levando cada palavra para a fóvea. Espaçar mais as letras alivia a aglomeração, e em algumas crianças com dislexia isso acelera a leitura.</p>
+    </div>
+  </section>
+
+  <!-- E5 -->
+  <section class="exp" id="e5">
+    <div class="row"><span class="num">EXPERIMENTO 5</span><span class="tag">≈ 3 min · 4 listas</span></div>
+    <h2>Duas rotas: ler o que nunca existiu</h2>
+    <p>Você vai ver quatro listas de 10 itens: palavras e pseudopalavras (que não existem), curtas e longas. Toque em <b>Mostrar lista</b>, leia todos os itens <b>em voz baixa</b>, da esquerda para a direita, o mais rápido que puder sem errar, e toque em <b>Terminei</b>.</p>
+    <div class="screen" id="e5scr" style="min-height:190px"><span class="hint">Toque em Começar.</span></div>
+    <div class="row"><button id="e5go">Começar</button><button id="e5show" hidden>Mostrar lista</button><button id="e5done" class="ghost" hidden>Terminei</button><span class="readout" id="e5p"></span></div>
+    <div class="result" id="e5res" hidden>
+      <svg class="chart" id="e5chart" viewBox="0 0 640 300" role="img" aria-label="Tempo por item em cada lista"></svg>
+      <div class="report" id="e5rep"></div>
+      <p class="why">Palavras conhecidas podem ser lidas pela <b>rota lexical</b>: a forma escrita inteira dá acesso direto à palavra guardada na memória, e o comprimento pesa pouco. Pseudopalavras só podem ser lidas pela <b>rota fonológica</b>, convertendo letra em som, pedaço por pedaço. Por isso elas são mais lentas, e cada letra a mais custa tempo. Na dislexia fonológica é justamente esta rota que falha.</p>
+    </div>
+  </section>
+
+  <section class="exp" id="links">
+    <div class="row"><span class="num">PARA IR ALÉM</span></div>
+    <h2>Leitura e o cérebro</h2>
+    <div class="links" style="display:grid;gap:10px">
+      <p>Leitura indicada: Stanislas Dehaene, <i>Os neurônios da leitura</i> (Penso, 2012), introdução e um capítulo (sugestão: o capítulo sobre o cérebro do leitor).</p>
+    </div>
+  </section>
+
+  <footer>Nenhuma resposta sai do seu celular. Professor: abra esta página com <span style="font-family:var(--mono)">#professor</span> no fim do link para o placar da turma.</footer>
+</div>
+
+<!-- Teacher board -->
+<div class="wrap" id="prof" hidden>
+  <header>
+    <span class="eyebrow">Placar da turma · Aula 7</span>
+    <h1>Resultados da turma</h1>
+    <p class="lead">Peça que levantem a mão por categoria e registre com + e −. Os números ficam salvos neste navegador.</p>
+    <div class="row"><button class="ghost" id="reset">Zerar placar</button><span class="readout" id="resetMsg"></span><a href="#" id="toStudent" style="color:var(--accent);font-weight:600">Ver página dos alunos</a></div>
+  </header>
+  <div class="board" id="board"></div>
+</div>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const frame=()=>new Promise(r=>requestAnimationFrame(r));
+const mean=a=>a.length?a.reduce((s,v)=>s+v,0)/a.length:NaN;
+const median=a=>{if(!a.length)return NaN;const b=[...a].sort((x,y)=>x-y),m=b.length>>1;return b.length%2?b[m]:(b[m-1]+b[m])/2;};
+const fmt=v=>isNaN(v)?'—':Math.round(v).toLocaleString('pt-BR');
+const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+function waitChoice(box){return new Promise(res=>{const bs=[...box.querySelectorAll('button')];bs.forEach(b=>b.disabled=false);
+  const t0=performance.now();
+  const h=e=>{const rt=performance.now()-t0;bs.forEach(b=>{b.disabled=true;b.removeEventListener('click',h);});res({r:e.currentTarget.dataset.r,rt});};
+  bs.forEach(b=>b.addEventListener('click',h));});}
+function show(scr,html){scr.innerHTML=html;}
+/* bar chart: items [{label, value, text, alt}] */
+function bars(svg,items,{max,unit=''}={}){const W=640,H=+svg.getAttribute('viewBox').split(' ')[3],L=10,R=10,T=40,B=62;
+  const m=max||Math.max(1,...items.map(i=>isNaN(i.value)?0:i.value))*1.15;const n=items.length,slot=(W-L-R)/n,bw=Math.min(110,slot*.6);
+  let g=`<line class="ax" x1="${L}" y1="${H-B}" x2="${W-R}" y2="${H-B}"/>`;
+  items.forEach((it,i)=>{const v=isNaN(it.value)?0:it.value;const h=(H-T-B)*v/m;const x=L+slot*i+(slot-bw)/2;
+    g+=`<rect class="bar${it.alt?' alt':''}" x="${x}" y="${H-B-h}" width="${bw}" height="${h}" rx="4"/>`;
+    g+=`<text class="val" x="${x+bw/2}" y="${H-B-h-8}" text-anchor="middle">${it.text??(isNaN(it.value)?'—':fmt(v)+unit)}</text>`;
+    const lines=it.label.split('\n');lines.forEach((ln,k)=>g+=`<text x="${x+bw/2}" y="${H-B+24+k*21}" text-anchor="middle">${ln}</text>`);});
+  svg.innerHTML=g;}
+
+/* ================= E1 · word superiority (Reicher–Wheeler) ================= */
+const PAIRS=[['CASA','CAMA',2],['BOLA','BOCA',2],['GATO','GALO',2],['MALA','MATA',2],['VELA','VILA',1],['FOGO','JOGO',0],['SAPO','SACO',2],['RATO','RAMO',2],
+ ['DADO','DEDO',1],['LOBO','LODO',2],['PENA','PERA',2],['TELA','TEIA',2],['NOVE','NOVA',3],['MURO','OURO',0],['FACA','FADA',2],['MOLA','MODA',2],
+ ['CAPA','CARA',2],['LUVA','LUTA',2],['MAPA','MALA',2],['RODA','ROSA',2],['VIDA','VILA',2],['PATO','PANO',2],['FITA','FILA',2],['COPO','CORO',2]];
+function scramble(w,p){const idx=[0,1,2,3].filter(i=>i!==p);const ch=idx.map(i=>w[i]);const rot=[ch[1],ch[2],ch[0]];const a=w.split('');idx.forEach((i,k)=>a[i]=rot[k]);return a.join('');}
+$('e1go').onclick=async()=>{const scr=$('e1scr');$('e1go').disabled=true;$('e1res').hidden=true;
+  const conds=shuffle([...Array(8).fill('w'),...Array(8).fill('n'),...Array(8).fill('l')]);const pairs=shuffle([...PAIRS]);
+  let frames=6,streak=0;const res={w:[],n:[],l:[]},durs=[];
+  show(scr,'<span class="hint">Prepare-se…</span>');await sleep(900);
+  for(let t=0;t<24;t++){$('e1p').textContent=`${t+1} / 24`;
+    const [a,b,p]=pairs[t];const useA=Math.random()<.5;const target=useA?a:b;const c=conds[t];
+    const shown=c==='w'?target:c==='n'?scramble(target,p):[0,1,2,3].map(i=>i===p?target[i]:'\u00a0').join('');
+    const mark=`<div style="display:grid;grid-template-columns:repeat(4,1.2ch);justify-items:center;row-gap:4px" class="stim">${[0,1,2,3].map(()=>'#').join('').split('').map(c=>`<span>${c}</span>`).join('')}${[0,1,2,3].map(i=>`<span style="font-size:22px;color:var(--you)">${i===p?'▲':''}</span>`).join('')}</div>`;
+    show(scr,'<span class="fix">+</span>');await sleep(500);
+    show(scr,`<span class="stim" style="white-space:pre">${shown}</span>`);await frame();const t0=performance.now();
+    for(let k=0;k<frames;k++)await frame();
+    show(scr,mark);
+    durs.push(performance.now()-t0);
+    const opts=shuffle([a[p],b[p]]);const bs=$('e1btn').querySelectorAll('button');bs.forEach((bt,i)=>{bt.textContent=opts[i];bt.dataset.r=opts[i];});
+    $('e1btn').hidden=false;const {r}=await waitChoice($('e1btn'));const ok=r===target[p];res[c].push(ok);
+    if(ok){streak++;if(streak>=2){frames=Math.max(1,frames-1);streak=0;}}else{frames=Math.min(14,frames+1);streak=0;}
+    show(scr,'');await sleep(250);}
+  $('e1btn').hidden=true;show(scr,'<span class="hint">Concluído.</span>');$('e1p').textContent='';
+  const pw=100*mean(res.w.map(Number)),pn=100*mean(res.n.map(Number)),pl=100*mean(res.l.map(Number));
+  bars($('e1chart'),[{label:'palavra\nCASA',value:pw,text:Math.round(pw)+'%'},{label:'embaralhada\nSCAA',value:pn,text:Math.round(pn)+'%',alt:1},{label:'letra sozinha\n  S ',value:pl,text:Math.round(pl)+'%',alt:1}],{max:115});
+  const best=Math.max(pn,pl);const d=pw-best;const cat=d>=10?'palavra melhor':d<=-10?'palavra pior':'empate';
+  $('e1rep').innerHTML=`Acertos: palavra <b>${Math.round(pw)}%</b> · embaralhada <b>${Math.round(pn)}%</b> · letra sozinha <b>${Math.round(pl)}%</b> (o chute dá 50%). Tempo médio de exibição: ${fmt(mean(durs))} ms. Informe, comparando a palavra com a melhor das outras duas (diferença de 10 pontos ou mais): <b>${cat}</b>.`;
+  $('e1res').hidden=false;$('e1go').disabled=false;$('e1go').textContent='Refazer';};
+
+/* ================= E2 · strange formats, sentence verification ================= */
+const SENTS=[['O sol nasce todos os dias do lado leste.','V'],['Os peixes respiram fora da água sem nenhum problema.','F'],
+ ['Um ano tem doze meses e quatro estações.','V'],['Os elefantes são menores do que os gatos domésticos.','F'],
+ ['A água ferve quando é aquecida o suficiente.','V'],['O Brasil fica no continente europeu, perto da França.','F'],
+ ['As abelhas produzem mel a partir do néctar das flores.','V'],['Uma semana tem dez dias e dois domingos.','F'],
+ ['O gelo derrete quando fica muito tempo no sol.','V'],['Natal é a capital do Rio Grande do Norte.','V'],
+ ['Os cachorros costumam miar quando estão com fome.','F'],['A lua é muito maior do que a Terra.','F']];
+const FMTS=[['normal','normal'],['alt','maiúsculas\nalternadas'],['mirror','espelhado'],['scr','letras\nembaralhadas']];
+function altCase(s){let k=0;return s.split('').map(ch=>{if(/\p{L}/u.test(ch)){k++;return k%2?ch.toLowerCase():ch.toUpperCase();}return ch;}).join('');}
+function scrWord(w){const m=w.match(/^(\p{L})(\p{L}+)(\p{L})(\P{L}*)$/u);if(!m||m[2].length<2)return w;let mid=m[2].split('');
+  for(let i=0;i<10;i++){shuffle(mid);if(mid.join('')!==m[2])break;}return m[1]+mid.join('')+m[3]+m[4];}
+function render2(s,f){if(f==='alt')return altCase(s);if(f==='scr')return s.split(' ').map(scrWord).join(' ');return s;}
+$('e2go').onclick=async()=>{const scr=$('e2scr');$('e2go').disabled=true;$('e2res').hidden=true;
+  const order=shuffle([...SENTS.keys()]);const fs=shuffle([0,0,0,1,1,1,2,2,2,3,3,3]);
+  const data={normal:[],alt:[],mirror:[],scr:[]};let correct=0;
+  show(scr,'<span class="hint">Prepare-se…</span>');await sleep(900);
+  for(let t=0;t<12;t++){$('e2p').textContent=`${t+1} / 12`;const [s,ans]=SENTS[order[t]];const f=FMTS[fs[t]][0];
+    show(scr,'<span class="fix">+</span>');await sleep(500);
+    show(scr,`<div class="sent${f==='mirror'?' mirror':''}">${esc(render2(s,f))}</div>`);$('e2btn').hidden=false;
+    const {r,rt}=await waitChoice($('e2btn'));const ok=r===ans;if(ok)correct++;
+    const nw=s.split(' ').length;data[f].push({ms:rt/nw,ok});show(scr,'');await sleep(300);}
+  $('e2btn').hidden=true;show(scr,'<span class="hint">Concluído.</span>');$('e2p').textContent='';
+  const m={};FMTS.forEach(([k])=>{m[k]=median(data[k].map(d=>d.ms));});
+  bars($('e2chart'),FMTS.map(([k,l],i)=>({label:l,value:m[k],alt:i===0})),{unit:' ms'});
+  const slow=['alt','mirror','scr','normal'].reduce((a,b)=>m[b]>m[a]?b:a,'alt');const nm={normal:'normal',alt:'maiúsculas alternadas',mirror:'espelhado',scr:'letras embaralhadas'};
+  const ratio=m.mirror/m.normal;const rc=ratio<1.5?'< 1,5×':ratio<2?'1,5–2×':ratio<3?'2–3×':'> 3×';
+  const wpm=k=>isNaN(m[k])?'—':Math.round(60000/m[k]);
+  $('e2rep').innerHTML=`Velocidade (palavras por minuto, incluindo a decisão): normal ${wpm('normal')} · maiúsculas alternadas ${wpm('alt')} · espelhado ${wpm('mirror')} · embaralhadas ${wpm('scr')}. Acertou ${correct} de 12. Informe: o mais lento foi <b>${nm[slow]}</b>, e o espelhado custou <b>${rc}</b> o normal.`;
+  $('e2res').hidden=false;$('e2go').disabled=false;$('e2go').textContent='Refazer';};
+
+/* ================= E3 · lexical decision: transposed vs substituted letters ================= */
+const LEX={pal:['JANELA','CAMISA','PANELA','ESCOLA','CABELO','CIDADE','BANANA','TOMATE','MOCHILA','CASTELO','GIRAFA','PIMENTA','CENOURA','PLANETA','ABACAXI','CORUJA'],
+ tl:['CHOCLOATE','CADRENO','SAPTAO','ANMIAL','TELFEONE','PROLBEMA','JADRIM','CAVLAO'],
+ sl:['GARUNHA','CATUIRA','MENVADO','PANTAÇO','SONLETE','BICITFETA','FONVIGA','TELAURA']};
+const LEXN={pal:'palavras',tl:'letras\ntrocadas',sl:'letras\nsubstituídas'};
+$('e3go').onclick=async()=>{const scr=$('e3scr');$('e3go').disabled=true;$('e3res').hidden=true;
+  const items=shuffle(Object.entries(LEX).flatMap(([k,ws])=>ws.map(w=>[k,w])));const R={pal:[],tl:[],sl:[]};
+  show(scr,'<span class="hint">Prepare-se…</span>');await sleep(900);
+  for(let t=0;t<items.length;t++){$('e3p').textContent=`${t+1} / ${items.length}`;const [k,w]=items[t];
+    show(scr,'<span class="fix">+</span>');await sleep(400);show(scr,`<span class="stim">${w}</span>`);$('e3btn').hidden=false;
+    const {r,rt}=await waitChoice($('e3btn'));R[k].push({ok:(r==='sim')===(k==='pal'),rt});show(scr,'');await sleep(250);}
+  $('e3btn').hidden=true;show(scr,'<span class="hint">Concluído.</span>');$('e3p').textContent='';
+  const rtm={},err={};Object.keys(R).forEach(k=>{rtm[k]=median(R[k].filter(d=>d.ok).map(d=>d.rt));err[k]=R[k].filter(d=>!d.ok).length;});
+  bars($('e3chart'),[{label:'letras\ntrocadas',value:100*err.tl/8,text:err.tl+' de 8'},{label:'letras\nsubstituídas',value:100*err.sl/8,text:err.sl+' de 8',alt:1}],{max:115});
+  const cat=err.tl>err.sl?'trocadas enganaram mais':err.tl<err.sl?'substituídas enganaram mais':'empate';
+  $('e3rep').innerHTML=`O gráfico mostra quantas vezes você respondeu “palavra” para algo que não era palavra. Tempo mediano das respostas certas: palavras ${fmt(rtm.pal)} ms · trocadas ${fmt(rtm.tl)} ms · substituídas ${fmt(rtm.sl)} ms. Informe: <b>${cat}</b>.`;
+  $('e3res').hidden=false;$('e3go').disabled=false;$('e3go').textContent='Refazer';};
+
+/* ================= E4 · crowding ================= */
+const LET='BDEFHKNPRSTZ'.split('');
+$('e4go').onclick=async()=>{const scr=$('e4scr');$('e4go').disabled=true;$('e4res').hidden=true;$('e4hint').hidden=true;
+  const conds=shuffle([...Array(8).fill('iso'),...Array(8).fill('jun'),...Array(8).fill('esp')]);const R={iso:[],jun:[],esp:[]};
+  const clear=()=>scr.querySelectorAll('.lt').forEach(e=>e.remove());
+  const put=(x,ch)=>{const s=document.createElement('span');s.className='lt';s.style.left=x+'px';s.textContent=ch;scr.appendChild(s);};
+  await sleep(1000);
+  for(let t=0;t<24;t++){$('e4p').textContent=`${t+1} / 24`;const c=conds[t];const W=scr.clientWidth;const fx=W*.06+6;const tx=W*.62;
+    const target=LET[Math.floor(Math.random()*LET.length)];const opts=shuffle([target,...shuffle(LET.filter(l=>l!==target)).slice(0,3)]);
+    const fl=shuffle(LET.filter(l=>!opts.includes(l))).slice(0,2);
+    await sleep(700+Math.random()*500);
+    put(tx,target);if(c!=='iso'){const gap=c==='jun'?17:Math.max(60,(tx-fx)*.6);put(tx-gap,fl[0]);put(tx+gap,fl[1]);}
+    await frame();const t0=performance.now();while(performance.now()-t0<140)await frame();clear();
+    const bs=$('e4btn').querySelectorAll('button');bs.forEach((b,i)=>{b.textContent=opts[i];b.dataset.r=opts[i];});$('e4btn').hidden=false;
+    const {r}=await waitChoice($('e4btn'));R[c].push(r===target);}
+  $('e4btn').hidden=true;$('e4p').textContent='Concluído.';
+  const p={};Object.keys(R).forEach(k=>p[k]=100*mean(R[k].map(Number)));
+  bars($('e4chart'),[{label:'sozinha\n R ',value:p.iso,text:Math.round(p.iso)+'%',alt:1},{label:'cercada\nZRK',value:p.jun,text:Math.round(p.jun)+'%'},{label:'espaçada\nZ\u00a0\u00a0R\u00a0\u00a0K',value:p.esp,text:Math.round(p.esp)+'%'}],{max:115});
+  const d=p.iso-p.jun;const cat=d<10?'< 10 pontos':d<30?'10–30 pontos':d<50?'30–50 pontos':'> 50 pontos';
+  $('e4rep').innerHTML=`Acertos: sozinha <b>${Math.round(p.iso)}%</b> · cercada <b>${Math.round(p.jun)}%</b> · espaçada <b>${Math.round(p.esp)}%</b> (o chute dá 25%). Informe a perda com vizinhos: <b>${cat}</b>.`;
+  $('e4res').hidden=false;$('e4go').disabled=false;$('e4go').textContent='Refazer';};
+
+/* ================= E5 · reading aloud: words vs pseudowords, short vs long ================= */
+const LISTS={ws:['CASA','BOLA','MESA','PATO','FOGO','LUVA','DEDO','SAPO','VELA','RODA'],
+ wl:['BORBOLETA','COMPUTADOR','GELADEIRA','ELEFANTE','PASSARINHO','TARTARUGA','DINOSSAURO','FOTOGRAFIA','AMBULÂNCIA','MERCADORIA'],
+ ps:['CAFO','BEMO','TIBO','NALE','PUDO','VOSA','GERU','LIFA','DOFA','RIBE'],
+ pl:['BORTILENA','CAMPULEDO','FELORANTE','MIGUSTERA','PADOLINHO','TRAMBULEZA','DESPILORCA','VANTORIDE','GALUPENTA','SEMBORICO']};
+const LN={ws:'palavras\ncurtas',wl:'palavras\nlongas',ps:'pseudo\ncurtas',pl:'pseudo\nlongas'};
+const once=el=>new Promise(r=>{const h=()=>{el.removeEventListener('click',h);r();};el.addEventListener('click',h);});
+$('e5go').onclick=async()=>{const scr=$('e5scr');$('e5go').disabled=true;$('e5res').hidden=true;
+  const order=shuffle(Object.keys(LISTS));const T={};
+  for(let t=0;t<order.length;t++){const k=order[t];$('e5p').textContent=`lista ${t+1} / 4`;
+    show(scr,'<span class="hint">Quando estiver pronto, toque em Mostrar lista e comece a ler na hora.</span>');
+    $('e5show').hidden=false;$('e5done').hidden=true;await once($('e5show'));$('e5show').hidden=true;
+    show(scr,`<div class="sent" style="font-family:var(--mono);font-weight:700;letter-spacing:.04em;line-height:1.9;word-spacing:.5em;text-align:center">${shuffle([...LISTS[k]]).join(' ')}</div>`);
+    await frame();const t0=performance.now();$('e5done').hidden=false;await once($('e5done'));T[k]=(performance.now()-t0)/10;$('e5done').hidden=true;
+    show(scr,'<span class="hint">Ótimo. Respire.</span>');await sleep(700);}
+  show(scr,'<span class="hint">Concluído.</span>');$('e5p').textContent='';
+  bars($('e5chart'),['ws','wl','ps','pl'].map(k=>({label:LN[k],value:T[k],alt:k[0]==='w'})),{unit:' ms'});
+  const cost=(T.ps+T.pl)/(T.ws+T.wl);const lw=T.wl-T.ws,lp=T.pl-T.ps;
+  const c1=cost<1.2?'< 1,2×':cost<1.5?'1,2–1,5×':cost<2?'1,5–2×':'> 2×';
+  const c2=lp>lw+50?'pseudopalavras':lw>lp+50?'palavras':'igual';
+  $('e5rep').innerHTML=`Tempo por item: palavras curtas ${fmt(T.ws)} ms · longas ${fmt(T.wl)} ms · pseudopalavras curtas ${fmt(T.ps)} ms · longas ${fmt(T.pl)} ms. Informe: pseudopalavras custaram <b>${c1}</b> o tempo das palavras, e o comprimento pesou mais em <b>${c2}</b>.`;
+  $('e5res').hidden=false;$('e5go').disabled=false;$('e5go').textContent='Refazer';};
+
+/* ================= teacher board ================= */
+const BOARD=[
+ {k:'e1',t:'1 · Palavra relâmpago',cats:['palavra melhor','empate','palavra pior']},
+ {k:'e2a',t:'2 · Formato mais lento',cats:['maiúsc. alternadas','espelhado','embaralhadas','normal']},
+ {k:'e2b',t:'2 · Custo do espelhado',cats:['< 1,5×','1,5–2×','2–3×','> 3×']},
+ {k:'e3',t:'3 · O que enganou mais?',cats:['trocadas','substituídas','empate']},
+ {k:'e4',t:'4 · Perda com vizinhos',cats:['< 10 pontos','10–30 pontos','30–50 pontos','> 50 pontos']},
+ {k:'e5a',t:'5 · Custo das pseudopalavras',cats:['< 1,2×','1,2–1,5×','1,5–2×','> 2×']},
+ {k:'e5b',t:'5 · Comprimento pesou mais em',cats:['pseudopalavras','palavras','igual']}];
+let S={};try{S=JSON.parse(localStorage.getItem('leitura-placar')||'{}')}catch(e){S={}}
+const save=()=>{try{localStorage.setItem('leitura-placar',JSON.stringify(S))}catch(e){}};
+function renderBoard(){const host=$('board');host.innerHTML='';
+  BOARD.forEach(p=>{const div=document.createElement('div');div.className='panel';let max=1;p.cats.forEach((_,i)=>max=Math.max(max,S[p.k+'_'+i]||0));
+    let h=`<h2>${p.t}</h2><div class="bars">`;
+    p.cats.forEach((c,i)=>{const key=p.k+'_'+i,v=S[key]||0;
+      h+=`<div class="bar"><span class="lab">${c}</span><span class="track"><span class="fill" style="width:${100*v/max}%"></span></span><button class="ghost" data-k="${key}" data-d="-1" aria-label="menos ${c}">−</button><button data-k="${key}" data-d="1" aria-label="mais ${c}">+</button><span class="n">${v}</span></div>`;});
+    div.innerHTML=h+'</div>';host.appendChild(div);});
+  host.querySelectorAll('button[data-k]').forEach(b=>b.onclick=()=>{const k=b.dataset.k;S[k]=Math.max(0,(S[k]||0)+(+b.dataset.d));save();renderBoard();});}
+let armed=false;$('reset').onclick=()=>{if(!armed){armed=true;$('reset').textContent='Confirmar: zerar tudo';$('resetMsg').textContent='';return;}
+  S={};save();renderBoard();armed=false;$('reset').textContent='Zerar placar';$('resetMsg').textContent='Placar zerado.';};
+$('toStudent').onclick=e=>{e.preventDefault();location.hash='';route();};
+function route(){const t=location.hash==='#professor';$('prof').hidden=!t;$('student').hidden=t;if(t)renderBoard();}
+window.addEventListener('hashchange',route);route();
+})();
+</script>
+
+<script src="config.js"></script>
+<script src="registro.js" data-aula="7"></script>

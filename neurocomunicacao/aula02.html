@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laboratório de Métodos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: a single lab-notebook column; each experiment is a numbered protocol card; teacher mode swaps in a projector board */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#142033; --muted:#5b6879; --line:#d8dee6;
+  --accent:#0e7c86; --accent-ink:#ffffff; --you:#c9771a; --soft:#e5f1f2; --warn:#a33a2a; --ok:#2f8f57;
+  --display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --ok:#5cc98a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --ok:#5cc98a; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:17px/1.5 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-inline:18px;padding-block:28px 64px;display:grid;gap:22px}
+header{display:grid;gap:8px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(34px,8vw,54px)/1 var(--display);font-stretch:118%;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font:750 24px/1.15 var(--display);font-stretch:108%;margin:0;text-wrap:balance}
+h3{font:700 16px/1.2 var(--display);margin:0}
+p{margin:0;max-width:65ch}
+.lead{color:var(--muted)}
+.phones{display:flex;gap:10px;align-items:flex-start;background:var(--soft);border-radius:10px;padding:12px 14px;font-size:15px}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{font:600 14px/1 var(--body);color:var(--fg);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:var(--surface)}
+nav a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.exp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:14px;min-width:0}
+.num{font:600 13px/1 var(--mono);color:var(--muted)}
+.tag{display:inline-block;font:600 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 7px;border-radius:5px;background:var(--soft);color:var(--accent)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+button{font:700 16px/1 var(--display);border:0;border-radius:10px;padding:14px 18px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px;touch-action:manipulation}
+button.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+button.big{flex:1 1 120px;font-size:24px;padding:22px 10px;font-stretch:115%}
+button:disabled{opacity:.4;cursor:default}
+.readout{font:500 15px/1.4 var(--mono);color:var(--muted)}
+.result{border-top:1px dashed var(--line);padding-top:14px;display:grid;gap:10px}
+.report{background:var(--soft);border-radius:10px;padding:12px 14px;font-size:16px}
+.report b{font:700 22px/1 var(--display);color:var(--you)}
+.why{font-size:15px;color:var(--muted)}
+.chart{width:100%;height:auto;display:block}
+.chart text{fill:var(--muted);font:15px var(--mono)}
+.chart .ax{stroke:var(--line)}
+footer{font-size:13px;color:var(--muted)}
+/* E1 reaction time stage */
+.stage{position:relative;height:200px;border-radius:14px;background:var(--soft);display:grid;place-items:center;user-select:none;-webkit-user-select:none;touch-action:manipulation;overflow:hidden}
+.stage .msg{font:700 18px/1.3 var(--display);color:var(--muted);text-align:center;padding:0 16px}
+.stim{width:110px;height:110px}
+.stim.go{border-radius:50%;background:var(--ok)}
+.stim.alt{border-radius:12px;background:var(--you)}
+.stage.tap{cursor:pointer}
+/* E2 patients */
+.pt{display:grid;grid-template-columns:minmax(78px,108px) repeat(4,minmax(0,1fr));gap:6px 12px;align-items:end;font-size:14px}
+.pt .h{font:600 13px/1.2 var(--body);color:var(--muted)}
+@media (max-width:560px){.pt{grid-template-columns:repeat(4,minmax(0,1fr))}.pt .nm{grid-column:1/-1;margin-top:6px}.pt>span:first-child{display:none}}
+.pt .nm{font:700 15px/1.2 var(--display)}
+.cell{display:grid;gap:2px}
+.cell .tr{height:16px;background:var(--bg);border-radius:4px;overflow:hidden;position:relative}
+.cell .tr i{display:block;height:100%;background:var(--muted)}
+.cell .tr i.lo{background:var(--warn)}
+.cell .tr i.hi{background:var(--accent)}
+.cell .tr::after{content:"";position:absolute;left:85%;top:0;bottom:0;border-left:2px dashed var(--fg);opacity:.35}
+.cell span{font:500 12px/1 var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.quiz{display:grid;gap:10px}
+.quiz .q{font:700 18px/1.3 var(--display)}
+.opts{display:grid;gap:8px}
+.opts button{background:var(--surface);color:var(--fg);border:1.5px solid var(--line);text-align:left;font:600 16px/1.3 var(--body);padding:12px 14px}
+.opts button.right{border-color:var(--ok);background:var(--soft)}
+.opts button.wrong{border-color:var(--warn)}
+.fb{font-size:15px;border-left:3px solid var(--accent);padding-left:10px}
+.fb.no{border-left-color:var(--warn)}
+/* E3 ERP */
+.sent{display:grid;gap:4px;font-size:15px}
+.sent em{color:var(--you);font-style:normal;font-weight:600}
+.chart .cA{fill:none;stroke:var(--accent);stroke-width:2.6}
+.chart .cB{fill:none;stroke:var(--you);stroke-width:2.6}
+.chart .one{fill:none;stroke:var(--muted);stroke-width:1;opacity:.45}
+.chart .win{fill:var(--soft)}
+/* E4 hemifields */
+.hstage{position:relative;height:170px;border-radius:14px;background:var(--soft);user-select:none;-webkit-user-select:none;overflow:hidden}
+.hstage .fix{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font:700 34px/1 var(--mono);color:var(--fg)}
+.hstage .hw{position:absolute;top:50%;transform:translate(-50%,-50%);font:800 30px/1 var(--mono);letter-spacing:.06em;color:var(--fg)}
+.hstage .msg{position:absolute;left:0;right:0;bottom:12px;text-align:center;font:600 15px/1.3 var(--body);color:var(--muted);padding:0 12px}
+.chart .sw{font:800 30px var(--mono);fill:var(--fg)}
+#e4btns button{flex:1 1 0;font-size:20px;padding:20px 8px}
+.chart .scr{fill:var(--surface);stroke:var(--line);stroke-width:2}
+/* teacher board */
+#prof{display:grid;gap:18px}
+.board{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:10px;min-width:0;align-content:start}
+.bars{display:grid;gap:6px}
+.bar{display:grid;grid-template-columns:128px 1fr 34px 34px 40px;gap:6px;align-items:center;font-size:14px}
+.bar .lab{font:500 13px var(--mono);color:var(--muted)}
+.bar .track{height:22px;background:var(--bg);border-radius:4px;overflow:hidden}
+.bar .fill{height:100%;background:var(--accent);width:0;transition:width .25s}
+.bar .n{font:700 15px var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.bar button{padding:0;min-height:30px;font-size:18px;border-radius:7px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap" id="student">
+  <header>
+    <span class="eyebrow">Bases neurais da comunicação humana · Aula 2</span>
+    <h1>Laboratório de Métodos</h1>
+    <p class="lead">Cinco atividades curtas sobre como a neurociência descobre o que o cérebro faz: medir tempos, comparar pacientes, tirar médias de EEG, mostrar palavras a um hemisfério de cada vez e escolher o método certo para cada pergunta. Você é o participante. No fim de cada uma, informe o resultado ao professor.</p>
+    <div class="phones"><span>Não precisa de fones. Nos experimentos 1 e 4, segure o celular firme, de pé, e use os mesmos dedos do começo ao fim.</span></div>
+    <nav aria-label="Experimentos"><a href="#e1">1 · Tempo de decisão</a><a href="#e2">2 · Dupla dissociação</a><a href="#e3">3 · Média do EEG</a><a href="#e4">4 · Cérebro dividido</a><a href="#e5">5 · Qual método?</a></nav>
+  </header>
+
+  <!-- E1 -->
+  <section class="exp" id="e1">
+    <div class="row"><span class="num">EXPERIMENTO 1</span><span class="tag">≈ 5 min</span></div>
+    <h2>Quanto tempo leva uma decisão?</h2>
+    <p>O método da subtração de Donders (1868). Na <b>tarefa A</b> você toca assim que qualquer forma aparecer. Na <b>tarefa B</b> você precisa decidir: <b>círculo verde → botão da esquerda</b>, <b>quadrado laranja → botão da direita</b>. A diferença entre as duas é o tempo que o cérebro gasta para decidir.</p>
+    <div class="row">
+      <button id="e1a">Tarefa A · simples</button>
+      <button id="e1b" class="ghost">Tarefa B · escolha</button>
+      <span class="readout" id="e1p"></span>
+    </div>
+    <div class="stage" id="e1stage" aria-live="polite"><div class="msg" id="e1msg">Escolha uma tarefa para começar. Comece pela A.</div><div class="stim" id="e1stim" hidden></div></div>
+    <div class="row" id="e1btns" hidden>
+      <button class="big" data-r="go" id="e1L">◀ círculo</button><button class="big" data-r="alt" id="e1R">quadrado ▶</button>
+    </div>
+    <div class="result" id="e1res" hidden>
+      <svg class="chart" id="e1chart" viewBox="0 0 640 230" role="img" aria-label="Seus tempos de reação nas tarefas A e B"></svg>
+      <div class="report" id="e1rep"></div>
+      <p class="why">A tarefa B tem tudo o que a A tem (perceber e mover o dedo) mais duas etapas: identificar a forma e escolher a resposta. Subtraindo A de B, sobra o tempo dessas etapas. Essa mesma lógica de <b>subtração</b> é usada até hoje nas imagens do cérebro: atividade na tarefa menos atividade no controle.</p>
+    </div>
+  </section>
+
+  <!-- E2 -->
+  <section class="exp" id="e2">
+    <div class="row"><span class="num">EXPERIMENTO 2</span><span class="tag">≈ 6 min</span></div>
+    <h2>Quatro pacientes, uma dupla dissociação</h2>
+    <p>Quatro pacientes fictícios tiveram um AVC no hemisfério esquerdo. A tabela mostra a porcentagem de acertos em quatro tarefas: falar com fluência, compreender palavras ouvidas, repetir frases e ler em voz alta. A linha tracejada marca 85%, o limite inferior das pessoas sem lesão.</p>
+    <div class="pt" id="e2tab" role="table" aria-label="Acertos de cada paciente em cada tarefa"></div>
+    <div class="quiz" id="e2quiz"></div>
+    <div class="result" id="e2res" hidden>
+      <div class="report" id="e2rep"></div>
+      <p class="why">Uma <b>dissociação simples</b> (A vai mal, B vai bem) pode significar só que A é mais difícil. Uma <b>dissociação dupla</b> (um paciente com o padrão inverso do outro) afasta essa explicação: as duas funções dependem, pelo menos em parte, de sistemas diferentes.</p>
+    </div>
+  </section>
+
+  <!-- E3 -->
+  <section class="exp" id="e3">
+    <div class="row"><span class="num">EXPERIMENTO 3</span><span class="tag">≈ 5 min</span></div>
+    <h2>Encontre a N400 no meio do ruído</h2>
+    <div class="sent"><span>Condição 1: “O menino passou manteiga no <em>pão</em>.”</span><span>Condição 2: “O menino passou manteiga no <em>sapato</em>.”</span></div>
+    <p>Este é um EEG simulado com o mesmo tamanho de sinal e de ruído de um registro real. Uma das curvas (A ou B) é a palavra inesperada e tem uma onda negativa por volta de 400 ms, a N400. Acrescente tentativas e tire a média. Quando tiver certeza de qual curva tem a N400, aperte o botão dela.</p>
+    <svg class="chart" id="e3chart" viewBox="0 0 640 300" role="img" aria-label="Média das tentativas de EEG nas curvas A e B"></svg>
+    <div class="row">
+      <button id="e3p1">+1 tentativa</button><button id="e3p5" class="ghost">+5</button><button id="e3p20" class="ghost">+20</button>
+      <span class="readout" id="e3n">0 tentativas por curva</span>
+    </div>
+    <div class="row">
+      <button class="big ghost" id="e3A" disabled>A tem a N400</button><button class="big ghost" id="e3B" disabled>B tem a N400</button>
+    </div>
+    <div class="result" id="e3res" hidden>
+      <div class="report" id="e3rep"></div>
+      <p class="why">Uma tentativa sozinha é dominada pelo ruído: o EEG de fundo tem cerca de 10 µV, e a N400 só uns 5 µV. Na média de N tentativas, o ruído cai com a raiz de N, enquanto o sinal fica igual. Por isso os experimentos de EEG repetem cada condição dezenas de vezes. Em troca, o EEG mostra <b>quando</b> as coisas acontecem, com precisão de milissegundos.</p>
+    </div>
+  </section>
+
+  <!-- E4 -->
+  <section class="exp" id="e4">
+    <div class="row"><span class="num">EXPERIMENTO 4</span><span class="tag">≈ 6 min</span></div>
+    <h2>Qual hemisfério lê mais rápido?</h2>
+    <p>Fixe o olhar no <b>+</b> do centro. Uma sequência de letras vai piscar por um décimo de segundo à esquerda ou à direita do +. Decida se é uma <b>palavra</b> do português ou <b>não</b>. O que aparece à direita do + chega primeiro ao <b>hemisfério esquerdo</b>; o que aparece à esquerda chega primeiro ao <b>direito</b>.</p>
+    <p class="why">O flash é mais curto que o tempo de mover os olhos (cerca de 200 ms): mesmo que você tente, não dá tempo de olhar para a palavra. Segure o celular a uns 30 cm, de pé (retrato).</p>
+    <div class="row"><button id="e4go">Começar · 44 tentativas</button><span class="readout" id="e4p"></span></div>
+    <div class="hstage" id="e4stage" aria-live="polite"><span class="fix" id="e4fix">+</span><span class="hw" id="e4w" hidden></span><span class="msg" id="e4msg">Aperte “Começar”. As 4 primeiras tentativas são treino.</span></div>
+    <div class="row" id="e4btns"><button class="big" id="e4yes" disabled>Palavra</button><button class="big" id="e4no" disabled>Não é palavra</button></div>
+    <div class="result" id="e4res" hidden>
+      <svg class="chart" id="e4chart" viewBox="0 0 400 290" style="max-width:560px" role="img" aria-label="Seus acertos e tempos em cada campo visual"></svg>
+      <div class="report" id="e4rep"></div>
+      <p class="why">Na maioria dos destros, palavras no <b>campo direito</b> são reconhecidas com mais acerto e mais rapidez, porque vão direto para o hemisfério esquerdo, dominante para a linguagem. Do campo esquerdo, a palavra precisa atravessar o <b>corpo caloso</b> (cerca de 10–30 ms a mais). No seu cérebro intacto a diferença é pequena. E se o corpo caloso fosse cortado? Veja a parte B.</p>
+    </div>
+    <div class="result" id="e4b">
+      <h3>Parte B · Você é o experimentador de um paciente com cérebro dividido</h3>
+      <p>O paciente teve o <b>corpo caloso cortado</b> para controlar crises de epilepsia. Ele fixa o + e você mostra palavras rapidamente. Embaixo da mesa, fora da vista, há objetos que ele pode pegar com a <b>mão esquerda</b> (comandada pelo hemisfério direito). Antes de cada teste, preveja o que ele vai <b>dizer</b>.</p>
+      <svg class="chart" id="e4scr" viewBox="0 0 400 190" style="max-width:520px" role="img" aria-label="Tela do experimento com o cérebro dividido"></svg>
+      <div class="quiz" id="e4quiz"></div>
+    </div>
+  </section>
+
+  <!-- E5 -->
+  <section class="exp" id="e5">
+    <div class="row"><span class="num">EXPERIMENTO 5</span><span class="tag">≈ 5 min · 10 perguntas</span></div>
+    <h2>Qual método você usaria?</h2>
+    <p>Para cada pergunta de pesquisa, escolha o método que melhor responde a ela. Às vezes mais de um serve; a explicação diz por quê.</p>
+    <div class="row"><button id="e5go">Começar</button><span class="readout" id="e5p"></span></div>
+    <div class="quiz" id="e5quiz" hidden></div>
+    <div class="result" id="e5res" hidden>
+      <div class="report" id="e5rep"></div>
+      <p class="why">Regra prática: <b>quando</b> → EEG/MEG; <b>onde</b> → fMRI; <b>é necessário?</b> → lesão ou TMS; <b>onde e quando, em detalhe</b> → registros intracranianos, quando o paciente já precisa deles por motivo clínico.</p>
+    </div>
+  </section>
+
+  <footer>Tudo roda no seu aparelho; nenhuma resposta sai do celular. Professor: abra esta página com <span style="font-family:var(--mono)">#professor</span> no fim do link para o placar da turma.</footer>
+</div>
+
+<!-- Teacher board -->
+<div class="wrap" id="prof" hidden>
+  <header>
+    <span class="eyebrow">Placar da turma · Aula 2</span>
+    <h1>Resultados da turma</h1>
+    <p class="lead">Peça que levantem a mão por categoria e registre com + e −. Os números ficam salvos neste navegador.</p>
+    <div class="row"><button class="ghost" id="reset">Zerar placar</button><span class="readout" id="resetMsg"></span><a href="#" id="toStudent" style="color:var(--accent);font-weight:600">Ver página dos alunos</a></div>
+  </header>
+  <div class="board" id="board"></div>
+</div>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const median=a=>{const s=[...a].sort((x,y)=>x-y);const n=s.length;return n?(n%2?s[(n-1)/2]:(s[n/2-1]+s[n/2])/2):NaN;};
+const fmt=v=>Math.round(v).toLocaleString('pt-BR');
+
+/* ================= E1 · Donders ================= */
+const N1=12, PRACT=2; const rt={A:null,B:null}; let e1busy=false;
+const stage=$('e1stage'), stim=$('e1stim'), msg=$('e1msg');
+function waitTap(mode){ // resolves {t, r} ; mode A: stage pointerdown; mode B: buttons
+  return new Promise(res=>{
+    const done=(r,e)=>{cleanup();res({t:performance.now(),r});};
+    const onStage=e=>{e.preventDefault();done('tap');};
+    const onBtn=e=>{e.preventDefault();done(e.currentTarget.dataset.r);};
+    const bs=[$('e1L'),$('e1R')];
+    if(mode==='A')stage.addEventListener('pointerdown',onStage);else bs.forEach(b=>b.addEventListener('pointerdown',onBtn));
+    function cleanup(){stage.removeEventListener('pointerdown',onStage);bs.forEach(b=>b.removeEventListener('pointerdown',onBtn));}
+    waitTap.cancel=()=>{cleanup();res(null);};
+  });
+}
+async function runE1(mode){
+  if(e1busy)return;e1busy=true;$('e1a').disabled=$('e1b').disabled=true;
+  $('e1btns').hidden=mode!=='B';stage.classList.toggle('tap',mode==='A');
+  const shapes=shuffle(Array.from({length:N1+PRACT},(_,i)=>i%2?'go':'alt'));
+  const rts=[];let errors=0,early=0;
+  msg.textContent=mode==='A'?'Toque nesta área assim que aparecer qualquer forma.':'Círculo verde → ◀ esquerda. Quadrado laranja → direita ▶.';
+  stim.hidden=true;msg.hidden=false;await sleep(1800);
+  for(let i=0;i<shapes.length;i++){
+    $('e1p').textContent=i<PRACT?`treino ${i+1}/${PRACT}`:`${i-PRACT+1} / ${N1}`;
+    msg.textContent='+';msg.hidden=false;stim.hidden=true;
+    const fore=900+Math.random()*1600;
+    // early taps
+    let tooEarly=false;const p=waitTap(mode);
+    const race=await Promise.race([p,sleep(fore).then(()=>'time')]);
+    if(race!=='time'){tooEarly=true;early++;msg.textContent='Cedo demais! Espere a forma aparecer.';await sleep(1200);i--;continue;}
+    waitTap.cancel();
+    stim.className='stim '+shapes[i];msg.hidden=true;stim.hidden=false;
+    const t0=await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(t=>r(performance.now()))));
+    const ans=await Promise.race([waitTap(mode),sleep(2000).then(()=>null)]);
+    if(!ans){waitTap.cancel();stim.hidden=true;msg.hidden=false;msg.textContent='Lento demais. Vamos para a próxima.';errors++;await sleep(900);continue;}
+    stim.hidden=true;msg.hidden=false;
+    const r=ans.t-t0;
+    if(mode==='B'&&ans.r!==shapes[i]){errors++;msg.textContent='Botão errado.';await sleep(800);continue;}
+    if(r<100){early++;msg.textContent='Antecipação. Espere ver a forma.';await sleep(900);continue;}
+    if(i>=PRACT)rts.push(r);
+    msg.textContent=fmt(r)+' ms';await sleep(500);
+  }
+  rt[mode]={rts,errors,med:median(rts)};
+  msg.textContent=mode==='A'?'Tarefa A concluída. Agora faça a tarefa B.':'Tarefa B concluída.';
+  $('e1p').textContent='';$('e1btns').hidden=true;stage.classList.remove('tap');
+  $('e1a').disabled=$('e1b').disabled=false;
+  if(mode==='A'){$('e1a').classList.add('ghost');$('e1b').classList.remove('ghost');}
+  e1busy=false;drawE1();
+}
+$('e1a').onclick=()=>runE1('A');$('e1b').onclick=()=>runE1('B');
+function drawE1(){
+  const W=640,H=230,L=60,R=20,T=16,B=36;const all=[...(rt.A?rt.A.rts:[]),...(rt.B?rt.B.rts:[])];
+  const mx=Math.max(600,Math.ceil((Math.max(...all,0)+50)/100)*100);
+  const x=v=>L+v/mx*(W-L-R);const rows=[['A · simples',rt.A,'var(--accent)'],['B · escolha',rt.B,'var(--you)']];
+  let g='';for(let v=0;v<=mx;v+=100){g+=`<line class="ax" x1="${x(v)}" y1="${T}" x2="${x(v)}" y2="${H-B}"/><text x="${x(v)}" y="${H-B+18}" text-anchor="middle">${v}</text>`;}
+  g+=`<text x="${(L+W-R)/2}" y="${H-2}" text-anchor="middle">tempo de reação (ms)</text>`;
+  rows.forEach(([n,d,c],k)=>{const y=T+30+k*80;g+=`<text x="${L-8}" y="${y+5}" text-anchor="end">${n.split(' ')[0]}</text>`;
+    if(!d)return;d.rts.forEach(v=>{g+=`<circle cx="${x(v)}" cy="${y+(Math.random()-.5)*22}" r="4" style="fill:${c};fill-opacity:.55"/>`;});
+    g+=`<line x1="${x(d.med)}" y1="${y-24}" x2="${x(d.med)}" y2="${y+24}" style="stroke:${c};stroke-width:4"/><text x="${x(d.med)}" y="${y-30}" text-anchor="middle" style="fill:${c};font-weight:700">${fmt(d.med)} ms</text>`;});
+  $('e1chart').innerHTML=g;$('e1res').hidden=false;
+  let rep='';
+  if(rt.A&&rt.B){const d=rt.B.med-rt.A.med;const bin=d<50?'< 50 ms':d<100?'50–99 ms':d<150?'100–149 ms':d<200?'150–199 ms':d<250?'200–249 ms':'≥ 250 ms';
+    rep=`Mediana A: <b>${fmt(rt.A.med)} ms</b> · B: <b>${fmt(rt.B.med)} ms</b> · tempo de decisão (B − A): <b>${fmt(d)} ms</b>. Informe: <b>${bin}</b>.${rt.B.errors?` Erros na tarefa B: ${rt.B.errors}.`:''}`;}
+  else rep=`Mediana da tarefa ${rt.A?'A':'B'}: <b>${fmt((rt.A||rt.B).med)} ms</b>. Faça a outra tarefa para calcular o tempo de decisão.`;
+  $('e1rep').innerHTML=rep;
+}
+
+/* ================= E2 · dissociação ================= */
+const TASKS=['Fala fluente','Compreensão','Repetição','Leitura em voz alta'];
+const PTS=[['Sr. Antônio','frontal inferior',[25,90,30,35]],['Dona Beatriz','temporal sup. posterior',[90,25,30,40]],
+           ['Sr. Carlos','supramarginal',[85,88,20,80]],['Dona Dalva','occipital + caloso',[92,95,92,20]]];
+(function(){let h='<span></span>'+TASKS.map(t=>`<span class="h" role="columnheader">${t}</span>`).join('');
+  PTS.forEach(([n,l,v])=>{h+=`<span class="nm" role="rowheader">${n}<br><span class="readout" style="font-size:11px">${l}</span></span>`+v.map(s=>`<span class="cell" role="cell"><span class="tr"><i class="${s<50?'lo':s>=85?'hi':''}" style="width:${s}%"></i></span><span>${s}%</span></span>`).join('');});
+  $('e2tab').innerHTML=h;})();
+const Q2=[
+ {q:'Que par de pacientes mostra uma dupla dissociação entre falar com fluência e compreender palavras?',o:['Antônio e Beatriz','Antônio e Carlos','Beatriz e Carlos','Carlos e Dalva'],a:0,
+  e:'Antônio fala mal e compreende bem; Beatriz faz o inverso. Cada um tem a tarefa que o outro perdeu.'},
+ {q:'Olhando só para o Sr. Carlos (repete mal, compreende bem), que tipo de evidência temos?',o:['Dissociação simples','Dissociação dupla','Nenhuma dissociação'],a:0,
+  e:'Um paciente sozinho só mostra uma dissociação simples. Talvez repetir seja apenas mais difícil que compreender.'},
+ {q:'Quem forma com o Sr. Carlos uma dupla dissociação entre repetir frases e ler em voz alta?',o:['Antônio','Beatriz','Dalva'],a:2,
+  e:'Carlos repete mal e lê bem; Dalva repete bem e lê mal. Antônio e Beatriz vão mal nas duas tarefas.'},
+ {q:'Qual paciente mais se parece com Leborgne, o paciente “Tan” de Broca?',o:['Antônio','Beatriz','Carlos','Dalva'],a:0,
+  e:'Fala muito prejudicada, compreensão de palavras relativamente boa, lesão frontal inferior esquerda.'},
+ {q:'O modelo de Lichtheim previu, antes de existir o paciente, uma afasia com fala fluente, boa compreensão e repetição ruim. Quem é?',o:['Antônio','Beatriz','Carlos','Dalva'],a:2,
+  e:'É a afasia de condução: a lesão desconecta a escuta da fala, então repetir falha mesmo com as duas pontas funcionando.'}];
+let q2i=0,q2ok=0;
+function showQ2(){const Q=Q2[q2i];const box=$('e2quiz');
+  box.innerHTML=`<span class="readout">Pergunta ${q2i+1} de ${Q2.length}</span><div class="q">${Q.q}</div><div class="opts">${Q.o.map((o,i)=>`<button data-i="${i}">${o}</button>`).join('')}</div><div class="fb" hidden></div>`;
+  box.querySelectorAll('.opts button').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;const ok=i===Q.a;if(ok)q2ok++;
+    box.querySelectorAll('.opts button').forEach(x=>{x.disabled=true;if(+x.dataset.i===Q.a)x.classList.add('right');});if(!ok)b.classList.add('wrong');
+    const fb=box.querySelector('.fb');fb.hidden=false;fb.classList.toggle('no',!ok);
+    fb.innerHTML=`<b>${ok?'Certo.':'Não exatamente.'}</b> ${Q.e}`;
+    const nx=document.createElement('button');nx.textContent=q2i<Q2.length-1?'Próxima':'Ver resultado';nx.style.justifySelf='start';box.appendChild(nx);
+    nx.onclick=()=>{q2i++;if(q2i<Q2.length)showQ2();else{box.innerHTML='';$('e2rep').innerHTML=`Você acertou <b>${q2ok} de ${Q2.length}</b>. Informe: <b>${q2ok<=1?'0–1':q2ok}</b>.`;$('e2res').hidden=false;
+      const again=document.createElement('button');again.className='ghost';again.textContent='Refazer';again.style.justifySelf='start';again.onclick=()=>{q2i=0;q2ok=0;$('e2res').hidden=true;showQ2();};box.appendChild(again);}};});}
+showQ2();
+
+/* ================= E3 · média de ERP ================= */
+const DT=4, TT=[];for(let t=-200;t<=800;t+=DT)TT.push(t);
+function gauss(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+function noiseTrial(){const n=TT.length,x=new Float32Array(n);
+  for(let f=1;f<=30;f++){const a=1/Math.pow(f,.9),ph=Math.random()*2*Math.PI,ja=a*(0.6+0.8*Math.random());for(let i=0;i<n;i++)x[i]+=ja*Math.sin(2*Math.PI*f*TT[i]/1000+ph);}
+  let s=0;for(let i=0;i<n;i++)s+=x[i]*x[i];const k=8/Math.sqrt(s/n);
+  const al=6*(0.4+0.6*Math.random()),ap=Math.random()*2*Math.PI;
+  for(let i=0;i<n;i++)x[i]=x[i]*k+al*Math.sin(2*Math.PI*10*TT[i]/1000+ap)+1.5*gauss();return x;}
+const base=TT.map(t=>4*Math.exp(-(((t-200)/40)**2))-3*Math.exp(-(((t-100)/25)**2)));
+const n400=TT.map(t=>-6*Math.exp(-(((t-400)/90)**2)));
+let e3={};function e3reset(){e3={target:Math.random()<.5?'A':'B',A:[],B:[],sumA:new Float32Array(TT.length),sumB:new Float32Array(TT.length),done:false};
+  $('e3A').disabled=$('e3B').disabled=true;$('e3res').hidden=true;drawE3();}
+function addTrials(k){if(e3.done)return;for(let j=0;j<k&&e3.A.length<300;j++){for(const c of ['A','B']){const x=noiseTrial();for(let i=0;i<x.length;i++)x[i]+=base[i]+(c===e3.target?n400[i]:0);
+  e3[c].push(x);const s=e3['sum'+c];for(let i=0;i<x.length;i++)s[i]+=x[i];}}
+  $('e3A').disabled=$('e3B').disabled=false;drawE3();}
+function winMean(x){let s=0,n=0;TT.forEach((t,i)=>{if(t>=300&&t<=500){s+=x[i];n++;}});return s/n;}
+function statN(){ // first N at which paired t-test (target - other) in 300-500 window exceeds 2.6, staying for 5 steps
+  const mA=[],mB=[];let first=null,run=0;
+  const extra=[];for(let n=1;n<=300;n++){let a,b;
+    if(n<=e3.A.length){a=winMean(e3.A[n-1]);b=winMean(e3.B[n-1]);}
+    else{const xa=noiseTrial(),xb=noiseTrial();a=winMean(xa.map((v,i)=>v+base[i]+(e3.target==='A'?n400[i]:0)));b=winMean(xb.map((v,i)=>v+base[i]+(e3.target==='B'?n400[i]:0)));}
+    const d=(e3.target==='A'?b-a:a-b);extra.push(d);
+    if(n>=3){const m=extra.reduce((s,v)=>s+v,0)/n;const sd=Math.sqrt(extra.reduce((s,v)=>s+(v-m)**2,0)/(n-1));const t=m/(sd/Math.sqrt(n));
+      if(t>2.6){run++;if(run>=5&&first===null)first=n-4;}else run=0;}
+    if(first!==null)break;}
+  return first||'> 300';}
+function drawE3(){const W=640,H=300,L=62,R=16,T=18,B=44,Y=22;
+  const x=t=>L+(t+200)/1000*(W-L-R),y=v=>T+(Math.max(-Y,Math.min(Y,v))+Y)/(2*Y)*(H-T-B); // negative up
+  let g=`<rect class="win" x="${x(300)}" y="${T}" width="${x(500)-x(300)}" height="${H-T-B}"/>`;
+  g+=`<text x="${x(400)}" y="${T+14}" text-anchor="middle">300–500 ms</text>`;
+  for(const v of [-20,-10,0,10,20])g+=`<line class="ax" x1="${L}" y1="${y(v)}" x2="${W-R}" y2="${y(v)}" ${v?'stroke-dasharray="2 4"':''}/><text x="${L-6}" y="${y(v)+4}" text-anchor="end">${v>0?'+':''}${v}</text>`;
+  for(const t of [-200,0,200,400,600,800])g+=`<text x="${x(t)}" y="${H-B+16}" text-anchor="middle">${t}</text>`;
+  g+=`<line class="ax" x1="${x(0)}" y1="${T}" x2="${x(0)}" y2="${H-B}"/><text x="${(L+W-R)/2}" y="${H-4}" text-anchor="middle">ms depois da última palavra</text>`;
+  g+=`<text x="12" y="${y(0)}" transform="rotate(-90 12 ${y(0)})" text-anchor="middle" style="font-size:13px">µV (negativo para cima)</text>`;
+  const n=e3.A.length;
+  if(n){const last=e3.A[n-1];g+=`<polyline class="one" points="${TT.map((t,i)=>x(t)+','+y(last[i])).join(' ')}"/>`;
+    for(const c of ['A','B']){const s=e3['sum'+c];g+=`<polyline class="c${c}" points="${TT.map((t,i)=>x(t)+','+y(s[i]/n)).join(' ')}"/>`;}
+    g+=`<text x="${W-R}" y="${H-B-24}" text-anchor="end" style="fill:var(--accent);font-weight:700">— curva A</text><text x="${W-R}" y="${H-B-8}" text-anchor="end" style="fill:var(--you);font-weight:700">— curva B</text>`;
+    g+=`<text x="${L+6}" y="${H-B-8}" style="opacity:.8">cinza: só a última tentativa</text>`;}
+  else g+=`<text x="${(L+W-R)/2}" y="${(T+H-B)/2}" text-anchor="middle">Aperte “+1 tentativa” para começar</text>`;
+  $('e3chart').innerHTML=g;$('e3n').textContent=`${n} tentativa${n===1?'':'s'} por curva`;}
+function chooseE3(c){if(!e3.A.length||e3.done)return;e3.done=true;const n=e3.A.length,ok=c===e3.target;const sn=statN();
+  const bin=!ok?'errei a curva':n<=5?'até 5':n<=15?'6–15':n<=30?'16–30':n<=60?'31–60':'mais de 60';
+  $('e3rep').innerHTML=`Você escolheu a curva ${c} com <b>${n}</b> tentativas por curva. ${ok?'Acertou!':`Errou: a N400 estava na curva ${e3.target}.`} Um teste estatístico (t &gt; 2,6) só ficou confiável com ${sn} tentativas. Informe: <b>${bin}</b>.`;
+  $('e3res').hidden=false;$('e3A').disabled=$('e3B').disabled=true;
+  const again=$('e3again')||Object.assign(document.createElement('button'),{id:'e3again',className:'ghost',textContent:'Novo EEG simulado'});again.onclick=()=>{again.remove();e3reset();};$('e3res').appendChild(again);}
+$('e3p1').onclick=()=>addTrials(1);$('e3p5').onclick=()=>addTrials(5);$('e3p20').onclick=()=>addTrials(20);
+$('e3A').onclick=()=>chooseE3('A');$('e3B').onclick=()=>chooseE3('B');
+e3reset();
+
+/* ================= E4 · campos visuais ================= */
+const WORDS=['CASA','MESA','BOLA','GATO','FOGO','LUVA','MALA','SAPO','VELA','PATO','RODA','DEDO','LOBO','COPO','FACA','NAVE','SOPA','LAGO','MAPA','FITA'];
+const NONW=['LATU','BIFO','NUSE','DOMU','VOLU','MUPA','BELU','GIFO','RAFU','NODI','PESU','LIFA','CUNE','DABE','MOSU','TIRU','FAPE','GOLI','ZEMU','SAVI'];
+const PRACT4=[['RATO',1,'R'],['BUTA',0,'L'],['PELE',1,'L'],['CILO',0,'R']];
+let e4busy=false;
+function e4trials(){const w=shuffle([...WORDS]),n=shuffle([...NONW]),t=[];
+  for(let i=0;i<20;i++){t.push([w[i],1,i<10?'L':'R']);t.push([n[i],0,i<10?'L':'R']);}return shuffle(t);}
+function e4answer(){return new Promise(res=>{const y=$('e4yes'),n=$('e4no');let to;
+  const done=v=>{y.onpointerdown=n.onpointerdown=null;clearTimeout(to);res(v);};
+  y.onpointerdown=e=>{e.preventDefault();done({t:performance.now(),w:1});};n.onpointerdown=e=>{e.preventDefault();done({t:performance.now(),w:0});};
+  to=setTimeout(()=>done(null),2500);});}
+const frame=()=>new Promise(r=>requestAnimationFrame(t=>r(performance.now())));
+async function runE4(){if(e4busy)return;e4busy=true;$('e4go').disabled=true;$('e4res').hidden=true;
+  const all=[...PRACT4,...e4trials()];const data=[];const w=$('e4w'),m=$('e4msg');
+  $('e4yes').disabled=$('e4no').disabled=false;
+  for(let i=0;i<all.length;i++){const [str,isW,side]=all[i];
+    $('e4p').textContent=i<4?`treino ${i+1}/4`:`${i-3} / ${all.length-4}`;
+    m.textContent=i<4?'Treino: olhe para o +':'';w.hidden=true;
+    await sleep(700+Math.random()*500);
+    w.textContent=str;w.style.left=side==='L'?'20%':'80%';
+    const ansP=e4answer();
+    await frame();w.hidden=false;const t0=await frame();
+    while(performance.now()-t0<92)await frame();
+    w.textContent='####';await sleep(150);w.hidden=true;
+    const ans=await ansP;
+    let ok=false,rtv=null;
+    if(!ans){m.textContent='Lento demais: responda mais rápido.';}
+    else{ok=ans.w===isW;rtv=ans.t-t0;if(i<4)m.textContent=ok?'Certo.':'Errado.';}
+    if(i>=4)data.push({side,isW,ok,rt:rtv});
+    await sleep(i<4?700:350);}
+  $('e4yes').disabled=$('e4no').disabled=true;m.textContent='Fim. Veja seu resultado abaixo.';$('e4p').textContent='';
+  e4busy=false;$('e4go').disabled=false;$('e4go').textContent='Refazer';drawE4(data);}
+$('e4go').onclick=runE4;
+function drawE4(d){const acc=s=>{const x=d.filter(q=>q.side===s);return 100*x.filter(q=>q.ok).length/x.length;};
+  const rtw=s=>median(d.filter(q=>q.side===s&&q.isW&&q.ok).map(q=>q.rt));
+  const aL=acc('L'),aR=acc('R'),rL=rtw('L'),rR=rtw('R');
+  const L=50,T=30,Hb=170,y=v=>T+(100-v)/100*Hb;
+  let g=`<text x="4" y="16" style="font-size:13px">% acertos</text>`;[0,50,100].forEach(v=>{g+=`<line class="ax" x1="${L}" y1="${y(v)}" x2="390" y2="${y(v)}"/><text x="${L-8}" y="${y(v)+5}" text-anchor="end" style="font-size:13px">${v}</text>`;});
+  [['campo esquerdo','→ hem. direito',aL,rL,'var(--you)',80],['campo direito','→ hem. esquerdo',aR,rR,'var(--accent)',240]].forEach(([n,h,v,r,c,x])=>{
+    g+=`<rect x="${x}" y="${y(v)}" width="110" height="${y(0)-y(v)}" style="fill:${c}"/><text x="${x+55}" y="${y(v)-8}" text-anchor="middle" style="fill:${c};font-weight:700;font-size:16px">${fmt(v)}%</text>`;
+    g+=`<text x="${x+55}" y="${T+Hb+22}" text-anchor="middle" style="font-size:14px">${n}</text><text x="${x+55}" y="${T+Hb+40}" text-anchor="middle" style="font-size:13px;fill:${c}">${h}</text>`;
+    g+=`<text x="${x+55}" y="${T+Hb+62}" text-anchor="middle" style="font-size:13px">palavras: ${isNaN(r)?'–':fmt(r)+' ms'}</text>`;});
+  $('e4chart').innerHTML=g;const dd=Math.round(aR-aL);
+  const bin=dd>=10?'direito ≥ +10':dd>=5?'direito +5':dd>-5?'empate':'esquerdo melhor';
+  $('e4rep').innerHTML=`Acertos no campo direito: <b>${fmt(aR)}%</b> · campo esquerdo: <b>${fmt(aL)}%</b> · diferença: <b>${dd>0?'+':''}${dd}</b> pontos.${!isNaN(rL)&&!isNaN(rR)?` Tempo nas palavras: direito ${fmt(rR)} ms, esquerdo ${fmt(rL)} ms.`:''} Informe: <b>${bin}</b>.`;
+  $('e4res').hidden=false;}
+/* part B: split brain */
+const SB=[
+ {l:'',r:'ANEL',q:'ANEL aparece à direita do +. O que ele vai dizer?',o:['“Anel”','“Não vi nada”'],a:0,
+  say:'“Anel.”',hand:'A mão esquerda não sabe o que procurar: pega um objeto ao acaso.',
+  e:'O campo direito vai para o hemisfério esquerdo, que fala. Este caso parece normal.'},
+ {l:'CHAVE',r:'',q:'CHAVE aparece à esquerda do +. O que ele vai dizer?',o:['“Chave”','“Não vi nada”'],a:1,
+  say:'“Não vi nada.”',hand:'Mas a mão esquerda, tateando embaixo da mesa, pega a chave.',
+  e:'Só o hemisfério direito viu a palavra. Ele entende palavras simples e guia a mão esquerda, mas não fala. Sem o corpo caloso, o hemisfério esquerdo, que fala, realmente não viu nada.'},
+ {l:'CHAVE',r:'ANEL',q:'CHAVE à esquerda e ANEL à direita, ao mesmo tempo. O que ele vai dizer?',o:['“Chaveiro”','“Anel”','“Chave”'],a:1,
+  say:'“Anel.”',hand:'A mão esquerda pega a chave, e não um chaveiro.',
+  e:'Cada hemisfério viu uma metade. Nenhum dos dois juntou as palavras: o que fala viu ANEL, o que guia a mão esquerda viu CHAVE (Gazzaniga).'},
+ {l:'',r:'',q:'Por fim, ele vê a mão esquerda segurando a chave e alguém pergunta por quê. O que costuma acontecer?',o:['Diz que não sabe','Inventa uma explicação plausível'],a:1,
+  say:'“Ah, peguei porque estava mais perto.”',hand:'',
+  e:'O hemisfério esquerdo não sabe por que a mão pegou a chave, mas cria uma explicação com confiança. Gazzaniga chamou isso de “intérprete”.'}];
+let sbi=0,sbok=0;
+function scrE4(l,r,show){let g=`<rect class="scr" x="10" y="8" width="380" height="120" rx="10"/><line x1="200" y1="16" x2="200" y2="120" style="stroke:var(--line);stroke-dasharray:4 5"/>`;
+  g+=`<text x="200" y="78" text-anchor="middle" class="sw">+</text>`;
+  if(show){if(l)g+=`<text x="105" y="78" text-anchor="middle" class="sw">${l}</text>`;if(r)g+=`<text x="295" y="78" text-anchor="middle" class="sw">${r}</text>`;}
+  g+=`<text x="105" y="152" text-anchor="middle" style="font-size:14px">campo esquerdo</text><text x="105" y="172" text-anchor="middle" style="font-size:14px;fill:var(--you)">→ hem. direito</text>`;
+  g+=`<text x="295" y="152" text-anchor="middle" style="font-size:14px">campo direito</text><text x="295" y="172" text-anchor="middle" style="font-size:14px;fill:var(--accent)">→ hem. esquerdo (fala)</text>`;
+  $('e4scr').innerHTML=g;}
+function showSB(){const Q=SB[sbi],box=$('e4quiz');scrE4(Q.l,Q.r,!!(Q.l||Q.r));
+  box.innerHTML=`<span class="readout">Teste ${sbi+1} de ${SB.length}</span><div class="q">${Q.q}</div><div class="opts">${Q.o.map((o,i)=>`<button data-i="${i}">${o}</button>`).join('')}</div><div class="fb" hidden></div>`;
+  box.querySelectorAll('.opts button').forEach(b=>b.onclick=()=>{const i=+b.dataset.i,ok=i===Q.a;if(ok)sbok++;
+    box.querySelectorAll('.opts button').forEach(x=>{x.disabled=true;if(+x.dataset.i===Q.a)x.classList.add('right');});if(!ok)b.classList.add('wrong');
+    const fb=box.querySelector('.fb');fb.hidden=false;fb.classList.toggle('no',!ok);
+    fb.innerHTML=`<b>Ele diz: ${Q.say}</b> ${Q.hand} ${Q.e}`;
+    const nx=document.createElement('button');nx.textContent=sbi<SB.length-1?'Próximo teste':'Recomeçar a parte B';nx.style.justifySelf='start';box.appendChild(nx);
+    nx.onclick=()=>{sbi=(sbi+1)%SB.length;if(!sbi)sbok=0;showSB();};});}
+showSB();
+
+/* ================= E5 · qual método ================= */
+const MET=['EEG / ERP','fMRI','TMS','Estudo de lesão','ECoG (intracraniano)'];
+const Q5=[
+ {q:'Em quantos milissegundos o cérebro nota que uma palavra não combina com a frase?',a:[0],e:'Pergunta de “quando”: o EEG mede a atividade elétrica a cada milissegundo. O ECoG também mediria, mas exige cirurgia; o EEG basta.'},
+ {q:'Que regiões ficam mais ativas quando lemos verbos do que quando lemos substantivos?',a:[1],e:'Pergunta de “onde”: a fMRI localiza mudanças de fluxo sanguíneo com precisão de milímetros no cérebro todo.'},
+ {q:'Uma pequena região do lobo temporal é necessária para nomear ferramentas em pessoas saudáveis?',a:[2],e:'“Necessária” pede perturbação. Em pessoas saudáveis, a TMS cria uma “lesão virtual” breve e reversível.'},
+ {q:'Um AVC no lobo temporal esquerdo prejudica mais a compreensão de substantivos ou de verbos?',a:[3],e:'A pergunta é sobre o efeito de lesões: compara-se o desempenho de pacientes com lesões em lugares diferentes.'},
+ {q:'Como pequenos grupos de neurônios do giro temporal superior respondem a cada fonema, com precisão de milímetros e milissegundos?',a:[4],e:'Só eletrodos sobre o córtex têm as duas resoluções ao mesmo tempo. Isso só é possível em pacientes que já precisam deles, como na epilepsia.'},
+ {q:'Bebês de 3 meses distinguem “ba” de “da”? O método precisa ser silencioso, seguro e tolerar movimento.',a:[0],e:'Uma touca de EEG é silenciosa e segura. A fMRI é barulhenta e exige ficar parado; a TMS não se usa em bebês.'},
+ {q:'Durante uma cirurgia, o neurocirurgião precisa saber exatamente onde não cortar para preservar a fala.',a:[4],e:'O mapeamento com eletrodos sobre o córtex, registrando ou estimulando, é o padrão clínico (Penfield; Ojemann).'},
+ {q:'Perturbar por um instante o córtex motor dos lábios atrapalha distinguir “ba” de “da” ao ouvir?',a:[2],e:'Uma pergunta causal com tempo preciso em pessoas saudáveis: um pulso de TMS no momento certo.'},
+ {q:'Pessoas que perderam a capacidade de ler mas escrevem normalmente: onde está a lesão em comum?',a:[3],e:'Sobrepor as lesões de vários pacientes com o mesmo sintoma mostra a região comum (análise de sobreposição de lesões).'},
+ {q:'Duas áreas da linguagem oscilam juntas mesmo quando a pessoa está em repouso no aparelho?',a:[1],e:'A conectividade funcional em repouso é medida com fMRI, correlacionando o sinal BOLD de regiões diferentes.'}];
+let q5=[],q5i=0,q5ok=0;
+$('e5go').onclick=()=>{q5=shuffle([...Q5]);q5i=0;q5ok=0;$('e5res').hidden=true;$('e5quiz').hidden=false;$('e5go').hidden=true;showQ5();};
+function showQ5(){const Q=q5[q5i];const box=$('e5quiz');$('e5p').textContent=`${q5i+1} / ${q5.length}`;
+  box.innerHTML=`<div class="q">${Q.q}</div><div class="opts">${MET.map((o,i)=>`<button data-i="${i}">${o}</button>`).join('')}</div><div class="fb" hidden></div>`;
+  box.querySelectorAll('.opts button').forEach(b=>b.onclick=()=>{const i=+b.dataset.i,ok=Q.a.includes(i);if(ok)q5ok++;
+    box.querySelectorAll('.opts button').forEach(x=>{x.disabled=true;if(Q.a.includes(+x.dataset.i))x.classList.add('right');});if(!ok)b.classList.add('wrong');
+    const fb=box.querySelector('.fb');fb.hidden=false;fb.classList.toggle('no',!ok);fb.innerHTML=`<b>${ok?'Certo.':'Melhor: '+Q.a.map(k=>MET[k]).join(' ou ')+'.'}</b> ${Q.e}`;
+    const nx=document.createElement('button');nx.textContent=q5i<q5.length-1?'Próxima':'Ver resultado';nx.style.justifySelf='start';box.appendChild(nx);
+    nx.onclick=()=>{q5i++;if(q5i<q5.length)showQ5();else{box.hidden=true;$('e5p').textContent='';const bin=q5ok<=4?'0–4':q5ok<=6?'5–6':q5ok<=8?'7–8':'9–10';
+      $('e5rep').innerHTML=`Você acertou <b>${q5ok} de 10</b>. Informe: <b>${bin}</b>.`;$('e5res').hidden=false;$('e5go').hidden=false;$('e5go').textContent='Refazer';}};});}
+
+/* ================= teacher board ================= */
+const BOARD=[
+ {k:'e1',t:'1 · Tempo de decisão (B − A)',cats:['< 50 ms','50–99 ms','100–149 ms','150–199 ms','200–249 ms','≥ 250 ms']},
+ {k:'e2',t:'2 · Dupla dissociação (acertos)',cats:['0–1','2','3','4','5']},
+ {k:'e3',t:'3 · Tentativas até ver a N400',cats:['até 5','6–15','16–30','31–60','mais de 60','errei a curva']},
+ {k:'e4',t:'4 · Campo direito − esquerdo (acertos)',cats:['direito ≥ +10','direito +5','empate','esquerdo melhor']},
+ {k:'e5',t:'5 · Qual método? (de 10)',cats:['0–4','5–6','7–8','9–10']}];
+let S={};try{S=JSON.parse(localStorage.getItem('metodos-placar')||'{}')}catch(e){S={}}
+const save=()=>{try{localStorage.setItem('metodos-placar',JSON.stringify(S))}catch(e){}};
+function renderBoard(){const host=$('board');host.innerHTML='';
+  BOARD.forEach(p=>{const div=document.createElement('div');div.className='panel';let max=1;p.cats.forEach((_,i)=>max=Math.max(max,S[p.k+'_'+i]||0));
+    let tot=p.cats.reduce((s,_,i)=>s+(S[p.k+'_'+i]||0),0);
+    let h=`<h2>${p.t}</h2><span class="readout">${tot} resposta${tot===1?'':'s'}</span><div class="bars">`;
+    p.cats.forEach((c,i)=>{const key=p.k+'_'+i,v=S[key]||0;
+      h+=`<div class="bar"><span class="lab">${c}</span><span class="track"><span class="fill" style="width:${100*v/max}%"></span></span><button class="ghost" data-k="${key}" data-d="-1" aria-label="menos ${c}">−</button><button data-k="${key}" data-d="1" aria-label="mais ${c}">+</button><span class="n">${v}</span></div>`;});
+    div.innerHTML=h+'</div>';host.appendChild(div);});
+  host.querySelectorAll('button[data-k]').forEach(b=>b.onclick=()=>{const k=b.dataset.k;S[k]=Math.max(0,(S[k]||0)+(+b.dataset.d));save();renderBoard();});}
+let armed=false;$('reset').onclick=()=>{if(!armed){armed=true;$('reset').textContent='Confirmar: zerar tudo';$('resetMsg').textContent='';return;}
+  S={};save();renderBoard();armed=false;$('reset').textContent='Zerar placar';$('resetMsg').textContent='Placar zerado.';};
+$('toStudent').onclick=e=>{e.preventDefault();location.hash='';route();};
+function route(){const t=location.hash==='#professor';$('prof').hidden=!t;$('student').hidden=t;if(t)renderBoard();}
+window.addEventListener('hashchange',route);route();
+})();
+</script>
+
+<script src="config.js"></script>
+<script src="registro.js" data-aula="2"></script>

@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laboratório de Mentes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: a single lab-notebook column; each experiment is a numbered protocol card with a stimulus "screen"; teacher mode swaps in a projector board */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#142033; --muted:#5b6879; --line:#d8dee6;
+  --accent:#0e7c86; --accent-ink:#ffffff; --you:#c9771a; --soft:#e5f1f2; --warn:#a33a2a;
+  --screen:#f7f9fb; --screen-fg:#142033; --shape3:#8fb8bd;
+
+  --display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73;
+  --screen:#0b111a; --screen-fg:#e6ecf3; --shape3:#8fb8bd;
+ color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73;
+  --screen:#0b111a; --screen-fg:#e6ecf3; --shape3:#8fb8bd;
+ color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:17px/1.5 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-inline:18px;padding-block:28px 64px;display:grid;gap:22px}
+header{display:grid;gap:8px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(34px,8vw,54px)/1 var(--display);font-stretch:118%;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font:750 24px/1.15 var(--display);font-stretch:108%;margin:0;text-wrap:balance}
+h3{font:700 16px/1.2 var(--display);margin:0}
+p{margin:0;max-width:65ch}
+.lead{color:var(--muted)}
+.phones{display:flex;gap:10px;align-items:flex-start;background:var(--soft);border-radius:10px;padding:12px 14px;font-size:15px}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{font:600 14px/1 var(--body);color:var(--fg);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:var(--surface)}
+nav a:focus-visible,button:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.exp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:14px;min-width:0}
+.num{font:600 13px/1 var(--mono);color:var(--muted)}
+.tag{display:inline-block;font:600 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 7px;border-radius:5px;background:var(--soft);color:var(--accent)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+button{font:700 16px/1 var(--display);border:0;border-radius:10px;padding:14px 18px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px;touch-action:manipulation}
+button.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+button.big{flex:1 1 120px;font-size:22px;padding:20px 10px;font-stretch:112%}
+button.alt{background:var(--you);color:#fff}
+button:disabled{opacity:.4;cursor:default}
+.readout{font:500 15px/1.4 var(--mono);color:var(--muted)}
+.result{border-top:1px dashed var(--line);padding-top:14px;display:grid;gap:10px}
+.report{background:var(--soft);border-radius:10px;padding:12px 14px;font-size:16px}
+.report b{font:700 20px/1.2 var(--display);color:var(--you)}
+.why{font-size:15px;color:var(--muted)}
+.chart{width:100%;height:auto;display:block}
+.chart text{fill:var(--muted);font:19px var(--mono)}
+.chart .ax{stroke:var(--line)}
+.chart .ref{stroke:var(--accent);stroke-dasharray:6 5;stroke-width:2}
+.chart .reft{fill:var(--accent);font:600 16px var(--mono)}
+.chart .bar{fill:var(--you)}
+.chart .bar.alt{fill:var(--accent)}
+.chart .val{fill:var(--fg);font:700 21px var(--mono)}
+/* stimulus screen */
+.screen{position:relative;background:var(--screen);color:var(--screen-fg);border:1px solid var(--line);border-radius:12px;min-height:150px;display:grid;place-items:center;overflow:hidden;user-select:none;-webkit-user-select:none}
+.screen .hint{font-size:15px;color:var(--muted);padding:0 16px;text-align:center}
+.screen canvas{width:100%;height:auto;display:block;aspect-ratio:4/3}
+.ctx{font:400 18px/1.45 var(--body);padding:18px 16px;text-align:left;max-width:100%}
+.utt{font:700 clamp(22px,6vw,28px)/1.3 var(--display);padding:18px 16px;text-align:center}
+.q{font:600 clamp(19px,5.2vw,24px)/1.45 var(--body);padding:16px;text-align:left;width:100%}
+.q .w{opacity:0}
+.q .w.on{opacity:1}
+.dot{width:70px;height:70px;border-radius:50%;background:var(--line);transition:none}
+.dot.go{background:var(--you)}
+.panel-story{font:400 18px/1.45 var(--body);padding:18px 16px;width:100%;display:grid;gap:8px}
+.panel-story .step{font:600 12px/1 var(--mono);color:var(--muted);letter-spacing:.08em}
+textarea{width:100%;min-height:76px;font:16px/1.4 var(--body);padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--fg);resize:vertical}
+.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.scale button{font:700 20px/1 var(--mono);padding:12px 0}
+.scale button.sel{background:var(--you);color:#fff;border-color:var(--you)}
+.scalelab{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
+.ask{display:grid;gap:10px}
+.links a{color:var(--accent);font-weight:600}
+footer{font-size:13px;color:var(--muted)}
+/* teacher board */
+#prof{display:grid;gap:18px;max-width:1180px}
+.board{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:10px;min-width:0;align-content:start}
+.bars{display:grid;gap:6px}
+.bar{display:grid;grid-template-columns:118px 1fr 34px 34px 40px;gap:6px;align-items:center;font-size:14px}
+.bar .lab{font:500 13px var(--mono);color:var(--muted)}
+.bar .track{height:22px;background:var(--bg);border-radius:4px;overflow:hidden}
+.bar .fill{height:100%;background:var(--accent);width:0;transition:width .25s;display:block}
+.bar .n{font:700 15px var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.bar button{padding:0;min-height:30px;font-size:18px;border-radius:7px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap" id="student">
+  <header>
+    <span class="eyebrow">Bases neurais da comunicação humana · Aula 10</span>
+    <h1>Laboratório de Mentes</h1>
+    <p class="lead">Quatro experimentos sobre como o cérebro lê intenções: em formas que se movem, em frases irônicas, no ritmo de uma conversa e em histórias de quem pensa o quê. Você é o participante. No fim de cada um, informe o resultado ao professor.</p>
+    <div class="phones"><span>Segure o celular na vertical. Não precisa de som. Responda o mais rápido que puder sem chutar, e faça os experimentos na ordem, quando o professor pedir.</span></div>
+    <nav aria-label="Experimentos"><a href="#e1">1 · Formas com intenção</a><a href="#e2">2 · Ironia ou não?</a><a href="#e3">3 · Sua vez de falar</a><a href="#e4">4 · Quem pensa o quê</a></nav>
+  </header>
+
+  <!-- E1 -->
+  <section class="exp" id="e1">
+    <div class="row"><span class="num">EXPERIMENTO 1</span><span class="tag">≈ 4 min · 2 filmes de 20 s</span></div>
+    <h2>Formas com intenção</h2>
+    <p>Você vai assistir a dois filmes curtos com um quadrado, dois triângulos e um círculo. Depois de cada um, escreva em uma frase <b>o que aconteceu</b> e dê uma nota: quanto as formas pareciam ter intenções ou sentimentos?</p>
+    <div class="screen" id="e1scr"><canvas id="e1cv" width="400" height="300" aria-label="Filme de formas geométricas"></canvas></div>
+    <div class="row"><button id="e1go">Assistir ao filme 1</button><span class="readout" id="e1p"></span></div>
+    <div class="ask" id="e1ask" hidden>
+      <label for="e1txt"><b>O que aconteceu no filme?</b> Uma frase basta.</label>
+      <textarea id="e1txt" placeholder="Escreva aqui o que você viu…"></textarea>
+      <div><b>As formas pareciam ter intenções ou sentimentos?</b></div>
+      <div class="scale" id="e1scale"><button class="ghost" data-v="1">1</button><button class="ghost" data-v="2">2</button><button class="ghost" data-v="3">3</button><button class="ghost" data-v="4">4</button><button class="ghost" data-v="5">5</button></div>
+      <div class="scalelab"><span>1 = só formas se movendo</span><span>5 = personagens com intenções</span></div>
+      <div class="row"><button id="e1next" disabled>Continuar</button></div>
+    </div>
+    <div class="result" id="e1res" hidden>
+      <svg class="chart" id="e1chart" viewBox="0 0 640 300" role="img" aria-label="Notas de intencionalidade nos dois filmes"></svg>
+      <div class="report" id="e1rep"></div>
+      <p class="why">Nos dois filmes, só formas geométricas se moviam: ninguém “queria” nada. Mas quando o movimento é <b>contingente</b> (uma forma reage à outra, persegue, foge, espera), o cérebro não resiste e atribui intenções, medo e raiva. Heider e Simmel (1944) mostraram isso com um filme parecido: quase todos os participantes contaram uma história com personagens. Em ressonância magnética, animações desse tipo ativam a <b>rede de mentalização</b> (junção temporoparietal e córtex pré-frontal medial) mais do que formas em movimento aleatório (Castelli et al., 2000).</p>
+    </div>
+  </section>
+
+  <!-- E2 -->
+  <section class="exp" id="e2">
+    <div class="row"><span class="num">EXPERIMENTO 2</span><span class="tag">≈ 4 min · 14 situações</span></div>
+    <h2>Ironia ou não?</h2>
+    <p>Leia a situação no seu ritmo e toque em <b>Ver a frase</b>. Quando a frase aparecer, decida o mais rápido possível: quem falou foi <b>sincero</b> (quis dizer o que disse) ou <b>irônico</b> (quis dizer o contrário)? Algumas situações são ambíguas de propósito: responda o que achar.</p>
+    <div class="screen" id="e2scr" style="min-height:190px"><span class="hint">Toque em Começar.</span></div>
+    <div class="row"><button id="e2go">Começar</button><button id="e2see" hidden>Ver a frase</button><span class="readout" id="e2p"></span></div>
+    <div class="row" id="e2btn" hidden><button class="big" data-r="L">sincera</button><button class="big alt" data-r="I">irônica</button></div>
+    <div class="result" id="e2res" hidden>
+      <svg class="chart" id="e2chart" viewBox="0 0 640 300" role="img" aria-label="Tempo de decisão para frases sinceras e irônicas"></svg>
+      <div class="report" id="e2rep"></div>
+      <p class="why">As frases eram <b>as mesmas</b> nas versões sincera e irônica; só o contexto mudava. Para entender a ironia, você precisou comparar o que foi dito com o que o falante sabe e sente: isso é teoria da mente. A teoria pragmática clássica (Grice) previa que a ironia é sempre mais lenta, porque o sentido literal seria calculado e rejeitado primeiro. Com contexto forte, muitas vezes a diferença some (Gibbs, 1986). A rede de mentalização (junção temporoparietal, pré-frontal medial e precuneus) se ativa mais para frases irônicas do que para as mesmas frases ditas a sério (Spotorno et al., 2012).</p>
+    </div>
+  </section>
+
+  <!-- E3 -->
+  <section class="exp" id="e3">
+    <div class="row"><span class="num">EXPERIMENTO 3</span><span class="tag">≈ 4 min · 6 + 16 tentativas</span></div>
+    <h2>Sua vez de falar</h2>
+    <p>Na conversa, respondemos em cerca de 200 ms. Primeiro, meça seu tempo de reação simples: toque no botão assim que o círculo ficar laranja. Depois, perguntas vão aparecer palavra por palavra, no ritmo da fala. Responda <b>sim</b> ou <b>não</b> o mais rápido que puder; você pode responder antes de a pergunta terminar, como numa conversa de verdade.</p>
+    <div class="screen" id="e3scr" style="min-height:170px"><span class="hint">Toque em Começar.</span></div>
+    <div class="row"><button id="e3go">Começar</button><span class="readout" id="e3p"></span></div>
+    <div class="row" id="e3tap" hidden><button class="big" id="e3tapb">Toque!</button></div>
+    <div class="row" id="e3btn" hidden><button class="big" data-r="S">sim</button><button class="big alt" data-r="N">não</button></div>
+    <div class="result" id="e3res" hidden>
+      <svg class="chart" id="e3chart" viewBox="0 0 640 320" role="img" aria-label="Intervalo de resposta por tipo de pergunta"></svg>
+      <div class="report" id="e3rep"></div>
+      <p class="why">Medido a partir do fim da pergunta, o intervalo depende de <b>quando</b> a resposta ficou disponível. Quando dá para saber a resposta logo no início, você planeja enquanto o outro ainda “fala” e responde perto do ritmo da conversa, às vezes até sobrepondo. Quando a informação decisiva vem na última palavra, você precisa entender, decidir e só então agir. Como produzir uma palavra leva uns 600 ms, o intervalo de 200 ms da conversa só é possível porque <b>planejamos a resposta enquanto ouvimos</b> e prevemos quando o turno do outro vai acabar (Levinson, 2016; Bögels et al., 2015).</p>
+    </div>
+  </section>
+
+  <!-- E4 -->
+  <section class="exp" id="e4">
+    <div class="row"><span class="num">EXPERIMENTO 4</span><span class="tag">≈ 4 min · 4 histórias</span></div>
+    <h2>Quem pensa o quê</h2>
+    <p>O teste de Sally e Ana, versão para adultos. Leia cada história quadro a quadro. Depois, a história some e vêm três perguntas: onde a coisa está de verdade, onde um personagem vai procurar, e o que um personagem <b>acha que o outro acha</b>. Responda rápido.</p>
+    <div class="screen" id="e4scr" style="min-height:190px"><span class="hint">Toque em Começar.</span></div>
+    <div class="row"><button id="e4go">Começar</button><button id="e4next" hidden>Continuar</button><span class="readout" id="e4p"></span></div>
+    <div class="row" id="e4btn" hidden><button class="big" data-r="0"></button><button class="big" data-r="1"></button></div>
+    <div class="result" id="e4res" hidden>
+      <svg class="chart" id="e4chart" viewBox="0 0 640 300" role="img" aria-label="Acertos e tempo por tipo de pergunta"></svg>
+      <div class="report" id="e4rep"></div>
+      <p class="why">A pergunta sobre a realidade só exige memória. A de <b>1ª ordem</b> (“onde Bia vai procurar?”) exige representar a crença de alguém, que pode ser falsa: crianças passam a acertar por volta dos 4 anos. A de <b>2ª ordem</b> (“onde Caio acha que Bia vai procurar?”) exige uma crença dentro de outra; crianças acertam por volta dos 6–7 anos, e mesmo adultos ficam mais lentos e erram mais. É a mesma recursão que usamos para entender ironia: “ele sabe que eu sei que está chovendo”.</p>
+    </div>
+  </section>
+
+  <section class="exp" id="links">
+    <div class="row"><span class="num">PARA IR ALÉM</span></div>
+    <h2>Mentes e conversas</h2>
+    <div class="links" style="display:grid;gap:10px">
+      <p>O filme original de Heider e Simmel (1944), 1 min e meio: <a href="https://www.youtube.com/watch?v=VTNmLt7QX8E" target="_blank" rel="noopener">assista no YouTube</a>. Compare com o filme 1 deste laboratório.</p>
+      <p>Leitura indicada: Chris Frith e Uta Frith (2012), <i>Mechanisms of social cognition</i>, Annual Review of Psychology. Opcional: Stephens, Silbert e Hasson (2010), <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC2922522/" target="_blank" rel="noopener">o cérebro do ouvinte acompanha o do falante</a> (PNAS, acesso livre).</p>
+    </div>
+  </section>
+
+  <footer>Nenhuma resposta sai do seu celular. Professor: abra esta página com <span style="font-family:var(--mono)">#professor</span> no fim do link para o placar da turma.</footer>
+</div>
+
+<!-- Teacher board -->
+<div class="wrap" id="prof" hidden>
+  <header>
+    <span class="eyebrow">Placar da turma · Aula 10</span>
+    <h1>Resultados da turma</h1>
+    <p class="lead">Peça que levantem a mão por categoria e registre com + e −. Os números ficam salvos neste navegador.</p>
+    <div class="row"><button class="ghost" id="reset">Zerar placar</button><span class="readout" id="resetMsg"></span><a href="#" id="toStudent" style="color:var(--accent);font-weight:600">Ver página dos alunos</a></div>
+  </header>
+  <div class="board" id="board"></div>
+</div>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const frame=()=>new Promise(r=>requestAnimationFrame(r));
+const mean=a=>a.length?a.reduce((s,v)=>s+v,0)/a.length:NaN;
+const median=a=>{if(!a.length)return NaN;const b=[...a].sort((x,y)=>x-y),m=b.length>>1;return b.length%2?b[m]:(b[m-1]+b[m])/2;};
+const fmt=v=>isNaN(v)?'—':Math.round(v).toLocaleString('pt-BR');
+const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const once=el=>new Promise(r=>{const h=()=>{el.removeEventListener('click',h);r();};el.addEventListener('click',h);});
+function waitChoice(box,t0){return new Promise(res=>{const bs=[...box.querySelectorAll('button')];bs.forEach(b=>b.disabled=false);
+  const start=t0??performance.now();
+  const h=e=>{const t=performance.now();bs.forEach(b=>{b.disabled=true;b.removeEventListener('click',h);});res({r:e.currentTarget.dataset.r,t,rt:t-start});};
+  bs.forEach(b=>b.addEventListener('click',h));});}
+function show(scr,html){scr.innerHTML=html;}
+/* bar chart: items [{label, value, text, alt}]; opt.ref = {v, label} draws a dashed reference line; opt.min allows negatives */
+function bars(svg,items,{max,unit='',ref=null}={}){const W=640,H=+svg.getAttribute('viewBox').split(' ')[3],L=10,R=10,T=40,B=62;
+  const vals=items.map(i=>isNaN(i.value)?0:i.value);const lo=Math.min(0,...vals);
+  const m=max||Math.max(1,...vals,ref?ref.v:0)*1.15;const span=m-lo*1.15;const y0=T+(H-T-B)*(m/span);
+  const Y=v=>y0-(H-T-B)*v/span;
+  const n=items.length,slot=(W-L-R)/n,bw=Math.min(110,slot*.6);
+  let g=`<line class="ax" x1="${L}" y1="${y0}" x2="${W-R}" y2="${y0}"/>`;
+  if(ref){g+=`<line class="ref" x1="${L}" y1="${Y(ref.v)}" x2="${W-R}" y2="${Y(ref.v)}"/><text class="reft" x="${W-R}" y="${Y(ref.v)-8}" text-anchor="end">${ref.label}</text>`;}
+  items.forEach((it,i)=>{const v=isNaN(it.value)?0:it.value;const x=L+slot*i+(slot-bw)/2;const yt=Math.min(Y(v),y0),h=Math.abs(Y(v)-y0);
+    g+=`<rect class="bar${it.alt?' alt':''}" x="${x}" y="${yt}" width="${bw}" height="${Math.max(h,1)}" rx="4"/>`;
+    g+=`<text class="val" x="${x+bw/2}" y="${v>=0?yt-8:yt+h+22}" text-anchor="middle">${it.text??(isNaN(it.value)?'—':fmt(v)+unit)}</text>`;
+    const lines=it.label.split('\n');lines.forEach((ln,k)=>g+=`<text x="${x+bw/2}" y="${H-B+24+k*21}" text-anchor="middle">${ln}</text>`);});
+  svg.innerHTML=g;}
+
+/* ================= E1 · Heider–Simmel ================= */
+const cv=$('e1cv'),cx=cv.getContext('2d');
+(function fitCanvas(){const d=Math.min(2,window.devicePixelRatio||1);cv.width=400*d;cv.height=300*d;cx.setTransform(d,0,0,d,0,0);})();
+const HOUSE={x0:40,y0:70,x1:170,y1:210,d0:115,d1:165};
+// keyframes [t, x, y]
+function circ(c,r,t0,t1,n,a0=0,dir=1){const out=[];for(let i=0;i<=n;i++){const t=t0+(t1-t0)*i/n,a=a0+dir*2*Math.PI*i/n;out.push([t,c[0]+r*Math.cos(a),c[1]+r*Math.sin(a)]);}return out;}
+const STORY={
+ T:[[0,90,120],[1.5,130,170],[3,110,140],[3.8,150,140],[4.6,205,140],[5.2,228,142],[5.6,212,142],[6.1,236,145],[6.5,214,144],[7.0,240,146],[7.6,220,140],[8.6,190,140],[9.4,150,140],[10.2,120,120],
+    ...circ([105,140],32,10.8,13.8,10,-1.2,1).map(([t,x,y])=>[t,x,y]),[14.4,125,150],[15.2,150,140],[15.8,150,140],[16.4,70,100],[16.9,150,180],[17.4,65,190],[17.9,150,95],[18.4,62,120],[19.0,145,190],[19.6,100,140],[20.5,100,140]],
+ t:[[0,-20,270],[1.6,200,245],[2.5,240,185],[3.8,262,150],[4.6,262,148],[5.2,284,150],[5.6,266,150],[6.1,292,152],[6.5,270,150],[7.0,298,154],[7.6,280,160],[9.0,275,190],[11.0,262,190],[13.5,230,175],[14.1,200,155],[15.0,215,160],[15.8,260,200],
+    ...circ([310,225],22,16.0,18.2,8,Math.PI,1).map(([t,x,y])=>[t,x,y]),[19.4,370,250],[20.5,440,260]],
+ c:[[0,-40,288],[1.6,180,268],[2.5,215,215],[3.8,240,190],[4.6,300,100],[7.6,300,90],[8.4,240,110],[9.0,175,140],[9.6,130,150],
+    ...circ([105,140],22,10.0,13.8,10,0,1),[14.6,175,140],[15.2,215,150],[15.8,275,205],
+    ...circ([310,225],22,16.0,18.2,8,0,1),[19.4,385,235],[20.5,450,240]],
+ door:[[0,0],[3.2,0],[3.8,1],[9.6,1],[10.2,0],[13.6,0],[14.2,1],[15.4,1],[15.9,0],[20.5,0]],
+ shake:[[0,0],[16.2,0],[16.4,1],[19.6,1],[19.8,0],[20.5,0]]};
+const ease=u=>u<.5?2*u*u:1-2*(1-u)*(1-u);
+function interp(K,t){if(t<=K[0][0])return K[0].slice(1);for(let i=1;i<K.length;i++){if(t<=K[i][0]){const a=K[i-1],b=K[i];const u=ease((t-a[0])/Math.max(1e-6,b[0]-a[0]));return a.slice(1).map((v,k)=>v+(b[k+1]-v)*u);}}return K[K.length-1].slice(1);}
+function randomTrack(dur,sp,seedStart){const K=[[0,...seedStart]];let t=0,p=seedStart;while(t<dur){const q=[30+Math.random()*340,30+Math.random()*240];const d=Math.hypot(q[0]-p[0],q[1]-p[1]);t+=Math.max(.6,d/sp)*(0.8+Math.random()*.5);K.push([t,...q]);p=q;}return K;}
+function makeRandom(){return {T:randomTrack(21,75,[90,120]),t:randomTrack(21,85,[250,200]),c:randomTrack(21,85,[300,100]),door:[[0,0],[21,0]],shake:[[0,0],[21,0]]};}
+const ang={};
+function drawScene(S,t){const W=400,H=300;const fg=css('--screen-fg'),you=css('--you'),acc=css('--accent'),c3=css('--shape3'),bg=css('--screen');
+  cx.fillStyle=bg;cx.fillRect(0,0,W,H);
+  const sh=interp(S.shake,t)[0];const jx=sh?(Math.random()-.5)*4:0,jy=sh?(Math.random()-.5)*4:0;
+  cx.strokeStyle=fg;cx.lineWidth=4;cx.lineCap='round';
+  const h=HOUSE;cx.beginPath();cx.moveTo(h.x1+jx,h.d0+jy);cx.lineTo(h.x1+jx,h.y0+jy);cx.lineTo(h.x0+jx,h.y0+jy);cx.lineTo(h.x0+jx,h.y1+jy);cx.lineTo(h.x1+jx,h.y1+jy);cx.lineTo(h.x1+jx,h.d1+jy);cx.stroke();
+  const o=interp(S.door,t)[0];const a=o*1.25;cx.beginPath();cx.moveTo(h.x1+jx,h.d0+jy);cx.lineTo(h.x1+jx+Math.sin(a)*(h.d1-h.d0),h.d0+jy+Math.cos(a)*(h.d1-h.d0));cx.stroke();
+  const dt=0.05;
+  [['T',22,you],['t',13,acc]].forEach(([k,s,col])=>{const [x,y]=interp(S[k],t);const [x2,y2]=interp(S[k],t+dt);const v=Math.hypot(x2-x,y2-y);
+    if(v>0.3||ang[k]===undefined)ang[k]=Math.atan2(y2-y,x2-x)||0;const A=ang[k];
+    cx.beginPath();cx.moveTo(x+Math.cos(A)*s*1.4,y+Math.sin(A)*s*1.4);cx.lineTo(x+Math.cos(A+2.4)*s,y+Math.sin(A+2.4)*s);cx.lineTo(x+Math.cos(A-2.4)*s,y+Math.sin(A-2.4)*s);cx.closePath();
+    cx.fillStyle=col;cx.fill();cx.lineWidth=2;cx.strokeStyle=fg;cx.stroke();});
+  const [x,y]=interp(S.c,t);cx.beginPath();cx.arc(x,y,10,0,2*Math.PI);cx.fillStyle=c3;cx.fill();cx.lineWidth=2;cx.strokeStyle=fg;cx.stroke();}
+function play(S,dur){return new Promise(res=>{const t0=performance.now();Object.keys(ang).forEach(k=>delete ang[k]);
+  const step=()=>{const t=(performance.now()-t0)/1000;drawScene(S,Math.min(t,dur));$('e1p').textContent=`${Math.max(0,Math.ceil(dur-t))} s`;if(t<dur)requestAnimationFrame(step);else{$('e1p').textContent='';res();}};requestAnimationFrame(step);});}
+const MENTAL=['quer','queri','tent','persegu','perseg','fug','foge','fogem','escap','medo','assust','raiva','brav','brig','atac','ameaç','proteg','defend','ajud','amig','namor','ciúm','ciumen','valent','malvad','mau','vilã','vilão','herói','heroi','provoc','escond','salv','feliz','triste','irrit','agressiv','encurral','decid','pens','acha','sab','gost','odei','brinc','invad','expuls','intimid','chatead','desesper','comemor','danç','convers','beij','abraç','carinh','famíl','casal','pai','mãe','mae','filh','criança','crianc','prend','tranc','bully','bulli','dispu','ciúme','raiv','furios','nervos','curios','tím','tímid','corajos','sozinh','junt','fofo','pegar','pega','caç','vingan','discut','lut','ganh','perd','venc','espera','esperou','convid','pediu','pede','mand','obedec','resgat','libert','sequestr','roub'];
+function mentalCount(s){const ws=(s||'').toLowerCase().normalize('NFC').split(/[^a-zà-ú]+/u).filter(Boolean);let n=0;ws.forEach(w=>{if(MENTAL.some(m=>w.startsWith(m)))n++;});return n;}
+let e1order=null;
+$('e1go').onclick=async()=>{$('e1go').disabled=true;$('e1res').hidden=true;
+  e1order=shuffle(['story','random']);const R={};
+  for(let k=0;k<2;k++){const kind=e1order[k];const S=kind==='story'?STORY:makeRandom();
+    $('e1ask').hidden=true;$('e1go').hidden=true;
+    await play(S,20.5);
+    $('e1txt').value='';$('e1scale').querySelectorAll('button').forEach(b=>b.classList.remove('sel'));$('e1next').disabled=true;
+    $('e1ask').hidden=false;$('e1next').textContent=k===0?'Ver o filme 2':'Ver resultado';
+    let rating=0;$('e1scale').querySelectorAll('button').forEach(b=>b.onclick=()=>{rating=+b.dataset.v;$('e1scale').querySelectorAll('button').forEach(x=>x.classList.toggle('sel',x===b));$('e1next').disabled=false;});
+    await once($('e1next'));R[kind]={rating,words:mentalCount($('e1txt').value),txt:$('e1txt').value};$('e1ask').hidden=true;}
+  cx.fillStyle=css('--screen');cx.fillRect(0,0,400,300);
+  bars($('e1chart'),[{label:'com história',value:R.story.rating,text:R.story.rating+' / 5'},{label:'movimento\naleatório',value:R.random.rating,text:R.random.rating+' / 5',alt:1}],{max:5.8});
+  const d=R.story.rating-R.random.rating;const c1=d>=2?'≥ 2 pontos':d===1?'1 ponto':'0 ou menos';
+  const ms=R.story.words>0,mr=R.random.words>0;const c2=ms&&mr?'nas duas':ms?'só na história':mr?'só no aleatório':'em nenhuma';
+  const which=e1order[0]==='story'?'O filme 1 tinha uma história; o filme 2 era aleatório.':'O filme 1 era aleatório; o filme 2 tinha uma história.';
+  $('e1rep').innerHTML=`${which} Diferença de nota (história − aleatório): <b>${c1}</b>. Palavras de intenção ou emoção nas suas frases (persegue, foge, quer, medo…): história ${R.story.words} · aleatório ${R.random.words}. Informe a diferença de nota e onde apareceram palavras de mente: <b>${c2}</b>.`;
+  $('e1res').hidden=false;$('e1go').hidden=false;$('e1go').disabled=false;$('e1go').textContent='Refazer';};
+cx.fillStyle=css('--screen');cx.fillRect(0,0,400,300);drawScene(STORY,0);
+
+/* ================= E2 · irony judgement ================= */
+const PAIRS2=[
+ ['“Que dia maravilhoso!”','Joana passou o domingo na praia, com sol, mar calmo e os amigos. À noite, ela conta:','Choveu o dia todo e o ônibus de Marcos atrasou uma hora. Ele chega encharcado e diz:'],
+ ['“Mandei bem, hein?”','Pedro estudou a semana inteira e tirou 10 na prova de cálculo. Ele mostra a nota para a mãe:','Pedro não estudou nada e tirou 2 na prova de cálculo. Ele mostra a nota para o amigo:'],
+ ['“Esse lugar é ótimo.”','O restaurante novo serviu um prato delicioso e barato, e o garçom foi simpático. Na saída, Lucas comenta:','O restaurante demorou uma hora, a comida veio fria e a conta foi cara. Na saída, Lucas comenta:'],
+ ['“Hoje eu tô com sorte!”','O ônibus chegou na hora, vazio e com ar-condicionado. Carla senta na janela e diz:','Carla perdeu o ônibus, o celular descarregou e começou a chover. Ela diz:'],
+ ['“Você é um anjo.”','A colega passou a tarde explicando a matéria para Rafael antes da prova. Ele agradece:','O colega prometeu ajudar Rafael no trabalho, sumiu e deixou tudo para ele. Quando o colega reaparece, Rafael diz:'],
+ ['“Que capricho!”','O filho lavou toda a louça e deixou a cozinha brilhando. A mãe olha e diz:','O filho “lavou” a louça, mas deixou tudo engordurado e a pia alagada. A mãe olha e diz:'],
+ ['“Que trânsito tranquilo!”','A avenida estava vazia e Bia chegou ao trabalho em dez minutos. Ela comenta:','Bia ficou duas horas parada num engarrafamento. Quando finalmente chega, ela comenta:'],
+ ['“Adorei o presente.”','Ana ganhou do namorado o livro que ela queria havia meses. Ela abre, sorri e diz:','Ana ganhou do namorado, pela terceira vez, o mesmo par de meias. Ela abre, revira os olhos e diz:'],
+ ['“Muito obrigado pela ajuda.”','O vizinho ajudou Caio a carregar a mudança até o quarto andar. Caio diz:','O vizinho ficou só olhando enquanto Caio carregava a mudança sozinho até o quarto andar. Caio diz:'],
+ ['“Esse calorzinho é uma delícia.”','Depois de uma semana de frio, Natal amanhece com sol e 26 graus. Na praia, Davi diz:','Faz 38 graus, o ventilador quebrou e acabou a luz. Davi, suando, diz:']];
+const AMB2=[['“Foi uma reunião bem produtiva.”','Lia sai de uma reunião de três horas e encontra a colega no corredor. Ela diz:'],
+ ['“Que filme inesquecível.”','Tiago acaba de assistir ao filme que o amigo recomendou. Ele diz ao amigo:'],
+ ['“Interessante esse tempero.”','O pai prova a sopa que o filho fez pela primeira vez. Ele diz:'],
+ ['“Ficou bem diferente!”','Marina vê o novo corte de cabelo da irmã. Ela diz:']];
+$('e2go').onclick=async()=>{const scr=$('e2scr');$('e2go').disabled=true;$('e2res').hidden=true;
+  const ironicIdx=new Set(shuffle([...PAIRS2.keys()]).slice(0,5));
+  const trials=shuffle([...PAIRS2.map((p,i)=>ironicIdx.has(i)?{u:p[0],c:p[2],k:'I'}:{u:p[0],c:p[1],k:'L'}),...AMB2.map(a=>({u:a[0],c:a[1],k:'A'}))]);
+  const R={L:[],I:[],A:[]};
+  for(let t=0;t<trials.length;t++){const tr=trials[t];$('e2p').textContent=`${t+1} / ${trials.length}`;
+    show(scr,`<div class="ctx">${esc(tr.c)}</div>`);$('e2see').hidden=false;await once($('e2see'));$('e2see').hidden=true;
+    show(scr,'');await sleep(250);show(scr,`<div class="utt">${tr.u}</div>`);await frame();const t0=performance.now();$('e2btn').hidden=false;
+    const {r,rt}=await waitChoice($('e2btn'),t0);$('e2btn').hidden=true;R[tr.k].push({r,rt,ok:r===tr.k});show(scr,'');await sleep(300);}
+  show(scr,'<span class="hint">Concluído.</span>');$('e2p').textContent='';
+  const rtL=median(R.L.filter(d=>d.ok).map(d=>d.rt)),rtI=median(R.I.filter(d=>d.ok).map(d=>d.rt));
+  const accL=R.L.filter(d=>d.ok).length,accI=R.I.filter(d=>d.ok).length;const ambI=R.A.filter(d=>d.r==='I').length;
+  bars($('e2chart'),[{label:'sinceras',value:rtL,unit:' ms',alt:1},{label:'irônicas',value:rtI,unit:' ms'}],{unit:' ms'});
+  const d=rtI-rtL;const c1=isNaN(d)?'—':d>100?'irônicas mais lentas':d<-100?'irônicas mais rápidas':'parecido';
+  const c2=ambI<=1?'0–1 de 4':ambI===2?'2 de 4':'3–4 de 4';
+  $('e2rep').innerHTML=`Tempo mediano das respostas certas: sinceras ${fmt(rtL)} ms · irônicas ${fmt(rtI)} ms. Acertos: sinceras ${accL} de 5 · irônicas ${accI} de 5. Informe: <b>${c1}</b> (diferença de ${fmt(Math.abs(d))} ms), e quantas ambíguas você leu como irônicas: <b>${c2}</b>.`;
+  $('e2res').hidden=false;$('e2go').disabled=false;$('e2go').textContent='Refazer';};
+
+/* ================= E3 · turn-taking gap ================= */
+const WORD_MS=300;
+const QE=[['Peixes voam pelo céu todas as manhãs, né?','N'],['Gelo é frio quando a gente pega na mão, né?','S'],['Cachorros miam quando querem passear na rua?','N'],['Bananas são frutas que a gente come descascada?','S'],
+ ['Três mais três dá seis, se eu não me engano?','S'],['Domingo vem antes de segunda em toda semana?','S'],['Neve cai muito em Natal todo mês de dezembro?','N'],['Formigas são maiores que elefantes, você acha?','N']];
+const QL=[['A cor do céu num dia de sol é azul?','S'],['O animal que tem uma tromba comprida é a girafa?','N'],['O dia que vem depois da segunda-feira é a terça?','S'],['Cinco mais cinco é igual a onze?','N'],
+ ['A capital do Rio Grande do Norte é Natal?','S'],['A fruta amarela que o macaco come é a melancia?','N'],['A estação mais fria do ano é o inverno?','S'],['O lado do corpo onde fica o coração é o direito?','N']];
+$('e3go').onclick=async()=>{const scr=$('e3scr');$('e3go').disabled=true;$('e3res').hidden=true;
+  // simple RT
+  const simple=[];let k=0;$('e3p').textContent='Parte 1: tempo de reação simples';
+  while(simple.length<6&&k<14){k++;show(scr,'<div class="dot" id="e3dot"></div>');$('e3tap').hidden=false;const btn=$('e3tapb');btn.disabled=false;
+    let early=false;const pre=()=>{early=true;};btn.addEventListener('click',pre);
+    await sleep(900+Math.random()*1800);btn.removeEventListener('click',pre);
+    if(early){show(scr,'<span class="hint">Cedo demais! Espere o laranja.</span>');await sleep(900);continue;}
+    $('e3dot').classList.add('go');await frame();const t0=performance.now();await once(btn);const rt=performance.now()-t0;
+    if(rt>100&&rt<1500)simple.push(rt);show(scr,`<span class="hint">${fmt(rt)} ms</span>`);await sleep(600);}
+  $('e3tap').hidden=true;
+  show(scr,'<span class="hint">Agora as perguntas. Responda sim ou não assim que souber. Pode responder antes do fim!</span>');$('e3p').textContent='Parte 2: perguntas';await sleep(2600);
+  const trials=shuffle([...QE.map(q=>({q:q[0],a:q[1],k:'E'})),...QL.map(q=>({q:q[0],a:q[1],k:'L'}))]);const R={E:[],L:[]};
+  for(let t=0;t<trials.length;t++){const tr=trials[t];$('e3p').textContent=`pergunta ${t+1} / ${trials.length}`;
+    const ws=tr.q.split(' ');show(scr,`<div class="q">${ws.map(w=>`<span class="w">${esc(w)}</span>`).join(' ')}</div>`);
+    const spans=[...scr.querySelectorAll('.w')];await sleep(500);
+    $('e3btn').hidden=false;let ans=null;const p=waitChoice($('e3btn')).then(v=>{ans=v;});
+    let lastOn=0;for(let i=0;i<spans.length&&!ans;i++){spans[i].classList.add('on');await frame();lastOn=performance.now();if(i<spans.length-1)await sleep(WORD_MS-16);}
+    await p;
+    // end of the question = end of the last word; if the answer came before the last word appeared, the end is projected from the word schedule
+    const remaining=spans.filter(s=>!s.classList.contains('on')).length;
+    const g=ans.t-(lastOn+WORD_MS*(1+remaining));
+    spans.forEach(s=>s.classList.add('on'));$('e3btn').hidden=true;
+    // in "late" questions the answer only exists in the last word: answering before it is a guess
+    const guess=tr.k==='L'&&remaining>0;
+    if(guess){scr.insertAdjacentHTML('beforeend','<span class="hint" style="padding-bottom:12px">Chute! Aqui a resposta só vem na última palavra.</span>');await sleep(1200);}
+    else await sleep(250);
+    R[tr.k].push({gap:g,ok:ans.r===tr.a&&!guess});show(scr,'');await sleep(500);}
+  show(scr,'<span class="hint">Concluído.</span>');$('e3p').textContent='';
+  const gE=median(R.E.filter(d=>d.ok).map(d=>d.gap)),gL=median(R.L.filter(d=>d.ok).map(d=>d.gap)),sRT=median(simple);
+  const err=[...R.E,...R.L].filter(d=>!d.ok).length;
+  bars($('e3chart'),[{label:'reação\nsimples',value:sRT,alt:1},{label:'resposta\ncedo',value:gE},{label:'resposta\ntarde',value:gL}],{unit:' ms',ref:{v:200,label:'conversa ≈ 200 ms'}});
+  const c1=isNaN(gE)?'—':gE<0?'< 0 ms (sobrepôs)':gE<300?'0–300 ms':gE<600?'300–600 ms':'> 600 ms';
+  const d=gL-gE;const c2=isNaN(d)?'—':d<100?'< 100 ms':d<300?'100–300 ms':'> 300 ms';
+  $('e3rep').innerHTML=`Intervalo mediano depois do fim da pergunta (respostas certas): resposta disponível cedo ${fmt(gE)} ms · só no fim ${fmt(gL)} ms. Seu tempo de reação simples: ${fmt(sRT)} ms. Erros: ${err} de 16. Informe o intervalo das perguntas “cedo”: <b>${c1}</b>, e o custo de decidir tarde: <b>${c2}</b>.`;
+  $('e3res').hidden=false;$('e3go').disabled=false;$('e3go').textContent='Refazer';};
+
+/* ================= E4 · first- and second-order false belief ================= */
+const STORIES=[
+ {p:['Bia guarda um chocolate na <b>gaveta</b> e vai para o quintal.','Enquanto ela está fora, Caio tira o chocolate da gaveta e põe no <b>armário</b>.','Bia espia pela janela e vê tudo. Caio <b>não percebe</b> que ela viu.'],
+  L:['gaveta','armário'],real:1,q1:['Onde Bia vai procurar o chocolate?',1],q2:['Onde Caio acha que Bia vai procurar?',0]},
+ {p:['Léo deixa as chaves em cima da <b>mesa</b> e vai tomar banho.','Rita guarda as chaves dentro da <b>bolsa</b> dela.','Léo, no banho, não vê nada. Rita sabe que ele não viu.'],
+  L:['mesa','bolsa'],real:1,q1:['Onde Léo vai procurar as chaves?',0],q2:['Onde Rita acha que Léo vai procurar?',0]},
+ {p:['Nina esconde o presente de Davi <b>embaixo da cama</b> e sai para a padaria.','Davi encontra o presente, espia, e guarda no <b>guarda-roupa</b>.','Nina volta, vê pela janela onde ele guardou, e Davi <b>percebe</b> que ela viu.'],
+  L:['embaixo da cama','guarda-roupa'],real:1,q1:['Onde Nina vai procurar o presente?',1],q2:['Onde Davi acha que Nina vai procurar?',1]},
+ {p:['Marcos e Júlia veem o pipoqueiro na <b>praça</b>. Júlia vai em casa buscar dinheiro.','O pipoqueiro avisa Marcos que vai mudar para a frente da <b>escola</b>.','No caminho, o pipoqueiro passa pela casa de Júlia e conta a ela também. Marcos <b>não sabe</b> disso.'],
+  L:['praça','escola'],real:1,q1:['Onde Júlia vai procurar o pipoqueiro?',1],q2:['Onde Marcos acha que Júlia vai procurar o pipoqueiro?',0]}];
+$('e4go').onclick=async()=>{const scr=$('e4scr');$('e4go').disabled=true;$('e4res').hidden=true;
+  const R={real:[],q1:[],q2:[]};const order=shuffle([...STORIES.keys()]);
+  for(let s=0;s<order.length;s++){const st=STORIES[order[s]];$('e4p').textContent=`história ${s+1} / ${order.length}`;
+    for(let i=0;i<st.p.length;i++){show(scr,`<div class="panel-story"><span class="step">QUADRO ${i+1} DE ${st.p.length}</span><div>${st.p[i]}</div></div>`);$('e4next').hidden=false;await once($('e4next'));}
+    $('e4next').hidden=true;
+    const qs=[['real','Onde está de verdade?',st.real],['q1',...st.q1],['q2',...st.q2]];
+    for(const [k,q,ans] of qs){show(scr,'');await sleep(250);
+      show(scr,`<div class="q" style="opacity:1">${q}</div>`);
+      const pos=shuffle([0,1]);const bs=$('e4btn').querySelectorAll('button');bs.forEach((b,i)=>{b.textContent=st.L[pos[i]];b.dataset.r=pos[i];});
+      $('e4btn').hidden=false;await frame();const t0=performance.now();const {r,rt}=await waitChoice($('e4btn'),t0);$('e4btn').hidden=true;
+      R[k].push({ok:+r===ans,rt});}
+    show(scr,'<span class="hint">Próxima história…</span>');await sleep(600);}
+  show(scr,'<span class="hint">Concluído.</span>');$('e4p').textContent='';
+  const acc=k=>R[k].filter(d=>d.ok).length,rt=k=>median(R[k].filter(d=>d.ok).map(d=>d.rt));
+  bars($('e4chart'),[{label:'realidade',value:rt('real'),alt:1},{label:'1ª ordem',value:rt('q1')},{label:'2ª ordem',value:rt('q2')}],{unit:' ms'});
+  const e2=4-acc('q2');const c1=e2===0?'0':e2===1?'1':'2 ou mais';const c2=(rt('q2')-rt('q1'))>300?'sim':'não';
+  $('e4rep').innerHTML=`Acertos (de 4): realidade ${acc('real')} · 1ª ordem ${acc('q1')} · 2ª ordem ${acc('q2')}. O gráfico mostra o tempo mediano das respostas certas. Informe seus erros de 2ª ordem: <b>${c1}</b>, e se a 2ª ordem foi mais de 300 ms mais lenta que a 1ª: <b>${c2}</b>.`;
+  $('e4res').hidden=false;$('e4go').disabled=false;$('e4go').textContent='Refazer';};
+
+/* ================= teacher board ================= */
+const BOARD=[
+ {k:'e1a',t:'1 · Nota: história − aleatório',cats:['≥ 2 pontos','1 ponto','0 ou menos']},
+ {k:'e1b',t:'1 · Palavras de mente apareceram',cats:['só na história','nas duas','só no aleatório','em nenhuma']},
+ {k:'e2a',t:'2 · Tempo da ironia',cats:['irônicas mais lentas','parecido','irônicas mais rápidas']},
+ {k:'e2b',t:'2 · Ambíguas lidas como irônicas',cats:['0–1 de 4','2 de 4','3–4 de 4']},
+ {k:'e3a',t:'3 · Intervalo (resposta cedo)',cats:['< 0 ms (sobrepôs)','0–300 ms','300–600 ms','> 600 ms']},
+ {k:'e3b',t:'3 · Custo de decidir tarde',cats:['< 100 ms','100–300 ms','> 300 ms']},
+ {k:'e4a',t:'4 · Erros de 2ª ordem',cats:['0','1','2 ou mais']},
+ {k:'e4b',t:'4 · 2ª ordem mais lenta?',cats:['sim','não']}];
+let S={};try{S=JSON.parse(localStorage.getItem('mentes-placar')||'{}')}catch(e){S={}}
+const save=()=>{try{localStorage.setItem('mentes-placar',JSON.stringify(S))}catch(e){}};
+function renderBoard(){const host=$('board');host.innerHTML='';
+  BOARD.forEach(p=>{const div=document.createElement('div');div.className='panel';let max=1;p.cats.forEach((_,i)=>max=Math.max(max,S[p.k+'_'+i]||0));
+    let h=`<h2>${p.t}</h2><div class="bars">`;
+    p.cats.forEach((c,i)=>{const key=p.k+'_'+i,v=S[key]||0;
+      h+=`<div class="bar"><span class="lab">${c}</span><span class="track"><span class="fill" style="width:${100*v/max}%"></span></span><button class="ghost" data-k="${key}" data-d="-1" aria-label="menos ${c}">−</button><button data-k="${key}" data-d="1" aria-label="mais ${c}">+</button><span class="n">${v}</span></div>`;});
+    div.innerHTML=h+'</div>';host.appendChild(div);});
+  host.querySelectorAll('button[data-k]').forEach(b=>b.onclick=()=>{const k=b.dataset.k;S[k]=Math.max(0,(S[k]||0)+(+b.dataset.d));save();renderBoard();});}
+let armed=false;$('reset').onclick=()=>{if(!armed){armed=true;$('reset').textContent='Confirmar: zerar tudo';$('resetMsg').textContent='';return;}
+  S={};save();renderBoard();armed=false;$('reset').textContent='Zerar placar';$('resetMsg').textContent='Placar zerado.';};
+$('toStudent').onclick=e=>{e.preventDefault();location.hash='';route();};
+function route(){const t=location.hash==='#professor';$('prof').hidden=!t;$('student').hidden=t;if(t)renderBoard();}
+window.addEventListener('hashchange',route);route();
+})();
+</script>
+
+<script src="config.js"></script>
+<script src="registro.js" data-aula="10"></script>

@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laboratório de Línguas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: a single lab-notebook column; each experiment is a numbered protocol card; teacher mode swaps in a projector board */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#142033; --muted:#5b6879; --line:#d8dee6;
+  --accent:#0e7c86; --accent-ink:#ffffff; --you:#c9771a; --soft:#e5f1f2; --warn:#a33a2a;
+  --screen:#f7f9fb;
+  --display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73;
+  --screen:#0b111a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73;
+  --screen:#0b111a; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:17px/1.5 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-inline:18px;padding-block:28px 64px;display:grid;gap:22px}
+header{display:grid;gap:8px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(34px,8vw,54px)/1 var(--display);font-stretch:118%;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font:750 24px/1.15 var(--display);font-stretch:108%;margin:0;text-wrap:balance}
+h3{font:700 16px/1.2 var(--display);margin:0}
+p{margin:0;max-width:65ch}
+.lead{color:var(--muted)}
+.phones{display:flex;gap:10px;align-items:flex-start;background:var(--soft);border-radius:10px;padding:12px 14px;font-size:15px}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{font:600 14px/1 var(--body);color:var(--fg);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:var(--surface)}
+nav a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.exp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:14px;min-width:0}
+.num{font:600 13px/1 var(--mono);color:var(--muted)}
+.tag{display:inline-block;font:600 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 7px;border-radius:5px;background:var(--soft);color:var(--accent)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+button{font:700 16px/1 var(--display);border:0;border-radius:10px;padding:14px 18px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px;touch-action:manipulation}
+button.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+button.big{flex:1 1 120px;font-size:24px;padding:20px 10px;font-stretch:112%}
+button:disabled{opacity:.4;cursor:default}
+button.chip{background:transparent;color:var(--fg);border:1.5px solid var(--line);font:600 15px/1 var(--body);min-height:44px;padding:10px 14px}
+button.chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.meter{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.meter>i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
+.readout{font:500 15px/1.4 var(--mono);color:var(--muted)}
+.result{border-top:1px dashed var(--line);padding-top:14px;display:grid;gap:10px}
+.report{background:var(--soft);border-radius:10px;padding:12px 14px;font-size:16px}
+.report b{font:700 20px/1.2 var(--display);color:var(--you)}
+.why{font-size:15px;color:var(--muted)}
+.chart{width:100%;height:auto;display:block}
+.chart text{fill:var(--muted);font:17px var(--mono)}
+.chart .ax{stroke:var(--line)}
+.chart .bar{fill:var(--you)}
+.chart .bar.alt{fill:var(--accent)}
+.chart .val{fill:var(--fg);font:700 18px var(--mono)}
+.chart .ref{stroke:var(--accent);stroke-width:2;stroke-dasharray:6 5}
+.screen{position:relative;background:var(--screen);border:1px solid var(--line);border-radius:12px;min-height:220px;display:grid;place-items:center;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:manipulation;cursor:pointer}
+.cue{display:grid;place-items:center;gap:6px;width:100%;height:100%;min-height:220px;border-radius:11px}
+.cue .lang{font:700 15px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase}
+.cue .dig{font:800 96px/1 var(--display);font-variant-numeric:tabular-nums}
+.cue.pt{background:var(--accent);color:var(--accent-ink)}
+.cue.l2{background:var(--you);color:#1d1205}
+.fix{font:700 40px/1 var(--mono);color:var(--muted)}
+.words{font:700 18px/1.4 var(--mono);letter-spacing:.04em;word-break:break-all}
+.q{display:grid;gap:8px}
+.q p{font-weight:600}
+.links{display:grid;gap:10px}
+.links a{color:var(--accent);font-weight:600}
+footer{font-size:13px;color:var(--muted)}
+/* teacher board */
+#prof{display:grid;gap:18px;max-width:1200px}
+.board{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:10px;min-width:0;align-content:start}
+.bars{display:grid;gap:6px}
+.bar{display:grid;grid-template-columns:108px 1fr 34px 34px 40px;gap:6px;align-items:center;font-size:14px}
+.bar .lab{font:500 13px var(--mono);color:var(--muted);overflow:hidden;text-overflow:ellipsis}
+.bar .track{height:22px;background:var(--bg);border-radius:4px;overflow:hidden}
+.bar .fill{height:100%;background:var(--accent);width:0;transition:width .25s;display:block}
+.bar .fill.b{background:var(--you)}
+.bar .n{font:700 15px var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.bar button{padding:0;min-height:30px;font-size:18px;border-radius:7px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted)}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:5px}
+.sum{font:500 13px var(--mono);color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap" id="student">
+  <header>
+    <span class="eyebrow">Bases neurais da comunicação humana · Aula 11</span>
+    <h1>Laboratório de Línguas</h1>
+    <p class="lead">Quatro experimentos sobre como aprendemos línguas: achar palavras num fluxo de sílabas sem pausas, alternar entre duas línguas, ouvir um contraste de outra língua e mapear as línguas da turma. Você é o participante. No fim de cada um, informe o resultado ao professor.</p>
+    <div class="phones"><span>Use fones de ouvido (ou o alto-falante perto do ouvido) e desligue o modo silencioso. O experimento 2 pede para falar em voz baixa.</span></div>
+    <nav aria-label="Experimentos"><a href="#e1">1 · Fluxo de sílabas</a><a href="#e2">2 · Duas línguas</a><a href="#e3">3 · Ouvinte universal</a><a href="#e4">4 · As línguas da turma</a><a href="#e5">Vídeo</a></nav>
+  </header>
+
+  <!-- E1 -->
+  <section class="exp" id="e1">
+    <div class="row"><span class="num">EXPERIMENTO 1</span><span class="tag">≈ 5 min</span></div>
+    <h2>Fluxo de sílabas: onde começam as palavras?</h2>
+    <p>Você vai ouvir 2 minutos de uma “língua” inventada: sílabas sem pausas, sem melodia e sem significado. Não tente decorar nada, só ouça. Depois vem um teste com 16 pares de sons.</p>
+    <p class="why"><b>Grupo controle:</b> se o professor pedir (por exemplo, quem faz aniversário em janeiro, fevereiro ou março), pule a escuta e vá direto ao teste.</p>
+    <div class="row">
+      <button id="e1play">Ouvir o fluxo (2 min)</button>
+      <button id="e1stop" class="ghost" disabled>Parar</button>
+      <span class="readout" id="e1time"></span>
+    </div>
+    <div class="meter"><i id="e1m"></i></div>
+    <h3>Teste · 16 pares</h3>
+    <p class="why">Em cada par, dois “trechos” de três sílabas. Escolha o que soa mais como uma <b>palavra</b> da língua que você ouviu. Se não ouviu o fluxo, escolha por intuição.</p>
+    <div class="row"><button id="e1test" class="ghost">Começar o teste</button><span class="readout" id="e1p"></span></div>
+    <div class="row" id="e1btn" hidden><button class="big" data-r="0" disabled>1º</button><button class="big" data-r="1" disabled>2º</button></div>
+    <div class="result" id="e1res" hidden>
+      <svg class="chart" id="e1chart" viewBox="0 0 440 220" role="img" aria-label="Sua porcentagem de acertos comparada ao acaso"></svg>
+      <div class="report" id="e1rep"></div>
+      <p class="why">As quatro palavras da língua eram <b class="words" id="e1words"></b>. Dentro de uma palavra, cada sílaba sempre levava à mesma sílaba seguinte (probabilidade de transição 1,0); entre palavras, a sílaba seguinte podia ser três outras (0,33). Bebês de 8 meses distinguem palavras de “pedaços de palavras” depois de 2 minutos (Saffran, Aslin &amp; Newport, 1996).</p>
+    </div>
+  </section>
+
+  <!-- E2 -->
+  <section class="exp" id="e2">
+    <div class="row"><span class="num">EXPERIMENTO 2</span><span class="tag">≈ 4 min · em voz baixa</span></div>
+    <h2>Duas línguas: quanto custa trocar?</h2>
+    <p>Um número aparece num cartão colorido. <b>Verde</b>: diga o número em português. <b>Laranja</b>: diga na sua segunda língua. Toque no cartão <b>no instante em que começar a falar</b>. Seja rápido, mas diga a palavra de verdade.</p>
+    <div class="q"><p>Minha segunda língua para este teste:</p>
+      <div class="row" id="e2lang"><button class="chip" aria-pressed="true" data-l="inglês">inglês</button><button class="chip" aria-pressed="false" data-l="espanhol">espanhol</button><button class="chip" aria-pressed="false" data-l="outra língua">outra</button></div></div>
+    <div class="screen" id="e2screen" role="button" aria-label="Toque quando começar a falar"><span class="fix" id="e2fix">toque em Começar</span></div>
+    <div class="row"><button id="e2go">Começar (56 números)</button><span class="readout" id="e2p"></span></div>
+    <div class="result" id="e2res" hidden>
+      <svg class="chart" id="e2chart" viewBox="0 0 440 270" role="img" aria-label="Seus tempos por condição"></svg>
+      <div class="report" id="e2rep"></div>
+      <p class="why">Nas duas primeiras partes você usava só uma língua. Na terceira, misturada, quando a língua <b>troca</b> você precisa reativar uma e frear a outra: isso custa tempo (custo de alternância). Em bilíngues que dominam mais uma língua, voltar para a língua <b>mais forte</b> costuma custar mais, porque ela foi freada com mais força (Meuter &amp; Allport, 1999).</p>
+    </div>
+  </section>
+
+  <!-- E3 -->
+  <section class="exp" id="e3">
+    <div class="row"><span class="num">EXPERIMENTO 3</span><span class="tag">≈ 3 min · fones ajudam</span></div>
+    <h2>Ouvinte universal: você ainda ouve o hindi?</h2>
+    <p>Você vai ouvir pares de sílabas “da”. Em alguns pares, as duas começam com <b>a mesma consoante</b>; em outros, com consoantes diferentes. A voz muda de altura dentro de todos os pares: ignore isso e responda só sobre a <b>consoante</b>.</p>
+    <p class="why">Metade dos pares usa um contraste do português (d × g). A outra metade usa um contraste do hindi que o português não tem: <i>d</i> dental × <i>ɖ</i> retroflexo (ponta da língua curvada para trás). Os dois contrastes mudam sobretudo a mesma ressonância (F3).</p>
+    <div class="row"><button id="e3go">Começar (24 pares)</button><span class="readout" id="e3p"></span></div>
+    <div class="row" id="e3btn" hidden><button class="big" data-r="s" disabled>iguais</button><button class="big" data-r="d" disabled>diferentes</button></div>
+    <div class="result" id="e3res" hidden>
+      <svg class="chart" id="e3chart" viewBox="0 0 440 220" role="img" aria-label="Acertos no contraste nativo e no não nativo"></svg>
+      <div class="report" id="e3rep"></div>
+      <p class="why">Bebês de 6–8 meses de qualquer país distinguem esse contraste do hindi; aos 10–12 meses, bebês que só ouvem inglês quase não distinguem mais (Werker &amp; Tees, 1984). Adultos ainda conseguem em tarefas fáceis, mas a percepção “nativa” passa a juntar os dois sons numa só categoria.</p>
+    </div>
+  </section>
+
+  <!-- E4 -->
+  <section class="exp" id="e4">
+    <div class="row"><span class="num">EXPERIMENTO 4</span><span class="tag">≈ 2 min · levantamento</span></div>
+    <h2>As línguas da turma</h2>
+    <p>Conte para a turma como você aprendeu suas línguas. Libras e línguas indígenas contam como línguas.</p>
+    <div class="q"><p>1. Em quantas línguas você consegue manter uma conversa simples?</p>
+      <div class="row" data-q="n"><button class="chip" data-v="1">1</button><button class="chip" data-v="2">2</button><button class="chip" data-v="3">3</button><button class="chip" data-v="4">4 ou mais</button></div></div>
+    <div class="q"><p>2. Com que idade você começou a sua segunda língua (a mais forte depois do português)?</p>
+      <div class="row" data-q="age"><button class="chip" data-v="0">desde bebê (0–3)</button><button class="chip" data-v="1">4–7 anos</button><button class="chip" data-v="2">8–12</button><button class="chip" data-v="3">13–17</button><button class="chip" data-v="4">18 ou mais</button><button class="chip" data-v="5">não tenho</button></div></div>
+    <div class="q"><p>3. Como você avalia essa segunda língua? (1 = só algumas palavras · 5 = como no português)</p>
+      <div class="row" data-q="prof"><button class="chip" data-v="1">1</button><button class="chip" data-v="2">2</button><button class="chip" data-v="3">3</button><button class="chip" data-v="4">4</button><button class="chip" data-v="5">5</button></div></div>
+    <div class="q"><p>4. Onde você mais aprendeu essa língua?</p>
+      <div class="row" data-q="how"><button class="chip" data-v="0">em casa, com a família</button><button class="chip" data-v="1">escola ou curso</button><button class="chip" data-v="2">séries, jogos, internet</button><button class="chip" data-v="3">morando fora</button></div></div>
+    <div class="result" id="e4res" hidden><div class="report" id="e4rep"></div>
+      <p class="why">A idade de início prevê a proficiência, mas não sozinha: quem começa cedo também costuma ter mais anos de uso e mais contato com falantes. Separar idade de exposição é o problema central dos estudos de períodos sensíveis.</p></div>
+  </section>
+
+  <!-- vídeo -->
+  <section class="exp" id="e5">
+    <div class="row"><span class="num">VÍDEO PARA A TURMA</span></div>
+    <h2>Experimentos com bebês</h2>
+    <div class="links">
+      <p><a href="https://www.ted.com/talks/patricia_kuhl_the_linguistic_genius_of_babies" target="_blank" rel="noopener">Patricia Kuhl, “O gênio linguístico dos bebês” (TED, 10 min)</a>. Os experimentos de percepção de sons, a medida do cérebro do bebê e o estudo do mandarim ao vivo × pela TV. Se não abrir, use a <a href="https://www.youtube.com/watch?v=G2XBIkHW954" target="_blank" rel="noopener">versão no canal do TED no YouTube</a> (legendas em português nas configurações).</p>
+    </div>
+  </section>
+
+  <footer>Os sons são sintetizados no seu aparelho; nenhuma resposta sai do celular. Professor: abra esta página com <span style="font-family:var(--mono)">#professor</span> no fim do link para o placar da turma.</footer>
+</div>
+
+<!-- Teacher board -->
+<div class="wrap" id="prof" hidden>
+  <header>
+    <span class="eyebrow">Placar da turma · Aula 11</span>
+    <h1>Resultados da turma</h1>
+    <p class="lead">Peça que levantem a mão por categoria e registre com + e −. Os números ficam salvos neste navegador.</p>
+    <div class="row"><button class="ghost" id="reset">Zerar placar</button><span class="readout" id="resetMsg"></span><a href="#" id="toStudent" style="color:var(--accent);font-weight:600">Ver página dos alunos</a></div>
+  </header>
+  <div class="board" id="board"></div>
+</div>
+
+<script>
+(()=>{
+let ctx=null;
+function ac(){ if(!ctx){ctx=new (window.AudioContext||window.webkitAudioContext)();} if(ctx.state==='suspended')ctx.resume(); return ctx; }
+const $=id=>document.getElementById(id);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const pct=x=>Math.round(100*x);
+function waitChoice(box){return new Promise(res=>{const bs=[...box.querySelectorAll('button')];bs.forEach(b=>b.disabled=false);
+  const h=e=>{bs.forEach(b=>{b.disabled=true;b.removeEventListener('click',h);});res(e.currentTarget.dataset.r);};bs.forEach(b=>b.addEventListener('click',h));});}
+
+/* ---------- formant synthesizer (Klatt-style cascade, extended from Aula 3 to CV syllables) ---------- */
+const SR=22050;
+function reson(x,F,bw){const n=x.length,y=new Float32Array(n);const C=-Math.exp(-2*Math.PI*bw/SR);const e=2*Math.exp(-Math.PI*bw/SR);let y1=0,y2=0;
+  for(let i=0;i<n;i++){const f=typeof F==='number'?F:F[i];const B=e*Math.cos(2*Math.PI*f/SR);const A=1-B-C;const v=A*x[i]+B*y1+C*y2;y[i]=v;y2=y1;y1=v;}return y;}
+const VOW={a:[750,1200,2500],i:[300,2250,3000],u:[330,850,2300]};
+function loci(place,v){const F2v=VOW[v][1];
+  if(place==='lab')return[Math.max(700,F2v-450),2000];
+  if(place==='alv')return[1750,2900];
+  if(place==='ret')return[1650,1900];
+  return[{a:1900,i:2500,u:1150}[v],{a:2000,i:2750,u:1900}[v]];}
+const CONS={b:['lab',1],d:['alv',1],g:['vel',1],p:['lab',0],t:['alv',0],k:['vel',0],D:['ret',1]};
+const BURST={lab:900,alv:3900,ret:2400,vel:0};
+let seed=7;const rnd=()=>{seed=(seed*16807)%2147483647;return seed/2147483647*2-1;};
+function cv(c,v,f0=120,dur=.24){
+  const[place,voiced]=CONS[c];const[F1v,F2v,F3v]=VOW[v];const[L2,L3]=loci(place,v);
+  const n=Math.floor(dur*SR),vot=voiced?0:Math.floor(.045*SR),tr=.04;
+  const F1=new Float32Array(n),F2=new Float32Array(n),F3=new Float32Array(n);
+  for(let i=0;i<n;i++){const k=Math.min(1,(i/SR)/tr);F1[i]=250+(F1v-250)*k;F2[i]=L2+(F2v-L2)*k;F3[i]=L3+(F3v-L3)*k;}
+  let src=new Float32Array(n);let ph=0,prev=0;for(let i=vot;i<n;i++){ph+=f0/SR;if(Math.floor(ph)>prev){src[i]=1;prev=Math.floor(ph);}}
+  src=reson(src,0,100);let x=reson(src,F1,60);x=reson(x,F2,90);x=reson(x,F3,130);x=reson(x,3500,200);x=reson(x,4200,250);
+  const out=new Float32Array(n);let p=0,m=0;
+  for(let i=0;i<n;i++){const t=i/SR;const env=Math.min(1,Math.max(0,t-vot/SR)/.012)*Math.min(1,Math.max(0,dur-t)/.05);const d=(x[i]-p)*env;p=x[i];out[i]=d;m=Math.max(m,Math.abs(d));}
+  for(let i=0;i<n;i++)out[i]/=m;
+  if(!voiced){const a0=new Float32Array(n);for(let i=0;i<n;i++)a0[i]=rnd();const a2=reson(a0,F2,200),a3=reson(a0,F3,250);let am=0;const a=new Float32Array(n);
+    for(let i=0;i<n;i++){const e=i<vot?Math.min(1,i/60,(vot-i)/60+.5):Math.max(0,1-(i-vot)/60);a[i]=(a2[i]+.7*a3[i])*Math.min(1,e);am=Math.max(am,Math.abs(a[i]));}
+    for(let i=0;i<n;i++)out[i]+=a[i]/am*.22;}
+  const bl=Math.floor(.007*SR);const b0=new Float32Array(bl);for(let i=0;i<bl;i++)b0[i]=rnd();const b=reson(b0,BURST[place]||L2+150,700);let bm=0;for(let i=0;i<bl;i++)bm=Math.max(bm,Math.abs(b[i]));
+  for(let i=0;i<bl;i++)out[i]+=b[i]/bm*(voiced?.18:.35)*(1-.8*i/bl);
+  let mm=0;for(let i=0;i<n;i++)mm=Math.max(mm,Math.abs(out[i]));for(let i=0;i<n;i++)out[i]=out[i]/mm*.7;return out;}
+function concat(arrs){const n=arrs.reduce((s,a)=>s+a.length,0);const o=new Float32Array(n);let k=0;for(const a of arrs){o.set(a,k);k+=a.length;}return o;}
+function playBuf(a,delay=0){const c=ac();const b=c.createBuffer(1,a.length,SR);b.getChannelData(0).set(a);const s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(c.currentTime+delay);return{src:s,dur:a.length/SR+delay,t0:c.currentTime+delay};}
+
+/* ---------- E1 statistical learning (Saffran, Aslin & Newport 1996) ---------- */
+const WORDS=[['ga','ti','bu'],['pu','da','ki'],['bi','ku','ta'],['di','pa','gu']];
+const PARTS=[['ti','bu','pu'],['da','ki','bi'],['ku','ta','di'],['pa','gu','ga']]; // pedaços que atravessam fronteiras (W1|W2, W2|W3, W3|W4, W4|W1)
+let SYL=null;function ensureSyl(){if(!SYL){SYL={};WORDS.flat().forEach(s=>SYL[s]=cv(s[0],s[1]));}}
+const tok=t=>concat(t.map(s=>SYL[s]));
+let e1run=null,heard=0;const STREAM_WORDS=168;
+$('e1words').textContent=WORDS.map(w=>w.join('')).join(' · ');
+$('e1play').onclick=()=>{ensureSyl();ac();
+  const seq=[];let last=-1;for(let i=0;i<STREAM_WORDS;i++){let w;do{w=Math.floor(Math.random()*4);}while(w===last);seq.push(w);last=w;}
+  const a=concat(seq.map(w=>tok(WORDS[w])));const fade=5*SR;for(let i=0;i<fade;i++){const g=i/fade;a[i]*=g;a[a.length-1-i]*=g;}
+  e1run=playBuf(a,.1);$('e1play').disabled=true;$('e1stop').disabled=false;
+  const D=a.length/SR;const tick=()=>{if(!e1run)return;const el=Math.max(0,ac().currentTime-e1run.t0);heard=Math.max(heard,Math.min(1,el/D));
+    $('e1m').style.width=(100*Math.min(1,el/D))+'%';const r=Math.max(0,Math.ceil(D-el));$('e1time').textContent=`faltam ${Math.floor(r/60)}:${String(r%60).padStart(2,'0')}`;
+    if(el>=D){end1();$('e1time').textContent='Fluxo concluído. Agora faça o teste.';}else requestAnimationFrame(tick);};requestAnimationFrame(tick);};
+function end1(){if(!e1run)return;try{e1run.src.stop();}catch(e){}e1run=null;$('e1play').disabled=false;$('e1play').textContent='Ouvir de novo';$('e1stop').disabled=true;}
+$('e1stop').onclick=()=>{end1();$('e1time').textContent=`Você ouviu ${pct(heard)}% do fluxo.`;};
+$('e1test').onclick=async()=>{ensureSyl();ac();if(e1run)end1();$('e1test').disabled=true;$('e1btn').hidden=false;
+  const trials=[];for(let w=0;w<4;w++)for(let p=0;p<4;p++)trials.push({w,p,first:Math.random()<.5?'w':'p'});shuffle(trials);
+  let ok=0;const perW=[0,0,0,0];
+  for(let t=0;t<trials.length;t++){$('e1p').textContent=`${t+1} / ${trials.length}`;await sleep(600);const T=trials[t];
+    const A=tok(T.first==='w'?WORDS[T.w]:PARTS[T.p]),B=tok(T.first==='w'?PARTS[T.p]:WORDS[T.w]);const r1=playBuf(A,.05);playBuf(B,r1.dur+.7);
+    const r=await waitChoice($('e1btn'));const choseWord=(r==='0')===(T.first==='w');if(choseWord){ok++;perW[T.w]++;}}
+  $('e1btn').hidden=true;$('e1p').textContent='Teste concluído.';$('e1test').disabled=false;$('e1test').textContent='Refazer o teste';
+  const p=ok/trials.length,grp=heard>=.8?'ouviu o fluxo':'controle (sem fluxo)';
+  const bin=p<.5?'abaixo de 50%':p<.56?'50%':p<.66?'56–63%':p<.78?'69–75%':'81% ou mais';
+  draw1(p);$('e1rep').innerHTML=`Você escolheu a palavra em <b>${ok} de 16</b> pares (${pct(p)}%). Informe: <b>${bin}</b> · grupo <b>${grp}</b>.`;$('e1res').hidden=false;};
+function draw1(p){const W=440,H=220,L=100,R=34;const x=v=>L+v*(W-L-R);
+  let g=`<line class="ax" x1="${L}" y1="20" x2="${L}" y2="170"/>`;
+  [0,.25,.5,.75,1].forEach(v=>g+=`<text x="${x(v)}" y="200" text-anchor="middle">${pct(v)}%</text>`);
+  g+=`<line class="ref" x1="${x(.5)}" y1="14" x2="${x(.5)}" y2="176"/><text x="${x(.5)+6}" y="30" style="fill:var(--accent)">acaso</text>`;
+  g+=`<text x="${L-12}" y="80" text-anchor="end">você</text><rect class="bar" x="${L}" y="55" width="${Math.max(2,x(p)-L)}" height="44" rx="4"/><text class="val" x="${x(p)+8}" y="84">${pct(p)}%</text>`;
+  g+=`<text x="${L-12}" y="140" text-anchor="end">adultos*</text><rect class="bar alt" x="${L}" y="118" width="${x(.7)-L}" height="34" rx="4" opacity=".55"/><text x="${x(.7)+8}" y="141">~65–75%</text>`;
+  $('e1chart').innerHTML=g+`<text x="${W-R}" y="214" text-anchor="end" style="font-size:13px">*faixa típica após alguns minutos</text>`;}
+
+/* ---------- E2 language switching ---------- */
+let L2='inglês';
+document.querySelectorAll('#e2lang button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#e2lang button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');L2=b.dataset.l;});
+let e2tap=null;const scr=$('e2screen');
+scr.addEventListener('pointerdown',e=>{if(e2tap){e.preventDefault();const f=e2tap;e2tap=null;f(performance.now());}});
+document.addEventListener('keydown',e=>{if(e.code==='Space'&&e2tap){e.preventDefault();const f=e2tap;e2tap=null;f(performance.now());}});
+function show(lang,d){scr.innerHTML=lang?`<div class="cue ${lang}"><span class="lang">${lang==='pt'?'português':L2}</span><span class="dig">${d}</span></div>`:`<span class="fix">+</span>`;}
+const med=a=>{if(!a.length)return NaN;const s=[...a].sort((x,y)=>x-y);const m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2;};
+$('e2go').onclick=async()=>{$('e2go').disabled=true;$('e2res').hidden=true;
+  const trials=[];for(let i=0;i<8;i++)trials.push({b:'puroPT',l:'pt'});for(let i=0;i<8;i++)trials.push({b:'puroL2',l:'l2'});
+  let cur=Math.random()<.5?'pt':'l2';const mix=[];for(let i=0;i<40;i++){if(i>0&&Math.random()<.5)cur=cur==='pt'?'l2':'pt';mix.push(cur);}
+  mix.forEach((l,i)=>trials.push({b:'mix',l,sw:i===0?null:l!==mix[i-1]}));
+  const res=[];let lastD=0;
+  for(let t=0;t<trials.length;t++){const T=trials[t];
+    if(t===0||t===8||t===16){scr.innerHTML=`<span class="fix" style="font-size:20px;text-align:center;padding:0 16px">${t===0?'Parte 1: só português':t===8?'Parte 2: só '+L2:'Parte 3: misturado'}<br><span style="font-size:15px">toque para continuar</span></span>`;
+      await new Promise(r=>e2tap=r);await sleep(300);}
+    $('e2p').textContent=`${t+1} / ${trials.length}`;show(null);await sleep(450+Math.random()*250);
+    let d;do{d=1+Math.floor(Math.random()*9);}while(d===lastD);lastD=d;
+    show(T.l,d);const t0=await new Promise(r=>requestAnimationFrame(r));
+    const t1=await new Promise(r=>e2tap=r);res.push(Object.assign({rt:t1-t0},T));show(null);await sleep(200);}
+  scr.innerHTML='<span class="fix" style="font-size:22px">Fim!</span>';$('e2p').textContent='Concluído.';$('e2go').disabled=false;$('e2go').textContent='Refazer';
+  const ok=r=>r.rt>150&&r.rt<2500;const R=res.filter(ok);
+  const g=(f)=>med(R.filter(f).map(r=>r.rt));
+  const v={pPT:g(r=>r.b==='puroPT'),pL2:g(r=>r.b==='puroL2'),rPT:g(r=>r.b==='mix'&&r.sw===false&&r.l==='pt'),sPT:g(r=>r.b==='mix'&&r.sw&&r.l==='pt'),rL2:g(r=>r.b==='mix'&&r.sw===false&&r.l==='l2'),sL2:g(r=>r.b==='mix'&&r.sw&&r.l==='l2'),
+    rep:g(r=>r.b==='mix'&&r.sw===false),sw:g(r=>r.b==='mix'&&r.sw)};
+  draw2(v);const cost=v.sw-v.rep,cPT=v.sPT-v.rPT,cL2=v.sL2-v.rL2;
+  const bin=!isFinite(cost)?'—':cost<0?'menos de 0 ms':cost<50?'0–50 ms':cost<100?'50–100 ms':cost<200?'100–200 ms':'mais de 200 ms';
+  const asym=!isFinite(cPT)||!isFinite(cL2)?'—':Math.abs(cPT-cL2)<20?'igual':cPT>cL2?'voltar ao português':'ir para o '+L2;
+  $('e2rep').innerHTML=`Custo de troca: <b>${Math.round(cost)} ms</b> (troca ${Math.round(v.sw)} ms × repetição ${Math.round(v.rep)} ms). Troca mais cara: <b>${asym}</b>.<br>Informe: <b>${bin}</b> e <b>${asym==='igual'?'igual':asym.startsWith('voltar')?'português':'segunda língua'}</b>.`;
+  $('e2res').hidden=false;};
+function draw2(v){const W=440,H=270,L=56,B=56,T=24;const groups=[['português',v.pPT,v.rPT,v.sPT],[L2,v.pL2,v.rL2,v.sL2]];
+  const all=[v.pPT,v.pL2,v.rPT,v.sPT,v.rL2,v.sL2].filter(isFinite);const mx=Math.max(800,...all)*1.15;const y=t=>T+(1-t/mx)*(H-T-B);
+  let g=`<line class="ax" x1="${L}" y1="${y(0)}" x2="${W-10}" y2="${y(0)}"/>`;[0,500,1000,1500,2000].filter(t=>t<mx).forEach(t=>g+=`<text x="${L-8}" y="${y(t)+5}" text-anchor="end">${t}</text><line class="ax" x1="${L}" y1="${y(t)}" x2="${W-10}" y2="${y(t)}" stroke-dasharray="2 5"/>`);
+  const labs=['puro','repete','troca'];
+  groups.forEach((gr,i)=>{const x0=L+12+i*190;g+=`<text x="${x0+84}" y="${H-6}" text-anchor="middle" style="fill:var(--fg)">${gr[0]}</text>`;
+    for(let k=0;k<3;k++){const val=gr[k+1];const x=x0+k*58;if(isFinite(val)){g+=`<rect class="bar${k===2?'':' alt'}" x="${x}" y="${y(val)}" width="46" height="${y(0)-y(val)}" rx="4" ${k===0?'opacity=".5"':''}/><text class="val" x="${x+23}" y="${y(val)-6}" text-anchor="middle" style="font-size:15px">${Math.round(val)}</text>`;}
+      g+=`<text x="${x+23}" y="${H-30}" text-anchor="middle" style="font-size:14px">${labs[k]}</text>`;}});
+  $('e2chart').innerHTML=g+`<text x="${L}" y="14" style="font-size:13px">ms (mediana)</text>`;}
+
+/* ---------- E3 universal listener (AX same/different, F0 varies) ---------- */
+let E3S=null;function ensure3(){if(!E3S){E3S={};['d','g','D'].forEach(c=>[100,122,145].forEach(f=>E3S[c+f]=cv(c,'a',f,.28)));}}
+$('e3go').onclick=async()=>{ensure3();ac();$('e3go').disabled=true;$('e3btn').hidden=false;$('e3res').hidden=true;
+  const tr=[];[['nat','d','g'],['non','d','D']].forEach(([k,a,b])=>{for(let i=0;i<6;i++){const s=i%2?a:b;tr.push({k,x:s,y:s,same:true});}
+    for(let i=0;i<6;i++){const fwd=i%2===0;tr.push({k,x:fwd?a:b,y:fwd?b:a,same:false});}});shuffle(tr);
+  const sc={nat:0,non:0};
+  for(let t=0;t<tr.length;t++){$('e3p').textContent=`${t+1} / ${tr.length}`;await sleep(700);const T=tr[t];const fs=shuffle([100,122,145]);
+    const r1=playBuf(E3S[T.x+fs[0]],.05);playBuf(E3S[T.y+fs[1]],r1.dur+.8);const r=await waitChoice($('e3btn'));if((r==='s')===T.same)sc[T.k]++;}
+  $('e3btn').hidden=true;$('e3p').textContent='Concluído.';$('e3go').disabled=false;$('e3go').textContent='Refazer';
+  const pn=sc.nat/12,pnn=sc.non/12;const bin=p=>p<=.5?'50% ou menos':p<.7?'58–67%':p<.9?'75–83%':'92–100%';
+  draw3(pn,pnn);$('e3rep').innerHTML=`Português (d × g): <b>${sc.nat}/12</b> (${pct(pn)}%) · Hindi (d × ɖ): <b>${sc.non}/12</b> (${pct(pnn)}%).<br>Informe as duas faixas: nativo <b>${bin(pn)}</b>, não nativo <b>${bin(pnn)}</b>.`;$('e3res').hidden=false;};
+function draw3(a,b){const W=440,L=110,R=60;const x=v=>L+v*(W-L-R);let g='';
+  [0,.5,1].forEach(v=>g+=`<text x="${x(v)}" y="200" text-anchor="middle">${pct(v)}%</text>`);
+  g+=`<line class="ref" x1="${x(.5)}" y1="14" x2="${x(.5)}" y2="176"/><text x="${x(.5)+6}" y="28" style="fill:var(--accent)">acaso</text>`;
+  [[`português`,a,'alt',50],[`hindi`,b,'',120]].forEach(([l,v,c,y])=>g+=`<text x="${L-12}" y="${y+28}" text-anchor="end" style="fill:var(--fg)">${l}</text><rect class="bar ${c}" x="${L}" y="${y}" width="${Math.max(2,x(v)-L)}" height="42" rx="4"/><text class="val" x="${x(v)+8}" y="${y+28}">${pct(v)}%</text>`);
+  $('e3chart').innerHTML=`<line class="ax" x1="${L}" y1="20" x2="${L}" y2="180"/>`+g;}
+
+/* ---------- E4 survey ---------- */
+const ans={};
+document.querySelectorAll('#e4 [data-q]').forEach(row=>row.querySelectorAll('button').forEach(b=>b.onclick=()=>{row.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');ans[row.dataset.q]=+b.dataset.v;rep4();}));
+document.querySelectorAll('#e4 .chip').forEach(b=>b.setAttribute('aria-pressed','false'));
+function rep4(){if(ans.n===undefined)return;const n=['','1','2','3','4 ou mais'][ans.n];let h=`Informe: <b>${n} ${ans.n===1?'língua':'línguas'}</b>`;
+  if(ans.n>1&&ans.age!==undefined&&ans.age<5){const ag=['0–3','4–7','8–12','13–17','18+'][ans.age];h+=` · começou a 2ª língua com <b>${ag}</b>`;
+    if(ans.prof!==undefined)h+=` · proficiência <b>${ans.prof>=4?'alta (4–5)':'baixa ou média (1–3)'}</b>`;
+    if(ans.how!==undefined)h+=` · aprendeu <b>${['em casa','na escola/curso','com séries/jogos/internet','morando fora'][ans.how]}</b>`;}
+  else if(ans.n===1)h+=`. Se estuda outra língua, responda as perguntas 2–4 mesmo assim pensando nela.`;
+  $('e4rep').innerHTML=h+'.';$('e4res').hidden=false;}
+
+/* ---------- teacher board ---------- */
+const BOARD=[
+ {k:'e1',t:'1 · Fluxo de sílabas: acertos no teste',two:['ouviu o fluxo','controle (sem fluxo)'],cats:['abaixo de 50%','50%','56–63%','69–75%','81% ou mais']},
+ {k:'e2',t:'2 · Custo de troca de língua',cats:['menos de 0 ms','0–50 ms','50–100 ms','100–200 ms','mais de 200 ms']},
+ {k:'e2b',t:'2 · Troca mais cara para…',cats:['português','segunda língua','igual']},
+ {k:'e3',t:'3 · Ouvinte universal: acertos',two:['português d × g','hindi d × ɖ'],cats:['50% ou menos','58–67%','75–83%','92–100%']},
+ {k:'e4n',t:'4 · Quantas línguas a turma fala',cats:['1','2','3','4 ou mais']},
+ {k:'e4a',t:'4 · Início da 2ª língua × proficiência',two:['alta (4–5)','baixa ou média (1–3)'],cats:['0–3 anos','4–7','8–12','13–17','18+']},
+ {k:'e4h',t:'4 · Onde aprendeu',cats:['em casa','escola/curso','internet, séries','morando fora']}];
+let S={};try{S=JSON.parse(localStorage.getItem('bebe-linguista-placar')||'{}')}catch(e){S={}}
+const save=()=>{try{localStorage.setItem('bebe-linguista-placar',JSON.stringify(S))}catch(e){}};
+function renderBoard(){const host=$('board');host.innerHTML='';
+  BOARD.forEach(p=>{const div=document.createElement('div');div.className='panel';
+    const series=p.two?[0,1]:[0];let max=1,tot=[0,0];series.forEach(s=>p.cats.forEach((_,i)=>{const v=S[p.k+s+'_'+i]||0;max=Math.max(max,v);tot[s]+=v;}));
+    let h=`<h2>${p.t}</h2>`;if(p.two)h+=`<div class="legend"><span><i class="sw" style="background:var(--accent)"></i>${p.two[0]} (${tot[0]})</span><span><i class="sw" style="background:var(--you)"></i>${p.two[1]} (${tot[1]})</span></div>`;else h+=`<div class="sum">total: ${tot[0]}</div>`;
+    h+='<div class="bars">';
+    p.cats.forEach((c,i)=>series.forEach(s=>{const key=p.k+s+'_'+i,v=S[key]||0;
+      h+=`<div class="bar"><span class="lab">${s===0?c:''}</span><span class="track"><span class="fill${s?' b':''}" style="width:${100*v/max}%"></span></span><button class="ghost" data-k="${key}" data-d="-1" aria-label="menos ${c}">−</button><button data-k="${key}" data-d="1" aria-label="mais ${c}">+</button><span class="n">${v}</span></div>`;}));
+    div.innerHTML=h+'</div>';host.appendChild(div);});
+  host.querySelectorAll('button[data-k]').forEach(b=>b.onclick=()=>{const k=b.dataset.k;S[k]=Math.max(0,(S[k]||0)+(+b.dataset.d));save();renderBoard();});}
+let armed=false;$('reset').onclick=()=>{if(!armed){armed=true;$('reset').textContent='Confirmar: zerar tudo';$('resetMsg').textContent='';return;}
+  S={};save();renderBoard();armed=false;$('reset').textContent='Zerar placar';$('resetMsg').textContent='Placar zerado.';};
+$('toStudent').onclick=e=>{e.preventDefault();location.hash='';route();};
+function route(){const t=location.hash==='#professor';$('prof').hidden=!t;$('student').hidden=t;if(t)renderBoard();}
+window.addEventListener('hashchange',route);route();
+})();
+</script>
+
+<script src="config.js"></script>
+<script src="registro.js" data-aula="11"></script>

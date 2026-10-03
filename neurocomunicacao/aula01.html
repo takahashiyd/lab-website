@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laboratório de Sinais</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: a single lab-notebook column; each experiment is a numbered protocol card; teacher mode swaps in a projector board */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#142033; --muted:#5b6879; --line:#d8dee6;
+  --accent:#0e7c86; --accent-ink:#ffffff; --you:#c9771a; --soft:#e5f1f2; --warn:#a33a2a;
+  --idle:#5b6879; --idle-ink:#ffffff;
+  --lobe-f:#bfe0e3; --lobe-p:#f5ddb5; --lobe-t:#cbd6e6; --lobe-o:#dce8c9; --brain:#eef1f4; --brain-line:#15233a; --stem:#d5dae1;
+  --display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73;
+  --idle:#34445e; --idle-ink:#e6ecf3;
+  --lobe-f:#1f5a60; --lobe-p:#6b4a1c; --lobe-t:#2e4566; --lobe-o:#3c5532; --brain:#24314a; --brain-line:#c9d6e4; --stem:#2f3d55; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73;
+  --idle:#34445e; --idle-ink:#e6ecf3;
+  --lobe-f:#1f5a60; --lobe-p:#6b4a1c; --lobe-t:#2e4566; --lobe-o:#3c5532; --brain:#24314a; --brain-line:#c9d6e4; --stem:#2f3d55; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:17px/1.5 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-inline:18px;padding-block:28px 64px;display:grid;gap:22px}
+header{display:grid;gap:8px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(34px,8vw,54px)/1 var(--display);font-stretch:118%;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font:750 24px/1.15 var(--display);font-stretch:108%;margin:0;text-wrap:balance}
+h3{font:700 16px/1.2 var(--display);margin:0}
+p{margin:0;max-width:65ch}
+.lead{color:var(--muted)}
+.phones{display:flex;gap:10px;align-items:flex-start;background:var(--soft);border-radius:10px;padding:12px 14px;font-size:15px}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{font:600 14px/1 var(--body);color:var(--fg);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:var(--surface)}
+nav a:focus-visible,button:focus-visible,textarea:focus-visible,.rg:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.exp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:14px;min-width:0}
+.num{font:600 13px/1 var(--mono);color:var(--muted)}
+.tag{display:inline-block;font:600 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 7px;border-radius:5px;background:var(--soft);color:var(--accent)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+button{font:700 16px/1 var(--display);border:0;border-radius:10px;padding:14px 18px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px;touch-action:manipulation}
+button.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+button.big{flex:1 1 120px;font-size:24px;padding:20px 10px;font-stretch:112%}
+button.amber{background:var(--you);color:var(--accent-ink)}
+button:disabled{opacity:.4;cursor:default}
+.meter{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.meter>i{display:block;height:100%;width:0;background:var(--accent)}
+.readout{font:500 15px/1.4 var(--mono);color:var(--muted)}
+.result{border-top:1px dashed var(--line);padding-top:14px;display:grid;gap:10px}
+.report{background:var(--soft);border-radius:10px;padding:12px 14px;font-size:16px}
+.report b{font:700 22px/1 var(--display);color:var(--you)}
+.why{font-size:15px;color:var(--muted)}
+.chart{width:100%;height:auto;display:block}
+.chart text{fill:var(--muted);font:15px var(--mono)}
+.chart .ax{stroke:var(--line)}
+.chart .ln{fill:none;stroke:var(--you);stroke-width:3}
+.chart .dot{fill:var(--you)}
+.chart .dot2{fill:var(--accent)}
+.chart .med{stroke:var(--fg);stroke-width:3}
+.links{display:grid;gap:10px}
+.links a,.why a{color:var(--accent);font-weight:600}
+footer{font-size:13px;color:var(--muted)}
+/* E1 telefone */
+.sentence{font:700 clamp(20px,5.2vw,26px)/1.35 var(--display);font-stretch:105%;background:var(--soft);border-radius:10px;padding:16px;min-height:3.2em;text-wrap:pretty}
+.cover{font:600 16px/1.4 var(--body);color:var(--muted);background:var(--soft);border-radius:10px;padding:16px;text-align:center}
+textarea{width:100%;min-height:110px;font:500 18px/1.4 var(--body);color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:12px;resize:vertical}
+.chain{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.chain li{display:grid;grid-template-columns:28px 1fr 52px;gap:8px;align-items:baseline;font-size:16px;min-width:0}
+.chain .who{font:600 13px var(--mono);color:var(--muted)}
+.chain .pct{font:700 15px var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.chain .txt{min-width:0;overflow-wrap:anywhere}
+.chain .new{color:var(--you);font-weight:600;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}
+.chain .lost{color:var(--muted);text-decoration:line-through;font-size:14px}
+/* E2 classificação */
+.item{display:grid;gap:10px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.item .q{font:700 20px/1.25 var(--display);font-stretch:104%}
+.item .d{font-size:15px;color:var(--muted)}
+.opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.opts button{font-size:14px;padding:12px 6px;min-height:56px;line-height:1.15}
+.tbl{display:grid;gap:6px}
+.tbl .tr{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:8px 10px;border-radius:8px;background:var(--bg);font-size:15px;min-width:0}
+.tbl .tr span:first-child{min-width:0}
+.pill{font:600 12px/1 var(--mono);padding:5px 7px;border-radius:5px;white-space:nowrap}
+.pill.me{background:var(--you);color:var(--accent-ink)}
+.pill.ref{background:var(--soft);color:var(--accent)}
+.tbl .ex{grid-column:1/-1;font-size:14px;color:var(--muted)}
+/* E3 tempo de reação */
+.tap{height:clamp(190px,38vh,300px);border-radius:14px;display:grid;place-items:center;text-align:center;padding:16px;font:800 clamp(24px,7vw,40px)/1.1 var(--display);font-stretch:115%;background:var(--idle);color:var(--idle-ink);user-select:none;-webkit-user-select:none;touch-action:manipulation;cursor:pointer}
+.tap.go{background:var(--accent);color:var(--accent-ink)}
+.tap.go2{background:var(--you);color:var(--accent-ink)}
+.tap.bad{background:var(--warn);color:var(--accent-ink)}
+.tap small{display:block;font:500 15px/1.3 var(--body);margin-top:6px}
+/* E4 corrente */
+.stepper{display:flex;align-items:center;gap:8px}
+.stepper output{font:800 34px/1 var(--display);min-width:2.2ch;text-align:center;font-variant-numeric:tabular-nums}
+.stepper button{width:52px;padding:0;font-size:24px}
+.clock{font:800 clamp(48px,15vw,84px)/1 var(--display);font-stretch:112%;font-variant-numeric:tabular-nums;color:var(--accent)}
+#cnGo{width:100%;font-size:28px;padding:26px 10px}
+#cnGo.stop{background:var(--you)}
+/* E5 cérebro */
+.brain{width:100%;height:auto;display:block;max-width:620px;margin:0 auto;user-select:none;-webkit-user-select:none}
+.brain .rg{fill:var(--brain);cursor:pointer;transition:fill .15s}
+.brain .rg[data-r="tronco"]{fill:var(--stem);stroke:var(--brain-line);stroke-width:2}
+.brain .rg[data-r="cerebelo"]{stroke:var(--brain-line);stroke-width:2}
+.brain .bw{fill:transparent;stroke:var(--you);stroke-width:2.5;stroke-dasharray:6 4}
+.brain .deco{pointer-events:none}
+.brain .sulc{fill:none;stroke:var(--muted);stroke-width:1.3;opacity:.6}
+.brain .dash{fill:none;stroke:var(--brain-line);stroke-width:1.5;stroke-dasharray:5 4}
+.brain .major{fill:none;stroke:var(--brain-line);stroke-width:3;stroke-linecap:round}
+.brain .outline{fill:none;stroke:var(--brain-line);stroke-width:2.8}
+.brain text{fill:var(--fg);font:700 17px var(--display);text-anchor:middle}
+.brain text.sm{font-size:14px}
+.brain.colored .rg[data-r="frontal"]{fill:var(--lobe-f)} .brain.colored .rg[data-r="parietal"]{fill:var(--lobe-p)}
+.brain.colored .rg[data-r="temporal"]{fill:var(--lobe-t)} .brain.colored .rg[data-r="occipital"]{fill:var(--lobe-o)}
+.brain .rg.ok{fill:var(--accent)!important} .brain .rg.no{fill:var(--warn)!important}
+.brain .bw.ok{fill:var(--accent)!important;opacity:.85} .brain .bw.no{fill:var(--warn)!important;opacity:.85}
+.prompt{font:800 clamp(22px,6vw,30px)/1.15 var(--display);font-stretch:110%;text-align:center;min-height:1.2em}
+.prompt em{font-style:normal;color:var(--accent)}
+/* teacher board */
+#prof{display:grid;gap:18px}
+.board{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:10px;min-width:0;align-content:start}
+.bars{display:grid;gap:6px}
+.bar{display:grid;grid-template-columns:110px 1fr 34px 34px 40px;gap:6px;align-items:center;font-size:14px}
+.bar .lab{font:500 13px var(--mono);color:var(--muted)}
+.bar .track{height:22px;background:var(--bg);border-radius:4px;overflow:hidden}
+.bar .fill{display:block;height:100%;background:var(--accent);width:0;transition:width .25s}
+.bar .fill.b{background:var(--you)}
+.bar .n{font:700 15px var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.bar button{padding:0;min-height:30px;font-size:18px;border-radius:7px}
+.legend{display:flex;gap:14px;font-size:13px;color:var(--muted)}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:5px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap" id="student">
+  <header>
+    <span class="eyebrow">Bases neurais da comunicação humana · Aula 1</span>
+    <h1>Laboratório de Sinais</h1>
+    <p class="lead">Cinco experimentos curtos sobre sinais: os que trocamos uns com os outros e os que correm dentro do cérebro. Você é o participante. No fim de cada um, informe o resultado ao professor.</p>
+    <div class="phones"><span>Não precisa de fones hoje. Use o celular na vertical e desligue o modo econômico de bateria, que pode atrasar a tela no experimento 3.</span></div>
+    <nav aria-label="Experimentos"><a href="#e1">1 · Telefone sem fio</a><a href="#e2">2 · É linguagem?</a><a href="#e3">3 · Tempo de reação</a><a href="#e4">4 · Corrente de neurônios</a><a href="#e5">5 · Rotule o cérebro</a></nav>
+  </header>
+
+  <!-- E1 -->
+  <section class="exp" id="e1">
+    <div class="row"><span class="num">EXPERIMENTO 1</span><span class="tag">≈ 6 min · um celular por fila</span></div>
+    <h2>Telefone sem fio</h2>
+    <p>Uma frase aparece por <b>6 segundos</b> e some. Digite o que lembrar e passe o celular para a próxima pessoa da fila, que verá só a <b>sua</b> versão. Façam uma corrente de 5 a 8 pessoas.</p>
+    <div class="row"><button id="tfNew">Começar uma corrente</button><span class="readout" id="tfStatus"></span></div>
+    <div id="tfStage" hidden>
+      <div class="cover" id="tfCover">Pessoa <span id="tfWho">1</span>: toque em <b>Ver a frase</b> quando estiver pronta.</div>
+      <div class="sentence" id="tfSent" hidden aria-live="polite"></div>
+      <div class="meter" id="tfMeterBox" hidden><i id="tfMeter"></i></div>
+      <div id="tfType" hidden><label for="tfIn" class="readout">Digite a frase como você lembra:</label><textarea id="tfIn" autocomplete="off" autocapitalize="sentences" spellcheck="false"></textarea></div>
+      <div class="row" style="margin-top:10px">
+        <button id="tfShow">Ver a frase</button>
+        <button id="tfOk" hidden>Pronto, passar adiante</button>
+        <button id="tfEnd" class="ghost" hidden>Encerrar e ver o resultado</button>
+      </div>
+    </div>
+    <div class="result" id="tfRes" hidden>
+      <ol class="chain" id="tfChain"></ol>
+      <svg class="chart" id="tfChart" viewBox="0 0 640 220" role="img" aria-label="Porcentagem da frase original preservada a cada pessoa"></svg>
+      <div class="report" id="tfRep"></div>
+      <p class="why">A mensagem quase nunca muda no "canal": ela muda <b>dentro de cada cérebro</b>. Guardamos o sentido e reconstruímos as palavras na hora de dizer. Palavras de conteúdo são trocadas por sinônimos, detalhes somem e a frase fica mais "normal". Bartlett mostrou isso em 1932 passando uma história de pessoa em pessoa.</p>
+    </div>
+  </section>
+
+  <!-- E2 -->
+  <section class="exp" id="e2">
+    <div class="row"><span class="num">EXPERIMENTO 2</span><span class="tag">≈ 5 min</span></div>
+    <h2>É comunicação? É linguagem?</h2>
+    <p>Para cada exemplo, escolha uma resposta. Não existe pegadinha: responda o que você pensa agora. No final, compare com o que muitos pesquisadores diriam.</p>
+    <div class="row"><button id="clGo">Começar (10 exemplos)</button><span class="readout" id="clP"></span></div>
+    <div class="item" id="clItem" hidden>
+      <div class="q" id="clQ"></div>
+      <div class="d" id="clD"></div>
+      <div class="opts" id="clOpts">
+        <button class="ghost" data-r="nao">Não é comunicação</button>
+        <button data-r="com">Comunicação</button>
+        <button class="amber" data-r="lin">Linguagem</button>
+      </div>
+    </div>
+    <div class="result" id="clRes" hidden>
+      <div class="report" id="clRep"></div>
+      <div class="tbl" id="clTbl"></div>
+      <p class="why"><b>Comunicação</b>: um sinal que evoluiu ou foi feito para mudar o que o outro sabe ou faz. <b>Linguagem</b>: um sistema de símbolos que se combinam por regras para formar um número ilimitado de mensagens, inclusive sobre o que não está presente. <b>Fala</b> é só um dos canais da linguagem (Libras e a escrita são outros).</p>
+    </div>
+  </section>
+
+  <!-- E3 -->
+  <section class="exp" id="e3">
+    <div class="row"><span class="num">EXPERIMENTO 3</span><span class="tag">≈ 4 min</span></div>
+    <h2>Tempo de reação</h2>
+    <p><b>Parte A (simples):</b> toque no quadro assim que ele ficar verde-azulado. <b>Parte B (escolha):</b> o quadro fica verde-azulado ou laranja; toque no botão da cor certa. 10 tentativas em cada parte. Se tocar antes da cor, a tentativa é repetida.</p>
+    <div class="row"><button id="trA">Começar parte A</button><button id="trB" class="ghost">Começar parte B</button><span class="readout" id="trP"></span></div>
+    <div class="tap" id="trArea" role="button" tabindex="0" aria-live="polite">Toque em “Começar parte A”</div>
+    <div class="row" id="trBbtn" hidden>
+      <button class="big" data-r="v">verde-azulado</button><button class="big amber" data-r="l">laranja</button>
+    </div>
+    <div class="result" id="trRes" hidden>
+      <svg class="chart" id="trChart" viewBox="0 0 640 200" role="img" aria-label="Seus tempos de reação em cada tentativa"></svg>
+      <div class="report" id="trRep"></div>
+      <p class="why">Entre a luz chegar ao olho e o dedo tocar a tela passam a retina, o tálamo, o córtex visual, áreas que decidem, o córtex motor, a medula e os músculos. Cada passagem por uma sinapse custa cerca de 1 ms, e há muitas camadas. Escolher entre duas respostas acrescenta tempo de decisão (Donders, 1868). A tela e o toque do celular somam cerca de 30 a 80 ms ao seu resultado.</p>
+    </div>
+  </section>
+
+  <!-- E4 -->
+  <section class="exp" id="e4">
+    <div class="row"><span class="num">EXPERIMENTO 4</span><span class="tag">≈ 6 min · a turma toda ou uma fila</span></div>
+    <h2>Corrente de neurônios</h2>
+    <p>Formem uma roda de mãos dadas. Quem está com o celular faz parte da roda: segura a mão do vizinho da esquerda e deixa o celular na mão direita, com o polegar no botão. Ele <b>aperta a mão</b> do vizinho e toca <b>Iniciar</b> ao mesmo tempo. Cada pessoa passa o aperto adiante assim que sentir. A última pessoa aperta o <b>braço direito</b> de quem tem o celular, que toca <b>Parar</b>. Façam 4 ou 5 rodadas.</p>
+    <div class="row"><span class="readout">Pessoas na roda (com quem cronometra):</span>
+      <div class="stepper"><button class="ghost" id="cnMinus" aria-label="menos uma pessoa">−</button><output id="cnN">10</output><button class="ghost" id="cnPlus" aria-label="mais uma pessoa">+</button></div></div>
+    <div class="clock" id="cnClock" aria-live="off">0,00 s</div>
+    <button id="cnGo">Iniciar</button>
+    <div class="row"><span class="readout" id="cnLog">Nenhuma rodada ainda.</span><button class="ghost" id="cnUndo" hidden>Apagar a última rodada</button></div>
+    <div class="result" id="cnRes" hidden>
+      <svg class="chart" id="cnChart" viewBox="0 0 640 220" role="img" aria-label="Tempo por pessoa em cada rodada"></svg>
+      <div class="report" id="cnRep"></div>
+      <p class="why">Em cada pessoa o aperto percorre cerca de 1,5 m de nervo: da mão até a medula e o cérebro, e de volta até a outra mão. Um axônio motor mielinizado conduz a ~100 m/s, então o "fio" leva só ~15 ms. Quase todo o resto é <b>sinapse, decisão e músculo</b>. É o mesmo tempo que você mediu no experimento 3.</p>
+    </div>
+  </section>
+
+  <!-- E5 -->
+  <section class="exp" id="e5">
+    <div class="row"><span class="num">EXPERIMENTO 5</span><span class="tag">≈ 3 min · fim da parte 3</span></div>
+    <h2>Rotule o cérebro</h2>
+    <p>O cérebro abaixo é o hemisfério esquerdo visto de lado, com a frente à esquerda. A página pede uma estrutura de cada vez; toque nela. São 8 perguntas.</p>
+    <div class="row"><button id="bGo">Começar</button><span class="readout" id="bP"></span></div>
+    <div class="prompt" id="bPrompt" aria-live="polite"></div>
+    <svg viewBox="0 10 600 410" class="brain" id="brainSvg" role="img" aria-label="Cérebro esquemático, vista lateral do hemisfério esquerdo">
+<defs><clipPath id="clipCortex"><path d="M48.0,196.0 L48.2,193.9 L48.3,191.6 L48.5,189.2 L48.7,186.8 L48.9,184.1 L49.1,181.4 L49.4,178.6 L49.6,175.8 L49.9,172.8 L50.3,169.9 L50.7,166.8 L51.1,163.8 L51.6,160.7 L52.2,157.5 L52.8,154.4 L53.5,151.3 L54.2,148.2 L55.1,145.2 L56.0,142.2 L57.0,139.2 L58.1,136.3 L59.3,133.4 L60.6,130.7 L62.0,128.0 L63.5,125.4 L65.1,122.7 L66.7,120.1 L68.4,117.5 L70.2,114.8 L72.1,112.2 L74.0,109.6 L76.0,107.0 L78.1,104.4 L80.3,101.8 L82.5,99.3 L84.8,96.8 L87.2,94.3 L89.6,91.8 L92.2,89.4 L94.7,87.0 L97.4,84.7 L100.1,82.4 L102.9,80.2 L105.8,78.0 L108.8,75.9 L111.8,73.9 L114.8,71.9 L118.0,70.0 L121.2,68.1 L124.6,66.3 L128.0,64.6 L131.6,62.8 L135.2,61.2 L138.9,59.5 L142.7,58.0 L146.6,56.4 L150.6,54.9 L154.6,53.5 L158.7,52.0 L162.8,50.7 L167.0,49.4 L171.2,48.1 L175.5,46.9 L179.8,45.7 L184.2,44.6 L188.5,43.5 L192.9,42.5 L197.3,41.5 L201.7,40.5 L206.2,39.6 L210.6,38.8 L215.0,38.0 L219.5,37.3 L224.0,36.6 L228.6,35.9 L233.3,35.3 L238.0,34.8 L242.8,34.3 L247.6,33.8 L252.5,33.4 L257.4,33.1 L262.3,32.8 L267.2,32.5 L272.2,32.3 L277.1,32.1 L282.1,32.0 L287.0,31.9 L292.0,31.9 L296.9,31.9 L301.7,31.9 L306.6,32.0 L311.4,32.1 L316.1,32.3 L320.8,32.5 L325.4,32.7 L330.0,33.0 L334.5,33.3 L339.0,33.7 L343.5,34.1 L348.0,34.5 L352.5,35.0 L356.9,35.5 L361.4,36.0 L365.8,36.6 L370.2,37.3 L374.5,37.9 L378.9,38.7 L383.2,39.4 L387.5,40.2 L391.7,41.1 L395.9,42.0 L400.1,42.9 L404.3,43.9 L408.4,44.9 L412.4,46.0 L416.4,47.1 L420.4,48.3 L424.3,49.5 L428.2,50.7 L432.0,52.0 L435.8,53.3 L439.6,54.7 L443.3,56.2 L447.0,57.7 L450.7,59.3 L454.4,60.9 L458.0,62.6 L461.6,64.3 L465.2,66.1 L468.7,67.9 L472.2,69.7 L475.6,71.6 L479.0,73.5 L482.3,75.4 L485.6,77.4 L488.8,79.4 L492.0,81.4 L495.0,83.4 L498.1,85.5 L501.0,87.6 L503.9,89.7 L506.7,91.8 L509.4,93.9 L512.0,96.0 L514.6,98.1 L517.0,100.3 L519.5,102.6 L521.8,104.9 L524.1,107.2 L526.3,109.5 L528.5,111.9 L530.6,114.3 L532.6,116.7 L534.6,119.2 L536.5,121.6 L538.4,124.1 L540.2,126.6 L541.9,129.1 L543.6,131.6 L545.2,134.1 L546.7,136.7 L548.2,139.2 L549.7,141.7 L551.1,144.2 L552.4,146.7 L553.6,149.1 L554.8,151.6 L556.0,154.0 L557.1,156.4 L558.1,158.9 L559.1,161.3 L560.1,163.8 L560.9,166.3 L561.7,168.7 L562.5,171.2 L563.2,173.7 L563.8,176.2 L564.4,178.7 L564.9,181.2 L565.4,183.6 L565.8,186.1 L566.1,188.5 L566.4,191.0 L566.6,193.4 L566.7,195.8 L566.8,198.2 L566.9,200.6 L566.8,202.9 L566.7,205.2 L566.5,207.5 L566.3,209.8 L566.0,212.0 L565.6,214.2 L565.2,216.4 L564.8,218.7 L564.3,220.9 L563.7,223.1 L563.1,225.3 L562.4,227.5 L561.7,229.7 L560.9,231.9 L560.0,234.0 L559.1,236.2 L558.1,238.2 L557.1,240.3 L555.9,242.3 L554.7,244.3 L553.4,246.3 L552.0,248.2 L550.6,250.1 L549.0,251.9 L547.4,253.6 L545.7,255.3 L543.9,256.9 L542.0,258.5 L540.0,260.0 L537.9,261.4 L535.7,262.8 L533.3,264.0 L530.8,265.2 L528.3,266.3 L525.6,267.4 L522.8,268.4 L520.0,269.4 L517.1,270.3 L514.1,271.2 L511.0,272.1 L507.9,272.9 L504.7,273.7 L501.5,274.4 L498.2,275.2 L494.9,275.9 L491.6,276.7 L488.2,277.4 L484.8,278.1 L481.5,278.9 L478.1,279.6 L474.7,280.4 L471.3,281.2 L468.0,282.0 L464.6,282.8 L461.2,283.7 L457.8,284.5 L454.3,285.3 L450.7,286.1 L447.1,286.9 L443.5,287.8 L439.9,288.6 L436.2,289.4 L432.5,290.1 L428.7,290.9 L425.0,291.7 L421.2,292.4 L417.5,293.2 L413.7,293.9 L409.9,294.7 L406.1,295.4 L402.4,296.1 L398.6,296.8 L394.9,297.5 L391.1,298.1 L387.4,298.8 L383.7,299.4 L380.0,300.0 L376.3,300.6 L372.6,301.2 L368.9,301.8 L365.2,302.4 L361.5,303.1 L357.8,303.7 L354.0,304.3 L350.3,304.9 L346.6,305.4 L342.8,306.0 L339.1,306.5 L335.4,307.1 L331.7,307.6 L328.0,308.0 L324.3,308.5 L320.6,308.9 L316.9,309.3 L313.3,309.7 L309.7,310.0 L306.1,310.3 L302.5,310.5 L299.0,310.7 L295.5,310.9 L292.0,311.0 L288.5,311.1 L285.1,311.1 L281.6,311.1 L278.1,311.0 L274.6,310.9 L271.1,310.8 L267.6,310.7 L264.1,310.5 L260.7,310.3 L257.3,310.0 L253.9,309.7 L250.5,309.4 L247.2,309.1 L243.9,308.7 L240.6,308.4 L237.4,308.0 L234.3,307.5 L231.2,307.1 L228.1,306.6 L225.1,306.1 L222.2,305.6 L219.4,305.1 L216.7,304.6 L214.0,304.0 L211.4,303.4 L208.8,302.8 L206.3,302.1 L203.9,301.5 L201.5,300.8 L199.1,300.0 L196.8,299.2 L194.6,298.4 L192.4,297.6 L190.3,296.8 L188.2,295.9 L186.1,295.1 L184.1,294.2 L182.2,293.3 L180.3,292.4 L178.5,291.4 L176.8,290.5 L175.0,289.6 L173.4,288.7 L171.8,287.7 L170.3,286.8 L168.8,285.8 L167.4,284.9 L166.0,284.0 L164.7,283.1 L163.6,282.1 L162.5,281.1 L161.6,280.1 L160.7,279.0 L159.9,278.0 L159.2,276.9 L158.5,275.8 L157.9,274.7 L157.4,273.6 L156.9,272.5 L156.4,271.4 L155.9,270.3 L155.5,269.2 L155.0,268.2 L154.6,267.1 L154.1,266.1 L153.7,265.1 L153.2,264.2 L152.6,263.2 L152.1,262.4 L151.4,261.5 L150.8,260.7 L150.0,260.0 L149.2,259.3 L148.4,258.7 L147.7,258.1 L146.9,257.5 L146.2,256.9 L145.4,256.4 L144.7,255.9 L143.9,255.5 L143.2,255.0 L142.4,254.6 L141.6,254.2 L140.8,253.9 L139.9,253.5 L139.0,253.2 L138.1,252.8 L137.2,252.5 L136.2,252.2 L135.2,251.9 L134.1,251.6 L133.0,251.3 L131.8,251.0 L130.6,250.6 L129.3,250.3 L128.0,250.0 L126.6,249.7 L125.1,249.4 L123.5,249.1 L121.8,248.9 L120.0,248.7 L118.2,248.5 L116.4,248.3 L114.4,248.1 L112.5,248.0 L110.5,247.8 L108.5,247.7 L106.5,247.5 L104.5,247.3 L102.5,247.1 L100.4,247.0 L98.4,246.7 L96.5,246.5 L94.5,246.2 L92.6,246.0 L90.8,245.6 L89.0,245.3 L87.2,244.9 L85.6,244.5 L84.0,244.0 L82.5,243.5 L80.9,243.0 L79.4,242.4 L77.9,241.8 L76.4,241.2 L75.0,240.6 L73.5,240.0 L72.1,239.3 L70.7,238.7 L69.3,238.0 L67.9,237.2 L66.6,236.5 L65.3,235.7 L64.1,235.0 L62.9,234.2 L61.7,233.3 L60.6,232.5 L59.5,231.6 L58.4,230.7 L57.4,229.8 L56.5,228.9 L55.6,228.0 L54.8,227.0 L54.0,226.0 L53.3,225.0 L52.6,224.0 L52.0,223.1 L51.4,222.1 L50.8,221.2 L50.3,220.2 L49.9,219.3 L49.5,218.3 L49.1,217.3 L48.8,216.3 L48.5,215.2 L48.2,214.1 L48.0,213.0 L47.9,211.8 L47.7,210.6 L47.6,209.3 L47.6,207.9 L47.5,206.5 L47.5,204.9 L47.6,203.3 L47.6,201.7 L47.7,199.9 L47.8,198.0 Z"/></clipPath></defs>
+<path class="rg" data-r="tronco" d="M352.0,288.0 L402.0,286.0 L414.0,350.0 L420.0,412.0 L380.0,412.0 L372.0,350.0 Z"/>
+<ellipse class="rg" data-r="cerebelo" cx="478" cy="312" rx="86" ry="46"/>
+<g class="deco"><path class="sulc" d="M409,288 Q478,294 547,288"/><path class="sulc" d="M409,300 Q478,306 547,300"/><path class="sulc" d="M409,312 Q478,318 547,312"/><path class="sulc" d="M409,324 Q478,330 547,324"/><path class="sulc" d="M409,336 Q478,342 547,336"/></g>
+<g clip-path="url(#clipCortex)">
+<path class="rg lobe" data-r="frontal" d="M0.0,0.0 L312.0,0.0 L308.0,30.0 L307.6,31.1 L307.2,32.4 L306.8,33.9 L306.3,35.5 L305.7,37.3 L305.1,39.2 L304.5,41.2 L303.9,43.3 L303.2,45.4 L302.5,47.7 L301.7,50.0 L301.0,52.4 L300.2,54.8 L299.5,57.2 L298.7,59.6 L297.9,62.1 L297.1,64.5 L296.4,66.9 L295.6,69.2 L294.9,71.6 L294.1,73.8 L293.4,76.0 L292.7,78.0 L292.0,80.0 L291.3,81.9 L290.7,83.8 L290.0,85.6 L289.3,87.5 L288.6,89.3 L287.9,91.1 L287.2,92.9 L286.6,94.7 L285.9,96.4 L285.2,98.2 L284.5,99.9 L283.8,101.6 L283.1,103.3 L282.5,105.0 L281.8,106.7 L281.1,108.4 L280.4,110.1 L279.8,111.8 L279.1,113.5 L278.5,115.2 L277.9,116.9 L277.2,118.6 L276.6,120.3 L276.0,122.0 L275.4,123.7 L274.8,125.4 L274.2,127.1 L273.6,128.8 L273.0,130.4 L272.4,132.1 L271.8,133.8 L271.2,135.4 L270.6,137.1 L270.1,138.7 L269.5,140.4 L268.9,142.0 L268.4,143.6 L267.8,145.3 L267.3,146.9 L266.8,148.6 L266.3,150.2 L265.8,151.9 L265.3,153.6 L264.8,155.2 L264.3,156.9 L263.9,158.6 L263.4,160.3 L263.0,162.0 L262.6,163.7 L262.2,165.6 L261.8,167.4 L261.4,169.4 L261.0,171.3 L260.7,173.3 L260.3,175.4 L260.0,177.4 L259.6,179.4 L259.3,181.5 L259.0,183.5 L258.7,185.5 L258.4,187.5 L258.1,189.4 L257.8,191.2 L257.6,193.0 L257.3,194.8 L257.1,196.4 L256.9,198.0 L256.7,199.4 L256.5,200.7 L256.3,202.0 L256.2,203.1 L256.0,204.0 L242.0,214.0 L190.0,232.0 L140.0,254.0 L118.0,340.0 L0.0,340.0 Z"/><path class="rg lobe" data-r="parietal" d="M312.0,0.0 L472.0,0.0 L470.0,52.0 L470.4,53.4 L470.8,55.1 L471.3,57.0 L471.9,59.0 L472.5,61.2 L473.2,63.6 L473.9,66.1 L474.6,68.7 L475.4,71.5 L476.1,74.3 L476.9,77.3 L477.8,80.2 L478.6,83.3 L479.4,86.4 L480.2,89.5 L481.0,92.6 L481.7,95.7 L482.5,98.8 L483.2,101.8 L483.8,104.8 L484.5,107.8 L485.0,110.6 L485.5,113.4 L486.0,116.0 L486.4,118.6 L486.8,121.2 L487.1,123.7 L487.5,126.3 L487.8,128.8 L488.1,131.4 L488.3,133.9 L488.6,136.4 L488.8,139.0 L489.0,141.5 L489.2,144.0 L489.4,146.5 L489.5,149.0 L489.6,151.5 L489.8,154.0 L489.9,156.4 L489.9,158.9 L490.0,161.4 L490.0,163.8 L490.1,166.3 L490.1,168.7 L490.1,171.2 L490.0,173.6 L490.0,176.0 L382.0,172.0 L330.0,190.0 L256.0,204.0 L256.0,204.0 L256.2,203.1 L256.3,202.0 L256.5,200.7 L256.7,199.4 L256.9,198.0 L257.1,196.4 L257.3,194.8 L257.6,193.0 L257.8,191.2 L258.1,189.4 L258.4,187.5 L258.7,185.5 L259.0,183.5 L259.3,181.5 L259.6,179.4 L260.0,177.4 L260.3,175.4 L260.7,173.3 L261.0,171.3 L261.4,169.4 L261.8,167.4 L262.2,165.6 L262.6,163.7 L263.0,162.0 L263.4,160.3 L263.9,158.6 L264.3,156.9 L264.8,155.2 L265.3,153.6 L265.8,151.9 L266.3,150.2 L266.8,148.6 L267.3,146.9 L267.8,145.3 L268.4,143.6 L268.9,142.0 L269.5,140.4 L270.1,138.7 L270.6,137.1 L271.2,135.4 L271.8,133.8 L272.4,132.1 L273.0,130.4 L273.6,128.8 L274.2,127.1 L274.8,125.4 L275.4,123.7 L276.0,122.0 L276.6,120.3 L277.2,118.6 L277.9,116.9 L278.5,115.2 L279.1,113.5 L279.8,111.8 L280.4,110.1 L281.1,108.4 L281.8,106.7 L282.5,105.0 L283.1,103.3 L283.8,101.6 L284.5,99.9 L285.2,98.2 L285.9,96.4 L286.6,94.7 L287.2,92.9 L287.9,91.1 L288.6,89.3 L289.3,87.5 L290.0,85.6 L290.7,83.8 L291.3,81.9 L292.0,80.0 L292.7,78.0 L293.4,76.0 L294.1,73.8 L294.9,71.6 L295.6,69.2 L296.4,66.9 L297.1,64.5 L297.9,62.1 L298.7,59.6 L299.5,57.2 L300.2,54.8 L301.0,52.4 L301.7,50.0 L302.5,47.7 L303.2,45.4 L303.9,43.3 L304.5,41.2 L305.1,39.2 L305.7,37.3 L306.3,35.5 L306.8,33.9 L307.2,32.4 L307.6,31.1 L308.0,30.0 Z"/><path class="rg lobe" data-r="temporal" d="M140.0,254.0 L190.0,232.0 L242.0,214.0 L330.0,190.0 L382.0,172.0 L490.0,176.0 L490.0,176.0 L489.9,178.4 L489.9,180.8 L489.8,183.2 L489.7,185.6 L489.5,188.0 L489.4,190.3 L489.2,192.7 L489.0,195.0 L488.8,197.4 L488.6,199.7 L488.4,202.0 L488.1,204.4 L487.9,206.7 L487.6,209.0 L487.3,211.3 L487.0,213.6 L486.6,215.9 L486.3,218.2 L485.9,220.5 L485.6,222.8 L485.2,225.1 L484.8,227.4 L484.4,229.7 L484.0,232.0 L483.6,234.3 L483.1,236.7 L482.5,239.2 L482.0,241.7 L481.4,244.3 L480.7,246.9 L480.1,249.5 L479.4,252.1 L478.7,254.8 L478.0,257.4 L477.3,260.0 L476.6,262.5 L475.9,265.0 L475.2,267.4 L474.6,269.8 L473.9,272.1 L473.3,274.3 L472.7,276.3 L472.1,278.3 L471.6,280.1 L471.1,281.8 L470.7,283.4 L470.3,284.8 L470.0,286.0 L470.0,420.0 L118.0,420.0 L118.0,340.0 Z"/><path class="rg lobe" data-r="occipital" d="M472.0,0.0 L600.0,0.0 L600.0,420.0 L470.0,420.0 L470.0,286.0 L470.3,284.8 L470.7,283.4 L471.1,281.8 L471.6,280.1 L472.1,278.3 L472.7,276.3 L473.3,274.3 L473.9,272.1 L474.6,269.8 L475.2,267.4 L475.9,265.0 L476.6,262.5 L477.3,260.0 L478.0,257.4 L478.7,254.8 L479.4,252.1 L480.1,249.5 L480.7,246.9 L481.4,244.3 L482.0,241.7 L482.5,239.2 L483.1,236.7 L483.6,234.3 L484.0,232.0 L484.4,229.7 L484.8,227.4 L485.2,225.1 L485.6,222.8 L485.9,220.5 L486.3,218.2 L486.6,215.9 L487.0,213.6 L487.3,211.3 L487.6,209.0 L487.9,206.7 L488.1,204.4 L488.4,202.0 L488.6,199.7 L488.8,197.4 L489.0,195.0 L489.2,192.7 L489.4,190.3 L489.5,188.0 L489.7,185.6 L489.8,183.2 L489.9,180.8 L489.9,178.4 L490.0,176.0 L490.0,173.6 L490.1,171.2 L490.1,168.7 L490.1,166.3 L490.0,163.8 L490.0,161.4 L489.9,158.9 L489.9,156.4 L489.8,154.0 L489.6,151.5 L489.5,149.0 L489.4,146.5 L489.2,144.0 L489.0,141.5 L488.8,139.0 L488.6,136.4 L488.3,133.9 L488.1,131.4 L487.8,128.8 L487.5,126.3 L487.1,123.7 L486.8,121.2 L486.4,118.6 L486.0,116.0 L485.5,113.4 L485.0,110.6 L484.5,107.8 L483.8,104.8 L483.2,101.8 L482.5,98.8 L481.7,95.7 L481.0,92.6 L480.2,89.5 L479.4,86.4 L478.6,83.3 L477.8,80.2 L476.9,77.3 L476.1,74.3 L475.4,71.5 L474.6,68.7 L473.9,66.1 L473.2,63.6 L472.5,61.2 L471.9,59.0 L471.3,57.0 L470.8,55.1 L470.4,53.4 L470.0,52.0 Z"/>
+<g class="deco"><path class="sulc" d="M78.0,142.0 L79.6,141.3 L81.3,140.5 L83.2,139.6 L85.3,138.6 L87.5,137.5 L89.9,136.3 L92.3,135.0 L95.0,133.7 L97.7,132.3 L100.6,130.9 L103.5,129.5 L106.6,128.0 L109.8,126.5 L113.1,125.0 L116.5,123.5 L119.9,122.1 L123.5,120.6 L127.1,119.2 L130.8,117.9 L134.5,116.5 L138.3,115.3 L142.2,114.1 L146.1,113.0 L150.0,112.0 L154.1,111.1 L158.6,110.1 L163.4,109.2 L168.4,108.3 L173.6,107.5 L179.0,106.6 L184.6,105.8 L190.3,105.0 L196.1,104.3 L201.9,103.5 L207.7,102.8 L213.5,102.1 L219.2,101.5 L224.9,100.8 L230.4,100.2 L235.7,99.6 L240.8,99.1 L245.7,98.5 L250.3,98.0 L254.6,97.6 L258.6,97.1 L262.2,96.7 L265.3,96.3 L268.0,96.0"/><path class="sulc" d="M76.0,196.0 L78.0,195.5 L80.3,194.8 L82.8,194.1 L85.6,193.3 L88.6,192.5 L91.8,191.6 L95.2,190.6 L98.8,189.6 L102.5,188.6 L106.4,187.5 L110.4,186.4 L114.4,185.2 L118.6,184.1 L122.8,182.9 L127.1,181.8 L131.4,180.6 L135.8,179.4 L140.1,178.3 L144.4,177.2 L148.7,176.0 L152.9,175.0 L157.0,173.9 L161.1,172.9 L165.0,172.0 L169.0,171.1 L173.1,170.1 L177.4,169.2 L181.8,168.2 L186.4,167.2 L191.0,166.2 L195.6,165.3 L200.3,164.3 L205.1,163.3 L209.8,162.4 L214.4,161.4 L219.1,160.5 L223.6,159.6 L228.1,158.7 L232.4,157.9 L236.6,157.0 L240.6,156.2 L244.4,155.5 L248.0,154.8 L251.4,154.1 L254.5,153.5 L257.3,153.0 L259.8,152.4 L262.0,152.0"/><path class="sulc" d="M196.0,252.0 L198.3,251.5 L201.0,251.0 L203.9,250.4 L207.1,249.8 L210.6,249.1 L214.3,248.4 L218.2,247.6 L222.4,246.7 L226.7,245.9 L231.2,245.0 L235.8,244.1 L240.5,243.1 L245.3,242.2 L250.3,241.2 L255.3,240.2 L260.3,239.3 L265.4,238.3 L270.4,237.3 L275.5,236.4 L280.5,235.4 L285.5,234.5 L290.4,233.7 L295.3,232.8 L300.0,232.0 L304.8,231.2 L309.7,230.4 L314.7,229.5 L319.9,228.7 L325.2,227.8 L330.5,226.9 L335.9,226.1 L341.4,225.2 L346.9,224.3 L352.4,223.4 L357.9,222.6 L363.4,221.8 L368.8,220.9 L374.2,220.1 L379.4,219.3 L384.6,218.6 L389.6,217.9 L394.5,217.2 L399.3,216.5 L403.9,215.9 L408.2,215.4 L412.4,214.9 L416.3,214.4 L420.0,214.0 L423.5,213.7 L426.8,213.4 L429.9,213.1 L433.0,213.0 L435.8,212.8 L438.6,212.7 L441.2,212.7 L443.7,212.7 L446.1,212.7 L448.3,212.7 L450.5,212.8 L452.5,212.9 L454.4,213.0 L456.3,213.1 L458.0,213.2 L459.6,213.3 L461.2,213.5 L462.7,213.6 L464.1,213.7 L465.4,213.8 L466.6,213.9 L467.8,213.9 L468.9,214.0 L470.0,214.0"/><path class="sulc" d="M214.0,286.0 L216.4,285.6 L219.0,285.2 L222.0,284.8 L225.2,284.3 L228.7,283.7 L232.4,283.2 L236.4,282.6 L240.5,281.9 L244.8,281.3 L249.3,280.6 L254.0,279.9 L258.8,279.1 L263.6,278.4 L268.6,277.6 L273.7,276.8 L278.8,276.1 L284.0,275.3 L289.2,274.5 L294.4,273.7 L299.6,273.0 L304.8,272.2 L309.9,271.5 L315.0,270.7 L320.0,270.0 L325.1,269.3 L330.5,268.5 L336.2,267.7 L342.0,266.9 L348.1,266.1 L354.3,265.2 L360.6,264.4 L367.0,263.5 L373.4,262.6 L379.8,261.7 L386.3,260.9 L392.6,260.0 L398.9,259.2 L405.0,258.3 L411.0,257.5 L416.8,256.7 L422.4,256.0 L427.7,255.3 L432.7,254.6 L437.3,254.0 L441.6,253.4 L445.5,252.9 L449.0,252.4 L452.0,252.0"/><path class="sulc" d="M300.0,150.0 L301.8,149.1 L303.9,148.0 L306.2,146.8 L308.7,145.4 L311.4,143.8 L314.3,142.1 L317.4,140.4 L320.7,138.5 L324.1,136.6 L327.6,134.6 L331.2,132.6 L334.9,130.6 L338.6,128.6 L342.5,126.6 L346.3,124.7 L350.2,122.8 L354.1,121.0 L358.0,119.3 L361.8,117.7 L365.6,116.2 L369.4,114.9 L373.0,113.7 L376.6,112.8 L380.0,112.0 L383.4,111.4 L387.0,111.0 L390.7,110.7 L394.5,110.5 L398.4,110.5 L402.3,110.5 L406.2,110.7 L410.2,111.0 L414.2,111.3 L418.2,111.7 L422.1,112.1 L426.0,112.6 L429.8,113.2 L433.5,113.7 L437.2,114.3 L440.7,114.8 L444.0,115.4 L447.2,115.9 L450.2,116.4 L453.1,116.8 L455.7,117.2 L458.0,117.6 L460.2,117.8 L462.0,118.0"/><path class="sulc" d="M500.0,100.0 L500.7,101.1 L501.6,102.4 L502.5,103.9 L503.6,105.4 L504.8,107.2 L506.1,109.0 L507.5,110.9 L509.0,113.0 L510.5,115.1 L512.0,117.3 L513.6,119.6 L515.1,121.9 L516.7,124.2 L518.2,126.6 L519.8,129.1 L521.3,131.5 L522.7,133.9 L524.0,136.3 L525.3,138.7 L526.5,141.1 L527.6,143.4 L528.5,145.7 L529.3,147.9 L530.0,150.0 L530.5,152.1 L530.9,154.3 L531.3,156.6 L531.5,158.9 L531.6,161.3 L531.7,163.7 L531.7,166.1 L531.6,168.5 L531.5,170.9 L531.3,173.4 L531.1,175.8 L530.9,178.1 L530.6,180.4 L530.3,182.7 L530.0,184.9 L529.7,187.0 L529.4,189.1 L529.1,191.0 L528.8,192.8 L528.6,194.6 L528.4,196.1 L528.2,197.6 L528.1,198.9 L528.0,200.0"/>
+<path class="dash" d="M470.0,52.0 L470.4,53.4 L470.8,55.1 L471.3,57.0 L471.9,59.0 L472.5,61.2 L473.2,63.6 L473.9,66.1 L474.6,68.7 L475.4,71.5 L476.1,74.3 L476.9,77.3 L477.8,80.2 L478.6,83.3 L479.4,86.4 L480.2,89.5 L481.0,92.6 L481.7,95.7 L482.5,98.8 L483.2,101.8 L483.8,104.8 L484.5,107.8 L485.0,110.6 L485.5,113.4 L486.0,116.0 L486.4,118.6 L486.8,121.2 L487.1,123.7 L487.5,126.3 L487.8,128.8 L488.1,131.4 L488.3,133.9 L488.6,136.4 L488.8,139.0 L489.0,141.5 L489.2,144.0 L489.4,146.5 L489.5,149.0 L489.6,151.5 L489.8,154.0 L489.9,156.4 L489.9,158.9 L490.0,161.4 L490.0,163.8 L490.1,166.3 L490.1,168.7 L490.1,171.2 L490.0,173.6 L490.0,176.0 L489.9,178.4 L489.9,180.8 L489.8,183.2 L489.7,185.6 L489.5,188.0 L489.4,190.3 L489.2,192.7 L489.0,195.0 L488.8,197.4 L488.6,199.7 L488.4,202.0 L488.1,204.4 L487.9,206.7 L487.6,209.0 L487.3,211.3 L487.0,213.6 L486.6,215.9 L486.3,218.2 L485.9,220.5 L485.6,222.8 L485.2,225.1 L484.8,227.4 L484.4,229.7 L484.0,232.0 L483.6,234.3 L483.1,236.7 L482.5,239.2 L482.0,241.7 L481.4,244.3 L480.7,246.9 L480.1,249.5 L479.4,252.1 L478.7,254.8 L478.0,257.4 L477.3,260.0 L476.6,262.5 L475.9,265.0 L475.2,267.4 L474.6,269.8 L473.9,272.1 L473.3,274.3 L472.7,276.3 L472.1,278.3 L471.6,280.1 L471.1,281.8 L470.7,283.4 L470.3,284.8 L470.0,286.0"/><path class="dash" d="M382,172 L488,176"/></g>
+</g>
+<g class="deco"><path class="major" d="M308.0,30.0 L307.6,31.1 L307.2,32.4 L306.8,33.9 L306.3,35.5 L305.7,37.3 L305.1,39.2 L304.5,41.2 L303.9,43.3 L303.2,45.4 L302.5,47.7 L301.7,50.0 L301.0,52.4 L300.2,54.8 L299.5,57.2 L298.7,59.6 L297.9,62.1 L297.1,64.5 L296.4,66.9 L295.6,69.2 L294.9,71.6 L294.1,73.8 L293.4,76.0 L292.7,78.0 L292.0,80.0 L291.3,81.9 L290.7,83.8 L290.0,85.6 L289.3,87.5 L288.6,89.3 L287.9,91.1 L287.2,92.9 L286.6,94.7 L285.9,96.4 L285.2,98.2 L284.5,99.9 L283.8,101.6 L283.1,103.3 L282.5,105.0 L281.8,106.7 L281.1,108.4 L280.4,110.1 L279.8,111.8 L279.1,113.5 L278.5,115.2 L277.9,116.9 L277.2,118.6 L276.6,120.3 L276.0,122.0 L275.4,123.7 L274.8,125.4 L274.2,127.1 L273.6,128.8 L273.0,130.4 L272.4,132.1 L271.8,133.8 L271.2,135.4 L270.6,137.1 L270.1,138.7 L269.5,140.4 L268.9,142.0 L268.4,143.6 L267.8,145.3 L267.3,146.9 L266.8,148.6 L266.3,150.2 L265.8,151.9 L265.3,153.6 L264.8,155.2 L264.3,156.9 L263.9,158.6 L263.4,160.3 L263.0,162.0 L262.6,163.7 L262.2,165.6 L261.8,167.4 L261.4,169.4 L261.0,171.3 L260.7,173.3 L260.3,175.4 L260.0,177.4 L259.6,179.4 L259.3,181.5 L259.0,183.5 L258.7,185.5 L258.4,187.5 L258.1,189.4 L257.8,191.2 L257.6,193.0 L257.3,194.8 L257.1,196.4 L256.9,198.0 L256.7,199.4 L256.5,200.7 L256.3,202.0 L256.2,203.1 L256.0,204.0"/><path class="major" d="M140.0,254.0 L141.1,253.5 L142.4,252.9 L143.8,252.3 L145.4,251.6 L147.1,250.8 L148.9,250.0 L150.9,249.1 L152.9,248.1 L155.0,247.2 L157.2,246.2 L159.4,245.2 L161.8,244.1 L164.1,243.1 L166.5,242.0 L168.9,240.9 L171.3,239.9 L173.8,238.8 L176.2,237.7 L178.6,236.7 L181.0,235.7 L183.3,234.7 L185.6,233.8 L187.8,232.9 L190.0,232.0 L192.1,231.2 L194.1,230.4 L196.2,229.6 L198.1,228.8 L200.1,228.1 L202.0,227.4 L203.9,226.6 L205.9,225.9 L207.8,225.2 L209.7,224.5 L211.7,223.8 L213.6,223.1 L215.6,222.4 L217.7,221.7 L219.8,221.0 L221.9,220.3 L224.1,219.6 L226.4,218.8 L228.8,218.1 L231.2,217.3 L233.8,216.5 L236.4,215.7 L239.1,214.9 L242.0,214.0 L245.0,213.1 L248.2,212.2 L251.5,211.3 L255.0,210.3 L258.6,209.3 L262.3,208.3 L266.1,207.3 L270.0,206.3 L273.9,205.3 L277.9,204.2 L282.0,203.2 L286.0,202.1 L290.0,201.1 L294.1,200.0 L298.1,199.0 L302.0,197.9 L305.9,196.9 L309.7,195.9 L313.4,194.8 L317.0,193.8 L320.5,192.8 L323.8,191.9 L327.0,190.9 L330.0,190.0 L332.9,189.1 L335.7,188.2 L338.4,187.3 L341.0,186.5 L343.6,185.6 L346.1,184.8 L348.5,184.0 L350.9,183.2 L353.2,182.4 L355.4,181.6 L357.6,180.8 L359.8,180.0 L361.8,179.2 L363.9,178.4 L365.8,177.6 L367.8,176.8 L369.7,176.0 L371.5,175.2 L373.4,174.4 L375.1,173.5 L376.9,172.7 L378.6,171.8 L380.3,170.9 L382.0,170.0 L383.6,169.1 L385.3,168.1 L386.8,167.0 L388.4,166.0 L389.9,164.8 L391.3,163.7 L392.8,162.6 L394.1,161.4 L395.5,160.2 L396.8,159.1 L398.0,157.9 L399.2,156.8 L400.4,155.6 L401.5,154.5 L402.6,153.4 L403.6,152.4 L404.6,151.4 L405.5,150.4 L406.4,149.5 L407.2,148.7 L408.0,147.9 L408.7,147.2 L409.4,146.5 L410.0,146.0"/>
+<path class="outline" d="M48.0,196.0 L48.2,193.9 L48.3,191.6 L48.5,189.2 L48.7,186.8 L48.9,184.1 L49.1,181.4 L49.4,178.6 L49.6,175.8 L49.9,172.8 L50.3,169.9 L50.7,166.8 L51.1,163.8 L51.6,160.7 L52.2,157.5 L52.8,154.4 L53.5,151.3 L54.2,148.2 L55.1,145.2 L56.0,142.2 L57.0,139.2 L58.1,136.3 L59.3,133.4 L60.6,130.7 L62.0,128.0 L63.5,125.4 L65.1,122.7 L66.7,120.1 L68.4,117.5 L70.2,114.8 L72.1,112.2 L74.0,109.6 L76.0,107.0 L78.1,104.4 L80.3,101.8 L82.5,99.3 L84.8,96.8 L87.2,94.3 L89.6,91.8 L92.2,89.4 L94.7,87.0 L97.4,84.7 L100.1,82.4 L102.9,80.2 L105.8,78.0 L108.8,75.9 L111.8,73.9 L114.8,71.9 L118.0,70.0 L121.2,68.1 L124.6,66.3 L128.0,64.6 L131.6,62.8 L135.2,61.2 L138.9,59.5 L142.7,58.0 L146.6,56.4 L150.6,54.9 L154.6,53.5 L158.7,52.0 L162.8,50.7 L167.0,49.4 L171.2,48.1 L175.5,46.9 L179.8,45.7 L184.2,44.6 L188.5,43.5 L192.9,42.5 L197.3,41.5 L201.7,40.5 L206.2,39.6 L210.6,38.8 L215.0,38.0 L219.5,37.3 L224.0,36.6 L228.6,35.9 L233.3,35.3 L238.0,34.8 L242.8,34.3 L247.6,33.8 L252.5,33.4 L257.4,33.1 L262.3,32.8 L267.2,32.5 L272.2,32.3 L277.1,32.1 L282.1,32.0 L287.0,31.9 L292.0,31.9 L296.9,31.9 L301.7,31.9 L306.6,32.0 L311.4,32.1 L316.1,32.3 L320.8,32.5 L325.4,32.7 L330.0,33.0 L334.5,33.3 L339.0,33.7 L343.5,34.1 L348.0,34.5 L352.5,35.0 L356.9,35.5 L361.4,36.0 L365.8,36.6 L370.2,37.3 L374.5,37.9 L378.9,38.7 L383.2,39.4 L387.5,40.2 L391.7,41.1 L395.9,42.0 L400.1,42.9 L404.3,43.9 L408.4,44.9 L412.4,46.0 L416.4,47.1 L420.4,48.3 L424.3,49.5 L428.2,50.7 L432.0,52.0 L435.8,53.3 L439.6,54.7 L443.3,56.2 L447.0,57.7 L450.7,59.3 L454.4,60.9 L458.0,62.6 L461.6,64.3 L465.2,66.1 L468.7,67.9 L472.2,69.7 L475.6,71.6 L479.0,73.5 L482.3,75.4 L485.6,77.4 L488.8,79.4 L492.0,81.4 L495.0,83.4 L498.1,85.5 L501.0,87.6 L503.9,89.7 L506.7,91.8 L509.4,93.9 L512.0,96.0 L514.6,98.1 L517.0,100.3 L519.5,102.6 L521.8,104.9 L524.1,107.2 L526.3,109.5 L528.5,111.9 L530.6,114.3 L532.6,116.7 L534.6,119.2 L536.5,121.6 L538.4,124.1 L540.2,126.6 L541.9,129.1 L543.6,131.6 L545.2,134.1 L546.7,136.7 L548.2,139.2 L549.7,141.7 L551.1,144.2 L552.4,146.7 L553.6,149.1 L554.8,151.6 L556.0,154.0 L557.1,156.4 L558.1,158.9 L559.1,161.3 L560.1,163.8 L560.9,166.3 L561.7,168.7 L562.5,171.2 L563.2,173.7 L563.8,176.2 L564.4,178.7 L564.9,181.2 L565.4,183.6 L565.8,186.1 L566.1,188.5 L566.4,191.0 L566.6,193.4 L566.7,195.8 L566.8,198.2 L566.9,200.6 L566.8,202.9 L566.7,205.2 L566.5,207.5 L566.3,209.8 L566.0,212.0 L565.6,214.2 L565.2,216.4 L564.8,218.7 L564.3,220.9 L563.7,223.1 L563.1,225.3 L562.4,227.5 L561.7,229.7 L560.9,231.9 L560.0,234.0 L559.1,236.2 L558.1,238.2 L557.1,240.3 L555.9,242.3 L554.7,244.3 L553.4,246.3 L552.0,248.2 L550.6,250.1 L549.0,251.9 L547.4,253.6 L545.7,255.3 L543.9,256.9 L542.0,258.5 L540.0,260.0 L537.9,261.4 L535.7,262.8 L533.3,264.0 L530.8,265.2 L528.3,266.3 L525.6,267.4 L522.8,268.4 L520.0,269.4 L517.1,270.3 L514.1,271.2 L511.0,272.1 L507.9,272.9 L504.7,273.7 L501.5,274.4 L498.2,275.2 L494.9,275.9 L491.6,276.7 L488.2,277.4 L484.8,278.1 L481.5,278.9 L478.1,279.6 L474.7,280.4 L471.3,281.2 L468.0,282.0 L464.6,282.8 L461.2,283.7 L457.8,284.5 L454.3,285.3 L450.7,286.1 L447.1,286.9 L443.5,287.8 L439.9,288.6 L436.2,289.4 L432.5,290.1 L428.7,290.9 L425.0,291.7 L421.2,292.4 L417.5,293.2 L413.7,293.9 L409.9,294.7 L406.1,295.4 L402.4,296.1 L398.6,296.8 L394.9,297.5 L391.1,298.1 L387.4,298.8 L383.7,299.4 L380.0,300.0 L376.3,300.6 L372.6,301.2 L368.9,301.8 L365.2,302.4 L361.5,303.1 L357.8,303.7 L354.0,304.3 L350.3,304.9 L346.6,305.4 L342.8,306.0 L339.1,306.5 L335.4,307.1 L331.7,307.6 L328.0,308.0 L324.3,308.5 L320.6,308.9 L316.9,309.3 L313.3,309.7 L309.7,310.0 L306.1,310.3 L302.5,310.5 L299.0,310.7 L295.5,310.9 L292.0,311.0 L288.5,311.1 L285.1,311.1 L281.6,311.1 L278.1,311.0 L274.6,310.9 L271.1,310.8 L267.6,310.7 L264.1,310.5 L260.7,310.3 L257.3,310.0 L253.9,309.7 L250.5,309.4 L247.2,309.1 L243.9,308.7 L240.6,308.4 L237.4,308.0 L234.3,307.5 L231.2,307.1 L228.1,306.6 L225.1,306.1 L222.2,305.6 L219.4,305.1 L216.7,304.6 L214.0,304.0 L211.4,303.4 L208.8,302.8 L206.3,302.1 L203.9,301.5 L201.5,300.8 L199.1,300.0 L196.8,299.2 L194.6,298.4 L192.4,297.6 L190.3,296.8 L188.2,295.9 L186.1,295.1 L184.1,294.2 L182.2,293.3 L180.3,292.4 L178.5,291.4 L176.8,290.5 L175.0,289.6 L173.4,288.7 L171.8,287.7 L170.3,286.8 L168.8,285.8 L167.4,284.9 L166.0,284.0 L164.7,283.1 L163.6,282.1 L162.5,281.1 L161.6,280.1 L160.7,279.0 L159.9,278.0 L159.2,276.9 L158.5,275.8 L157.9,274.7 L157.4,273.6 L156.9,272.5 L156.4,271.4 L155.9,270.3 L155.5,269.2 L155.0,268.2 L154.6,267.1 L154.1,266.1 L153.7,265.1 L153.2,264.2 L152.6,263.2 L152.1,262.4 L151.4,261.5 L150.8,260.7 L150.0,260.0 L149.2,259.3 L148.4,258.7 L147.7,258.1 L146.9,257.5 L146.2,256.9 L145.4,256.4 L144.7,255.9 L143.9,255.5 L143.2,255.0 L142.4,254.6 L141.6,254.2 L140.8,253.9 L139.9,253.5 L139.0,253.2 L138.1,252.8 L137.2,252.5 L136.2,252.2 L135.2,251.9 L134.1,251.6 L133.0,251.3 L131.8,251.0 L130.6,250.6 L129.3,250.3 L128.0,250.0 L126.6,249.7 L125.1,249.4 L123.5,249.1 L121.8,248.9 L120.0,248.7 L118.2,248.5 L116.4,248.3 L114.4,248.1 L112.5,248.0 L110.5,247.8 L108.5,247.7 L106.5,247.5 L104.5,247.3 L102.5,247.1 L100.4,247.0 L98.4,246.7 L96.5,246.5 L94.5,246.2 L92.6,246.0 L90.8,245.6 L89.0,245.3 L87.2,244.9 L85.6,244.5 L84.0,244.0 L82.5,243.5 L80.9,243.0 L79.4,242.4 L77.9,241.8 L76.4,241.2 L75.0,240.6 L73.5,240.0 L72.1,239.3 L70.7,238.7 L69.3,238.0 L67.9,237.2 L66.6,236.5 L65.3,235.7 L64.1,235.0 L62.9,234.2 L61.7,233.3 L60.6,232.5 L59.5,231.6 L58.4,230.7 L57.4,229.8 L56.5,228.9 L55.6,228.0 L54.8,227.0 L54.0,226.0 L53.3,225.0 L52.6,224.0 L52.0,223.1 L51.4,222.1 L50.8,221.2 L50.3,220.2 L49.9,219.3 L49.5,218.3 L49.1,217.3 L48.8,216.3 L48.5,215.2 L48.2,214.1 L48.0,213.0 L47.9,211.8 L47.7,210.6 L47.6,209.3 L47.6,207.9 L47.5,206.5 L47.5,204.9 L47.6,203.3 L47.6,201.7 L47.7,199.9 L47.8,198.0 Z"/></g>
+<ellipse class="rg bw" data-r="broca" cx="188" cy="210" rx="34" ry="21"/><ellipse class="rg bw" data-r="wernicke" cx="410" cy="204" rx="38" ry="19"/>
+<g id="bLabels" class="deco" hidden>
+<text x="125" y="135">frontal</text><text x="390" y="100">parietal</text><text x="290" y="268">temporal</text><text x="528" y="190" class="sm">occi-</text><text x="528" y="206" class="sm">pital</text>
+<text x="478" y="322" class="sm">cerebelo</text><text x="440" y="405" class="sm">tronco</text><text x="188" y="250" class="sm">Broca</text><text x="410" y="238" class="sm">Wernicke</text>
+</g>
+</svg>
+    <div class="result" id="bRes" hidden>
+      <div class="report" id="bRep"></div>
+      <p class="why">As áreas de <b>Broca</b> (giro frontal inferior) e de <b>Wernicke</b> (giro temporal superior posterior) ficam, na maioria das pessoas, no hemisfério <b>esquerdo</b>, ao redor da fissura lateral. Hoje sabemos que a linguagem usa uma rede bem maior, que vamos percorrer nas próximas aulas.</p>
+    </div>
+  </section>
+
+  <section class="exp" id="e6">
+    <div class="row"><span class="num">PARA DEPOIS DA AULA</span></div>
+    <h2>A dança das abelhas</h2>
+    <div class="links">
+      <p><a href="https://www.youtube.com/watch?v=bFDGPgXtK-U" target="_blank" rel="noopener">The Waggle Dance of the Honeybee (YouTube, em inglês)</a>. Veja como a direção e a duração do requebrado indicam onde estão as flores. Ajuda na pergunta para casa: <i>a dança das abelhas é uma linguagem?</i> Se o vídeo não abrir: <a href="https://www.youtube.com/results?search_query=honeybee+waggle+dance" target="_blank" rel="noopener">procure outros vídeos da dança</a></p>
+      <p><a href="https://www.brainfacts.org/brain-basics" target="_blank" rel="noopener">BrainFacts, capítulo 1: Brain Basics</a> (Society for Neuroscience, em inglês). Leitura da semana.</p>
+    </div>
+  </section>
+
+  <footer>Nenhuma resposta sai do seu celular. Professor: abra esta página com <span style="font-family:var(--mono)">#professor</span> no fim do link para o placar da turma.</footer>
+</div>
+
+<!-- Teacher board -->
+<div class="wrap" id="prof" hidden>
+  <header>
+    <span class="eyebrow">Placar da turma · Aula 1</span>
+    <h1>Resultados da turma</h1>
+    <p class="lead">Peça que levantem a mão por categoria e registre com + e −. Os números ficam salvos neste navegador.</p>
+    <div class="row"><button class="ghost" id="reset">Zerar placar</button><span class="readout" id="resetMsg"></span><a href="#" id="toStudent" style="color:var(--accent);font-weight:600">Ver página dos alunos</a></div>
+  </header>
+  <div class="board" id="board"></div>
+</div>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const fmt=(v,d=0)=>v.toFixed(d).replace('.',',');
+const median=a=>{if(!a.length)return NaN;const s=[...a].sort((x,y)=>x-y),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2;};
+function waitChoice(box){return new Promise(res=>{const bs=[...box.querySelectorAll('button')];bs.forEach(b=>b.disabled=false);
+  const h=e=>{e.preventDefault();bs.forEach(b=>{b.disabled=true;b.removeEventListener('click',h);});res(e.currentTarget.dataset.r);};bs.forEach(b=>b.addEventListener('click',h));});}
+
+/* ---------- E1 telefone sem fio ---------- */
+const FRASES=[
+ 'A abelha dançou três voltas perto da colmeia antes de voar para o campo de girassóis ao norte.',
+ 'Na quinta de manhã, a professora levou dois saguis barulhentos para o laboratório de biologia.',
+ 'O menino de boné verde trocou a bicicleta velha por um violão sem as cordas.',
+ 'Depois da chuva forte, o ônibus azul parou na ponte e ninguém conseguiu descer.',
+ 'Minha avó guardou as cartas antigas numa caixa de sapato embaixo da cama do quarto.',
+ 'O cachorro do vizinho latiu sete vezes quando o carteiro chegou com a encomenda amarela.'];
+const FUNC=new Set('a o as os um uma uns umas de da do das dos em na no nas nos num numa para pra por pelo pela pelos pelas com sem e ou que se ao aos à às me te lhe seu sua seus suas minha meu mas como quando antes depois'.split(' '));
+const norm=w=>w.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]/g,'');
+const toks=s=>s.split(/\s+/).filter(Boolean).map(w=>({raw:w,n:norm(w)})).filter(t=>t.n);
+function lcs(a,b){const n=a.length,m=b.length,D=Array.from({length:n+1},()=>new Int16Array(m+1));
+  for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)D[i][j]=a[i].n===b[j].n?D[i+1][j+1]+1:Math.max(D[i+1][j],D[i][j+1]);
+  const ka=new Set(),kb=new Set();let i=0,j=0;while(i<n&&j<m){if(a[i].n===b[j].n){ka.add(i);kb.add(j);i++;j++;}else if(D[i+1][j]>=D[i][j+1])i++;else j++;}
+  return {len:D[0][0],ka,kb};}
+const SHOW_MS=6000;let tf=null;
+$('tfNew').onclick=()=>{const o=FRASES[Math.floor(Math.random()*FRASES.length)];tf={orig:o,v:[o]};
+  $('tfStage').hidden=false;$('tfRes').hidden=true;$('tfCover').innerHTML='Pessoa <b>1</b>: toque em <b>Ver a frase</b> quando estiver pronta.';$('tfCover').hidden=false;$('tfSent').hidden=true;$('tfType').hidden=true;
+  $('tfShow').hidden=false;$('tfShow').disabled=false;$('tfOk').hidden=true;$('tfEnd').hidden=true;$('tfStatus').textContent='';$('tfNew').textContent='Começar outra corrente';};
+$('tfShow').onclick=async()=>{if(!tf)return;$('tfShow').hidden=true;$('tfEnd').hidden=true;$('tfCover').hidden=true;
+  $('tfSent').textContent=tf.v[tf.v.length-1]||'(a pessoa anterior não lembrou de nada)';$('tfSent').hidden=false;$('tfMeterBox').hidden=false;
+  const t0=performance.now();await new Promise(res=>{const f=()=>{const k=Math.min(1,(performance.now()-t0)/SHOW_MS);$('tfMeter').style.width=(100-100*k)+'%';k<1?requestAnimationFrame(f):res();};requestAnimationFrame(f);});
+  $('tfSent').hidden=true;$('tfSent').textContent='';$('tfMeterBox').hidden=true;$('tfIn').value='';$('tfType').hidden=false;$('tfOk').hidden=false;$('tfIn').focus();};
+$('tfOk').onclick=()=>{const t=$('tfIn').value.replace(/\s+/g,' ').trim();tf.v.push(t);$('tfIn').value='';$('tfType').hidden=true;$('tfOk').hidden=true;
+  const k=tf.v.length-1;$('tfStatus').textContent=`${k} pessoa${k>1?'s':''} na corrente`;
+  if(k>=8){showTf();return;}
+  $('tfCover').innerHTML=`Passe o celular para a pessoa <b>${k+1}</b>. Ela toca em <b>Ver a frase</b> quando estiver pronta.`;$('tfCover').hidden=false;
+  $('tfShow').hidden=false;$('tfEnd').hidden=k<2;};
+$('tfEnd').onclick=()=>showTf();
+function tfBin(p){return p>=99.5?'100%':p>=80?'80–99%':p>=60?'60–79%':p>=40?'40–59%':'< 40%';}
+function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function showTf(){$('tfStage').hidden=true;const O=toks(tf.orig);const pcts=[];let html='';
+  tf.v.forEach((s,i)=>{const T=toks(s);const r=lcs(O,T);const p=O.length?100*r.len/O.length:0;pcts.push(p);
+    const words=T.map((t,j)=>r.kb.has(j)?esc(t.raw):`<span class="new">${esc(t.raw)}</span>`).join(' ')||'<span class="lost">(nada)</span>';
+    html+=`<li><span class="who">${i===0?'orig':i}</span><span class="txt">${words}</span><span class="pct">${Math.round(p)}%</span></li>`;});
+  const last=toks(tf.v[tf.v.length-1]);const rl=lcs(O,last);const lost=O.filter((_,i)=>!rl.ka.has(i));
+  const lostContent=lost.filter(t=>!FUNC.has(t.n)).length;
+  html+=`<li><span class="who">−</span><span class="txt">Sumiram: ${lost.length?lost.map(t=>`<span class="lost">${esc(t.raw)}</span>`).join(' '):'nada!'}</span><span class="pct"></span></li>`;
+  $('tfChain').innerHTML=html;
+  const W=640,H=220,L=48,R=20,T=16,B=40,n=pcts.length;const x=i=>L+i*(W-L-R)/Math.max(1,n-1),y=v=>T+(1-v/100)*(H-T-B);
+  let g='';[0,50,100].forEach(v=>{g+=`<line class="ax" x1="${L}" y1="${y(v)}" x2="${W-R}" y2="${y(v)}"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end">${v}%</text>`;});
+  pcts.forEach((_,i)=>g+=`<text x="${x(i)}" y="${H-18}" text-anchor="middle">${i===0?'orig':i}</text>`);
+  g+=`<text x="${(L+W-R)/2}" y="${H-2}" text-anchor="middle">pessoa da corrente</text>`;
+  g+=`<polyline class="ln" points="${pcts.map((v,i)=>x(i)+','+y(v)).join(' ')}"/>`+pcts.map((v,i)=>`<circle class="dot" cx="${x(i)}" cy="${y(v)}" r="5"/>`).join('');
+  $('tfChart').innerHTML=g;const pf=pcts[pcts.length-1];
+  $('tfRep').innerHTML=`Depois de ${n-1} pessoas, <b>${Math.round(pf)}%</b> das palavras originais chegaram ao fim, na ordem. Informe a faixa: <b>${tfBin(pf)}</b>.`+(lost.length?` Das ${lost.length} palavras que sumiram, ${lostContent} eram de conteúdo (nomes, verbos, números, cores) e ${lost.length-lostContent} eram palavras pequenas (artigos, preposições).`:'');
+  $('tfRes').hidden=false;$('tfStatus').textContent='';}
+
+/* ---------- E2 classificação ---------- */
+const ITENS=[
+ {q:'A dança das abelhas',d:'Uma operária volta à colmeia e "requebra" no favo; as outras saem e encontram as flores.',k:'com',deb:true,ex:'Comunicação simbólica, e até sobre um lugar distante (deslocamento). Mas só fala de comida, água e ninho, e não combina partes para criar mensagens novas. Este é o tema da pergunta para casa.'},
+ {q:'O alarme do macaco-vervet',d:'Um vervet vê um leopardo e solta um latido; os outros sobem nas árvores, mesmo sem ver o leopardo.',k:'com',ex:'Comunicação referencial: há alarmes diferentes para leopardo, águia e cobra. Mas são poucos sinais fixos, sem combinação.'},
+ {q:'Ficar vermelho de vergonha',d:'Seu rosto cora quando você é elogiado em público.',k:'nao',deb:true,ex:'Para muitos é uma pista involuntária, não um sinal enviado. Há quem defenda que o rubor evoluiu como sinal honesto de desculpa.'},
+ {q:'O semáforo vermelho',d:'A luz fica vermelha e os carros param.',k:'com',ex:'Comunicação por um código combinado entre pessoas. Três sinais, sem gramática: não é linguagem.'},
+ {q:'O choro de um bebê',d:'O bebê chora e o adulto vem pegá-lo.',k:'com',ex:'Sinal inato e muito eficaz. A linguagem do bebê vai surgir depois, a partir dessa base (aula 11).'},
+ {q:'Uma frase em Libras',d:'Uma pessoa surda conta, em sinais, o que fez no fim de semana.',k:'lin',ex:'Linguagem completa, com gramática própria, mas sem fala. As lesões que causam afasia em ouvintes também afetam a língua de sinais.'},
+ {q:'O papagaio que diz "bom dia"',d:'O papagaio repete "bom dia" sempre que alguém entra na cozinha.',k:'com',deb:true,ex:'É fala (aprendizado vocal) e talvez comunicação, porque o papagaio associa o som a alguém chegando. Mas provavelmente não é linguagem: ele repete a frase inteira, sem combinar palavras. Alguns papagaios treinados usam palavras com sentido, por isso o caso é debatido.'},
+ {q:'Um bilhete escrito',d:'"Fui à padaria, volto às 8."',k:'lin',ex:'Linguagem em outro canal: a escrita usa a mesma gramática e o mesmo vocabulário da fala.'},
+ {q:'A trilha de feromônio da formiga',d:'Uma formiga deixa um rastro químico até a comida; as outras seguem o rastro.',k:'com',ex:'Comunicação química, muito eficiente, mas sem símbolos que se combinem.'},
+ {q:'O chamado do sagui',d:'Saguis separados do grupo trocam chamados longos ("phee") e esperam a vez de responder.',k:'com',ex:'Comunicação vocal com troca de turnos, como numa conversa. Os bebês sagui aprendem a usar esses chamados com ajuda dos pais. Ainda assim, não há palavras nem gramática.'}];
+const LAB={nao:'não é com.',com:'comunicação',lin:'linguagem'};
+let clAns=[];
+$('clGo').onclick=async()=>{$('clGo').disabled=true;$('clRes').hidden=true;$('clItem').hidden=false;clAns=[];
+  for(let i=0;i<ITENS.length;i++){$('clP').textContent=`${i+1} / ${ITENS.length}`;$('clQ').textContent=ITENS[i].q;$('clD').textContent=ITENS[i].d;
+    clAns.push(await waitChoice($('clOpts')));await sleep(120);}
+  $('clItem').hidden=true;$('clP').textContent='Concluído.';$('clGo').disabled=false;$('clGo').textContent='Refazer';
+  const nl=clAns.filter(a=>a==='lin').length,agree=clAns.filter((a,i)=>a===ITENS[i].k).length;
+  $('clRep').innerHTML=`Você chamou <b>${nl}</b> exemplo${nl===1?'':'s'} de linguagem e concordou com a resposta de referência em <b>${agree}</b> de 10. Informe: quantos você chamou de linguagem e o que respondeu para a <b>dança das abelhas</b> (<b>${LAB[clAns[0]]}</b>).`;
+  $('clTbl').innerHTML=ITENS.map((it,i)=>`<div class="tr"><span>${it.q}${it.deb?' <span class="readout">(debatido)</span>':''}</span><span class="pill me">${LAB[clAns[i]]}</span><span class="pill ref">${LAB[it.k]}</span><span class="ex">${it.ex}</span></div>`).join('')+
+    `<p class="readout">Laranja: sua resposta. Verde-azulado: resposta de referência.</p>`;
+  $('clRes').hidden=false;};
+
+/* ---------- E3 tempo de reação ---------- */
+const area=$('trArea');let trMode=null,trLit=false,trT0=0,trTimer=null,trResolve=null,trTarget=null;
+const RT={A:[],B:[],errB:0};
+function setArea(cls,html){area.className='tap'+(cls?' '+cls:'');area.innerHTML=html;}
+function trial(mode){return new Promise(res=>{trResolve=res;trLit=false;trMode=mode;setArea('','Espere a cor…');
+  trTimer=setTimeout(()=>{trTarget=mode==='B'?(Math.random()<.5?'v':'l'):'v';setArea(trTarget==='v'?'go':'go2',mode==='A'?'TOQUE!':(trTarget==='v'?'VERDE-AZULADO':'LARANJA'));
+    requestAnimationFrame(()=>{trT0=performance.now();trLit=true;});},1200+Math.random()*2300);});}
+function respond(r){if(!trResolve)return;const now=performance.now();
+  if(!trLit){clearTimeout(trTimer);setArea('bad','Cedo demais!<small>Espere a cor. Repetindo…</small>');const f=trResolve;trResolve=null;setTimeout(()=>f({early:true}),1000);return;}
+  const rt=now-trT0;trLit=false;const f=trResolve;trResolve=null;f({rt,ok:trMode==='A'||r===trTarget});}
+area.addEventListener('pointerdown',e=>{if(trMode==='A'){e.preventDefault();respond('v');}});
+area.addEventListener('keydown',e=>{if(trMode==='A'&&(e.key===' '||e.key==='Enter')){e.preventDefault();respond('v');}});
+$('trBbtn').querySelectorAll('button').forEach(b=>b.addEventListener('pointerdown',e=>{e.preventDefault();if(trMode==='B')respond(b.dataset.r);}));
+async function runRT(mode){$('trA').disabled=$('trB').disabled=true;$('trBbtn').hidden=mode!=='B';RT[mode]=[];if(mode==='B')RT.errB=0;
+  area.scrollIntoView({block:'center',behavior:'smooth'});
+  let k=0;while(k<10){$('trP').textContent=`${mode==='A'?'A':'B'} · ${k+1} / 10`;await sleep(400);const r=await trial(mode);
+    if(r.early)continue;k++;
+    if(r.ok){RT[mode].push(r.rt);setArea(mode==='A'?'go':(trTarget==='v'?'go':'go2'),`${Math.round(r.rt)} ms`);}else{RT.errB++;setArea('bad','Cor errada!');}
+    await sleep(700);}
+  trMode=null;$('trBbtn').hidden=true;$('trA').disabled=$('trB').disabled=false;
+  setArea('',mode==='A'?'Parte A concluída.<small>Agora a parte B.</small>':'Parte B concluída.');$('trP').textContent='';
+  if(mode==='A'){$('trA').textContent='Refazer parte A';$('trB').classList.remove('ghost');}else $('trB').textContent='Refazer parte B';
+  drawRT();}
+$('trA').onclick=()=>runRT('A');$('trB').onclick=()=>runRT('B');
+function rtBin(v){return v<200?'< 200':v<250?'200–249':v<300?'250–299':v<350?'300–349':v<400?'350–399':v<500?'400–499':'≥ 500';}
+function drawRT(){const W=640,H=200,L=86,R=20,mx=900;const x=v=>L+Math.min(v,mx)/mx*(W-L-R);
+  let g='';for(let v=0;v<=mx;v+=100){g+=`<line class="ax" x1="${x(v)}" y1="20" x2="${x(v)}" y2="${H-36}"/><text x="${x(v)}" y="${H-18}" text-anchor="middle">${v}</text>`;}
+  g+=`<text x="${(L+W-R)/2}" y="${H-2}" text-anchor="middle">milissegundos</text>`;
+  [['A',60,'simples','dot2'],['B',125,'escolha','dot']].forEach(([m,yy,lab,cl])=>{g+=`<text x="${L-10}" y="${yy+4}" text-anchor="end">${lab}</text>`;
+    RT[m].forEach((v,i)=>g+=`<circle class="${cl}" cx="${x(v)}" cy="${yy+((i%3)-1)*8}" r="5" opacity=".8"/>`);
+    if(RT[m].length){const md=median(RT[m]);g+=`<line class="med" x1="${x(md)}" y1="${yy-22}" x2="${x(md)}" y2="${yy+22}"/>`;}});
+  $('trChart').innerHTML=g;
+  const a=median(RT.A),b=median(RT.B);let rep='';
+  if(RT.A.length)rep+=`Simples: <b>${Math.round(a)} ms</b> (mediana). `;
+  if(RT.B.length)rep+=`Escolha: <b>${Math.round(b)} ms</b>${RT.A.length?` (+${Math.round(b-a)} ms para decidir)`:''}${RT.errB?`, ${RT.errB} erro${RT.errB>1?'s':''}`:''}. `;
+  rep+='Informe as faixas: ';if(RT.A.length)rep+=`simples <b>${rtBin(a)}</b>`;if(RT.B.length)rep+=`${RT.A.length?' e ':''}escolha <b>${rtBin(b)}</b>`;rep+='.';
+  $('trRep').innerHTML=rep;$('trRes').hidden=false;}
+
+/* ---------- E4 corrente ---------- */
+let N=10,cnRun=null;const CN=[];
+const setN=v=>{N=Math.max(2,Math.min(80,v));$('cnN').textContent=N;};
+$('cnMinus').onclick=()=>setN(N-1);$('cnPlus').onclick=()=>setN(N+1);
+const goBtn=$('cnGo');
+goBtn.addEventListener('pointerdown',e=>{e.preventDefault();toggleCn();});
+goBtn.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();toggleCn();}});
+function toggleCn(){const now=performance.now();
+  if(!cnRun){cnRun={t0:now};goBtn.textContent='Parar';goBtn.classList.add('stop');
+    const f=()=>{if(!cnRun)return;$('cnClock').textContent=fmt((performance.now()-cnRun.t0)/1000,2)+' s';requestAnimationFrame(f);};requestAnimationFrame(f);}
+  else{const tot=now-cnRun.t0;cnRun=null;goBtn.textContent='Iniciar próxima rodada';goBtn.classList.remove('stop');$('cnClock').textContent=fmt(tot/1000,2)+' s';
+    CN.push({tot,n:N});drawCn();}}
+$('cnUndo').onclick=()=>{CN.pop();drawCn();};
+function cnBin(v){return v<150?'< 150 ms':v<200?'150–199 ms':v<250?'200–249 ms':v<300?'250–299 ms':'≥ 300 ms';}
+function drawCn(){$('cnUndo').hidden=!CN.length;
+  if(!CN.length){$('cnLog').textContent='Nenhuma rodada ainda.';$('cnRes').hidden=true;return;}
+  const per=CN.map(c=>c.tot/c.n);
+  $('cnLog').textContent=CN.map((c,i)=>`R${i+1}: ${fmt(c.tot/1000,2)} s`).join(' · ');
+  const W=640,H=220,L=56,R=20,T=16,B=40,mx=Math.max(400,Math.ceil(Math.max(...per)/100)*100),n=per.length;
+  const x=i=>n===1?(L+W-R)/2:L+i*(W-L-R)/(n-1),y=v=>T+(1-v/mx)*(H-T-B);
+  let g='';for(let v=0;v<=mx;v+=100)g+=`<line class="ax" x1="${L}" y1="${y(v)}" x2="${W-R}" y2="${y(v)}"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end">${v}</text>`;
+  g+=`<line x1="${L}" y1="${y(15)}" x2="${W-R}" y2="${y(15)}" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 5"/><text x="${W-R}" y="${y(15)-6}" text-anchor="end" style="fill:var(--accent)">só o "fio" (1,5 m a 100 m/s) = 15 ms</text>`;
+  per.forEach((_,i)=>g+=`<text x="${x(i)}" y="${H-18}" text-anchor="middle">R${i+1}</text>`);
+  g+=`<text x="${(L+W-R)/2}" y="${H-2}" text-anchor="middle">rodada (ms por pessoa)</text>`;
+  if(n>1)g+=`<polyline class="ln" points="${per.map((v,i)=>x(i)+','+y(v)).join(' ')}"/>`;
+  g+=per.map((v,i)=>`<circle class="dot" cx="${x(i)}" cy="${y(v)}" r="6"/>`).join('');
+  $('cnChart').innerHTML=g;const best=Math.min(...per);const speed=1.5/(best/1000);
+  $('cnRep').innerHTML=`Melhor rodada: <b>${Math.round(best)} ms</b> por pessoa. Se fosse só condução, o sinal teria andado a <b>${fmt(speed,1)} m/s</b>, bem mais devagar que um axônio mielinizado (50–120 m/s). Informe: <b>${cnBin(best)}</b>.`;
+  $('cnRes').hidden=false;}
+
+/* ---------- E5 rotule o cérebro ---------- */
+const svg=$('brainSvg');const ALVOS=[['frontal','o lobo frontal'],['parietal','o lobo parietal'],['temporal','o lobo temporal'],['occipital','o lobo occipital'],
+  ['cerebelo','o cerebelo'],['tronco','o tronco encefálico'],['broca','a área de Broca'],['wernicke','a área de Wernicke']];
+const INSIDE={broca:'frontal',wernicke:'temporal'};
+let bQ=null,bWait=null;
+svg.querySelectorAll('.rg').forEach(el=>el.addEventListener('click',()=>{if(bWait)bWait(el.dataset.r,el);}));
+$('bGo').onclick=async()=>{$('bGo').disabled=true;$('bRes').hidden=true;$('bLabels').hidden=true;svg.classList.remove('colored');let score=0;const order=shuffle([...ALVOS]);
+  for(let i=0;i<order.length;i++){const [id,name]=order[i];$('bP').textContent=`${i+1} / 8`;$('bPrompt').innerHTML=`Toque n${name.startsWith('a ')?'a':'o'} <em>${name.slice(2)}</em>`;
+    const [r,el]=await new Promise(res=>{bWait=(r,el)=>{bWait=null;res([r,el]);};});
+    const ok=r===id||INSIDE[r]===id;if(ok)score++;
+    el.classList.add(ok?'ok':'no');let right=null;if(!ok){right=svg.querySelector(`.rg[data-r="${id}"]`);right.classList.add('ok');}
+    $('bPrompt').innerHTML=ok?'Certo!':`Não: era <em>esta</em> região.`;await sleep(ok?650:1300);el.classList.remove('ok','no');if(right)right.classList.remove('ok');}
+  $('bPrompt').textContent='';$('bP').textContent='';svg.classList.add('colored');$('bLabels').hidden=false;$('bGo').disabled=false;$('bGo').textContent='Refazer';
+  $('bRep').innerHTML=`Você acertou <b>${score} de 8</b>. Informe: <b>${score<=4?'≤ 4':score}</b>.`;$('bRes').hidden=false;};
+
+/* ---------- teacher board ---------- */
+const BOARD=[
+ {k:'tf',t:'1 · Telefone sem fio: quanto chegou ao fim',cats:['100%','80–99%','60–79%','40–59%','< 40%']},
+ {k:'ab',t:'2 · A dança das abelhas é…',cats:['não é com.','comunicação','linguagem']},
+ {k:'ln',t:'2 · Exemplos chamados de linguagem',cats:['0–1','2','3','4','5 ou mais']},
+ {k:'tr',t:'3 · Tempo de reação (mediana, ms)',two:['simples','escolha'],cats:['< 200','200–249','250–299','300–349','350–399','400–499','≥ 500']},
+ {k:'cn',t:'4 · Corrente: ms por pessoa (melhor rodada)',cats:['< 150 ms','150–199 ms','200–249 ms','250–299 ms','≥ 300 ms']},
+ {k:'bc',t:'5 · Rotule o cérebro: acertos',cats:['8','7','6','5','≤ 4']}];
+let S={};try{S=JSON.parse(localStorage.getItem('sinais-placar')||'{}')||{}}catch(e){S={}}
+const save=()=>{try{localStorage.setItem('sinais-placar',JSON.stringify(S))}catch(e){}};
+function renderBoard(){const host=$('board');host.innerHTML='';
+  BOARD.forEach(p=>{const div=document.createElement('div');div.className='panel';
+    const series=p.two?[0,1]:[0];let max=1;series.forEach(s=>p.cats.forEach((_,i)=>max=Math.max(max,(S[p.k+s+'_'+i]||0))));
+    let h=`<h2>${p.t}</h2>`;if(p.two)h+=`<div class="legend"><span><i class="sw" style="background:var(--accent)"></i>${p.two[0]}</span><span><i class="sw" style="background:var(--you)"></i>${p.two[1]}</span></div>`;
+    h+='<div class="bars">';
+    p.cats.forEach((c,i)=>series.forEach(s=>{const key=p.k+s+'_'+i,v=S[key]||0;
+      h+=`<div class="bar"><span class="lab">${s===0?c:''}</span><span class="track"><span class="fill${s?' b':''}" style="width:${100*v/max}%"></span></span><button class="ghost" data-k="${key}" data-d="-1" aria-label="menos ${c}">−</button><button data-k="${key}" data-d="1" aria-label="mais ${c}">+</button><span class="n">${v}</span></div>`;}));
+    div.innerHTML=h+'</div>';host.appendChild(div);});
+  host.querySelectorAll('button[data-k]').forEach(b=>b.onclick=()=>{const k=b.dataset.k;S[k]=Math.max(0,(S[k]||0)+(+b.dataset.d));save();renderBoard();});}
+let armed=false;$('reset').onclick=()=>{if(!armed){armed=true;$('reset').textContent='Confirmar: zerar tudo';$('resetMsg').textContent='';return;}
+  S={};save();renderBoard();armed=false;$('reset').textContent='Zerar placar';$('resetMsg').textContent='Placar zerado.';};
+$('toStudent').onclick=e=>{e.preventDefault();location.hash='';route();};
+function route(){const t=location.hash==='#professor';$('prof').hidden=!t;$('student').hidden=t;if(t)renderBoard();}
+window.addEventListener('hashchange',route);route();
+})();
+</script>
+
+<script src="config.js"></script>
+<script src="registro.js" data-aula="1"></script>

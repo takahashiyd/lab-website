@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laboratório da Fala</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: a single lab-notebook column; each experiment is a numbered protocol card; teacher mode swaps in a projector board */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#142033; --muted:#5b6879; --line:#d8dee6;
+  --accent:#0e7c86; --accent-ink:#ffffff; --you:#c9771a; --soft:#e5f1f2; --warn:#a33a2a;
+  --display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:17px/1.5 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-inline:18px;padding-block:28px 64px;display:grid;gap:22px}
+header{display:grid;gap:8px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(34px,8vw,54px)/1 var(--display);font-stretch:118%;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font:750 24px/1.15 var(--display);font-stretch:108%;margin:0;text-wrap:balance}
+h3{font:700 16px/1.2 var(--display);margin:0}
+p{margin:0;max-width:65ch}
+.lead{color:var(--muted)}
+.phones{display:flex;gap:10px;align-items:flex-start;background:var(--soft);border-radius:10px;padding:12px 14px;font-size:15px}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{font:600 14px/1 var(--body);color:var(--fg);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:var(--surface)}
+nav a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.exp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:14px;min-width:0}
+.num{font:600 13px/1 var(--mono);color:var(--muted)}
+.tag{display:inline-block;font:600 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 7px;border-radius:5px;background:var(--soft);color:var(--accent)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+button{font:700 16px/1 var(--display);border:0;border-radius:10px;padding:14px 18px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px}
+button.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+button.ghost.on{border-color:var(--accent);color:var(--accent);background:var(--soft)}
+button.big{flex:1 1 120px;font-size:22px;padding:20px 10px;font-stretch:110%}
+button:disabled{opacity:.4;cursor:default}
+.readout{font:500 15px/1.4 var(--mono);color:var(--muted)}
+.result{border-top:1px dashed var(--line);padding-top:14px;display:grid;gap:10px}
+.report{background:var(--soft);border-radius:10px;padding:12px 14px;font-size:16px}
+.report b{font:700 22px/1 var(--display);color:var(--you)}
+.why{font-size:15px;color:var(--muted)}
+.chart{width:100%;height:auto;display:block}
+.chart text{fill:var(--muted);font:12px var(--mono)}
+.chart{max-width:560px}
+.chart .ax{stroke:var(--line)}
+.chart .ln{fill:none;stroke:var(--you);stroke-width:3}
+.chart .ln2{fill:none;stroke:var(--accent);stroke-width:3}
+.chart .dot{fill:var(--you)}
+.chart .dot2{fill:var(--accent)}
+.chart .ref{fill:var(--soft);stroke:var(--accent);stroke-width:2;stroke-dasharray:5 5}
+/* E1 formant pad */
+.pad{width:100%;max-width:560px;height:auto;display:block;touch-action:none;user-select:none;-webkit-user-select:none;border-radius:12px;background:var(--bg);border:1px solid var(--line);cursor:crosshair}
+.pad text{fill:var(--muted);font:12px var(--mono)}
+.pad .grid{stroke:var(--line)}
+.pad .cur{fill:var(--you);stroke:var(--surface);stroke-width:3}
+.pad .mk{fill:var(--accent)}
+.pad .mkt{fill:var(--fg);font:700 16px var(--display)}
+.pad .ref{fill:none;stroke:var(--accent);stroke-width:2;stroke-dasharray:6 5}
+.pad .reft{fill:var(--accent);font:700 14px var(--display)}
+/* E2 slip stage */
+.stage{min-height:150px;display:grid;place-items:center;text-align:center;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:18px}
+.stage .w{font:800 clamp(34px,10vw,56px)/1.05 var(--display);font-stretch:112%;letter-spacing:.01em}
+.stage .cue{font:800 clamp(26px,8vw,40px)/1.1 var(--display);color:var(--you);text-transform:uppercase}
+.stage .hint{font-size:15px;color:var(--muted)}
+/* E3 TOT */
+.def{font:600 21px/1.35 var(--body);background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:16px;min-height:96px}
+.reveal{font:800 32px/1.1 var(--display);font-stretch:112%;color:var(--accent)}
+.letter{font:800 28px/1 var(--display);width:72px;height:56px;text-align:center;text-transform:uppercase;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--fg)}
+/* E4 tap */
+.tap{width:100%;min-height:150px;font-size:30px;border-radius:16px;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.tap.flash{filter:brightness(1.15)}
+.lapso{font:600 20px/1.35 var(--body)}
+.lapso small{display:block;font:500 14px/1.4 var(--mono);color:var(--muted);margin-top:4px}
+.fb{font-size:15px}
+.fb.ok b{color:var(--accent)}
+.fb.no b{color:var(--warn)}
+.links a{color:var(--accent);font-weight:600}
+footer{font-size:13px;color:var(--muted)}
+/* teacher board */
+#prof{display:grid;gap:18px;max-width:1120px}
+.board{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:10px;min-width:0;align-content:start}
+.bars{display:grid;gap:6px}
+.bar{display:grid;grid-template-columns:110px 1fr 34px 34px 40px;gap:6px;align-items:center;font-size:14px}
+.bar .lab{font:500 13px var(--mono);color:var(--muted)}
+.bar .track{height:22px;background:var(--bg);border-radius:4px;overflow:hidden}
+.bar .fill{height:100%;background:var(--accent);width:0;transition:width .25s;display:block}
+.bar .n{font:700 15px var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.bar button{padding:0;min-height:30px;font-size:18px;border-radius:7px}
+@media (max-width:420px){.bar{grid-template-columns:86px 1fr 30px 30px 32px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap" id="student">
+  <header>
+    <span class="eyebrow">Bases neurais da comunicação humana · Aula 4</span>
+    <h1>Laboratório da Fala</h1>
+    <p class="lead">Cinco experimentos curtos sobre o caminho da ideia até a boca. Você é o participante. No fim de cada um, informe o resultado ao professor.</p>
+    <div class="phones"><span>Tire o celular do modo silencioso. Fones ajudam no experimento 1; no experimento 4 use o <b>alto-falante do celular</b> (fones Bluetooth acrescentam atraso). O experimento 2 pede que você fale em voz alta: faça baixinho, mas fale de verdade.</span></div>
+    <nav aria-label="Experimentos"><a href="#e1">1 · Triângulo das vogais</a><a href="#e2">2 · Lapsos induzidos</a><a href="#e3">3 · Ponta da língua</a><a href="#e4">4 · Batidas atrasadas</a><a href="#e5">5 · Classifique o lapso</a></nav>
+  </header>
+
+  <!-- E1 -->
+  <section class="exp" id="e1">
+    <div class="row"><span class="num">EXPERIMENTO 1</span><span class="tag">≈ 6 min · fones ajudam</span></div>
+    <h2>Triângulo das vogais</h2>
+    <p>O celular faz uma voz com uma <b>fonte</b> (as pregas vocais) e um <b>filtro</b> (o trato vocal). Encoste o dedo no quadro e arraste: você está mudando as duas ressonâncias do filtro, F1 e F2. Quando ouvir um <b>i</b> (de “vi”), toque em <b>Marcar i</b>. Depois procure o <b>a</b> (de “pá”) e o <b>u</b> (de “tu”).</p>
+    <svg class="pad" id="pad" viewBox="0 0 400 300" role="img" aria-label="Quadro de formantes: arraste para mudar F1 e F2"></svg>
+    <p class="readout" id="e1now">Encoste o dedo no quadro para ouvir.</p>
+    <div class="row">
+      <button class="ghost" data-mark="i">Marcar i</button>
+      <button class="ghost" data-mark="a">Marcar a</button>
+      <button class="ghost" data-mark="u">Marcar u</button>
+      <button id="e1done" disabled>Ver resultado</button>
+    </div>
+    <h3>Troque a fonte, mantenha o filtro</h3>
+    <p class="why">Escolha uma fonte e arraste de novo. A vogal muda quando a fonte muda?</p>
+    <div class="row" id="srcrow">
+      <button class="ghost on" data-src="m">voz grave (110 Hz)</button>
+      <button class="ghost" data-src="f">voz aguda (230 Hz)</button>
+      <button class="ghost" data-src="w">sussurro</button>
+      <button class="ghost" data-src="r">só a fonte, sem filtro</button>
+    </div>
+    <div class="result" id="e1res" hidden>
+      <div class="report" id="e1rep"></div>
+      <p class="why">A linha tracejada mostra onde ficam o i, o a e o u de um homem adulto. F1 sobe quando a boca abre (a mandíbula desce); F2 sobe quando a língua vai para a frente. Trocar a fonte (grave, aguda, sussurro) não muda a vogal, porque a vogal está no filtro. Esse é o <b>modelo fonte-filtro</b>.</p>
+    </div>
+  </section>
+
+  <!-- E2 -->
+  <section class="exp" id="e2">
+    <div class="row"><span class="num">EXPERIMENTO 2</span><span class="tag">≈ 5 min · fale em voz alta</span></div>
+    <h2>Lapsos induzidos</h2>
+    <p>Pares de palavras aparecem um de cada vez, por um segundo. <b>Leia em silêncio.</b> Quando aparecer <b>FALE!</b>, diga em voz alta, rápido, o <b>último par</b> que você viu. Depois conte com honestidade o que saiu. São 17 rodadas; a primeira é um treino.</p>
+    <div class="stage" id="stage"><div><div class="w">pronto?</div><p class="hint">Fale baixinho, mas fale de verdade.</p></div></div>
+    <div class="row">
+      <button id="e2go">Começar</button>
+      <span class="readout" id="e2p"></span>
+    </div>
+    <div class="row" id="e2btn" hidden>
+      <button class="big" data-r="ok">falei certo</button>
+      <button class="big" data-r="troca">troquei os sons</button>
+      <button class="big" data-r="outro">outro erro ou travei</button>
+    </div>
+    <div class="result" id="e2res" hidden>
+      <svg class="chart" id="e2chart" viewBox="0 0 400 220" role="img" aria-label="Suas trocas por tipo de par"></svg>
+      <div class="report" id="e2rep"></div>
+      <p class="why">Os pares lidos em silêncio começavam com as consoantes na ordem inversa (por exemplo, <i>t… m…</i> antes de <i>mesa tola</i>). Isso deixa o plano sonoro pronto para trocar as sílabas iniciais. Em metade dos alvos a troca forma palavras reais (<i>mesa tola → tesa mola</i>); na outra metade, não (<i>tubo nave → nubo tave</i>). Se você trocou mais quando o resultado era palavra, o seu sistema de automonitoramento barrou melhor as não-palavras: o <b>viés lexical</b> de Baars, Motley e MacKay (1975).</p>
+    </div>
+  </section>
+
+  <!-- E3 -->
+  <section class="exp" id="e3">
+    <div class="row"><span class="num">EXPERIMENTO 3</span><span class="tag">≈ 6 min</span></div>
+    <h2>Palavra na ponta da língua</h2>
+    <p>Você vai ler 15 definições de palavras pouco usadas. Para cada uma, diga se sabe a palavra, se não sabe, ou se ela está <b>na ponta da língua</b>: você tem certeza de que conhece, mas ela não sai. Nesse caso, tente adivinhar a primeira letra e o número de sílabas.</p>
+    <div class="row"><button id="e3go">Começar</button><span class="readout" id="e3p"></span></div>
+    <div id="e3box" hidden>
+      <div style="display:grid;gap:12px">
+        <div class="def" id="e3def"></div>
+        <div class="row" id="e3a">
+          <button class="big" data-r="sei">sei</button>
+          <button class="big" data-r="nao">não sei</button>
+          <button class="big" data-r="tot">ponta da língua!</button>
+        </div>
+        <div id="e3t" hidden style="display:grid;gap:10px">
+          <p>Qual é a <b>primeira letra</b>? (chute, se precisar)</p>
+          <div class="row"><input class="letter" id="e3letter" maxlength="1" autocomplete="off" autocapitalize="characters" aria-label="Primeira letra"><span class="readout">e quantas sílabas?</span></div>
+          <div class="row" id="e3syl"><button class="ghost" data-s="1">1</button><button class="ghost" data-s="2">2</button><button class="ghost" data-s="3">3</button><button class="ghost" data-s="4">4</button><button class="ghost" data-s="5">5</button><button class="ghost" data-s="6">6+</button></div>
+        </div>
+        <div id="e3rv" hidden style="display:grid;gap:10px">
+          <div class="reveal" id="e3word"></div>
+          <p id="e3q"></p>
+          <div class="row"><button class="big" data-v="1">sim</button><button class="big" data-v="0">não</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="result" id="e3res" hidden>
+      <svg class="chart" id="e3chart" viewBox="0 0 400 200" role="img" aria-label="Suas respostas na ponta da língua"></svg>
+      <div class="report" id="e3rep"></div>
+      <p class="why">Na ponta da língua você já escolheu a palavra (o <b>lema</b>: sabe o sentido, às vezes até o gênero), mas a <b>forma sonora</b> chegou só em pedaços: a primeira letra, o número de sílabas, a sílaba tônica. Brown e McNeill (1966) encontraram exatamente isso em estudantes de Harvard. É a prova mais simples de que palavra e som são etapas separadas.</p>
+    </div>
+  </section>
+
+  <!-- E4 -->
+  <section class="exp" id="e4">
+    <div class="row"><span class="num">EXPERIMENTO 4</span><span class="tag">≈ 4 min · sem fones Bluetooth</span></div>
+    <h2>Batidas com retorno atrasado</h2>
+    <p>Não podemos usar o microfone, então vamos atrasar o som das suas mãos. Acompanhe o metrônomo tocando no botão (uma batida a cada meio segundo) e <b>continue no mesmo ritmo</b> quando ele parar, até completar 24 toques. Cada toque faz um clique. Na rodada A o clique sai na hora; na rodada B, <b>200 ms depois</b>.</p>
+    <div class="row">
+      <button id="e4a">Rodada A · clique imediato</button>
+      <button id="e4b" class="ghost" disabled>Rodada B · clique atrasado</button>
+      <span class="readout" id="e4p"></span>
+    </div>
+    <button class="tap" id="e4tap" disabled>toque aqui</button>
+    <div class="result" id="e4res" hidden>
+      <svg class="chart" id="e4chart" viewBox="0 0 400 230" role="img" aria-label="Intervalos entre seus toques nas duas rodadas"></svg>
+      <div class="report" id="e4rep"></div>
+      <p class="why">O cérebro compara o que você faz com o que ouve. Quando o som chega atrasado, essa comparação dá erro a cada toque, e o ritmo tende a ficar mais lento ou mais irregular. Na fala, o mesmo atraso de ~200 ms (Lee, 1950) produz repetições e prolongamentos parecidos com a gagueira: o professor vai mostrar com um app.</p>
+    </div>
+  </section>
+
+  <!-- E5 -->
+  <section class="exp" id="e5">
+    <div class="row"><span class="num">EXPERIMENTO 5</span><span class="tag">≈ 3 min</span></div>
+    <h2>Classifique o lapso</h2>
+    <p>Lapsos de fala de verdade parecem com estes. Para cada um, decida em que etapa do modelo de Levelt o erro aconteceu: na escolha da <b>palavra</b> (lema) ou na montagem dos <b>sons</b> (forma sonora)?</p>
+    <div class="row"><button id="e5go">Começar (8 lapsos)</button><span class="readout" id="e5p"></span></div>
+    <div id="e5box" hidden style="display:grid;gap:12px">
+      <div class="lapso" id="e5txt"></div>
+      <div class="row" id="e5btn"><button class="big" data-r="L">palavra</button><button class="big" data-r="F">som</button></div>
+      <p class="fb" id="e5fb"></p>
+      <div class="row"><button id="e5next" class="ghost" hidden>Próximo</button></div>
+    </div>
+    <div class="result" id="e5res" hidden>
+      <div class="report" id="e5rep"></div>
+      <p class="why">Erros de palavra trocam unidades inteiras e costumam manter a categoria (substantivo por substantivo) e o campo de sentido. Erros de som trocam fonemas entre palavras próximas e respeitam a posição na sílaba (início troca com início). Essas regularidades foram a base do modelo de Levelt, muito antes das imagens de cérebro.</p>
+    </div>
+  </section>
+
+  <footer>Os sons são sintetizados no seu aparelho; nenhuma resposta sai do celular. Professor: abra esta página com <span style="font-family:var(--mono)">#professor</span> no fim do link para o placar da turma.</footer>
+</div>
+
+<!-- Teacher board -->
+<div class="wrap" id="prof" hidden>
+  <header>
+    <span class="eyebrow">Placar da turma · Aula 4</span>
+    <h1>Resultados da turma</h1>
+    <p class="lead">Peça que levantem a mão por categoria e registre com + e −. Os números ficam salvos neste navegador.</p>
+    <div class="row"><button class="ghost" id="reset">Zerar placar</button><span class="readout" id="resetMsg"></span><a href="#" id="toStudent" style="color:var(--accent);font-weight:600">Ver página dos alunos</a></div>
+  </header>
+  <div class="board" id="board"></div>
+</div>
+
+<script>
+(()=>{
+let ctx=null;
+function ac(){ if(!ctx){ctx=new (window.AudioContext||window.webkitAudioContext)();} if(ctx.state==='suspended')ctx.resume(); return ctx; }
+const $=id=>document.getElementById(id);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+function waitChoice(box,attr='r'){return new Promise(res=>{const bs=[...box.querySelectorAll('button')];bs.forEach(b=>b.disabled=false);
+  const h=e=>{bs.forEach(b=>{b.disabled=true;b.removeEventListener('click',h);});res(e.currentTarget.dataset[attr]);};bs.forEach(b=>b.addEventListener('click',h));});}
+function beep(f=880,dur=.08,vol=.2,when=0){const c=ac();const t=c.currentTime+.01+when;const o=c.createOscillator(),g=c.createGain();o.frequency.value=f;
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.004);g.gain.exponentialRampToValueAtTime(.0005,t+dur);o.connect(g).connect(c.destination);o.start(t);o.stop(t+dur+.02);}
+
+/* ================= E1 · source-filter synthesizer ================= */
+const F2MIN=600,F2MAX=2600,F1MIN=200,F1MAX=900,PX0=46,PX1=390,PY0=12,PY1=262;
+const px=F2=>PX0+(F2MAX-F2)/(F2MAX-F2MIN)*(PX1-PX0), py=F1=>PY0+(F1-F1MIN)/(F1MAX-F1MIN)*(PY1-PY0);
+const fx=x=>F2MAX-(x-PX0)/(PX1-PX0)*(F2MAX-F2MIN), fy=y=>F1MIN+(y-PY0)/(PY1-PY0)*(F1MAX-F1MIN);
+const REF={i:[300,2250],a:[720,1350],u:[320,780]};
+let syn=null,cur=null,src='m';const marks={};
+function f3(F2){return Math.min(3200,Math.max(2300,2500+.3*(F2-1200)));}
+function buildSyn(){const c=ac();const out=c.createGain();out.gain.value=0;out.connect(c.destination);
+  const osc=c.createOscillator();osc.type='sawtooth';osc.frequency.value=110;
+  const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=3500;osc.connect(lp);
+  const nb=c.createBuffer(1,c.sampleRate*2,c.sampleRate);const d=nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+  const noise=c.createBufferSource();noise.buffer=nb;noise.loop=true;
+  const srcG=c.createGain(),noiseG=c.createGain();lp.connect(srcG);noise.connect(noiseG);
+  const mix=c.createGain();srcG.connect(mix);noiseG.connect(mix);
+  const raw=c.createGain();raw.gain.value=0;mix.connect(raw);raw.connect(out);
+  const filt=c.createGain();mix.connect(filt);
+  const bands=[[500,80,1],[1500,100,.7],[2500,150,.35]].map(([F,bw,g])=>{const b=c.createBiquadFilter();b.type='bandpass';b.frequency.value=F;b.Q.value=F/bw;const gg=c.createGain();gg.gain.value=g*4;filt.connect(b);b.connect(gg);gg.connect(out);return {b,bw};});
+  osc.start();noise.start();syn={c,out,osc,srcG,noiseG,raw,filt,bands};setSrc(src);}
+function setSrc(s){src=s;if(!syn)return;const t=syn.c.currentTime;
+  syn.osc.frequency.setTargetAtTime(s==='f'?230:110,t,.02);
+  syn.srcG.gain.setTargetAtTime(s==='w'?0:1,t,.02);syn.noiseG.gain.setTargetAtTime(s==='w'?.35:0,t,.02);
+  syn.raw.gain.setTargetAtTime(s==='r'?.25:0,t,.02);syn.filt.gain.setTargetAtTime(s==='r'?0:1,t,.02);}
+function setF(F1,F2){if(!syn)return;const t=syn.c.currentTime;const Fs=[F1,F2,f3(F2)];
+  syn.bands.forEach((o,k)=>{o.b.frequency.setTargetAtTime(Fs[k],t,.015);o.b.Q.setTargetAtTime(Fs[k]/o.bw,t,.015);});}
+function gate(on){if(!syn)return;const t=syn.c.currentTime;syn.out.gain.cancelScheduledValues(t);syn.out.gain.setTargetAtTime(on?(src==='w'?.5:.18):0,t,on?.02:.05);}
+function drawPad(showRef){let g='';
+  [800,1200,1600,2000,2400].forEach(F=>{g+=`<line class="grid" x1="${px(F)}" y1="${PY0}" x2="${px(F)}" y2="${PY1}"/><text x="${px(F)}" y="${PY1+14}" text-anchor="middle">${F}</text>`;});
+  [300,500,700,900].forEach(F=>{g+=`<line class="grid" x1="${PX0}" y1="${py(F)}" x2="${PX1}" y2="${py(F)}"/><text x="${PX0-5}" y="${py(F)+4}" text-anchor="end">${F}</text>`;});
+  g+=`<text x="${(PX0+PX1)/2}" y="296" text-anchor="middle">F2 (Hz) · língua à frente ← → atrás</text><text x="10" y="${(PY0+PY1)/2}" transform="rotate(-90 10 ${(PY0+PY1)/2})" text-anchor="middle">F1 (Hz) · boca aberta ↓</text>`;
+  if(showRef){const P=['i','a','u'].map(v=>`${px(REF[v][1])},${py(REF[v][0])}`).join(' ');g+=`<polygon class="ref" points="${P}"/>`;
+    ['i','a','u'].forEach(v=>{const[F1,F2]=REF[v];g+=`<text class="reft" x="${px(F2)}" y="${py(F1)+(v==='a'?20:-9)}" text-anchor="middle">${v}</text>`;});}
+  Object.entries(marks).forEach(([v,[F1,F2]])=>{g+=`<circle class="mk" cx="${px(F2)}" cy="${py(F1)}" r="7"/><text class="mkt" x="${px(F2)+10}" y="${py(F1)+5}">${v}</text>`;});
+  if(cur)g+=`<circle class="cur" cx="${px(cur[1])}" cy="${py(cur[0])}" r="10"/>`;
+  $('pad').innerHTML=g;}
+let shown=false;drawPad(false);
+const pad=$('pad');
+function padPos(e){const r=pad.getBoundingClientRect();const x=(e.clientX-r.left)/r.width*400,y=(e.clientY-r.top)/r.height*300;
+  const X=Math.min(PX1,Math.max(PX0,x)),Y=Math.min(PY1,Math.max(PY0,y));return [Math.round(fy(Y)),Math.round(fx(X))];}
+let down=false;
+pad.addEventListener('pointerdown',e=>{e.preventDefault();if(!syn)buildSyn();ac();down=true;try{pad.setPointerCapture(e.pointerId)}catch(_){ }cur=padPos(e);setF(...cur);gate(true);upd();});
+pad.addEventListener('pointermove',e=>{if(!down)return;cur=padPos(e);setF(...cur);upd();});
+const end=()=>{if(!down)return;down=false;gate(false);};
+pad.addEventListener('pointerup',end);pad.addEventListener('pointercancel',end);pad.addEventListener('lostpointercapture',end);
+function upd(){$('e1now').textContent=`F1 = ${cur[0]} Hz · F2 = ${cur[1]} Hz`;drawPad(shown);}
+document.querySelectorAll('[data-mark]').forEach(b=>b.onclick=()=>{if(!cur){$('e1now').textContent='Primeiro arraste o dedo no quadro até ouvir a vogal.';return;}
+  marks[b.dataset.mark]=cur.slice();b.classList.add('on');b.textContent=`${b.dataset.mark} ✓`;drawPad(shown);$('e1done').disabled=Object.keys(marks).length<3;});
+document.querySelectorAll('[data-src]').forEach(b=>b.onclick=()=>{if(!syn)buildSyn();document.querySelectorAll('[data-src]').forEach(x=>x.classList.remove('on'));b.classList.add('on');setSrc(b.dataset.src);
+  if(cur){setF(...cur);gate(true);setTimeout(()=>{if(!down)gate(false);},700);}});
+$('e1done').onclick=()=>{shown=true;drawPad(true);let n=0;const det=[];
+  ['i','a','u'].forEach(v=>{const[F1,F2]=marks[v],[R1,R2]=REF[v];const d=Math.hypot((F1-R1)/160,(F2-R2)/380);const ok=d<1.25;if(ok)n++;det.push(`${v}: ${ok?'perto':'longe'}`);});
+  $('e1rep').innerHTML=`${det.join(' · ')}. Vogais perto do alvo: <b>${n} de 3</b>. Informe esse número ao professor.`;$('e1res').hidden=false;};
+
+/* ================= E2 · SLIP ================= */
+const BANK={b:['bala','beco','bife','bota','bela','banco','burro'],p:['pena','pote','pipa','pele','pano','pia','pera','poço'],m:['mala','medo','mapa','mola','moça','mito','muda'],
+ t:['tela','teto','tia','toca','taco','tudo','tipo','tosse'],c:['casa','copo','cubo','cada','cara','coxa','conta'],g:['gato','gula','gota','galo','gude','garfo','goma'],
+ r:['rato','rua','rede','rosa','rima','rocha','rabo','reto'],s:['sapo','sopa','suco','sela','sino','saco','sede'],n:['nota','nada','neto','novo','nome','ninho','nuvem'],
+ f:['faca','fila','fogo','fita','fumo','fada','festa','foca'],l:['lata','lado','lixo','lima','lobo','lago','loja','leite'],d:['dado','dedo','dia','doce','duna','dama','dente','dono'],v:['vaso','vela','vida','vinho','voto']};
+const TGT=[['pato','bolo','p','b',1],['mesa','tola','m','t',1],['cama','gola','c','g',1],['maca','pata','m','p',1],['roda','bico','r','b',1],['sala','mono','s','m',1],
+ ['tubo','nave','t','n',0],['bule','muro','b','m',0],['nuca','figo','n','f',0],['lupa','fino','l','f',0],['dica','luva','d','l',0],['selo','dita','s','d',0]];
+const FILL=[['vela','dura'],['chuva','fina'],['jogo','limpo'],['vaso','novo']];
+function biasPairs(c1,c2,n,avoid){const out=[];const used=new Set(avoid);for(let k=0;k<n;k++){let a,b,t=0;do{a=pick(BANK[c2]);b=pick(BANK[c1]);t++;}while((used.has(a)||used.has(b))&&t<30);used.add(a);used.add(b);out.push([a,b]);}return out;}
+function randPairs(n,avoid){const ks=Object.keys(BANK);const out=[];const used=new Set(avoid);for(let k=0;k<n;k++){let a,b,t=0;do{a=pick(BANK[pick(ks)]);b=pick(BANK[pick(ks)]);t++;}while((used.has(a)||used.has(b)||a[0]===b[0])&&t<30);used.add(a);used.add(b);out.push([a,b]);}return out;}
+function show(html){$('stage').innerHTML=html;}
+$('e2go').onclick=async()=>{ac();$('e2go').disabled=true;$('e2res').hidden=true;
+  const trials=[{fill:1,pair:['ponte','alta'],practice:1}];
+  const main=shuffle([...TGT.map(t=>({t})),...FILL.map(f=>({fill:1,pair:f}))]);trials.push(...main);
+  const R={lex:0,non:0,other:0,fillErr:0};
+  for(let k=0;k<trials.length;k++){const tr=trials[k];$('e2p').textContent=tr.practice?'treino':`${k} / ${trials.length-1}`;
+    let seq,target;
+    if(tr.t){const[w1,w2,c1,c2]=tr.t;seq=biasPairs(c1,c2,2+Math.floor(Math.random()*3),[w1,w2]);target=[w1,w2];}
+    else{seq=randPairs(2+Math.floor(Math.random()*3),tr.pair);target=tr.pair;}
+    show('<div class="w">+</div>');await sleep(700);
+    for(const p of [...seq,target]){show(`<div class="w">${p[0]} ${p[1]}</div>`);await sleep(950);show('<div class="w">&nbsp;</div>');await sleep(120);}
+    show('<div class="cue">FALE!</div>');beep(1000,.12,.25);await sleep(1300);
+    show(`<div><p class="hint">Você devia dizer</p><div class="w" style="font-size:clamp(26px,7vw,40px)">${target[0]} ${target[1]}</div><p class="hint">O que saiu?</p></div>`);
+    $('e2btn').hidden=false;const r=await waitChoice($('e2btn'));$('e2btn').hidden=true;
+    if(tr.practice)continue;
+    if(tr.t){if(r==='troca'){tr.t[4]?R.lex++:R.non++;}else if(r==='outro')R.other++;}else if(r!=='ok')R.fillErr++;}
+  show('<div class="w">fim</div>');$('e2p').textContent='Concluído.';$('e2go').disabled=false;$('e2go').textContent='Refazer';draw2(R);};
+function draw2(R){const W=400,H=220,L=34,B=46,T=22;const y=v=>T+(1-v/6)*(H-T-B);let g='';
+  for(let v=0;v<=6;v+=2)g+=`<line class="ax" x1="${L}" y1="${y(v)}" x2="${W-10}" y2="${y(v)}"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end">${v}</text>`;
+  const bars=[['vira palavra real',R.lex,'var(--you)'],['vira não-palavra',R.non,'var(--accent)']];
+  bars.forEach(([lab,v,c],i)=>{const x=L+28+i*175;g+=`<rect x="${x}" y="${y(v)}" width="130" height="${Math.max(0,y(0)-y(v))}" fill="${c}" rx="4"/><text x="${x+65}" y="${y(v)-6}" text-anchor="middle" style="font-size:15px;fill:var(--fg)">${v} de 6</text><text x="${x+65}" y="${H-24}" text-anchor="middle">${lab}</text>`;});
+  g+=`<text x="${W/2}" y="${H-6}" text-anchor="middle">trocas de sílaba inicial nos 12 pares-alvo</text>`;$('e2chart').innerHTML=g;
+  const tot=R.lex+R.non;const bias=R.lex>R.non?'mais trocas quando vira palavra':R.lex<R.non?'mais trocas quando vira não-palavra':'empate';
+  $('e2rep').innerHTML=`Trocas: <b>${tot}</b> (${R.lex} viraram palavras, ${R.non} não-palavras). Outros erros: ${R.other}. Informe: <b>${tot>=3?'3 ou mais':tot}</b> troca${tot===1?'':'s'} e <b>${bias}</b>.`;$('e2res').hidden=false;}
+
+/* ================= E3 · Tip of the tongue ================= */
+const TOT=[['Objeto de vidro com areia que escorre de um lado para o outro para medir o tempo.','ampulheta',[4]],
+ ['Bolsa na barriga do canguru onde o filhote cresce.','marsúpio',[3,4]],
+ ['Instrumento de navegação usado para medir a altura do Sol ou das estrelas no horizonte.','sextante',[3]],
+ ['Palavra ou frase que se lê igual de trás para a frente, como “ovo” ou “arara”.','palíndromo',[4]],
+ ['Mamífero australiano que põe ovos e tem bico parecido com o de um pato.','ornitorrinco',[5]],
+ ['Profissional que empalha animais mortos para exposição.','taxidermista',[5]],
+ ['Aparelho que mede a pressão atmosférica.','barômetro',[4]],
+ ['Bloco de ferro sobre o qual o ferreiro martela o metal (e nome de um ossinho do ouvido).','bigorna',[3]],
+ ['Pessoa que coleciona selos.','filatelista',[5]],
+ ['Ponteira de plástico ou metal na ponta do cadarço.','agulheta',[4]],
+ ['Varinha que o maestro usa para reger a orquestra.','batuta',[3]],
+ ['Técnica de gravura em madeira usada nas capas dos folhetos de cordel.','xilogravura',[5]],
+ ['Tubo com espelhos e pedacinhos coloridos que formam desenhos quando se gira.','caleidoscópio',[5,6]],
+ ['Instrumento que o médico põe no peito para ouvir o coração.','estetoscópio',[5,6]],
+ ['Figura de linguagem que exagera de propósito, como “já te falei um milhão de vezes”.','hipérbole',[4]]];
+const norm=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+$('e3go').onclick=async()=>{$('e3go').disabled=true;$('e3box').hidden=false;$('e3res').hidden=true;
+  const items=shuffle(TOT.slice());const R={sei:0,seiOk:0,nao:0,tot:0,totYes:0,letOk:0,sylOk:0};
+  for(let k=0;k<items.length;k++){const[def,word,syl]=items[k];$('e3p').textContent=`${k+1} / ${items.length}`;
+    $('e3def').textContent=def;$('e3a').hidden=false;$('e3t').hidden=true;$('e3rv').hidden=true;
+    const a=await waitChoice($('e3a'));$('e3a').hidden=true;
+    if(a==='nao'){R.nao++;$('e3word').textContent=word;$('e3q').textContent='Você conhecia esta palavra?';$('e3rv').hidden=false;await waitChoice($('e3rv'),'v');continue;}
+    if(a==='sei'){R.sei++;$('e3word').textContent=word;$('e3q').textContent='Era essa a palavra que você pensou?';$('e3rv').hidden=false;if((await waitChoice($('e3rv'),'v'))==='1')R.seiOk++;continue;}
+    R.tot++;$('e3letter').value='';$('e3t').hidden=false;$('e3letter').focus({preventScroll:true});
+    const s=+(await waitChoice($('e3syl'),'s'));const L=norm($('e3letter').value.trim());$('e3t').hidden=true;
+    $('e3word').textContent=word;$('e3q').textContent='Era essa a palavra que estava na ponta da língua?';$('e3rv').hidden=false;
+    if((await waitChoice($('e3rv'),'v'))==='1'){R.totYes++;if(L&&L===norm(word[0]))R.letOk++;if(syl.includes(s)||(s===6&&syl.some(x=>x>=6)))R.sylOk++;}}
+  $('e3box').hidden=true;$('e3p').textContent='Concluído.';$('e3go').disabled=false;$('e3go').textContent='Refazer';draw3(R);};
+function draw3(R){const W=400,H=200,L=12,Rr=70;const x=v=>L+v*(W-L-Rr);let g='';
+  const rows=R.totYes?[['primeira letra certa',R.letOk/R.totYes,`${R.letOk} de ${R.totYes}`],['nº de sílabas certo',R.sylOk/R.totYes,`${R.sylOk} de ${R.totYes}`]]:[];
+  [0,.5,1].forEach(v=>{g+=`<line class="ax" x1="${x(v)}" y1="10" x2="${x(v)}" y2="${H-40}"/><text x="${x(v)}" y="${H-26}" text-anchor="middle">${v*100}%</text>`;});
+  g+=`<line x1="${x(1/20)}" y1="10" x2="${x(1/20)}" y2="${H-40}" stroke="var(--muted)" stroke-dasharray="3 4"/><text x="${x(1/20)+4}" y="${H-44}">acaso para a letra</text>`;
+  rows.forEach(([lab,v,t],i)=>{const yy=12+i*64;g+=`<text x="${L}" y="${yy+12}" style="fill:var(--fg)">${lab}</text><rect x="${x(0)}" y="${yy+20}" width="${Math.max(2,x(v)-x(0))}" height="28" rx="4" fill="var(--you)"/><text x="${x(v)+8}" y="${yy+40}" style="fill:var(--fg)">${t}</text>`;});
+  if(!rows.length)g+=`<text x="${W/2}" y="70" text-anchor="middle" style="font-size:14px">Nenhuma ponta da língua confirmada desta vez.</text>`;
+  g+=`<text x="${W/2}" y="${H-6}" text-anchor="middle">só pontas da língua confirmadas</text>`;$('e3chart').innerHTML=g;
+  const n=R.totYes;const cat=n>=4?'4 ou mais':String(n);const let_=n?(R.letOk/n>.5?'maioria certa':R.letOk/n===.5?'metade':'maioria errada'):'';
+  $('e3rep').innerHTML=`Sabia: ${R.seiOk} · não sabia: ${R.nao} · ponta da língua confirmada: <b>${n}</b>${n?` · primeira letra: <b>${let_}</b>`:''}. Informe ao professor o número de pontas da língua${n?' e se a primeira letra estava certa na maioria':''}.`;$('e3res').hidden=false;}
+
+/* ================= E4 · tapping with delayed auditory feedback ================= */
+const NT=24,IOI=500,NMET=8;const T4={};let tapRun=null;
+function click(delay){const c=ac();const t=c.currentTime+delay;const len=Math.floor(c.sampleRate*.02);const b=c.createBuffer(1,len,c.sampleRate);const d=b.getChannelData(0);
+  for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/(len/6));const s=c.createBufferSource();s.buffer=b;const g=c.createGain();g.gain.value=.9;s.connect(g).connect(c.destination);s.start(t);}
+async function round4(cond){const c=ac();$('e4a').disabled=true;$('e4b').disabled=true;$('e4tap').disabled=false;$('e4tap').textContent='toque junto com o metrônomo';
+  tapRun={cond,taps:[]};const t0=c.currentTime+.6;for(let k=0;k<NMET;k++)beep(1320,.05,.25,.6+k*IOI/1000);
+  setTimeout(()=>{if(tapRun)$('e4tap').textContent='continue no mesmo ritmo';},600+NMET*IOI);
+  $('e4p').textContent=`Rodada ${cond}: 0 / ${NT}`;
+  await new Promise(res=>{tapRun.done=res;});
+  $('e4tap').disabled=true;$('e4tap').textContent='toque aqui';
+  const tm=tapRun.taps;const tMetEnd=tapRun.t0perf+(NMET-1)*IOI+IOI/2;const cont=tm.filter(t=>t>tMetEnd);const iti=[];for(let i=1;i<cont.length;i++)iti.push(cont[i]-cont[i-1]);
+  T4[cond]=iti.length>=4?iti:null;tapRun=null;
+  if(cond==='A'){$('e4b').disabled=false;$('e4b').className='';$('e4a').disabled=false;$('e4a').className='ghost';$('e4p').textContent='Agora a rodada B.';}
+  else{$('e4a').disabled=false;$('e4b').disabled=false;$('e4p').textContent='Concluído.';draw4();}}
+$('e4a').onclick=()=>{round4('A');tapRun.t0perf=performance.now()+600;};
+$('e4b').onclick=()=>{round4('B');tapRun.t0perf=performance.now()+600;};
+$('e4tap').addEventListener('pointerdown',e=>{e.preventDefault();if(!tapRun)return;const now=performance.now();click(tapRun.cond==='B'?.2:0);tapRun.taps.push(now);
+  $('e4tap').classList.add('flash');setTimeout(()=>$('e4tap').classList.remove('flash'),80);
+  $('e4p').textContent=`Rodada ${tapRun.cond}: ${tapRun.taps.length} / ${NT}`;if(tapRun.taps.length>=NT)tapRun.done();});
+const stats=a=>{const m=a.reduce((s,v)=>s+v,0)/a.length;const sd=Math.sqrt(a.reduce((s,v)=>s+(v-m)**2,0)/(a.length-1));return {m,cv:sd/m};};
+function draw4(){if(!T4.A||!T4.B){$('e4rep').innerHTML='Poucos toques depois que o metrônomo parou. Refaça as duas rodadas e continue tocando até 24.';$('e4res').hidden=false;$('e4chart').innerHTML='';return;}
+  const A=stats(T4.A),B=stats(T4.B);const W=400,H=230,L=40,R=10,T=34,Bm=34;const n=Math.max(T4.A.length,T4.B.length);
+  const all=[...T4.A,...T4.B];const lo=Math.min(300,...all),hi=Math.max(800,...all);const x=i=>L+i*(W-L-R)/Math.max(1,n-1),y=v=>T+(1-(v-lo)/(hi-lo))*(H-T-Bm);
+  let g='';[lo,500,hi].forEach(v=>{g+=`<line class="ax" x1="${L}" y1="${y(v)}" x2="${W-R}" y2="${y(v)}"${v===500?' stroke-dasharray="3 4"':''}/><text x="${L-6}" y="${y(v)+4}" text-anchor="end">${Math.round(v)}</text>`;});
+  g+=`<polyline class="ln2" points="${T4.A.map((v,i)=>x(i)+','+y(v)).join(' ')}"/><polyline class="ln" points="${T4.B.map((v,i)=>x(i)+','+y(v)).join(' ')}"/>`;
+  g+=`<text x="${L}" y="14" style="fill:var(--accent)">A · imediato</text><text x="${W-R}" y="14" text-anchor="end" style="fill:var(--you)">B · atrasado 200 ms</text>`;
+  g+=`<text x="${(L+W-R)/2}" y="${H-8}" text-anchor="middle">intervalo entre toques (ms), sem metrônomo</text>`;$('e4chart').innerHTML=g;
+  const irr=B.cv>A.cv*1.25&&B.cv-A.cv>.015,slow=B.m>A.m*1.06;const cat=irr&&slow?'lento e irregular':irr?'mais irregular':slow?'mais lento':'sem diferença clara';
+  const f=v=>(v*100).toFixed(1).replace('.',',');
+  $('e4rep').innerHTML=`Intervalo médio: A ${Math.round(A.m)} ms · B ${Math.round(B.m)} ms. Irregularidade (CV): A ${f(A.cv)}% · B ${f(B.cv)}%. Com atraso você ficou: <b>${cat}</b>. Informe essa categoria.`;$('e4res').hidden=false;}
+
+/* ================= E5 · classify slips ================= */
+const LAP=[['“Coloquei a geladeira na manteiga.”','queria dizer: a manteiga na geladeira','L','Duas palavras inteiras trocaram de lugar, e cada uma manteve o seu som. O erro foi na hora de encaixar os lemas na frase.'],
+ ['“Me passa o garfo?” (apontando para a faca)','queria dizer: faca','L','Garfo e faca são do mesmo campo de sentido e da mesma categoria. Um lema vizinho ganhou a competição.'],
+ ['“Gama de cato.”','queria dizer: cama de gato','F','As palavras estão certas; só os sons iniciais trocaram de lugar, e trocaram início com início.'],
+ ['“Lafé com leite.”','queria dizer: café com leite','F','O /l/ de leite foi usado antes da hora: uma antecipação na montagem dos sons.'],
+ ['“Segunda-feira… quer dizer, terça.”','queria dizer: terça-feira','L','Outro dia da semana, mesmo campo de sentido: um erro na escolha da palavra (e um belo exemplo de automonitoramento).'],
+ ['“Comprei um instinto de incêndio.”','queria dizer: extintor','F','A palavra que saiu soa parecido com a certa, mas não tem nada a ver com o sentido: erro de forma sonora (malapropismo).'],
+ ['“Bom bia!”','queria dizer: bom dia','F','O /b/ de bom foi repetido na palavra seguinte: uma perseveração de som.'],
+ ['“Que pressaria!”','queria dizer: pressa ou correria','L','Duas palavras de sentido parecido foram escolhidas ao mesmo tempo e se misturaram. O problema começou na seleção do lema.']];
+$('e5go').onclick=async()=>{$('e5go').disabled=true;$('e5box').hidden=false;$('e5res').hidden=true;const it=shuffle(LAP.slice());let ok=0;
+  for(let k=0;k<it.length;k++){const[t,s,ans,why]=it[k];$('e5p').textContent=`${k+1} / ${it.length}`;$('e5txt').innerHTML=`${t}<small>${s}</small>`;$('e5fb').textContent='';$('e5fb').className='fb';
+    const r=await waitChoice($('e5btn'));const right=r===ans;if(right)ok++;$('e5fb').className='fb '+(right?'ok':'no');
+    $('e5fb').innerHTML=`<b>${right?'Isso.':'Não foi desta vez.'}</b> Erro de ${ans==='L'?'palavra (lema)':'som (forma sonora)'}. ${why}`;
+    $('e5next').hidden=false;$('e5next').textContent=k<it.length-1?'Próximo':'Ver resultado';await new Promise(res=>{$('e5next').onclick=res;});$('e5next').hidden=true;}
+  $('e5box').hidden=true;$('e5p').textContent='Concluído.';$('e5go').disabled=false;$('e5go').textContent='Refazer';
+  const cat=ok===8?'8':ok>=6?'6–7':ok>=4?'4–5':'3 ou menos';$('e5rep').innerHTML=`Você acertou <b>${ok} de 8</b>. Informe a faixa: <b>${cat}</b>.`;$('e5res').hidden=false;};
+
+/* ================= teacher board ================= */
+const BOARD=[
+ {k:'e1',t:'1 · Vogais perto do alvo',cats:['0 de 3','1 de 3','2 de 3','3 de 3']},
+ {k:'e2',t:'2 · Trocas de sílaba (lapsos)',cats:['0','1','2','3 ou mais']},
+ {k:'e2b',t:'2 · Quando houve mais trocas?',cats:['vira palavra','vira não-palavra','empate']},
+ {k:'e3',t:'3 · Pontas da língua',cats:['0','1','2','3','4 ou mais']},
+ {k:'e3b',t:'3 · Primeira letra na ponta da língua',cats:['maioria certa','metade','maioria errada']},
+ {k:'e4',t:'4 · Com o clique atrasado…',cats:['mais irregular','mais lento','lento e irregular','sem diferença clara']},
+ {k:'e5',t:'5 · Lapsos classificados',cats:['8','6–7','4–5','3 ou menos']}];
+let S={};try{S=JSON.parse(localStorage.getItem('fala-placar')||'{}')}catch(e){S={}}
+const save=()=>{try{localStorage.setItem('fala-placar',JSON.stringify(S))}catch(e){}};
+function renderBoard(){const host=$('board');host.innerHTML='';
+  BOARD.forEach(p=>{const div=document.createElement('div');div.className='panel';let max=1;p.cats.forEach((_,i)=>max=Math.max(max,S[p.k+'_'+i]||0));
+    let h=`<h2>${p.t}</h2><div class="bars">`;
+    p.cats.forEach((c,i)=>{const key=p.k+'_'+i,v=S[key]||0;
+      h+=`<div class="bar"><span class="lab">${c}</span><span class="track"><span class="fill" style="width:${100*v/max}%"></span></span><button class="ghost" data-k="${key}" data-d="-1" aria-label="menos ${c}">−</button><button data-k="${key}" data-d="1" aria-label="mais ${c}">+</button><span class="n">${v}</span></div>`;});
+    div.innerHTML=h+'</div>';host.appendChild(div);});
+  host.querySelectorAll('button[data-k]').forEach(b=>b.onclick=()=>{const k=b.dataset.k;S[k]=Math.max(0,(S[k]||0)+(+b.dataset.d));save();renderBoard();});}
+let armed=false;$('reset').onclick=()=>{if(!armed){armed=true;$('reset').textContent='Confirmar: zerar tudo';$('resetMsg').textContent='';return;}
+  S={};save();renderBoard();armed=false;$('reset').textContent='Zerar placar';$('resetMsg').textContent='Placar zerado.';};
+$('toStudent').onclick=e=>{e.preventDefault();location.hash='';route();};
+function route(){const t=location.hash==='#professor';$('prof').hidden=!t;$('student').hidden=t;if(t)renderBoard();}
+window.addEventListener('hashchange',route);route();
+})();
+</script>
+
+<script src="config.js"></script>
+<script src="registro.js" data-aula="4"></script>

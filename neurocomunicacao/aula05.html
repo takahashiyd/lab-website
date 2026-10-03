@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laboratório de Significado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: a single lab-notebook column; each experiment is a numbered protocol card; teacher mode swaps in a projector board */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#142033; --muted:#5b6879; --line:#d8dee6;
+  --accent:#0e7c86; --accent-ink:#ffffff; --you:#c9771a; --soft:#e5f1f2; --warn:#a33a2a;
+  --stage:#1b2433; --stage-fg:#f2f5f7;
+  --display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73;
+  --stage:#0a0f17; --stage-fg:#f2f5f7; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73;
+  --stage:#0a0f17; --stage-fg:#f2f5f7; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:17px/1.5 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-inline:18px;padding-block:28px 64px;display:grid;gap:22px}
+header{display:grid;gap:8px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(34px,8vw,54px)/1 var(--display);font-stretch:118%;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font:750 24px/1.15 var(--display);font-stretch:108%;margin:0;text-wrap:balance}
+h3{font:700 16px/1.2 var(--display);margin:0}
+p{margin:0;max-width:65ch}
+.lead{color:var(--muted)}
+.phones{display:flex;gap:10px;align-items:flex-start;background:var(--soft);border-radius:10px;padding:12px 14px;font-size:15px}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{font:600 14px/1 var(--body);color:var(--fg);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:var(--surface)}
+nav a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.exp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:14px;min-width:0}
+.num{font:600 13px/1 var(--mono);color:var(--muted)}
+.tag{display:inline-block;font:600 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 7px;border-radius:5px;background:var(--soft);color:var(--accent)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+button{font:700 16px/1 var(--display);border:0;border-radius:10px;padding:14px 18px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px;touch-action:manipulation}
+button.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+button.big{flex:1 1 120px;font-size:22px;padding:22px 10px;font-stretch:112%}
+button:disabled{opacity:.4;cursor:default}
+.readout{font:500 15px/1.4 var(--mono);color:var(--muted)}
+.result{border-top:1px dashed var(--line);padding-top:14px;display:grid;gap:10px}
+.report{background:var(--soft);border-radius:10px;padding:12px 14px;font-size:16px}
+.report b{font:700 22px/1 var(--display);color:var(--you)}
+.why{font-size:15px;color:var(--muted)}
+.chart{width:100%;height:auto;display:block}
+.chart text{fill:var(--muted);font:19px var(--mono)}
+.chart .ax{stroke:var(--line)}
+.chart .lbl{fill:var(--fg);font:600 21px var(--mono)}
+.links{display:grid;gap:10px}
+.links a,footer a{color:var(--accent);font-weight:600}
+footer{font-size:13px;color:var(--muted)}
+/* stimulus screen: fixed dark stage so colors read the same in both themes */
+.stage{background:var(--stage);color:var(--stage-fg);border-radius:12px;min-height:150px;display:grid;place-items:center;padding:16px;text-align:center;user-select:none;-webkit-user-select:none}
+.stage .w{font:800 clamp(28px,9vw,46px)/1.1 var(--display);font-stretch:110%;letter-spacing:.02em;overflow-wrap:anywhere}
+.stage .w.prime{font-weight:500;font-size:clamp(22px,7vw,32px);letter-spacing:0;opacity:.85}
+.stage .fix{font:500 40px/1 var(--mono);opacity:.7}
+.stage .hint{font:500 14px/1.3 var(--mono);opacity:.7}
+.stage.fb-ok{box-shadow:inset 0 0 0 4px #2bb673}
+.stage.fb-err{box-shadow:inset 0 0 0 4px #e5533d}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.choices.four{grid-template-columns:1fr 1fr}
+.choices button{font-size:19px;padding:20px 8px}
+/* fluency counter */
+.tap{font:800 clamp(56px,18vw,96px)/1 var(--display);font-stretch:112%;font-variant-numeric:tabular-nums;color:var(--accent)}
+.clock{font:600 22px/1 var(--mono);font-variant-numeric:tabular-nums}
+button.tapbtn{width:100%;font-size:26px;padding:34px 10px}
+/* semantic map */
+.map{position:relative;width:100%;max-width:520px;aspect-ratio:1/1;background:var(--bg);border:1.5px dashed var(--line);border-radius:12px;touch-action:none;overflow:hidden}
+.chip{position:absolute;transform:translate(-50%,-50%);font:600 15px/1 var(--body);background:var(--surface);color:var(--fg);border:1.5px solid var(--line);border-radius:999px;padding:9px 12px;cursor:grab;white-space:nowrap;touch-action:none;user-select:none;-webkit-user-select:none}
+.chip.anchor{background:var(--you);border-color:var(--you);color:#fff}
+.chip.drag{cursor:grabbing;box-shadow:0 4px 14px rgba(0,0,0,.25);z-index:5}
+.chip.moved{border-color:var(--accent)}
+/* teacher board */
+#prof{display:grid;gap:18px}
+#prof.wrap{max-width:1180px}
+.board{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;align-items:start}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:10px;min-width:0}
+.bars{display:grid;gap:6px}
+.bar{display:grid;grid-template-columns:96px 1fr 34px 34px 40px;gap:6px;align-items:center;font-size:14px}
+.bar .lab{font:500 13px var(--mono);color:var(--muted)}
+.bar .track{height:22px;background:var(--bg);border-radius:4px;overflow:hidden}
+.bar .fill{height:100%;background:var(--accent);width:0;transition:width .25s}
+.bar .fill.b{background:var(--you)}
+.bar .n{font:700 15px var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.bar button{padding:0;min-height:30px;font-size:18px;border-radius:7px}
+.legend{display:flex;gap:14px;font-size:13px;color:var(--muted)}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:5px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap" id="student">
+  <header>
+    <span class="eyebrow">Bases neurais da comunicação humana · Aula 5</span>
+    <h1>Laboratório de Significado</h1>
+    <p class="lead">Cinco experimentos curtos sobre como o cérebro guarda e encontra o significado das palavras. Você é o participante. No fim de cada um, informe o resultado ao professor.</p>
+    <div class="phones"><span>Segure o celular com as duas mãos e use os dois polegares. Responda o mais <b>rápido</b> que puder sem errar: o celular mede seu tempo de reação em milissegundos.</span></div>
+    <nav aria-label="Experimentos"><a href="#e1">1 · Palavra ou não?</a><a href="#e2">2 · Stroop</a><a href="#e3">3 · Fluência</a><a href="#e4">4 · Frases que surpreendem</a><a href="#e5">5 · Mapa do significado</a></nav>
+  </header>
+
+  <!-- E1 -->
+  <section class="exp" id="e1">
+    <div class="row"><span class="num">EXPERIMENTO 1</span><span class="tag">≈ 4 min · 44 tentativas</span></div>
+    <h2>Palavra ou não? Decisão lexical com priming</h2>
+    <p>Aparece uma palavra pequena em minúsculas (só leia) e logo depois uma sequência em MAIÚSCULAS. Diga se a sequência em maiúsculas é uma <b>palavra do português</b>. As 4 primeiras tentativas são treino.</p>
+    <div class="stage" id="e1s"><span class="hint">toque em Começar</span></div>
+    <div class="choices" id="e1btn" hidden>
+      <button class="big" data-r="w">PALAVRA</button><button class="big ghost" data-r="n">NÃO É</button>
+    </div>
+    <div class="row"><button id="e1go">Começar</button><span class="readout" id="e1p"></span></div>
+    <div class="result" id="e1res" hidden>
+      <svg class="chart" id="e1chart" viewBox="0 0 440 260" role="img" aria-label="Seus tempos de reação por condição"></svg>
+      <div class="report" id="e1rep"></div>
+      <p class="why">Ler <i>médico</i> pré-ativa <i>enfermeira</i> na sua rede de significados, e você reconhece a segunda palavra mais depressa. É o efeito de <b>priming semântico</b> (Meyer &amp; Schvaneveldt, 1971: cerca de 85 ms). No EEG, a palavra relacionada também produz um N400 menor.</p>
+    </div>
+  </section>
+
+  <!-- E2 -->
+  <section class="exp" id="e2">
+    <div class="row"><span class="num">EXPERIMENTO 2</span><span class="tag">≈ 3 min · 36 tentativas</span></div>
+    <h2>Stroop: diga a cor, não a palavra</h2>
+    <p>Toque no botão da <b>cor da tinta</b> em que a palavra está escrita. Ignore o que a palavra diz.</p>
+    <div class="stage" id="e2s"><span class="hint">toque em Começar</span></div>
+    <div class="choices four" id="e2btn" hidden>
+      <button class="ghost" data-r="vermelho">vermelho</button><button class="ghost" data-r="verde">verde</button>
+      <button class="ghost" data-r="azul">azul</button><button class="ghost" data-r="amarelo">amarelo</button>
+    </div>
+    <div class="row"><button id="e2go">Começar</button><span class="readout" id="e2p"></span></div>
+    <div class="result" id="e2res" hidden>
+      <svg class="chart" id="e2chart" viewBox="0 0 440 260" role="img" aria-label="Seus tempos de reação no Stroop"></svg>
+      <div class="report" id="e2rep"></div>
+      <p class="why">Para um leitor experiente, ler é automático: o significado da palavra chega mesmo quando atrapalha. Quando a palavra e a tinta discordam, as duas respostas competem, e o córtex cingulado anterior e o frontal inferior precisam resolver o conflito (Stroop, 1935).</p>
+    </div>
+  </section>
+
+  <!-- E3 -->
+  <section class="exp" id="e3">
+    <div class="row"><span class="num">EXPERIMENTO 3</span><span class="tag">≈ 3 min · 2 × 60 s</span></div>
+    <h2>Fluência verbal: animais contra ferramentas</h2>
+    <p>Durante 60 segundos, pense (ou sussurre) o maior número possível de itens da categoria e toque no botão grande <b>a cada item</b>. Sem repetir. Depois vem a segunda categoria.</p>
+    <div class="row"><span class="readout" id="e3cat">Categoria: —</span><span class="clock" id="e3clock">60 s</span></div>
+    <div class="tap" id="e3n">0</div>
+    <button class="tapbtn" id="e3tap" disabled>+1 item</button>
+    <div class="row"><button id="e3go">Começar a primeira categoria</button><span class="readout" id="e3p"></span></div>
+    <div class="result" id="e3res" hidden>
+      <svg class="chart" id="e3chart" viewBox="0 0 440 270" role="img" aria-label="Itens acumulados ao longo de 60 segundos"></svg>
+      <div class="report" id="e3rep"></div>
+      <p class="why">Repare na forma da curva: os itens saem em rajadas (fazenda, depois selva, depois mar) e o ritmo cai com o tempo. Você está percorrendo vizinhanças da sua rede semântica. Pacientes com lesões temporais podem perder mais uma categoria do que outra; na demência semântica, a fluência por categoria cai muito antes da fluência por letra.</p>
+    </div>
+  </section>
+
+  <!-- E4 -->
+  <section class="exp" id="e4">
+    <div class="row"><span class="num">EXPERIMENTO 4</span><span class="tag">≈ 4 min · 30 frases</span></div>
+    <h2>Frases que surpreendem</h2>
+    <p>Cada frase aparece palavra por palavra. Quando chegar a última palavra, decida rápido: a frase <b>faz sentido</b> ou é <b>estranha</b>?</p>
+    <div class="stage" id="e4s"><span class="hint">toque em Começar</span></div>
+    <div class="choices" id="e4btn" hidden>
+      <button class="big" data-r="s">faz sentido</button><button class="big ghost" data-r="n">estranha</button>
+    </div>
+    <div class="row"><button id="e4go">Começar</button><span class="readout" id="e4p"></span></div>
+    <div class="result" id="e4res" hidden>
+      <svg class="chart" id="e4chart" viewBox="0 0 440 260" role="img" aria-label="Tempo para julgar o final da frase"></svg>
+      <div class="report" id="e4rep"></div>
+      <p class="why">Seu cérebro prevê a próxima palavra. Um final <i>possível mas inesperado</i> (“café com leite e <i>biscoito</i>”) já custa tempo, mesmo fazendo sentido. No EEG, essa surpresa aparece como o <b>N400</b>: quanto menos previsível a palavra, maior a onda negativa por volta de 400 ms (Kutas &amp; Hillyard, 1980, 1984).</p>
+    </div>
+  </section>
+
+  <!-- E5 -->
+  <section class="exp" id="e5">
+    <div class="row"><span class="num">EXPERIMENTO 5</span><span class="tag">≈ 3 min · arrastar</span></div>
+    <h2>Mapa do significado</h2>
+    <p>Arraste as palavras para que as de significado <b>parecido fiquem perto</b> e as diferentes fiquem longe. Não existe resposta certa: o mapa é seu. Quando terminar, toque em Pronto.</p>
+    <div class="map" id="e5map" aria-label="Área para arrastar palavras"></div>
+    <div class="row"><button id="e5done">Pronto</button><button class="ghost" id="e5reset">Embaralhar de novo</button><span class="readout" id="e5p"></span></div>
+    <div class="result" id="e5res" hidden>
+      <div class="report" id="e5rep"></div>
+      <p class="why">Algumas pessoas agrupam por <b>tipo</b> (cachorro perto de lobo e gato) e outras por <b>cena</b> (cachorro perto de osso, coleira e latido). As duas relações existem no cérebro: o lobo temporal anterior favorece semelhança de tipo, e o córtex temporoparietal favorece relações de cena. Huth et al. (2016) fizeram um mapa assim, só que com a atividade cerebral de pessoas ouvindo histórias.</p>
+    </div>
+  </section>
+
+  <section class="exp" id="e6">
+    <div class="row"><span class="num">PARA EXPLORAR DEPOIS</span></div>
+    <h2>O atlas semântico do cérebro</h2>
+    <div class="links">
+      <p><a href="https://gallantlab.org/viewer-huth-2016/" target="_blank" rel="noopener">Visualizador do atlas de Huth et al. (2016), Gallant Lab</a>. Clique em um ponto do córtex e veja quais palavras mais o ativam. Funciona melhor no computador.</p>
+      <p>Se não abrir: <a href="https://aeon.co/videos/see-how-our-brains-group-words-by-meaning-in-surprisingly-complex-semantic-maps" target="_blank" rel="noopener">vídeo curto da Aeon sobre os mapas semânticos</a>.</p>
+    </div>
+  </section>
+
+  <footer>Nenhuma resposta sai do seu celular. Professor: abra esta página com <span style="font-family:var(--mono)">#professor</span> no fim do link para o placar da turma.</footer>
+</div>
+
+<!-- Teacher board -->
+<div class="wrap" id="prof" hidden>
+  <header>
+    <span class="eyebrow">Placar da turma · Aula 5</span>
+    <h1>Resultados da turma</h1>
+    <p class="lead">Peça que levantem a mão por categoria e registre com + e −. Os números ficam salvos neste navegador.</p>
+    <div class="row"><button class="ghost" id="reset">Zerar placar</button><span class="readout" id="resetMsg"></span><a href="#" id="toStudent" style="color:var(--accent);font-weight:600">Ver página dos alunos</a></div>
+  </header>
+  <div class="board" id="board"></div>
+</div>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const median=a=>{if(!a.length)return NaN;const s=[...a].sort((x,y)=>x-y),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2;};
+const fmt=v=>isNaN(v)?'—':Math.round(v).toLocaleString('pt-BR');
+const sgn=v=>isNaN(v)?'—':(v>0?'+':v<0?'−':'')+fmt(Math.abs(v));
+const frame=()=>new Promise(r=>requestAnimationFrame(()=>r(performance.now())));
+/* show content on a stage and return the time it was painted */
+async function show(stage,html){stage.innerHTML=html;return frame();}
+/* wait for one of the buttons; returns {r, t} */
+function waitChoice(box){return new Promise(res=>{const bs=[...box.querySelectorAll('button')];bs.forEach(b=>b.disabled=false);
+  const h=e=>{const t=performance.now();e.preventDefault();bs.forEach(b=>{b.disabled=true;b.removeEventListener('pointerdown',h);});res({r:e.currentTarget.dataset.r,t});};
+  bs.forEach(b=>b.addEventListener('pointerdown',h));});}
+async function feedback(stage,ok){stage.classList.add(ok?'fb-ok':'fb-err');await sleep(ok?150:400);stage.classList.remove('fb-ok','fb-err');}
+
+/* bar chart: items [{label,value,color}] */
+function bars(svg,items,unit,note){const W=440,H=260,L=62,R=10,T=34,B=64;const max=Math.max(...items.map(i=>isNaN(i.value)?0:i.value))*1.15||1;
+  const bw=Math.min(100,(W-L-R)/items.length*0.6);let g='';
+  const step=max>1500?500:max>600?200:100;
+  for(let v=0;v<=max;v+=step){const y=T+(1-v/max)*(H-T-B);g+=`<line class="ax" x1="${L}" y1="${y}" x2="${W-R}" y2="${y}"/><text x="${L-8}" y="${y+4}" text-anchor="end">${v}</text>`;}
+  items.forEach((it,i)=>{const cx=L+(i+.5)*(W-L-R)/items.length;const v=isNaN(it.value)?0:it.value;const y=T+(1-v/max)*(H-T-B);
+    g+=`<rect x="${cx-bw/2}" y="${y}" width="${bw}" height="${H-B-y}" rx="4" style="fill:${it.color}"/>`;
+    g+=`<text class="lbl" x="${cx}" y="${y-7}" text-anchor="middle">${fmt(it.value)} ${unit}</text>`;
+    g+=`<text x="${cx}" y="${H-B+26}" text-anchor="middle" style="font-size:16px">${it.label}</text>`;});
+  if(note)g+=`<text x="${(L+W-R)/2}" y="${H-6}" text-anchor="middle">${note}</text>`;
+  svg.innerHTML=g;}
+const C1='var(--accent)',C2='var(--you)',C3='var(--muted)';
+
+/* ---------- E1 lexical decision with semantic priming ---------- */
+const PAIRS=[['médico','ENFERMEIRA'],['pão','MANTEIGA'],['gato','RATO'],['mesa','CADEIRA'],['sol','LUA'],['rei','RAINHA'],['agulha','LINHA'],['café','LEITE'],['chuva','NUVEM'],['cachorro','OSSO'],
+  ['praia','AREIA'],['escola','PROFESSOR'],['garfo','FACA'],['sapato','MEIA'],['noite','DIA'],['fogo','FUMAÇA'],['abelha','MEL'],['livro','PÁGINA'],['carro','ESTRADA'],['frio','GELO']];
+const NONW=['BORTEFA','MILANCO','PALIMOTE','FERUSCA','GODILHA','MANTURRO','CEPOLA','RABIZE','TURMEJO','BIRALDA','SOLPENA','CUDAVO','FENGUIRA','LOBANTE','PRISOLA','DAMBUTE','VELIRCO','MOSTRIDE','CARFUNE','TILEMBA'];
+const NWPRIME=['casa','bola','janela','rio','flor','papel','chave','tempo','verde','cama','lápis','porta','dente','roda','peixe','sino','barco','banco','vento','ônibus'];
+$('e1go').onclick=async()=>{const st=$('e1s');$('e1go').disabled=true;$('e1res').hidden=true;$('e1btn').hidden=false;
+  const p=shuffle(PAIRS.map(x=>x.slice()));const rel=p.slice(0,10),unr=p.slice(10);
+  // unrelated: the same targets after neutral primes that have no link to any target
+  const rot=shuffle(['tijolo','violino','cortina','bandeira','pulmão','girafa','cenoura','tapete','parafuso','trombeta']);
+  let trials=rel.map(([a,b])=>({prime:a,target:b,cond:'rel',word:true}))
+    .concat(unr.map(([a,b],i)=>({prime:rot[i],target:b,cond:'unr',word:true})))
+    .concat(NONW.map((w,i)=>({prime:NWPRIME[i],target:w,cond:'nw',word:false})));
+  trials=shuffle(trials);
+  const practice=[{prime:'mão',target:'DEDO',cond:'pr',word:true},{prime:'bolo',target:'FAMPERO',cond:'pr',word:false},{prime:'flor',target:'JARDIM',cond:'pr',word:true},{prime:'lua',target:'TRINELA',cond:'pr',word:false}];
+  const all=practice.concat(trials);const data={rel:[],unr:[],nw:[]};let err=0,n=0;
+  for(let i=0;i<all.length;i++){const t=all[i];$('e1p').textContent=i<4?`treino ${i+1} / 4`:`${i-3} / ${trials.length}`;
+    await show(st,'<span class="fix">+</span>');await sleep(500);
+    await show(st,`<span class="w prime">${t.prime}</span>`);await sleep(250);
+    await show(st,'');await sleep(100);
+    const t0=await show(st,`<span class="w">${t.target}</span>`);
+    const a=await waitChoice($('e1btn'));const rt=a.t-t0;const ok=(a.r==='w')===t.word;
+    st.innerHTML='';await feedback(st,ok);
+    if(t.cond!=='pr'){n++;if(!ok)err++;if(ok&&rt>200&&rt<2000)data[t.cond].push(rt);}
+    await sleep(300);}
+  $('e1btn').hidden=true;st.innerHTML='<span class="hint">fim</span>';$('e1p').textContent='Concluído.';
+  const r=median(data.rel),u=median(data.unr),w=median(data.nw);const eff=u-r;
+  bars($('e1chart'),[{label:'relacionada',value:r,color:C1},{label:'não relac.',value:u,color:C2},{label:'não-palavra',value:w,color:C3}],'ms','mediana, respostas certas');
+  const bin=isNaN(eff)?'—':eff<0?'< 0 ms':eff<25?'0–24 ms':eff<50?'25–49 ms':eff<100?'50–99 ms':'≥ 100 ms';
+  $('e1rep').innerHTML=`Efeito de priming: <b>${sgn(eff)} ms</b> (não relacionada − relacionada). Erros: ${err} de ${n}. Informe a faixa: <b>${bin}</b>.`;
+  $('e1res').hidden=false;$('e1go').disabled=false;$('e1go').textContent='Refazer';};
+
+/* ---------- E2 Stroop ---------- */
+const INK={vermelho:'#ff5a4e',verde:'#3ccf6e',azul:'#5b9bff',amarelo:'#ffd23f'};
+const COLS=Object.keys(INK);
+$('e2go').onclick=async()=>{const st=$('e2s');$('e2go').disabled=true;$('e2res').hidden=true;$('e2btn').hidden=false;
+  let trials=[];for(let k=0;k<3;k++)for(const c of COLS){trials.push({w:c.toUpperCase(),ink:c,cond:'con'});
+    const others=COLS.filter(x=>x!==c);trials.push({w:others[k].toUpperCase(),ink:c,cond:'inc'});trials.push({w:'X'.repeat(c.length),ink:c,cond:'neu'});}
+  trials=shuffle(trials);const data={con:[],inc:[],neu:[]};let err={con:0,inc:0,neu:0};
+  for(let i=0;i<trials.length;i++){const t=trials[i];$('e2p').textContent=`${i+1} / ${trials.length}`;
+    await show(st,'<span class="fix">+</span>');await sleep(400+Math.random()*300);
+    const t0=await show(st,`<span class="w" style="color:${INK[t.ink]}">${t.w}</span>`);
+    const a=await waitChoice($('e2btn'));const rt=a.t-t0;const ok=a.r===t.ink;st.innerHTML='';await feedback(st,ok);
+    if(ok&&rt>200&&rt<2500)data[t.cond].push(rt);else if(!ok)err[t.cond]++;await sleep(250);}
+  $('e2btn').hidden=true;st.innerHTML='<span class="hint">fim</span>';$('e2p').textContent='Concluído.';
+  const c=median(data.con),inc=median(data.inc),nu=median(data.neu),eff=inc-c;
+  bars($('e2chart'),[{label:'congruente',value:c,color:C1},{label:'neutra',value:nu,color:C3},{label:'incongruente',value:inc,color:C2}],'ms','mediana, respostas certas');
+  const bin=isNaN(eff)?'—':eff<50?'< 50 ms':eff<100?'50–99 ms':eff<200?'100–199 ms':eff<300?'200–299 ms':'≥ 300 ms';
+  $('e2rep').innerHTML=`Efeito Stroop: <b>${sgn(eff)} ms</b> (incongruente − congruente). Erros nas incongruentes: ${err.inc} de 12. Informe a faixa: <b>${bin}</b>.`;
+  $('e2res').hidden=false;$('e2go').disabled=false;$('e2go').textContent='Refazer';};
+
+/* ---------- E3 verbal fluency ---------- */
+const CATS={animais:'animais',ferramentas:'ferramentas e utensílios (martelo, colher…)'};
+let e3order=Math.random()<.5?['animais','ferramentas']:['ferramentas','animais'];let e3idx=0,e3taps={},e3run=false;
+$('e3cat').textContent='Primeira categoria: '+CATS[e3order[0]];
+$('e3go').onclick=async()=>{if(e3idx>=2){e3idx=0;e3taps={};e3order=e3order.reverse();$('e3res').hidden=true;}
+  const cat=e3order[e3idx];$('e3cat').textContent='Categoria: '+CATS[cat];$('e3go').disabled=true;
+  for(let k=3;k>0;k--){$('e3clock').textContent='começa em '+k;await sleep(800);}
+  const taps=[];e3taps[cat]=taps;$('e3n').textContent='0';$('e3tap').disabled=false;e3run=true;const t0=performance.now();
+  $('e3tap').onpointerdown=e=>{e.preventDefault();if(!e3run)return;taps.push((performance.now()-t0)/1000);$('e3n').textContent=taps.length;};
+  await new Promise(res=>{const tick=()=>{const el=(performance.now()-t0)/1000;$('e3clock').textContent=Math.max(0,Math.ceil(60-el))+' s';if(el>=60)res();else requestAnimationFrame(tick);};tick();});
+  e3run=false;$('e3tap').disabled=true;e3idx++;$('e3clock').textContent='fim';
+  if(e3idx<2){$('e3go').disabled=false;$('e3go').textContent='Começar a segunda categoria';$('e3cat').textContent='Próxima: '+CATS[e3order[1]];$('e3p').textContent=`${CATS[cat].split(' ')[0]}: ${taps.length} itens`;}
+  else{$('e3go').disabled=false;$('e3go').textContent='Refazer';$('e3p').textContent='';draw3();}};
+function draw3(){const svg=$('e3chart');const W=440,H=270,L=50,R=26,T=24,B=60;const a=e3taps.animais||[],f=e3taps.ferramentas||[];
+  const max=Math.max(10,a.length,f.length)*1.1;const x=s=>L+s/60*(W-L-R),y=n=>T+(1-n/max)*(H-T-B);let g='';
+  const st=max>60?20:max>30?10:5;for(let v=0;v<=max;v+=st)g+=`<line class="ax" x1="${L}" y1="${y(v)}" x2="${W-R}" y2="${y(v)}"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end">${v}</text>`;
+  for(let s=0;s<=60;s+=20)g+=`<text x="${x(s)}" y="${H-B+26}" text-anchor="middle">${s} s</text>`;
+  const path=(arr,c)=>{let d=`M${x(0)},${y(0)}`;arr.forEach((t,i)=>{d+=` L${x(t)},${y(i)} L${x(t)},${y(i+1)}`;});d+=` L${x(60)},${y(arr.length)}`;return `<path d="${d}" style="fill:none;stroke:${c};stroke-width:3"/>`;};
+  g+=path(a,'var(--accent)')+path(f,'var(--you)');
+  g+=`<text x="${W-R}" y="${y(a.length)-8}" text-anchor="end" style="fill:var(--accent)">animais: ${a.length}</text><text x="${W-R}" y="${y(f.length)+18}" text-anchor="end" style="fill:var(--you)">ferramentas: ${f.length}</text>`;
+  g+=`<text x="${(L+W-R)/2}" y="${H-6}" text-anchor="middle">itens acumulados em 60 s</text>`;svg.innerHTML=g;
+  const q=arr=>arr.filter(t=>t<15).length;const bin=n=>n<10?'0–9':n<15?'10–14':n<20?'15–19':n<25?'20–24':'25+';
+  $('e3rep').innerHTML=`Animais: <b>${a.length}</b> · ferramentas: <b>${f.length}</b>. Nos primeiros 15 s você disse ${q(a)} animais e ${q(f)} ferramentas. Informe as duas faixas: animais <b>${bin(a.length)}</b>, ferramentas <b>${bin(f.length)}</b>.`;$('e3res').hidden=false;}
+
+/* ---------- E4 surprising sentences ---------- */
+const FR=[['Tomo meu café com leite e','açúcar','biscoito','meias'],['Ela mexeu o café com a','colher','caneta','nuvem'],['Para abrir a porta, ele usou a','chave','força','sopa'],
+ ['O pescador jogou a rede no','mar','lago','relógio'],['Antes de dormir, ela escova os','dentes','cabelos','tijolos'],['O cachorro roeu o','osso','sapato','vento'],
+ ['Choveu tanto que a rua ficou','alagada','vazia','redonda'],['No aniversário, cantamos parabéns e cortamos o','bolo','pão','oceano'],['O avião pousou no','aeroporto','campo','sabonete'],
+ ['Ele lavou as mãos com água e','sabão','álcool','música'],['Na sorveteria, pedi um sorvete de','chocolate','milho','parafuso'],['O bebê dormiu no','berço','carro','garfo'],
+ ['Para ver as estrelas, usamos um','telescópio','binóculo','travesseiro'],['Ela leu o jornal e jogou no','lixo','sofá','trovão'],['Quando faz frio, eu visto um','casaco','gorro','piano'],
+ ['O professor escreveu no','quadro','caderno','alface'],['No verão, vamos à','praia','fazenda','gaveta'],['O carteiro entregou a','carta','caixa','chuva'],
+ ['Para cortar o papel, use a','tesoura','faca','orelha'],['O motorista parou no sinal','vermelho','amarelo','triste'],['O pássaro construiu um','ninho','abrigo','relâmpago'],
+ ['Ela regou as plantas com','água','cuidado','pedras'],['O jogador chutou a','bola','trave','lua'],['Meu avô usa óculos para','ler','dirigir','latir'],
+ ['No café da manhã, fritei um','ovo','bife','livro'],['A mãe guardou o leite na','geladeira','mesa','conversa'],['Ele pagou a conta com','dinheiro','cartão','joelhos'],
+ ['Em dezembro comemoramos o','Natal','aniversário','girafa'],['O gato bebeu todo o','leite','caldo','tapete'],['Ela abriu o guarda-chuva porque estava','chovendo','ventando','sorrindo']];
+$('e4go').onclick=async()=>{const st=$('e4s');$('e4go').disabled=true;$('e4res').hidden=true;$('e4btn').hidden=false;
+  const conds=shuffle([].concat(...Array(10).fill(['exp','inesp','anom'])));const fr=shuffle(FR.map(x=>x.slice()));
+  const data={exp:[],inesp:[],anom:[]},judg={exp:0,inesp:0,anom:0};
+  for(let i=0;i<fr.length;i++){const [frame_,e,u,a]=fr[i],c=conds[i];const end=c==='exp'?e:c==='inesp'?u:a;$('e4p').textContent=`${i+1} / ${fr.length}`;
+    await show(st,'<span class="fix">+</span>');await sleep(500);
+    for(const w of frame_.split(' ')){await show(st,`<span class="w prime">${w}</span>`);await sleep(320);await show(st,'');await sleep(80);}
+    const t0=await show(st,`<span class="w">${end}.</span>`);const r=await waitChoice($('e4btn'));const rt=r.t-t0;
+    if(r.r==='s')judg[c]++;
+    const ok=(c==='anom')?r.r==='n':r.r==='s';if(ok&&rt>200&&rt<3000)data[c].push(rt);
+    st.innerHTML='';await sleep(400);}
+  $('e4btn').hidden=true;st.innerHTML='<span class="hint">fim</span>';$('e4p').textContent='Concluído.';
+  const me=median(data.exp),mu=median(data.inesp),ma=median(data.anom),eff=mu-me;
+  bars($('e4chart'),[{label:'esperada',value:me,color:C1},{label:'inesperada',value:mu,color:C2},{label:'anômala',value:ma,color:C3}],'ms','mediana, respostas coerentes');
+  const bin=isNaN(eff)?'—':eff<0?'< 0 ms':eff<50?'0–49 ms':eff<100?'50–99 ms':eff<200?'100–199 ms':'≥ 200 ms';
+  $('e4rep').innerHTML=`Custo da surpresa: <b>${sgn(eff)} ms</b> (inesperada − esperada). Você achou “faz sentido” ${judg.inesp} de 10 finais inesperados. Informe a faixa: <b>${bin}</b>.`;
+  $('e4res').hidden=false;$('e4go').disabled=false;$('e4go').textContent='Refazer';};
+
+/* ---------- E5 semantic map (drag) ---------- */
+const WORDS=['cachorro','gato','lobo','leão','vaca','osso','coleira','latido','amigo','carne','martelo','faca'];
+const map=$('e5map');let pos={},moved=new Set();
+function layout(){map.innerHTML='';pos={};moved=new Set();const w=map.clientWidth||340,h=map.clientHeight||340;
+  const ws=shuffle(WORDS.slice());const cols=3,rows=4;
+  ws.forEach((wd,i)=>{const cx=(i%cols+.5)/cols+(Math.random()-.5)*.08,cy=(Math.floor(i/cols)+.5)/rows+(Math.random()-.5)*.06;
+    pos[wd]=[Math.min(.86,Math.max(.14,cx)),Math.min(.92,Math.max(.08,cy))];
+    const el=document.createElement('span');el.className='chip'+(wd==='cachorro'?' anchor':'');el.textContent=wd;el.dataset.w=wd;place(el);map.appendChild(el);drag(el);});
+  $('e5res').hidden=true;$('e5p').textContent='';}
+function place(el){const [x,y]=pos[el.dataset.w];el.style.left=(x*100)+'%';el.style.top=(y*100)+'%';}
+function drag(el){el.addEventListener('pointerdown',e=>{e.preventDefault();el.setPointerCapture(e.pointerId);el.classList.add('drag');
+  const r=map.getBoundingClientRect();
+  const mv=ev=>{const x=(ev.clientX-r.left)/r.width,y=(ev.clientY-r.top)/r.height;pos[el.dataset.w]=[Math.min(.95,Math.max(.05,x)),Math.min(.97,Math.max(.03,y))];place(el);};
+  const up=()=>{el.classList.remove('drag');el.classList.add('moved');moved.add(el.dataset.w);el.removeEventListener('pointermove',mv);el.removeEventListener('pointerup',up);el.removeEventListener('pointercancel',up);};
+  el.addEventListener('pointermove',mv);el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);});}
+$('e5reset').onclick=layout;
+$('e5done').onclick=()=>{if(moved.size<6){$('e5p').textContent=`Você moveu ${moved.size} palavras. Arrume pelo menos 6.`;return;}
+  const [cx,cy]=pos['cachorro'];const d=WORDS.filter(w=>w!=='cachorro').map(w=>[w,Math.hypot(pos[w][0]-cx,pos[w][1]-cy)]).sort((a,b)=>a[1]-b[1]);
+  const near=d[0][0];const tax=['gato','lobo','leão','vaca'],them=['osso','coleira','latido','amigo','carne'];
+  const avg=arr=>arr.reduce((s,w)=>s+d.find(x=>x[0]===w)[1],0)/arr.length;const tt=avg(tax.filter(w=>w!=='vaca')),th=avg(['osso','coleira','latido']);
+  const style=tt<th*0.85?'mais por tipo (animais juntos)':th<tt*0.85?'mais por cena (coisas do dia a dia do cachorro)':'misturando tipo e cena';
+  $('e5rep').innerHTML=`Vizinho mais próximo de “cachorro”: <b>${near}</b>. Depois vêm ${d[1][0]} e ${d[2][0]}. Seu mapa organiza ${style}. Informe o vizinho: <b>${near}</b>.`;
+  $('e5res').hidden=false;};
+requestAnimationFrame(layout);
+
+/* ---------- teacher board ---------- */
+const BOARD=[
+ {k:'e1',t:'1 · Efeito de priming',cats:['< 0 ms','0–24 ms','25–49 ms','50–99 ms','≥ 100 ms']},
+ {k:'e2',t:'2 · Efeito Stroop',cats:['< 50 ms','50–99 ms','100–199 ms','200–299 ms','≥ 300 ms']},
+ {k:'e3',t:'3 · Fluência em 60 s',two:['animais','ferramentas'],cats:['0–9','10–14','15–19','20–24','25+']},
+ {k:'e4',t:'4 · Custo da surpresa',cats:['< 0 ms','0–49 ms','50–99 ms','100–199 ms','≥ 200 ms']},
+ {k:'e5',t:'5 · Vizinho de “cachorro”',cats:['gato','lobo','leão','osso','coleira','latido','amigo','outro']}];
+let S={};try{S=JSON.parse(localStorage.getItem('significado-placar')||'{}')}catch(e){S={}}
+const save=()=>{try{localStorage.setItem('significado-placar',JSON.stringify(S))}catch(e){}};
+function renderBoard(){const host=$('board');host.innerHTML='';
+  BOARD.forEach(p=>{const div=document.createElement('div');div.className='panel';
+    const series=p.two?[0,1]:[0];let max=1;series.forEach(s=>p.cats.forEach((_,i)=>max=Math.max(max,(S[p.k+s+'_'+i]||0))));
+    let h=`<h2>${p.t}</h2>`;if(p.two)h+=`<div class="legend"><span><i class="sw" style="background:var(--accent)"></i>${p.two[0]}</span><span><i class="sw" style="background:var(--you)"></i>${p.two[1]}</span></div>`;
+    h+='<div class="bars">';
+    p.cats.forEach((c,i)=>series.forEach(s=>{const key=p.k+s+'_'+i,v=S[key]||0;
+      h+=`<div class="bar"><span class="lab">${s===0?c:''}</span><span class="track"><span class="fill${s?' b':''}" style="width:${100*v/max}%"></span></span><button class="ghost" data-k="${key}" data-d="-1" aria-label="menos ${c}">−</button><button data-k="${key}" data-d="1" aria-label="mais ${c}">+</button><span class="n">${v}</span></div>`;}));
+    div.innerHTML=h+'</div>';host.appendChild(div);});
+  host.querySelectorAll('button[data-k]').forEach(b=>b.onclick=()=>{const k=b.dataset.k;S[k]=Math.max(0,(S[k]||0)+(+b.dataset.d));save();renderBoard();});}
+let armed=false;$('reset').onclick=()=>{if(!armed){armed=true;$('reset').textContent='Confirmar: zerar tudo';$('resetMsg').textContent='';return;}
+  S={};save();renderBoard();armed=false;$('reset').textContent='Zerar placar';$('resetMsg').textContent='Placar zerado.';};
+$('toStudent').onclick=e=>{e.preventDefault();location.hash='';route();};
+function route(){const t=location.hash==='#professor';$('prof').hidden=!t;$('student').hidden=t;if(t)renderBoard();else requestAnimationFrame(()=>{if(!map.children.length)layout();});}
+window.addEventListener('hashchange',route);route();
+})();
+</script>
+
+<script src="config.js"></script>
+<script src="registro.js" data-aula="5"></script>

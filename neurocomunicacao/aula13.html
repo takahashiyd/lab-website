@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laboratório de Evolução</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: a single lab-notebook column; each experiment is a numbered protocol card; teacher mode swaps in a projector board */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#142033; --muted:#5b6879; --line:#d8dee6;
+  --accent:#0e7c86; --accent-ink:#ffffff; --you:#c9771a; --soft:#e5f1f2; --warn:#a33a2a;
+  --display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:17px/1.5 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-inline:18px;padding-block:28px 64px;display:grid;gap:22px}
+header{display:grid;gap:8px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(34px,8vw,54px)/1 var(--display);font-stretch:118%;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font:750 24px/1.15 var(--display);font-stretch:108%;margin:0;text-wrap:balance}
+h3{font:700 16px/1.2 var(--display);margin:0}
+p{margin:0;max-width:65ch}
+.lead{color:var(--muted)}
+.phones{display:flex;gap:10px;align-items:flex-start;background:var(--soft);border-radius:10px;padding:12px 14px;font-size:15px}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{font:600 14px/1 var(--body);color:var(--fg);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:var(--surface)}
+nav a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.exp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:14px;min-width:0}
+.num{font:600 13px/1 var(--mono);color:var(--muted)}
+.tag{display:inline-block;font:600 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 7px;border-radius:5px;background:var(--soft);color:var(--accent)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+button{font:700 16px/1 var(--display);border:0;border-radius:10px;padding:14px 18px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px;touch-action:manipulation}
+button.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+button.big{flex:1 1 120px;font-size:22px;padding:20px 10px;font-stretch:112%}
+button:disabled{opacity:.4;cursor:default}
+.readout{font:500 15px/1.4 var(--mono);color:var(--muted)}
+.result{border-top:1px dashed var(--line);padding-top:14px;display:grid;gap:10px}
+.report{background:var(--soft);border-radius:10px;padding:12px 14px;font-size:16px}
+.report b{font:700 20px/1.1 var(--display);color:var(--you)}
+.why{font-size:15px;color:var(--muted)}
+.chart{width:100%;height:auto;display:block}
+.chart text{fill:var(--muted);font:12px var(--mono)}
+.chart .ax{stroke:var(--line)}
+.links{display:grid;gap:10px}
+.links a{color:var(--accent);font-weight:600}
+footer{font-size:13px;color:var(--muted)}
+/* E1 tap pad */
+.pad{display:grid;place-items:center;min-height:150px;border-radius:14px;border:2px dashed var(--line);font:800 26px/1.1 var(--display);font-stretch:112%;color:var(--muted);user-select:none;-webkit-user-select:none;touch-action:manipulation;cursor:pointer;text-align:center;padding:10px}
+.pad.on{border-style:solid;border-color:var(--accent);color:var(--fg)}
+.pad.flash{background:var(--soft)}
+.fb{font:600 16px/1.3 var(--mono);min-height:22px}
+.fb.ok{color:var(--accent)} .fb.bad{color:var(--warn)}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{min-height:40px;padding:10px 12px;font-size:14px}
+.seg button[aria-pressed="false"]{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+/* E2 symbols */
+.stage{display:grid;place-items:center;min-height:96px;border-radius:12px;background:var(--bg);font:800 56px/1 var(--display)}
+.stage .a{color:var(--accent)} .stage .b{color:var(--you)}
+/* E3 grid */
+.hgrid{display:grid;grid-template-columns:minmax(84px,1.3fr) repeat(5,minmax(40px,1fr));gap:5px;align-items:center}
+.hgrid .h{font:600 11px/1.15 var(--mono);color:var(--muted);text-align:center}
+.hgrid .s{font:700 14px/1.15 var(--display)}
+.cell{min-height:44px;padding:0;font:700 18px/1 var(--display);border-radius:8px;background:var(--bg);color:var(--fg);border:2px solid var(--line)}
+.cell[data-v="2"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.cell[data-v="1"]{background:var(--you);color:#fff;border-color:var(--you)}
+.cell.ok{box-shadow:0 0 0 3px var(--accent)}
+.cell.no{box-shadow:0 0 0 3px var(--warn)}
+.legendh{font-size:14px;color:var(--muted);display:grid;gap:2px}
+/* cards for E4/E5 */
+.card{background:var(--bg);border-radius:12px;padding:16px;display:grid;gap:12px}
+.card .q{font:700 19px/1.3 var(--display);text-wrap:balance}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opts button{font-size:15px;line-height:1.2;padding:12px 10px}
+.opts button.right{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.opts button.wrong{background:var(--warn);color:#fff;border-color:var(--warn)}
+.expl{font-size:15px;color:var(--muted)}
+.opts button:disabled{opacity:.55}
+.opts button.right:disabled,.opts button.wrong:disabled{opacity:1}
+/* teacher board */
+#prof{display:grid;gap:18px}
+.board{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:10px;min-width:0}
+.bars{display:grid;gap:6px}
+.bar{display:grid;grid-template-columns:110px 1fr 34px 34px 40px;gap:6px;align-items:center;font-size:14px}
+.bar .lab{font:500 12px var(--mono);color:var(--muted)}
+.bar .track{height:22px;background:var(--bg);border-radius:4px;overflow:hidden}
+.bar .fill{height:100%;background:var(--accent);width:0;transition:width .25s}
+.bar .fill.b{background:var(--you)}
+.bar .n{font:700 15px var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.bar button{padding:0;min-height:30px;font-size:18px;border-radius:7px}
+.legend{display:flex;gap:14px;font-size:13px;color:var(--muted)}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:5px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap" id="student">
+  <header>
+    <span class="eyebrow">Bases neurais da comunicação humana · Aula 13</span>
+    <h1>Laboratório de Evolução</h1>
+    <p class="lead">Cinco experimentos para comparar a nossa comunicação com a de outros animais e fechar o curso. Você é o participante. No fim de cada um, informe o resultado ao professor.</p>
+    <div class="phones"><span>Os experimentos 1 e 2 têm som. Use fones de ouvido com fio ou o alto-falante, com volume baixo. Fones Bluetooth atrasam o som e atrapalham o experimento 1. No iPhone, desligue o modo silencioso.</span></div>
+    <nav aria-label="Experimentos"><a href="#e1">1 · Troca de turnos</a><a href="#e2">2 · Gramáticas</a><a href="#e3">3 · É linguagem?</a><a href="#e4">4 · Homologia</a><a href="#e5">5 · Uma ideia por aula</a></nav>
+  </header>
+
+  <!-- E1 -->
+  <section class="exp" id="e1">
+    <div class="row"><span class="num">EXPERIMENTO 1</span><span class="tag">≈ 7 min · com som</span></div>
+    <h2>Troca de turnos: responda quando o parceiro terminar</h2>
+    <p>Um parceiro virtual emite um assobio, como o chamado <i>phee</i> dos saguis. Toque na área grande <b>assim que achar que ele terminou</b>, nem antes, nem muito depois. Seu toque é a sua resposta. São duas partes de 12 chamados: na parte A os chamados têm sempre a mesma duração; na parte B a duração muda.</p>
+    <div class="row"><span class="readout">Som:</span>
+      <div class="seg" role="group" aria-label="Altura do som"><button id="e1hi" aria-pressed="true">agudo (sagui)</button><button id="e1lo" aria-pressed="false">grave (mais confortável)</button></div>
+    </div>
+    <div class="row">
+      <button id="e1a">Parte A · previsível</button>
+      <button id="e1b" class="ghost">Parte B · variável</button>
+      <span class="readout" id="e1p"></span>
+    </div>
+    <div class="pad" id="e1pad" role="button" aria-label="Área de resposta: toque para responder" tabindex="0">Aperte “Parte A” para começar</div>
+    <div class="fb" id="e1fb" aria-live="polite"></div>
+    <div class="result" id="e1res" hidden>
+      <svg class="chart" id="e1chart" viewBox="0 0 640 250" role="img" aria-label="Distribuição dos seus intervalos"></svg>
+      <div class="report" id="e1rep"></div>
+      <p class="why">Numa conversa, as pessoas começam a falar cerca de <b>200 ms</b> depois que o outro termina, em línguas do mundo todo. Como planejar uma palavra leva mais de meio segundo, a resposta precisa ser preparada <b>antes</b> do fim do turno, prevendo quando ele vai acabar. Saguis também alternam chamados e evitam sobreposição, mas com intervalos de alguns segundos.</p>
+    </div>
+    <div class="row"><button id="e1demo" class="ghost">Ouvir um diálogo de dois saguis (25 s)</button><button id="e1stop" class="ghost" hidden>Parar</button></div>
+    <p class="why">No diálogo, um sagui está à esquerda e o outro à direita (com fones). São sons sintetizados, inspirados nos chamados reais.</p>
+  </section>
+
+  <!-- E2 -->
+  <section class="exp" id="e2">
+    <div class="row"><span class="num">EXPERIMENTO 2</span><span class="tag">≈ 8 min · com som</span></div>
+    <h2>Gramáticas artificiais: que regra você aprende?</h2>
+    <p>Você vai ouvir sequências de sílabas sem sentido. As sílabas do tipo <b style="color:var(--accent)">A</b> têm voz aguda; as do tipo <b style="color:var(--you)">B</b>, voz grave. Primeiro só escute (cerca de 40 s). Depois, diga se cada sequência nova <b>segue o mesmo padrão</b>. Faça os dois blocos, na ordem.</p>
+    <div class="row"><span class="readout">Apresentar como:</span>
+      <div class="seg" role="group" aria-label="Modo"><button id="e2snd" aria-pressed="true">sílabas (som)</button><button id="e2sym" aria-pressed="false">símbolos (sem som)</button></div>
+    </div>
+    <div class="row">
+      <button id="e2b1">Bloco 1</button>
+      <button id="e2b2" class="ghost">Bloco 2</button>
+      <span class="readout" id="e2p"></span>
+    </div>
+    <div class="stage" id="e2stage" aria-live="off"><span style="font:600 14px var(--mono);color:var(--muted)">as sequências aparecem aqui</span></div>
+    <div class="row" id="e2btn" hidden>
+      <button class="big" data-r="y">segue o padrão</button><button class="big" data-r="n">não segue</button>
+    </div>
+    <div class="result" id="e2res" hidden>
+      <div class="report" id="e2rep"></div>
+      <p class="why">O bloco 1 usava <b>(AB)ⁿ</b>: A e B se alternam (ABAB). O bloco 2 usava <b>AⁿBⁿ</b>: um número de A seguido do <i>mesmo</i> número de B (AABB, AAABBB). Para o primeiro basta saber o que vem depois de quê; para o segundo é preciso guardar e casar elementos, como em frases encaixadas. Humanos aprendem os dois; saguis-cabeça-de-algodão só aprenderam o primeiro (Fitch &amp; Hauser, 2004).</p>
+    </div>
+  </section>
+
+  <!-- E3 -->
+  <section class="exp" id="e3">
+    <div class="row"><span class="num">EXPERIMENTO 3</span><span class="tag">≈ 6 min</span></div>
+    <h2>É linguagem? A pergunta da aula 1, revisitada</h2>
+    <p>Para cada sistema, toque nas células para marcar se ele tem cada traço de Hockett. Cada toque muda: <b>–</b> não → <b>½</b> em parte → <b>✓</b> sim.</p>
+    <div class="legendh"><span><b>Arb.</b> arbitrariedade: o sinal não se parece com o que significa</span><span><b>Desl.</b> deslocamento: falar do que não está aqui</span><span><b>Prod.</b> produtividade: mensagens novas, sem limite</span><span><b>Dupla</b> dupla articulação: sons sem sentido formam palavras</span><span><b>Cult.</b> transmissão cultural: aprendido com os outros</span></div>
+    <div class="hgrid" id="e3grid"></div>
+    <div class="row"><button id="e3cmp">Comparar com a literatura</button><span class="readout" id="e3agree"></span></div>
+    <div class="card" id="e3bee" hidden>
+      <div class="q">Agora, a sua resposta final: a dança das abelhas é…</div>
+      <div class="opts" id="e3opts"><button class="ghost" data-r="0">não é comunicação</button><button class="ghost" data-r="1">comunicação</button><button class="ghost" data-r="2" style="grid-column:1/-1">linguagem</button></div>
+    </div>
+    <div class="result" id="e3res" hidden>
+      <div class="report" id="e3rep"></div>
+      <p class="why">Contorno verde-azulado = igual à literatura; vermelho = diferente. A dança tem <b>deslocamento</b> (fala de flores distantes), mas é <b>icônica</b> (o ângulo imita a direção), só fala de poucos assuntos e não tem dupla articulação. Um estudo de 2023 mostrou que abelhas que não puderam observar dançarinas experientes dançam com mais erros: há um pouco de aprendizado social. Nenhum sistema animal conhecido reúne os cinco traços.</p>
+    </div>
+  </section>
+
+  <!-- E4 -->
+  <section class="exp" id="e4">
+    <div class="row"><span class="num">EXPERIMENTO 4</span><span class="tag">≈ 5 min</span></div>
+    <h2>Quebra-cabeça filogenético: homologia ou convergência?</h2>
+    <p><b>Homologia</b>: as duas espécies herdaram o traço do mesmo ancestral. <b>Convergência</b>: o traço surgiu de forma independente em cada linhagem. Dez casos.</p>
+    <div class="row"><button id="e4go">Começar</button><span class="readout" id="e4p"></span></div>
+    <div class="card" id="e4card" hidden>
+      <div class="q" id="e4q"></div>
+      <div class="opts" id="e4opts"><button class="ghost" data-r="h">homologia</button><button class="ghost" data-r="c">convergência</button></div>
+      <p class="expl" id="e4x"></p>
+      <button id="e4next" hidden>Próximo</button>
+    </div>
+    <div class="result" id="e4res" hidden><div class="report" id="e4rep"></div>
+      <p class="why">Um mesmo traço pode ter as duas histórias em níveis diferentes: o aprendizado vocal surgiu várias vezes (convergência), mas reaproveitou genes e circuitos herdados, como o FOXP2 e o estriado (homologia profunda).</p></div>
+  </section>
+
+  <!-- E5 -->
+  <section class="exp" id="e5">
+    <div class="row"><span class="num">EXPERIMENTO 5</span><span class="tag">≈ 5 min · parte 3</span></div>
+    <h2>Uma ideia por aula</h2>
+    <p>Doze ideias do semestre. Para cada uma, escolha de que aula ela veio.</p>
+    <div class="row"><button id="e5go">Começar</button><span class="readout" id="e5p"></span></div>
+    <div class="card" id="e5card" hidden>
+      <div class="q" id="e5q"></div>
+      <div class="opts" id="e5opts"></div>
+      <p class="expl" id="e5x"></p>
+      <button id="e5next" hidden>Próxima</button>
+    </div>
+    <div class="result" id="e5res" hidden><div class="report" id="e5rep"></div></div>
+  </section>
+
+  <section class="exp" id="e6">
+    <div class="row"><span class="num">PARA DEPOIS DA AULA</span></div>
+    <h2>Para rever a dança das abelhas</h2>
+    <div class="links">
+      <p><a href="https://www.youtube.com/watch?v=bFDGPgXtK-U" target="_blank" rel="noopener">The Waggle Dance of the Honeybee (YouTube, em inglês)</a>, o mesmo vídeo da aula 1. Se não abrir: <a href="https://www.youtube.com/results?search_query=honeybee+waggle+dance" target="_blank" rel="noopener">procure outros vídeos da dança</a>.</p>
+      <p>Reflexão final: reescreva a sua resposta da aula 1 (“A dança das abelhas é uma linguagem?”) usando o que você aprendeu no curso.</p>
+    </div>
+  </section>
+
+  <footer>Os sons são sintetizados no seu aparelho; nenhuma resposta sai do celular. Professor: abra esta página com <span style="font-family:var(--mono)">#professor</span> no fim do link para o placar da turma.</footer>
+</div>
+
+<!-- Teacher board -->
+<div class="wrap" id="prof" hidden>
+  <header>
+    <span class="eyebrow">Placar da turma · Aula 13</span>
+    <h1>Resultados da turma</h1>
+    <p class="lead">Peça que levantem a mão por categoria e registre com + e −. Os números ficam salvos neste navegador. No experimento 3, copie na série “aula 1” os números do placar da aula 1.</p>
+    <div class="row"><button class="ghost" id="reset">Zerar placar</button><span class="readout" id="resetMsg"></span><a href="#" id="toStudent" style="color:var(--accent);font-weight:600">Ver página dos alunos</a></div>
+  </header>
+  <div class="board" id="board"></div>
+</div>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+let ctx=null;
+function ac(){ if(!ctx){ctx=new (window.AudioContext||window.webkitAudioContext)();} if(ctx.state==='suspended')ctx.resume(); return ctx; }
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const median=a=>{const s=[...a].sort((x,y)=>x-y);const n=s.length;return n?(n%2?s[(n-1)/2]:(s[n/2-1]+s[n/2])/2):NaN;};
+function seg(a,b,onA,onB){a.onclick=()=>{a.setAttribute('aria-pressed','true');b.setAttribute('aria-pressed','false');onA();};b.onclick=()=>{b.setAttribute('aria-pressed','true');a.setAttribute('aria-pressed','false');onB();};}
+function waitChoice(box){return new Promise(res=>{const bs=[...box.querySelectorAll('button')];bs.forEach(b=>b.disabled=false);
+  const h=e=>{bs.forEach(b=>{b.disabled=true;b.removeEventListener('click',h);});res(e.currentTarget.dataset.r);};bs.forEach(b=>b.addEventListener('click',h));});}
+/* time (in AudioContext seconds) of the sample the listener is hearing right now */
+function heardNow(){const c=ac();try{if(c.getOutputTimestamp){const ts=c.getOutputTimestamp();if(ts&&ts.contextTime>0&&ts.performanceTime>0){const h=ts.contextTime+(performance.now()-ts.performanceTime)/1000;if(Math.abs(c.currentTime-h)<0.5)return h;}}}catch(e){}
+  return c.currentTime-(c.outputLatency||c.baseLatency||0);}
+
+/* ---------- phee-like whistle ---------- */
+let F0=7000;
+seg($('e1hi'),$('e1lo'),()=>F0=7000,()=>F0=1400);
+function phee(t0,dur,f,pan=0,vol=.16){const c=ac();const o=c.createOscillator(),g=c.createGain();o.type='sine';
+  const p=c.createStereoPanner?c.createStereoPanner():null;
+  o.frequency.setValueAtTime(f*0.97,t0);o.frequency.linearRampToValueAtTime(f*1.03,t0+dur*0.8);o.frequency.linearRampToValueAtTime(f*1.12,t0+dur);
+  g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(vol,t0+0.04);g.gain.setValueAtTime(vol,t0+dur-0.05);g.gain.linearRampToValueAtTime(0,t0+dur);
+  o.connect(g);if(p){p.pan.value=pan;g.connect(p).connect(c.destination);}else g.connect(c.destination);
+  o.start(t0);o.stop(t0+dur+0.02);return o;}
+
+/* ---------- E1 turn-taking ---------- */
+const e1={A:[],B:[],missA:0,missB:0};let e1busy=false,tap=null;
+const pad=$('e1pad');
+const onTap=e=>{e.preventDefault();if(tap){const t=heardNow();const f=tap;tap=null;f(t);}};
+pad.addEventListener('pointerdown',onTap);
+pad.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter')onTap(e);});
+async function runE1(cond){if(e1busy)return;e1busy=true;const c=ac();e1[cond]=[];e1['miss'+cond]=0;
+  $('e1a').disabled=$('e1b').disabled=true;pad.classList.add('on');pad.textContent='Escute… e toque quando o parceiro terminar';$('e1fb').textContent='';
+  await sleep(800);
+  for(let i=0;i<12;i++){$('e1p').textContent=`${cond==='A'?'Parte A':'Parte B'} · ${i+1} / 12`;
+    await sleep(900+Math.random()*1400);
+    const dur=cond==='A'?1.4:0.6+Math.random()*1.9;
+    const t0=c.currentTime+0.08;phee(t0,dur,F0);const end=t0+dur;
+    const res=await new Promise(r=>{tap=r;const lim=(end-c.currentTime+2.0)*1000;setTimeout(()=>{if(tap){tap=null;r(null);}},Math.max(0,lim));});
+    if(res===null){e1['miss'+cond]++;$('e1fb').className='fb bad';$('e1fb').textContent='Sem resposta (mais de 2 s).';continue;}
+    const gap=Math.round((res-end)*1000);
+    if(res<t0){i--;$('e1fb').className='fb bad';$('e1fb').textContent='Cedo demais: o chamado nem tinha começado. De novo.';await sleep(600);continue;}
+    e1[cond].push(gap);phee(c.currentTime+0.01,0.45,F0*0.8,0,.12);
+    pad.classList.add('flash');setTimeout(()=>pad.classList.remove('flash'),150);
+    $('e1fb').className=gap<0?'fb bad':'fb ok';$('e1fb').textContent=gap<0?`Sobreposição: ${gap} ms`:`Intervalo: +${gap} ms`;}
+  pad.classList.remove('on');pad.textContent=cond==='A'?'Parte A concluída. Agora a parte B.':'Concluído.';$('e1p').textContent='';
+  $('e1a').disabled=$('e1b').disabled=false;if(cond==='A'){$('e1b').classList.remove('ghost');$('e1a').classList.add('ghost');}
+  e1busy=false;draw1();}
+$('e1a').onclick=()=>runE1('A');$('e1b').onclick=()=>runE1('B');
+const binE1=m=>isNaN(m)?'—':m<0?'sobreposição':m<150?'0–149 ms':m<300?'150–299 ms':m<450?'300–449 ms':m<600?'450–599 ms':'≥ 600 ms';
+function draw1(){const W=640,H=250,L=40,R=16,T=26,B=46;const lo=-500,hi=1500,bw=100,nb=(hi-lo)/bw;
+  const x=v=>L+(Math.max(lo,Math.min(hi-1,v))-lo)/(hi-lo)*(W-L-R);
+  const cnt=k=>{const h=new Array(nb).fill(0);e1[k].forEach(v=>{h[Math.min(nb-1,Math.max(0,Math.floor((v-lo)/bw)))]++;});return h;};
+  const hA=cnt('A'),hB=cnt('B');const mx=Math.max(2,...hA,...hB);const y=v=>T+(1-v/mx)*(H-T-B);const bwp=(W-L-R)/nb;
+  let g=`<rect x="${L}" y="${T}" width="${x(0)-L}" height="${H-T-B}" fill="var(--warn)" opacity=".08"/>`;
+  g+=`<line class="ax" x1="${L}" y1="${y(0)}" x2="${W-R}" y2="${y(0)}"/><line x1="${x(0)}" y1="${T}" x2="${x(0)}" y2="${y(0)}" stroke="var(--muted)" stroke-dasharray="4 4"/>`;
+  for(let v=lo;v<=hi;v+=500)g+=`<text x="${x(v)}" y="${H-28}" text-anchor="middle">${v}</text>`;
+  g+=`<text x="${(L+W-R)/2}" y="${H-8}" text-anchor="middle">intervalo depois do fim do chamado (ms)</text><text x="${x(0)-6}" y="${T+12}" text-anchor="end">sobreposição</text>`;
+  hA.forEach((v,i)=>{if(v)g+=`<rect x="${L+i*bwp+2}" y="${y(v)}" width="${bwp/2-2}" height="${y(0)-y(v)}" fill="var(--accent)"/>`;});
+  hB.forEach((v,i)=>{if(v)g+=`<rect x="${L+i*bwp+bwp/2}" y="${y(v)}" width="${bwp/2-2}" height="${y(0)-y(v)}" fill="var(--you)"/>`;});
+  g+=`<text x="${W-R}" y="${T}" text-anchor="end" style="fill:var(--accent)">■ A previsível</text><text x="${W-R}" y="${T+16}" text-anchor="end" style="fill:var(--you)">■ B variável</text>`;
+  $('e1chart').innerHTML=g;
+  const mA=median(e1.A),mB=median(e1.B);const ovA=e1.A.filter(v=>v<0).length,ovB=e1.B.filter(v=>v<0).length;
+  let r='';if(e1.A.length)r+=`Parte A (previsível): mediana <b>${Math.round(mA)} ms</b>, ${ovA} sobreposiç${ovA===1?'ão':'ões'}. Informe <b>${binE1(mA)}</b>.<br>`;
+  if(e1.B.length)r+=`Parte B (variável): mediana <b>${Math.round(mB)} ms</b>, ${ovB} sobreposiç${ovB===1?'ão':'ões'}. Informe <b>${binE1(mB)}</b>.`;
+  $('e1rep').innerHTML=r;$('e1res').hidden=false;}
+/* demo: two marmosets */
+let demoNodes=[];
+$('e1demo').onclick=()=>{const c=ac();let t=c.currentTime+0.2;demoNodes=[];
+  const plan=[[-0.8,1.5],[0.8,1.2],[-0.8,1.8],[0.8,1.3],[-0.8,1.4],[0.8,1.6]];
+  plan.forEach(([pan,d],i)=>{const n=d>1.45?3:2,g=0.2,sd=(d-g*(n-1))/n;for(let k=0;k<n;k++)demoNodes.push(phee(t+k*(sd+g),sd,F0*(pan<0?1:0.93),pan,.14));t+=d+3+Math.random()*2;});
+  $('e1stop').hidden=false;setTimeout(()=>$('e1stop').hidden=true,(t-c.currentTime)*1000);};
+$('e1stop').onclick=()=>{demoNodes.forEach(o=>{try{o.stop();}catch(e){}});$('e1stop').hidden=true;};
+
+/* ---------- formant syllables (Klatt-style cascade, from Aula 3) ---------- */
+const SR=22050;
+function reson(x,F,bw){const n=x.length,y=new Float32Array(n);const C=-Math.exp(-2*Math.PI*bw/SR);let y1=0,y2=0;
+  for(let i=0;i<n;i++){const f=typeof F==='number'?F:F[i];const B=2*Math.exp(-Math.PI*bw/SR)*Math.cos(2*Math.PI*f/SR);const A=1-B-C;const v=A*x[i]+B*y1+C*y2;y[i]=v;y2=y1;y1=v;}return y;}
+const V={a:[750,1200,2500],e:[450,1900,2550],i:[300,2250,2950],o:[450,850,2400],u:[320,800,2250]};
+function cv(cons,vow,high){const dur=.24,tr=.04,n=Math.floor(dur*SR);const k=high?1.15:1;const [f1,f2,f3]=V[vow].map(v=>v*k);
+  const f0a=high?235:120,f0b=high?205:100;
+  let on2,on3;if(cons==='b'){on2=f2*0.62;on3=f3*0.85;}else if(cons==='d'){on2=1800*k;on3=2900*k;}else{on2=Math.min(f2+350,2400)*k;on3=on2+180;}
+  let src=new Float32Array(n);let ph=0,prev=0;
+  for(let i=0;i<n;i++){const t=i/SR;const f0=f0a+(f0b-f0a)*t/dur;ph+=f0/SR;if(Math.floor(ph)>prev){src[i]=1;prev=Math.floor(ph);}}
+  src=reson(src,0,100);
+  const F1=new Float32Array(n),F2=new Float32Array(n),F3=new Float32Array(n);
+  for(let i=0;i<n;i++){const q=Math.min(1,(i/SR)/tr);F1[i]=250+(f1-250)*q;F2[i]=on2+(f2-on2)*q;F3[i]=on3+(f3-on3)*q;}
+  let x=reson(src,F1,70);x=reson(x,F2,90);x=reson(x,F3,130);x=reson(x,3500*k,200);
+  const out=new Float32Array(n);let m=0,p=0;
+  for(let i=0;i<n;i++){const t=i/SR;const env=Math.min(1,t/.008)*Math.min(1,(dur-t)/.05);const v=(x[i]-p)*env;p=x[i];out[i]=v;m=Math.max(m,Math.abs(v));}
+  for(let i=0;i<n;i++)out[i]=out[i]/m*.6;return out;}
+const ASYL=[['b','a'],['d','i'],['g','u'],['d','e']],BSYL=[['b','u'],['d','a'],['g','i'],['b','o']];
+let SYA=null,SYB=null;
+function ensureSyl(){if(!SYA){SYA=ASYL.map(([c,v])=>cv(c,v,true));SYB=BSYL.map(([c,v])=>cv(c,v,false));}}
+function playSeq(seq){const c=ac();const SOA=.32;const n=Math.floor((seq.length*SOA+.1)*SR);const b=c.createBuffer(1,n,SR);const d=b.getChannelData(0);
+  seq.forEach((s,i)=>{const w=s.t==='A'?SYA[s.k]:SYB[s.k];const o=Math.floor(i*SOA*SR);for(let j=0;j<w.length&&o+j<n;j++)d[o+j]+=w[j];});
+  const src=c.createBufferSource();src.buffer=b;src.connect(c.destination);src.start();return seq.length*SOA*1000+100;}
+const GLY=['●','▲','■','◆'];
+async function showSeq(seq){const st=$('e2stage');for(const s of seq){st.innerHTML=`<span class="${s.t==='A'?'a':'b'}">${GLY[s.k]}</span>`;await sleep(260);st.innerHTML='';await sleep(80);}}
+let e2mode='snd';seg($('e2snd'),$('e2sym'),()=>e2mode='snd',()=>e2mode='sym');
+function mk(pattern){return pattern.split('').map(t=>({t,k:Math.floor(Math.random()*4)}));}
+const AB=n=>'AB'.repeat(n),AnBn=n=>'A'.repeat(n)+'B'.repeat(n),AnBm=(n,m)=>'A'.repeat(n)+'B'.repeat(m);
+async function present(seq){if(e2mode==='snd'){ensureSyl();const ms=playSeq(seq);$('e2stage').innerHTML='<span style="font-size:30px;color:var(--muted)">♪</span>';await sleep(ms);$('e2stage').innerHTML='';}else await showSeq(seq);}
+const e2score={};let e2busy=false;
+async function runE2(block){if(e2busy)return;e2busy=true;ac();$('e2b1').disabled=$('e2b2').disabled=true;
+  const gram=block===1?AB:AnBn;
+  const fam=shuffle([2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3]);
+  for(let i=0;i<fam.length;i++){$('e2p').textContent=`Escute · ${i+1} / ${fam.length}`;await present(mk(gram(fam[i])));await sleep(650);}
+  $('e2p').textContent='Agora responda.';await sleep(1200);
+  const test=[];[2,3,4,4,3].forEach(n=>test.push({p:gram(n),ok:true}));
+  if(block===1){[2,3,4,3,2].forEach(n=>test.push({p:AnBn(n),ok:false}));}
+  else{[[2,2],[3,3],[4,4]].forEach(([n])=>test.push({p:AB(n),ok:false}));test.push({p:AnBm(3,2),ok:false,m:true});test.push({p:AnBm(2,3),ok:false,m:true});}
+  shuffle(test);let sc=0,mcaught=0;$('e2btn').hidden=false;$('e2btn').querySelectorAll('button').forEach(b=>b.disabled=true);
+  for(let i=0;i<test.length;i++){$('e2p').textContent=`Teste · ${i+1} / ${test.length}`;await sleep(500);await present(mk(test[i].p));
+    const r=await waitChoice($('e2btn'));const right=(r==='y')===test[i].ok;if(right)sc++;if(test[i].m&&right)mcaught++;}
+  $('e2btn').hidden=true;e2score[block]={sc,mcaught};$('e2p').textContent=`Bloco ${block} concluído.`;
+  $('e2b1').disabled=$('e2b2').disabled=false;if(block===1){$('e2b2').classList.remove('ghost');$('e2b1').classList.add('ghost');}
+  let r='';if(e2score[1])r+=`Bloco 1 · (AB)ⁿ: <b>${e2score[1].sc} de 10</b>.<br>`;
+  if(e2score[2])r+=`Bloco 2 · AⁿBⁿ: <b>${e2score[2].sc} de 10</b> (você rejeitou ${e2score[2].mcaught} de 2 sequências com números diferentes de A e B, como AAABB).<br>`;
+  r+='Informe os acertos de cada bloco.';$('e2rep').innerHTML=r;$('e2res').hidden=false;e2busy=false;}
+$('e2b1').onclick=()=>runE2(1);$('e2b2').onclick=()=>runE2(2);
+
+/* ---------- E3 Hockett grid ---------- */
+const SYS=['Macaco-vervet (alarmes)','Dança das abelhas','Ave canora (canto)','Sagui (chamados)','Kanzi (lexigramas)','Humanos (fala, Libras)'];
+const REF=[[2,0,0,0,1],[1,2,1,0,1],[2,0,1,1,2],[2,0,0,0,1],[2,1,1,0,2],[2,2,2,2,2]];
+const TR=['Arb.','Desl.','Prod.','Dupla','Cult.'];const SYM=['–','½','✓'];
+const grid=$('e3grid');let gh='<span></span>'+TR.map(t=>`<span class="h">${t}</span>`).join('');
+SYS.forEach((s,i)=>{gh+=`<span class="s">${s}</span>`;for(let j=0;j<5;j++)gh+=`<button class="cell" data-i="${i}" data-j="${j}" data-v="0" aria-label="${s}, ${TR[j]}: não">–</button>`;});
+grid.innerHTML=gh;
+grid.querySelectorAll('.cell').forEach(b=>b.onclick=()=>{const v=(+b.dataset.v+1)%3;b.dataset.v=v;b.textContent=SYM[v];b.classList.remove('ok','no');b.setAttribute('aria-label',b.getAttribute('aria-label').replace(/: .*$/,': '+['não','em parte','sim'][v]));});
+let e3agree=null;
+$('e3cmp').onclick=()=>{let a=0;grid.querySelectorAll('.cell').forEach(b=>{const ok=+b.dataset.v===REF[b.dataset.i][b.dataset.j];if(ok)a++;b.classList.toggle('ok',ok);b.classList.toggle('no',!ok);});
+  e3agree=a;$('e3agree').textContent=`Iguais à literatura: ${a} de 30`;$('e3bee').hidden=false;};
+const BEE=['não é comunicação','comunicação','linguagem'];
+$('e3opts').querySelectorAll('button').forEach(b=>b.onclick=()=>{$('e3opts').querySelectorAll('button').forEach(x=>x.classList.add('ghost'));b.classList.remove('ghost');
+  const ab=e3agree<=15?'≤ 15':e3agree<=19?'16–19':e3agree<=23?'20–23':e3agree<=27?'24–27':'28–30';
+  $('e3rep').innerHTML=`Concordância com a literatura: <b>${e3agree} de 30</b> (faixa <b>${ab}</b>). A dança das abelhas é: <b>${BEE[+b.dataset.r]}</b>. Informe as duas coisas. Você mudou de ideia desde a aula 1?`;$('e3res').hidden=false;});
+
+/* ---------- E4 homology puzzle ---------- */
+const HQ=[
+ ['As asas dos morcegos e as asas das aves, como superfícies de voo.','c','Os ancestrais comuns não voavam: o voo surgiu de forma independente nas duas linhagens. Mas os ossos dentro da asa são homólogos (próximo caso).'],
+ ['Os ossos do braço do morcego e do braço humano (úmero, rádio, ulna).','h','Mesmo plano de ossos herdado do ancestral tetrápode, usado para funções diferentes.'],
+ ['O aprendizado vocal dos pássaros canoros e o dos humanos.','c','Galinhas, pombos, chimpanzés e macacos não imitam sons: a capacidade surgiu várias vezes, nas aves e em poucos grupos de mamíferos.'],
+ ['A laringe dos macacos e a laringe humana.','h','Todos os mamíferos herdaram a laringe; o que muda é a posição e o controle.'],
+ ['A substância cinzenta periaquedutal (PAG), necessária para vocalizar em saguis e em humanos.','h','Os circuitos vocais do mesencéfalo e do tronco são antigos e compartilhados pelos vertebrados.'],
+ ['A ecolocalização de morcegos e de golfinhos.','c','Surgiu de forma independente; curiosamente, com mudanças parecidas em genes da audição (convergência molecular).'],
+ ['O gene FOXP2 em aves canoras e em humanos.','h','É o mesmo gene, herdado do ancestral comum. Em aves, reduzir o FoxP2 na Área X piora a cópia do canto: homologia profunda.'],
+ ['Alarmes diferentes para predadores aéreos e terrestres em macacos-vervet e em galinhas.','c','Aves e primatas desenvolveram alarmes referenciais de forma independente, sob pressões parecidas.'],
+ ['A troca de turnos vocal dos saguis e a dos humanos.','c','Provável convergência: chimpanzés quase não trocam turnos vocais, e saguis e humanos criam filhotes cooperativamente. É debatido; alguns propõem uma origem primata antiga.'],
+ ['O estriado (núcleos da base) das aves e o dos humanos.','h','A estrutura é homóloga. Usar parte dela (a Área X) para aprender sons é convergente: as duas histórias juntas.']];
+let e4i=0,e4s=0,e4order=[];
+function showE4(){const [q,a,x]=HQ[e4order[e4i]];$('e4q').textContent=q;$('e4x').textContent='';$('e4next').hidden=true;$('e4p').textContent=`${e4i+1} / ${HQ.length}`;
+  $('e4opts').querySelectorAll('button').forEach(b=>{b.className='ghost';b.disabled=false;b.onclick=()=>{const ok=b.dataset.r===a;if(ok)e4s++;
+    $('e4opts').querySelectorAll('button').forEach(o=>{o.disabled=true;if(o.dataset.r===a)o.className='right';else if(o===b)o.className='wrong';});
+    $('e4x').textContent=(ok?'Certo. ':'Não. ')+x;$('e4next').hidden=false;$('e4next').textContent=e4i<HQ.length-1?'Próximo':'Ver resultado';};});}
+$('e4go').onclick=()=>{e4i=0;e4s=0;e4order=[0,1,2,3,4,5,6,7,8,9];$('e4card').hidden=false;$('e4res').hidden=true;$('e4go').textContent='Recomeçar';showE4();};
+$('e4next').onclick=()=>{e4i++;if(e4i<HQ.length)showE4();else{$('e4card').hidden=true;$('e4p').textContent='';$('e4rep').innerHTML=`Você acertou <b>${e4s} de 10</b>. Informe esse número.`;$('e4res').hidden=false;}};
+
+/* ---------- E5 one idea per lesson ---------- */
+const AULAS={1:'O que é comunicação?',2:'Como sabemos? Métodos',3:'Ouvindo a fala',4:'Produzindo a fala',5:'Palavras e significado',6:'Frases e gramática',7:'Leitura e escrita',8:'Rosto, olhar, gesto e sinais',9:'Voz, prosódia e emoção',10:'O cérebro social',11:'Desenvolvimento',12:'Quando a comunicação falha'};
+const IDEAS=[
+ [1,'Um sinal só funciona se cair no mundo sensorial de quem recebe (o Umwelt).'],
+ [2,'Correlação não basta: só uma lesão ou a TMS mostram que uma área é necessária.'],
+ [3,'Ouvimos sílabas como categorias: passos acústicos iguais viram “ba” ou “da”.'],
+ [4,'Falar exige coordenar lábios, língua, laringe e respiração em dezenas de milissegundos.'],
+ [5,'Uma palavra que não combina com o contexto produz uma onda maior perto de 400 ms (N400).'],
+ [6,'Frases têm estrutura hierárquica, e a região de Broca ajuda a montar essa estrutura.'],
+ [7,'Ler recicla uma região visual do hemisfério esquerdo, que se especializa em letras.'],
+ [8,'Línguas de sinais usam a mesma rede do hemisfério esquerdo que a fala, sem som nenhum.'],
+ [9,'A melodia da voz carrega emoção e intenção, e o hemisfério direito participa muito disso.'],
+ [10,'Entender ironia exige imaginar o que o outro realmente quis dizer.'],
+ [11,'Bebês distinguem sons de todas as línguas e se especializam na língua materna no primeiro ano.'],
+ [12,'Neuropróteses já transformam a fala tentada de pessoas paralisadas em texto e voz.']];
+let e5i=0,e5s=0,e5order=[];
+function showE5(){const [a,q]=IDEAS[e5order[e5i]];$('e5q').textContent=q;$('e5x').textContent='';$('e5next').hidden=true;$('e5p').textContent=`${e5i+1} / 12`;
+  const near=[a-2,a-1,a+1,a+2,a+3,a-3].filter(v=>v>=1&&v<=12&&v!==a);const opts=shuffle([a,...shuffle(near).slice(0,3)]);
+  $('e5opts').innerHTML=opts.map(o=>`<button class="ghost" data-r="${o}">Aula ${o} · ${AULAS[o]}</button>`).join('');
+  $('e5opts').querySelectorAll('button').forEach(b=>b.onclick=()=>{const ok=+b.dataset.r===a;if(ok)e5s++;
+    $('e5opts').querySelectorAll('button').forEach(o=>{o.disabled=true;if(+o.dataset.r===a)o.className='right';else if(o===b)o.className='wrong';});
+    $('e5x').textContent=ok?'Certo.':`Era a aula ${a}.`;$('e5next').hidden=false;$('e5next').textContent=e5i<11?'Próxima':'Ver resultado';});}
+$('e5go').onclick=()=>{e5i=0;e5s=0;e5order=shuffle([...Array(12).keys()]);$('e5card').hidden=false;$('e5res').hidden=true;$('e5go').textContent='Recomeçar';showE5();};
+$('e5next').onclick=()=>{e5i++;if(e5i<12)showE5();else{$('e5card').hidden=true;$('e5p').textContent='';$('e5rep').innerHTML=`Você acertou <b>${e5s} de 12</b>. Informe esse número. Qual ideia foi a mais difícil de localizar?`;$('e5res').hidden=false;}};
+
+/* ---------- teacher board ---------- */
+const BOARD=[
+ {k:'e1',t:'1 · Turnos: intervalo mediano',two:['A previsível','B variável'],cats:['sobreposição','0–149 ms','150–299 ms','300–449 ms','450–599 ms','≥ 600 ms']},
+ {k:'e2',t:'2 · Gramáticas: acertos em 10',two:['(AB)ⁿ','AⁿBⁿ'],cats:['≤ 5','6','7','8','9','10']},
+ {k:'e3',t:'3 · A dança das abelhas é…',two:['aula 1','hoje'],cats:['não é com.','comunicação','linguagem']},
+ {k:'e3b',t:'3 · Iguais à literatura (de 30)',cats:['≤ 15','16–19','20–23','24–27','28–30']},
+ {k:'e4',t:'4 · Homologia ou convergência (de 10)',cats:['≤ 5','6','7','8','9','10']},
+ {k:'e5',t:'5 · Uma ideia por aula (de 12)',cats:['≤ 6','7–8','9–10','11','12']}];
+let S={};try{S=JSON.parse(localStorage.getItem('evolucao-placar')||'{}')}catch(e){S={}}
+const save=()=>{try{localStorage.setItem('evolucao-placar',JSON.stringify(S))}catch(e){}};
+function renderBoard(){const host=$('board');host.innerHTML='';
+  BOARD.forEach(p=>{const div=document.createElement('div');div.className='panel';
+    const series=p.two?[0,1]:[0];let max=1;series.forEach(s=>p.cats.forEach((_,i)=>max=Math.max(max,(S[p.k+s+'_'+i]||0))));
+    let h=`<h2>${p.t}</h2>`;if(p.two)h+=`<div class="legend"><span><i class="sw" style="background:var(--accent)"></i>${p.two[0]}</span><span><i class="sw" style="background:var(--you)"></i>${p.two[1]}</span></div>`;
+    h+='<div class="bars">';
+    p.cats.forEach((c,i)=>series.forEach(s=>{const key=p.k+s+'_'+i,v=S[key]||0;
+      h+=`<div class="bar"><span class="lab">${s===0?c:''}</span><span class="track"><span class="fill${s?' b':''}" style="width:${100*v/max}%"></span></span><button class="ghost" data-k="${key}" data-d="-1" aria-label="menos ${c}">−</button><button data-k="${key}" data-d="1" aria-label="mais ${c}">+</button><span class="n">${v}</span></div>`;}));
+    div.innerHTML=h+'</div>';host.appendChild(div);});
+  host.querySelectorAll('button[data-k]').forEach(b=>b.onclick=()=>{const k=b.dataset.k;S[k]=Math.max(0,(S[k]||0)+(+b.dataset.d));save();renderBoard();});}
+let armed=false;$('reset').onclick=()=>{if(!armed){armed=true;$('reset').textContent='Confirmar: zerar tudo';$('resetMsg').textContent='';return;}
+  S={};save();renderBoard();armed=false;$('reset').textContent='Zerar placar';$('resetMsg').textContent='Placar zerado.';};
+$('toStudent').onclick=e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();};
+function route(){const t=location.hash==='#professor';$('prof').hidden=!t;$('student').hidden=t;if(t)renderBoard();}
+window.addEventListener('hashchange',route);route();
+})();
+</script>
+
+<script src="config.js"></script>
+<script src="registro.js" data-aula="13"></script>
+</body>
+</html>

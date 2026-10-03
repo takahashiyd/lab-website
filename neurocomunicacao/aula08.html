@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laboratório de Rostos e Gestos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: a single lab-notebook column; each experiment is a numbered protocol card with a stimulus "screen"; teacher mode swaps in a projector board */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#142033; --muted:#5b6879; --line:#d8dee6;
+  --accent:#0e7c86; --accent-ink:#ffffff; --you:#c9771a; --soft:#e5f1f2; --warn:#a33a2a;
+  --screen:#f7f9fb; --screen-fg:#142033;
+
+  --display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73;
+  --screen:#0b111a; --screen-fg:#e6ecf3;
+ color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73;
+  --screen:#0b111a; --screen-fg:#e6ecf3;
+ color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:17px/1.5 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-inline:18px;padding-block:28px 64px;display:grid;gap:22px}
+header{display:grid;gap:8px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(34px,8vw,54px)/1 var(--display);font-stretch:118%;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font:750 24px/1.15 var(--display);font-stretch:108%;margin:0;text-wrap:balance}
+h3{font:700 17px/1.2 var(--display);margin:0}
+p{margin:0;max-width:65ch}
+.lead{color:var(--muted)}
+.phones{display:flex;gap:10px;align-items:flex-start;background:var(--soft);border-radius:10px;padding:12px 14px;font-size:15px}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{font:600 14px/1 var(--body);color:var(--fg);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:var(--surface)}
+nav a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.exp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:14px;min-width:0}
+.num{font:600 13px/1 var(--mono);color:var(--muted)}
+.tag{display:inline-block;font:600 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 7px;border-radius:5px;background:var(--soft);color:var(--accent)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+button{font:700 16px/1 var(--display);border:0;border-radius:10px;padding:14px 18px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px;touch-action:manipulation}
+button.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+button.big{flex:1 1 120px;font-size:22px;padding:20px 10px;font-stretch:112%}
+button:disabled{opacity:.4;cursor:default}
+.readout{font:500 15px/1.4 var(--mono);color:var(--muted)}
+.result{border-top:1px dashed var(--line);padding-top:14px;display:grid;gap:10px}
+.report{background:var(--soft);border-radius:10px;padding:12px 14px;font-size:16px}
+.report b{font:700 20px/1.2 var(--display);color:var(--you)}
+.why{font-size:15px;color:var(--muted)}
+.chart{width:100%;height:auto;display:block}
+.chart text{fill:var(--muted);font:19px var(--mono)}
+.chart .ax{stroke:var(--line)}
+.chart .bar{fill:var(--you)}
+.chart .bar.alt{fill:var(--accent)}
+.chart .val{fill:var(--fg);font:700 21px var(--mono)}
+/* stimulus screen: faces are drawn on a light card in both themes so skin tones read the same */
+.screen{position:relative;background:#f7f9fb;color:#142033;border:1px solid var(--line);border-radius:12px;min-height:150px;display:grid;place-items:center;overflow:hidden;user-select:none;-webkit-user-select:none}
+.screen .hint{font-size:15px;color:#5b6879;padding:0 16px;text-align:center}
+.screen .fix{font:500 34px/1 var(--mono);color:#5b6879}
+.face{display:block;width:100%;height:100%}
+.fbox{width:min(62vw,230px);aspect-ratio:200/250;transition:none}
+.fbox.inv{transform:rotate(180deg)}
+#e1scr{height:min(78vw,330px)}
+#e1scr .fbox{width:min(44vw,190px)}
+#e1scr .tgt{position:absolute;top:38%;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:#c9771a;box-shadow:0 0 0 5px rgba(201,119,26,.25)}
+#e2scr,#e3scr{height:min(90vw,340px)}
+#e2scr .fbox.test{width:min(52vw,195px)}
+.mask{width:min(62vw,230px);aspect-ratio:200/250;border-radius:12px;background:repeating-conic-gradient(#5b6879 0 25%,#d8dee6 0 50%) 0 0/14px 14px;opacity:.85}
+.rate{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.rate button{padding:12px 2px;font-size:20px;min-height:54px}
+.rate small{display:block;font:500 11px/1.1 var(--body);margin-top:4px}
+.slider{width:100%;accent-color:var(--accent);height:36px}
+/* E4 scene card */
+.scene{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;padding:16px}
+.tok{display:grid;place-items:center;gap:4px;background:#fff;border:1.5px solid #d8dee6;border-radius:12px;padding:10px 4px;min-height:96px;font:700 15px/1.1 var(--mono);color:#142033;text-align:center}
+.tok .em{font-size:44px;line-height:1}
+.tok .verb{font:800 17px/1.1 var(--display);letter-spacing:.04em;color:#0e7c86}
+.ordbtns{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ordbtns button{display:grid;place-items:center;gap:4px;min-height:96px;background:var(--surface);color:var(--fg);border:1.5px solid var(--line);font:700 15px/1.1 var(--display)}
+.ordbtns button .em{font-size:38px;line-height:1}
+.ordbtns button .k{font:700 14px var(--mono);color:var(--you)}
+.script{background:var(--soft);border-radius:10px;padding:12px 14px;display:grid;gap:6px}
+.script p{font-size:18px}
+.links a{color:var(--accent);font-weight:600}
+footer{font-size:13px;color:var(--muted)}
+/* teacher board */
+#prof{display:grid;gap:18px;max-width:1180px}
+.board{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:10px;min-width:0;align-content:start}
+.bars{display:grid;gap:6px}
+.bar{display:grid;grid-template-columns:118px 1fr 34px 34px 40px;gap:6px;align-items:center;font-size:14px}
+.bar .lab{font:500 13px var(--mono);color:var(--muted)}
+.bar .track{height:22px;background:var(--bg);border-radius:4px;overflow:hidden}
+.bar .fill{height:100%;background:var(--accent);width:0;transition:width .25s;display:block}
+.bar .n{font:700 15px var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.bar button{padding:0;min-height:30px;font-size:18px;border-radius:7px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap" id="student">
+  <header>
+    <span class="eyebrow">Bases neurais da comunicação humana · Aula 8</span>
+    <h1>Laboratório de Rostos e Gestos</h1>
+    <p class="lead">Quatro experimentos curtos sobre como o cérebro lê rostos, olhares e mãos, e uma mini-aula de Libras. Você é o participante. No fim de cada experimento, informe o resultado ao professor.</p>
+    <div class="phones"><span>Segure o celular na vertical, a uns 30 cm dos olhos. Os experimentos 1 a 3 são individuais; o 4 é feito em dupla. Faça na ordem, quando o professor pedir.</span></div>
+    <nav aria-label="Experimentos"><a href="#e1">1 · Siga o olhar</a><a href="#e2">2 · Rostos invertidos</a><a href="#e3">3 · Ilusão de Thatcher</a><a href="#e4">4 · Fale sem voz</a><a href="#e5">5 · Libras</a></nav>
+  </header>
+
+  <!-- E1 -->
+  <section class="exp" id="e1">
+    <div class="row"><span class="num">EXPERIMENTO 1</span><span class="tag">≈ 3 min · 40 tentativas</span></div>
+    <h2>Siga o olhar</h2>
+    <p>Um rosto aparece no centro e, de repente, olha para um lado. Logo depois, um <b>círculo laranja</b> surge à esquerda ou à direita. Toque o botão do lado em que o círculo apareceu, o mais rápido que puder. <b>O olhar não ajuda:</b> o círculo aparece do lado para onde o rosto olha só na metade das vezes. Tente ignorar os olhos.</p>
+    <div class="screen" id="e1scr"><span class="hint">Toque em Começar.</span></div>
+    <div class="row"><button id="e1go">Começar</button><span class="readout" id="e1p"></span></div>
+    <div class="row" id="e1btn" hidden><button class="big" data-r="L">◀ esquerda</button><button class="big" data-r="R">direita ▶</button></div>
+    <div class="result" id="e1res" hidden>
+      <svg class="chart" id="e1chart" viewBox="0 0 640 300" role="img" aria-label="Tempo de reação quando o olhar apontou para o alvo e quando apontou para o outro lado"></svg>
+      <div class="report" id="e1rep"></div>
+      <p class="why">Você sabia que o olhar não previa nada e, mesmo assim, a maioria responde mais rápido quando o círculo aparece do lado para onde o rosto olhou. O olhar dos outros <b>desloca a sua atenção automaticamente</b> (Friesen &amp; Kingstone, 1998). Neurônios do sulco temporal superior (STS) codificam a direção do olhar e alimentam a rede de atenção do lobo parietal. É a base da atenção compartilhada, que os bebês desenvolvem entre 6 e 12 meses.</p>
+    </div>
+  </section>
+
+  <!-- E2 -->
+  <section class="exp" id="e2">
+    <div class="row"><span class="num">EXPERIMENTO 2</span><span class="tag">≈ 4 min · 32 tentativas</span></div>
+    <h2>Rostos de cabeça para baixo</h2>
+    <p>Um rosto aparece por pouco mais de um segundo. Depois de uma máscara, aparece outro rosto, um pouco menor. É <b>exatamente o mesmo rosto</b> ou houve uma mudança (olhos mais afastados ou mais juntos, olhos ou boca mais altos ou mais baixos)? Em metade das tentativas os dois rostos aparecem de cabeça para baixo.</p>
+    <div class="screen" id="e2scr"><span class="hint">Toque em Começar.</span></div>
+    <div class="row"><button id="e2go">Começar</button><span class="readout" id="e2p"></span></div>
+    <div class="row" id="e2btn" hidden><button class="big" data-r="same">igual</button><button class="big ghost" data-r="diff">diferente</button></div>
+    <div class="result" id="e2res" hidden>
+      <svg class="chart" id="e2chart" viewBox="0 0 640 300" role="img" aria-label="Acertos com rostos em pé e de cabeça para baixo"></svg>
+      <div class="report" id="e2rep"></div>
+      <p class="why">As mudanças eram iguais nas duas orientações: os mesmos milímetros, os mesmos traços. Mesmo assim, de cabeça para baixo elas ficam mais difíceis de ver. É o <b>efeito de inversão</b> (Yin, 1969): rostos em pé são lidos como um todo, pelas distâncias entre olhos, nariz e boca. Invertidos, o cérebro passa a examinar peça por peça, como faz com casas ou carros. A área fusiforme de faces responde menos a rostos invertidos, e o potencial N170 atrasa.</p>
+    </div>
+  </section>
+
+  <!-- E3 -->
+  <section class="exp" id="e3">
+    <div class="row"><span class="num">EXPERIMENTO 3</span><span class="tag">≈ 3 min · 12 rostos + 1 giro</span></div>
+    <h2>Ilusão de Thatcher</h2>
+    <p><b>Parte A.</b> Doze rostos aparecem, alguns de cabeça para baixo. Dê uma nota para quão <b>estranho</b> cada rosto parece, de 1 (normal) a 5 (monstruoso). Responda pela primeira impressão, sem girar o celular.</p>
+    <div class="screen" id="e3scr"><span class="hint">Toque em Começar.</span></div>
+    <div class="row"><button id="e3go">Começar</button><span class="readout" id="e3p"></span></div>
+    <div class="rate" id="e3btn" hidden><button class="ghost" data-r="1">1<small>normal</small></button><button class="ghost" data-r="2">2</button><button class="ghost" data-r="3">3</button><button class="ghost" data-r="4">4</button><button class="ghost" data-r="5">5<small>monstro</small></button></div>
+    <div id="e3b" hidden style="display:grid;gap:12px">
+      <p><b>Parte B.</b> Este rosto está de cabeça para baixo. Arraste o controle <b>devagar</b> para girá-lo de volta. Toque em <b>Ficou estranho!</b> no momento em que ele começar a parecer esquisito.</p>
+      <input type="range" class="slider" id="e3rot" min="0" max="180" step="2" value="180" aria-label="Ângulo de rotação do rosto">
+      <div class="row"><button id="e3stop">Ficou estranho!</button><span class="readout" id="e3ang">180°</span></div>
+    </div>
+    <div class="result" id="e3res" hidden>
+      <svg class="chart" id="e3chart" viewBox="0 0 640 300" role="img" aria-label="Quanto o rosto alterado pareceu mais estranho que o normal, em pé e invertido"></svg>
+      <div class="report" id="e3rep"></div>
+      <p class="why">Em metade dos rostos, os olhos e a boca tinham sido virados de cabeça para baixo dentro do rosto. Em pé, isso salta aos olhos: o rosto parece grotesco. De cabeça para baixo, as peças ficam na orientação certa para você e o conjunto passa quase despercebido (Thompson, 1980). Quando o rosto está invertido, o sistema que lê a <b>configuração</b> do rosto praticamente desliga, e só sobram as peças. A transição costuma ser brusca, perto dos 90–120° de rotação.</p>
+    </div>
+  </section>
+
+  <!-- E4 -->
+  <section class="exp" id="e4">
+    <div class="row"><span class="num">EXPERIMENTO 4</span><span class="tag">≈ 8 min · em dupla</span></div>
+    <h2>Fale sem voz</h2>
+    <h3>Parte A · Diálogo sem som (com a turma)</h3>
+    <p>Duas pessoas voluntárias vão à frente. Cada uma abre no próprio celular o <b>mesmo roteiro</b> (1, 2 ou 3) e encena o diálogo <b>sem voz</b>: só boca, rosto e mãos. A turma tenta decifrar o que foi dito.</p>
+    <div class="row"><button class="ghost" data-s="0">Roteiro 1</button><button class="ghost" data-s="1">Roteiro 2</button><button class="ghost" data-s="2">Roteiro 3</button></div>
+    <div class="script" id="e4script" hidden></div>
+    <h3>Parte B · Gesto silencioso (em dupla)</h3>
+    <p>Uma pessoa é o <b>gesticulador</b>, a outra o <b>intérprete</b>. O intérprete vira de costas. O gesticulador vê uma cena e a comunica <b>só com as mãos e o corpo</b>: sem falar, sem mexer a boca, sem apontar para objetos da sala e sem soletrar. O intérprete diz em voz alta o que entendeu. Depois, juntos, registrem a <b>ordem</b> em que os gestos foram feitos. Quatro cenas; depois troquem de papel e toquem em Refazer.</p>
+    <div class="screen" id="e4scr" style="min-height:190px"><span class="hint">Toque em Começar quando o intérprete estiver de costas.</span></div>
+    <div class="row"><button id="e4go">Começar</button><button id="e4hide" hidden>Pronto, vou gesticular</button><span class="readout" id="e4p"></span></div>
+    <div id="e4judge" hidden style="display:grid;gap:10px">
+      <p>O intérprete disse o que era a cena?</p>
+      <div class="row"><button class="big" data-r="1">acertou</button><button class="big ghost" data-r="0">errou</button></div>
+    </div>
+    <div id="e4ord" hidden style="display:grid;gap:10px">
+      <p>Toquem nos elementos <b>na ordem em que foram gesticulados</b>. Se algum não foi gesticulado, deixe de fora e toque em Pronto.</p>
+      <div class="ordbtns" id="e4tok"></div>
+      <div class="row"><button id="e4ok">Pronto</button><button class="ghost" id="e4undo">Apagar</button><span class="readout" id="e4seq"></span></div>
+    </div>
+    <div class="result" id="e4res" hidden>
+      <svg class="chart" id="e4chart" viewBox="0 0 640 300" role="img" aria-label="Quantas cenas tiveram o objeto antes da ação"></svg>
+      <div class="report" id="e4rep"></div>
+      <p class="why">Em português dizemos “a menina <b>chuta</b> a bola”: sujeito, verbo, objeto. Mas, quando falantes de português, inglês, espanhol, turco ou chinês descrevem cenas só com gestos, a maioria faz <b>quem → o quê → ação</b> (“menina, bola, chutar”), mesmo que a própria língua use outra ordem (Goldin-Meadow et al., 2008). Crianças surdas sem acesso a uma língua de sinais criam sistemas de gestos (homesign) com essa mesma ordem. O gesto silencioso mostra uma maneira “natural” de organizar eventos que não vem da língua que falamos.</p>
+    </div>
+  </section>
+
+  <!-- E5 -->
+  <section class="exp" id="e5">
+    <div class="row"><span class="num">DEMONSTRAÇÃO 5</span><span class="tag">≈ 3 min · em dupla</span></div>
+    <h2>Libras: soletre seu nome</h2>
+    <p>A Língua Brasileira de Sinais (Libras) é a língua da comunidade surda brasileira, reconhecida pela Lei 10.436/2002. Ela <b>não é português feito com as mãos</b>: tem vocabulário, gramática e expressões faciais próprias. O alfabeto manual (datilologia) é usado sobretudo para nomes próprios e palavras sem sinal.</p>
+    <div class="links" style="display:grid;gap:10px">
+      <p><a href="https://www.todamateria.com.br/alfabeto-em-libras-conheca-todas-as-letras-para-imprimir/" target="_blank" rel="noopener">Abrir o alfabeto manual de Libras (Toda Matéria)</a></p>
+      <p>1. Aprenda as letras do seu primeiro nome. 2. Soletre para o colega, de frente para ele, com a mão dominante na altura do ombro. 3. O colega tenta ler sem olhar a tabela. Repare que algumas letras (como H, J, K, X, Z) têm movimento.</p>
+      <p class="why">Na comunidade surda, pessoas também recebem um <b>sinal de nome</b>, criado a partir de uma característica da pessoa. Soletrar é lento: em uma conversa em Libras, quase tudo é dito com sinais, movimentos no espaço e expressões do rosto, que fazem parte da gramática.</p>
+    </div>
+  </section>
+
+  <section class="exp" id="links">
+    <div class="row"><span class="num">PARA IR ALÉM</span></div>
+    <h2>Leituras da aula</h2>
+    <div class="links" style="display:grid;gap:10px">
+      <p>Hickok, Bellugi &amp; Klima (2001). <i>Sign language in the brain</i>. Scientific American, junho de 2001.</p>
+      <p>Opcional: Goldin-Meadow &amp; Alibali (2013). <i>Gesture’s role in speaking, learning, and creating language</i>. Annual Review of Psychology, 64.</p>
+    </div>
+  </section>
+
+  <footer>Nenhuma resposta sai do seu celular. Professor: abra esta página com <span style="font-family:var(--mono)">#professor</span> no fim do link para o placar da turma.</footer>
+</div>
+
+<!-- Teacher board -->
+<div class="wrap" id="prof" hidden>
+  <header>
+    <span class="eyebrow">Placar da turma · Aula 8</span>
+    <h1>Resultados da turma</h1>
+    <p class="lead">Peça que levantem a mão por categoria e registre com + e −. Os números ficam salvos neste navegador.</p>
+    <div class="row"><button class="ghost" id="reset">Zerar placar</button><span class="readout" id="resetMsg"></span><a href="#" id="toStudent" style="color:var(--accent);font-weight:600">Ver página dos alunos</a></div>
+  </header>
+  <div class="board" id="board"></div>
+</div>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const frame=()=>new Promise(r=>requestAnimationFrame(r));
+const mean=a=>a.length?a.reduce((s,v)=>s+v,0)/a.length:NaN;
+const median=a=>{if(!a.length)return NaN;const b=[...a].sort((x,y)=>x-y),m=b.length>>1;return b.length%2?b[m]:(b[m-1]+b[m])/2;};
+const fmt=v=>isNaN(v)?'—':Math.round(v).toLocaleString('pt-BR');
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+function waitChoice(box,ev='click'){return new Promise(res=>{const bs=[...box.querySelectorAll('button')];bs.forEach(b=>b.disabled=false);
+  const t0=performance.now();
+  const h=e=>{e.preventDefault();const rt=performance.now()-t0;bs.forEach(b=>{b.disabled=true;b.removeEventListener(ev,h);});res({r:e.currentTarget.dataset.r,rt});};
+  bs.forEach(b=>b.addEventListener(ev,h));});}
+function show(scr,html){scr.innerHTML=html;}
+function bars(svg,items,{max,unit=''}={}){const W=640,H=+svg.getAttribute('viewBox').split(' ')[3],L=10,R=10,T=40,B=62;
+  const m=max||Math.max(1,...items.map(i=>isNaN(i.value)?0:i.value))*1.15;const n=items.length,slot=(W-L-R)/n,bw=Math.min(110,slot*.6);
+  let g=`<line class="ax" x1="${L}" y1="${H-B}" x2="${W-R}" y2="${H-B}"/>`;
+  items.forEach((it,i)=>{const v=isNaN(it.value)?0:Math.max(0,it.value);const h=(H-T-B)*v/m;const x=L+slot*i+(slot-bw)/2;
+    g+=`<rect class="bar${it.alt?' alt':''}" x="${x}" y="${H-B-h}" width="${bw}" height="${h}" rx="4"/>`;
+    g+=`<text class="val" x="${x+bw/2}" y="${H-B-h-8}" text-anchor="middle">${it.text??(isNaN(it.value)?'—':fmt(v)+unit)}</text>`;
+    it.label.split('\n').forEach((ln,k)=>g+=`<text x="${x+bw/2}" y="${H-B+24+k*21}" text-anchor="middle">${ln}</text>`);});
+  svg.innerHTML=g;}
+
+/* ================= drawn faces (SVG) ================= */
+const SKIN=['#F3CDB0','#E5B08C','#C98B63','#9A6442','#70452A','#F6DCC6'];
+const HAIR=['#2B1B12','#4A2E1C','#7A4A26','#C9A15C','#151515','#8E8E8E','#5A2A1A'];
+const IRIS=['#5B3A1E','#3B6E8F','#4F7A3A','#2C1B10','#6B4A2A'];
+function shade(hex,k){const n=parseInt(hex.slice(1),16);let r=n>>16,g=(n>>8)&255,b=n&255;r=Math.round(r*k);g=Math.round(g*k);b=Math.round(b*k);return '#'+[r,g,b].map(v=>Math.min(255,v).toString(16).padStart(2,'0')).join('');}
+function mix(a,b,t){const A=parseInt(a.slice(1),16),Bc=parseInt(b.slice(1),16);return '#'+[16,8,0].map(k=>Math.round(((A>>k)&255)*(1-t)+((Bc>>k)&255)*t).toString(16).padStart(2,'0')).join('');}
+function newFace(){return{skin:pick(SKIN),hair:pick(HAIR),iris:pick(IRIS),hs:Math.floor(Math.random()*3),fw:rnd(60,69),eyeSep:rnd(25,29),eyeY:rnd(113,119),noseL:rnd(27,32),mouthD:rnd(53,58),mouthW:rnd(17,22),brow:rnd(3,5),shirt:pick(['#0e7c86','#2a4a6b','#a33a2a','#5b6879','#d98a1f'])};}
+let UID=0;
+function face(p,o={}){const cx=100,fw=p.fw,ey=p.eyeY,my=ey+p.mouthD,g=o.gaze||0,id='f'+(UID++);const sk=p.skin,dk=shade(sk,.78),lip=mix(shade(sk,.8),'#B04A50',.5);
+  let s=`<svg class="face" viewBox="0 0 200 250" aria-hidden="true">`;
+  s+=`<path d="M40,250 Q46,212 100,208 Q154,212 160,250 Z" fill="${p.shirt}"/>`;
+  s+=`<rect x="${cx-19}" y="185" width="38" height="30" fill="${dk}"/>`;
+  if(p.hs===1)s+=`<path d="M${cx-fw-6},112 Q${cx-fw-14},232 ${cx-fw+12},226 L${cx+fw-12},226 Q${cx+fw+14},232 ${cx+fw+6},112 Z" fill="${p.hair}"/>`;
+  s+=`<ellipse cx="${cx-fw+2}" cy="128" rx="9" ry="15" fill="${dk}"/><ellipse cx="${cx+fw-2}" cy="128" rx="9" ry="15" fill="${dk}"/>`;
+  s+=`<path d="M${cx-fw},110 C${cx-fw},172 ${cx-36},212 ${cx},212 C${cx+36},212 ${cx+fw},172 ${cx+fw},110 C${cx+fw},56 ${cx+fw*.6},36 ${cx},36 C${cx-fw*.6},36 ${cx-fw},56 ${cx-fw},110 Z" fill="${sk}"/>`;
+  if(p.hs===2)s+=`<path d="M${cx-fw-1},104 C${cx-fw-4},42 ${cx-28},24 ${cx},25 C${cx+28},24 ${cx+fw+4},42 ${cx+fw+1},104 C${cx+fw-5},74 ${cx+fw-14},62 ${cx},60 C${cx-fw+14},62 ${cx-fw+5},74 ${cx-fw-1},104 Z" fill="${p.hair}"/>`;
+  else s+=`<path d="M${cx-fw-2},116 C${cx-fw-7},44 ${cx-26},22 ${cx},24 C${cx+26},22 ${cx+fw+7},44 ${cx+fw+2},116 C${cx+fw-4},84 ${cx+fw-10},70 ${cx+14},64 C${cx-6},78 ${cx-fw+12},72 ${cx-fw-2},116 Z" fill="${p.hair}"/>`;
+  [-1,1].forEach(sg=>{const ex=cx+sg*p.eyeSep,cy=ey-7;
+    let e=`<path d="M${ex-15},${ey-14} Q${ex},${ey-23} ${ex+15},${ey-15}" stroke="${shade(p.hair,.9)}" stroke-width="${p.brow}" fill="none" stroke-linecap="round"/>`;
+    e+=`<path d="M${ex-12},${ey-4} Q${ex},${ey-15} ${ex+12},${ey-4}" stroke="${dk}" stroke-width="1.4" fill="none"/>`;
+    e+=`<clipPath id="${id}${sg}"><path d="M${ex-13},${ey} Q${ex},${ey-10} ${ex+13},${ey} Q${ex},${ey+7} ${ex-13},${ey} Z"/></clipPath>`;
+    e+=`<path d="M${ex-13},${ey} Q${ex},${ey-10} ${ex+13},${ey} Q${ex},${ey+7} ${ex-13},${ey} Z" fill="#fff"/>`;
+    e+=`<g clip-path="url(#${id}${sg})"><circle cx="${ex+g*7}" cy="${ey-1}" r="6" fill="${p.iris}"/><circle cx="${ex+g*7}" cy="${ey-1}" r="2.8" fill="#111"/><circle cx="${ex+g*7+1.6}" cy="${ey-2.8}" r="1.3" fill="#fff"/></g>`;
+    e+=`<path d="M${ex-14},${ey+.5} Q${ex},${ey-11} ${ex+14},${ey+.5}" stroke="#2a1a12" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
+    e+=`<path d="M${ex-11},${ey+2.5} Q${ex},${ey+7.5} ${ex+11},${ey+2.5}" stroke="${dk}" stroke-width="1" fill="none"/>`;
+    e=`<g transform="translate(${ex},${ey-4}) scale(1.2) translate(${-ex},${-(ey-4)})">${e}</g>`;
+    s+=o.thatch?`<g transform="translate(0,${2*cy}) scale(1,-1)">${e}</g>`:e;});
+  const nt=ey+p.noseL;
+  s+=`<path d="M${cx-3},${ey+4} C${cx-4},${nt-12} ${cx-8},${nt-6} ${cx-10},${nt-1} Q${cx-12},${nt+5} ${cx-5},${nt+4} Q${cx},${nt+7} ${cx+5},${nt+4} Q${cx+12},${nt+5} ${cx+10},${nt-1}" stroke="${dk}" stroke-width="1.8" fill="none" stroke-linecap="round"/>`;
+  s+=`<ellipse cx="${cx-4.5}" cy="${nt+2}" rx="2.4" ry="1.3" fill="${shade(sk,.55)}"/><ellipse cx="${cx+4.5}" cy="${nt+2}" rx="2.4" ry="1.3" fill="${shade(sk,.55)}"/>`;
+  const w=p.mouthW;
+  let m=`<path d="M${cx-w},${my} Q${cx-w/2},${my-7} ${cx},${my-4} Q${cx+w/2},${my-7} ${cx+w},${my} Q${cx},${my+1} ${cx-w},${my} Z" fill="${lip}"/>`;
+  m+=`<path d="M${cx-w+1},${my+.6} Q${cx},${my+2} ${cx+w-1},${my+.6} Q${cx},${my+11} ${cx-w+1},${my+.6} Z" fill="#fff" stroke="${shade(lip,.8)}" stroke-width=".6"/>`;
+  m+=`<path d="M${cx-w},${my} Q${cx},${my+12} ${cx+w},${my} Q${cx},${my+20} ${cx-w},${my} Z" fill="${shade(lip,1.08)}"/>`;
+  m+=`<path d="M${cx-w-4},${my-3} Q${cx-w-1},${my+1} ${cx-w-3},${my+4} M${cx+w+4},${my-3} Q${cx+w+1},${my+1} ${cx+w+3},${my+4}" stroke="${dk}" stroke-width="1.2" fill="none"/>`;
+  m=`<g transform="translate(${cx},${my+5}) scale(1.15) translate(${-cx},${-(my+5)})">${m}</g>`;
+  s+=o.thatch?`<g transform="translate(0,${2*(my+6)}) scale(1,-1)">${m}</g>`:m;
+  return s+`</svg>`;}
+const fbox=(p,o={},cls='')=>`<div class="fbox ${o.inv?'inv ':''}${cls}">${face(p,o)}</div>`;
+
+/* ================= E1 · gaze cueing ================= */
+$('e1go').onclick=async()=>{const scr=$('e1scr');$('e1go').disabled=true;$('e1res').hidden=true;
+  const N=40;const trials=shuffle([...Array(N)].map((_,i)=>({side:i%2?'L':'R',valid:(i>>1)%2===0})));
+  const res={v:[],i:[]};let errs=0,early=0;const fp=newFace();
+  show(scr,'<span class="hint">Prepare-se… polegares nos botões.</span>');$('e1btn').hidden=false;$('e1btn').querySelectorAll('button').forEach(b=>b.disabled=true);await sleep(1300);
+  for(let t=0;t<N;t++){$('e1p').textContent=`${t+1} / ${N}`;const tr=trials[t];const gz=tr.valid?(tr.side==='L'?-1:1):(tr.side==='L'?1:-1);
+    show(scr,fbox(fp,{gaze:0}));await sleep(rnd(700,1100));
+    show(scr,fbox(fp,{gaze:gz}));let tooSoon=false;const bs=[...$('e1btn').querySelectorAll('button')];
+    const earlyH=()=>{tooSoon=true;};bs.forEach(b=>{b.disabled=false;b.addEventListener('pointerdown',earlyH,{once:true});});
+    await sleep(300);bs.forEach(b=>b.removeEventListener('pointerdown',earlyH));
+    if(tooSoon){early++;show(scr,'<span class="hint">Cedo demais! Espere o círculo.</span>');bs.forEach(b=>b.disabled=true);await sleep(1000);continue;}
+    scr.insertAdjacentHTML('beforeend',`<span class="tgt" style="left:${tr.side==='L'?11:89}%"></span>`);await frame();
+    const {r,rt}=await waitChoice($('e1btn'),'pointerdown');
+    if(r!==tr.side){errs++;show(scr,'<span class="hint">Lado errado.</span>');await sleep(700);}
+    else if(rt>120&&rt<1500)(tr.valid?res.v:res.i).push(rt);
+    show(scr,'');await sleep(350);}
+  $('e1btn').hidden=true;show(scr,'<span class="hint">Concluído.</span>');$('e1p').textContent='';
+  const mv=median(res.v),mi=median(res.i),d=mi-mv;
+  bars($('e1chart'),[{label:'olhou para\no círculo',value:mv,unit:' ms'},{label:'olhou para\no outro lado',value:mi,unit:' ms',alt:1}],{unit:' ms'});
+  const cat=isNaN(d)?'—':d<0?'< 0 ms':d<15?'0–15 ms':d<30?'15–30 ms':'> 30 ms';
+  $('e1rep').innerHTML=`Tempo mediano: olhar na direção do círculo ${fmt(mv)} ms · olhar para o outro lado ${fmt(mi)} ms. Erros: ${errs}; antecipações: ${early}. Informe o efeito do olhar (diferença): <b>${cat}</b> (${isNaN(d)?'—':(d>0?'+':'')+Math.round(d)} ms).`;
+  $('e1res').hidden=false;$('e1go').disabled=false;$('e1go').textContent='Refazer';};
+
+/* ================= E2 · face inversion, same/different ================= */
+$('e2go').onclick=async()=>{const scr=$('e2scr');$('e2go').disabled=true;$('e2res').hidden=true;
+  const T=[];for(let i=0;i<32;i++)T.push({inv:i%2===1,diff:(i>>1)%2===1});shuffle(T);
+  const R={up:[],inv:[]};
+  show(scr,'<span class="hint">Prepare-se…</span>');await sleep(900);
+  for(let t=0;t<T.length;t++){$('e2p').textContent=`${t+1} / ${T.length}`;const tr=T[t];const a=newFace();const b={...a};
+    if(tr.diff){const k=pick(['sep','eyes','mouth']);const s=pick([-1,1]);
+      if(k==='sep')b.eyeSep=a.eyeSep+s*4.5;else if(k==='eyes'){b.eyeY=a.eyeY+s*6;b.mouthD=a.mouthD-s*6;}else b.mouthD=a.mouthD+s*7;}
+    show(scr,'<span class="fix">+</span>');await sleep(500);
+    show(scr,fbox(a,{inv:tr.inv}));await sleep(1300);
+    show(scr,'<div class="mask"></div>');await sleep(500);
+    const dx=pick([-1,1])*rnd(8,22);
+    show(scr,`<div style="transform:translateX(${dx}px)">${fbox(b,{inv:tr.inv},'test')}</div>`);$('e2btn').hidden=false;
+    const {r}=await waitChoice($('e2btn'));(tr.inv?R.inv:R.up).push((r==='diff')===tr.diff);
+    show(scr,'');await sleep(300);}
+  $('e2btn').hidden=true;show(scr,'<span class="hint">Concluído.</span>');$('e2p').textContent='';
+  const pu=100*mean(R.up.map(Number)),pi=100*mean(R.inv.map(Number)),d=pu-pi;
+  bars($('e2chart'),[{label:'em pé',value:pu,text:Math.round(pu)+'%',alt:1},{label:'de cabeça\npara baixo',value:pi,text:Math.round(pi)+'%'}],{max:115});
+  const cat=d<-5?'invertido melhor':d<5?'empate (< 5 pontos)':d<15?'5–15 pontos':'> 15 pontos';
+  $('e2rep').innerHTML=`Acertos: em pé <b>${Math.round(pu)}%</b> · de cabeça para baixo <b>${Math.round(pi)}%</b> (o chute dá 50%). Informe a perda com a inversão: <b>${cat}</b>.`;
+  $('e2res').hidden=false;$('e2go').disabled=false;$('e2go').textContent='Refazer';};
+
+/* ================= E3 · Thatcher illusion ================= */
+let e3ratings=null,e3face=null,e3t0=0;
+$('e3go').onclick=async()=>{const scr=$('e3scr');$('e3go').disabled=true;$('e3res').hidden=true;$('e3b').hidden=true;
+  const ids=[newFace(),newFace(),newFace()];const T=[];ids.forEach((f,k)=>[false,true].forEach(th=>[false,true].forEach(inv=>T.push({f,k,th,inv}))));
+  shuffle(T);while(T[0].th&&!T[0].inv)shuffle(T);
+  const R={nu:[],tu:[],ni:[],ti:[]};
+  show(scr,'<span class="hint">Prepare-se…</span>');await sleep(800);
+  for(let t=0;t<T.length;t++){$('e3p').textContent=`${t+1} / ${T.length}`;const tr=T[t];
+    show(scr,fbox(tr.f,{thatch:tr.th,inv:tr.inv}));$('e3btn').hidden=false;
+    const {r}=await waitChoice($('e3btn'));R[(tr.th?'t':'n')+(tr.inv?'i':'u')].push(+r);show(scr,'');await sleep(250);}
+  $('e3btn').hidden=true;$('e3p').textContent='Parte B';e3ratings=R;
+  e3face=ids[0];$('e3rot').value=180;rot3();$('e3b').hidden=false;$('e3stop').disabled=false;};
+function rot3(){const a=+$('e3rot').value;$('e3ang').textContent=a+'°';$('e3scr').innerHTML=`<div class="fbox" style="transform:rotate(${a}deg)">${face(e3face,{thatch:true})}</div>`;}
+$('e3rot').addEventListener('input',()=>{if(e3face)rot3();});
+$('e3stop').onclick=()=>{if(!e3ratings)return;const ang=+$('e3rot').value;const R=e3ratings;$('e3stop').disabled=true;
+  const up=mean(R.tu)-mean(R.nu),inv=mean(R.ti)-mean(R.ni);
+  bars($('e3chart'),[{label:'rostos\nem pé',value:up,text:(up>=0?'+':'')+up.toFixed(1),alt:1},{label:'de cabeça\npara baixo',value:inv,text:(inv>=0?'+':'')+inv.toFixed(1)}],{max:4.6});
+  const ratio=up>0.25?inv/up:NaN;
+  const c1=isNaN(ratio)?'igual ou maior':ratio<.25?'quase sumiu':ratio<.75?'diminuiu':'igual ou maior';
+  const c2=ang<60?'< 60°':ang<90?'60–90°':ang<=120?'90–120°':'> 120°';
+  $('e3rep').innerHTML=`O gráfico mostra quanto os rostos alterados pareceram mais estranhos que os normais (pontos na escala de 1 a 5). Em pé: ${(up>=0?'+':'')+up.toFixed(1)} · de cabeça para baixo: ${(inv>=0?'+':'')+inv.toFixed(1)}. Informe: de cabeça para baixo a estranheza <b>${c1}</b>, e o rosto girado ficou estranho a <b>${c2}</b> da posição normal (você parou em ${ang}°).`;
+  $('e3scr').innerHTML=`<div style="display:flex;gap:10px;align-items:center;justify-content:center;width:100%;padding:10px">${fbox(e3face,{})}${fbox(e3face,{thatch:true})}</div>`;
+  $('e3scr').querySelectorAll('.fbox').forEach(b=>b.style.width='min(38vw,150px)');
+  $('e3res').hidden=false;$('e3go').disabled=false;$('e3go').textContent='Refazer';$('e3p').textContent='';};
+
+/* ================= E4 · silent dialogue + silent gesture ================= */
+const SCRIPTS=[[['A','Você viu as minhas chaves?'],['B','Não… Olha ali, em cima da mesa!'],['A','Ufa! Obrigado.']],
+ [['A','Vamos comer alguma coisa?'],['B','Agora não, estou cheio. Mais tarde?'],['A','Tá bom. Às sete, então.']],
+ [['A','Que frio! Fecha a janela?'],['B','Não consigo, está emperrada.'],['A','Então me empresta o seu casaco.']]];
+document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{const s=SCRIPTS[+b.dataset.s];const box=$('e4script');
+  box.innerHTML=`<p class="readout">Roteiro ${+b.dataset.s+1} · sem voz: só boca, rosto e mãos</p>`+s.map(([w,t])=>`<p><b>${w}:</b> ${t}</p>`).join('')+`<p class="why">Depois, repitam com as mãos paradas e o rosto sério: ficou mais difícil para a turma?</p>`;box.hidden=false;});
+const SCENES=[['👧','menina','⚽','bola','CHUTAR'],['👨‍🍳','cozinheiro','🍅','tomate','CORTAR'],['🐶','cachorro','🦴','osso','ENTERRAR'],['👴','avô','🎸','violão','TOCAR'],
+ ['🐱','gato','🐟','peixe','PEGAR'],['👦','menino','🎈','balão','ESTOURAR'],['👩','mulher','🎂','bolo','COMER'],['👮','policial','🚗','carro','EMPURRAR']];
+let e4order=[];
+const once=el=>new Promise(r=>{const h=()=>{el.removeEventListener('click',h);r();};el.addEventListener('click',h);});
+$('e4go').onclick=async()=>{const scr=$('e4scr');$('e4go').disabled=true;$('e4res').hidden=true;
+  const sc=shuffle([...SCENES]).slice(0,4);const out=[];
+  for(let t=0;t<4;t++){$('e4p').textContent=`cena ${t+1} / 4`;const [ae,an,oe,on,vb]=sc[t];
+    const toks=shuffle([`<div class="tok"><span class="em">${ae}</span>${an}</div>`,`<div class="tok"><span class="em">${oe}</span>${on}</div>`,`<div class="tok"><span class="em">➜</span><span class="verb">${vb}</span></div>`]);
+    show(scr,`<div style="display:grid;gap:4px;width:100%"><p class="hint" style="padding-top:12px">Cena: quem faz, com o quê, e a ação. Memorize e esconda a tela.</p><div class="scene">${toks.join('')}</div></div>`);
+    $('e4hide').hidden=false;await once($('e4hide'));$('e4hide').hidden=true;
+    show(scr,'<span class="hint">Gesticule agora, sem voz e sem mexer a boca.<br>Intérprete: pode virar e dizer o que entendeu.</span>');
+    $('e4judge').hidden=false;const {r:ok}=await waitChoice($('e4judge').querySelector('.row'));$('e4judge').hidden=true;
+    e4order=[];const tk=$('e4tok');
+    const items=[['S',ae,an],['O',oe,on],['V','➜',vb.toLowerCase()]];
+    tk.innerHTML=shuffle(items.slice()).map(([k,e,n])=>`<button data-k="${k}"><span class="em">${e}</span>${n}<span class="k"></span></button>`).join('');
+    const upd=()=>{tk.querySelectorAll('button').forEach(b=>{const i=e4order.indexOf(b.dataset.k);b.querySelector('.k').textContent=i>=0?String(i+1)+'º':'';b.disabled=i>=0;});
+      $('e4seq').textContent=e4order.map(k=>({S:an,O:on,V:vb.toLowerCase()})[k]).join(' → ');};
+    tk.querySelectorAll('button').forEach(b=>b.onclick=()=>{if(!e4order.includes(b.dataset.k)){e4order.push(b.dataset.k);upd();}});
+    $('e4undo').onclick=()=>{e4order.pop();upd();};upd();
+    show(scr,'<span class="hint">Registrem a ordem dos gestos abaixo.</span>');$('e4ord').hidden=false;
+    while(true){await once($('e4ok'));if(e4order.length>=2)break;$('e4seq').textContent='Toque pelo menos dois elementos.';}
+    $('e4ord').hidden=true;out.push({ok:ok==='1',ord:e4order.join('')});show(scr,'');await sleep(200);}
+  show(scr,'<span class="hint">Concluído. Troquem de papel e toquem em Refazer.</span>');$('e4p').textContent='';
+  const ov=out.filter(o=>o.ord.includes('O')&&o.ord.includes('V'));const nOV=ov.filter(o=>o.ord.indexOf('O')<o.ord.indexOf('V')).length,nVO=ov.length-nOV;
+  const hits=out.filter(o=>o.ok).length;
+  bars($('e4chart'),[{label:'objeto antes\nda ação',value:nOV,text:nOV+' de 4'},{label:'ação antes\ndo objeto',value:nVO,text:nVO+' de 4',alt:1}],{max:4.6});
+  const cat=nOV>nVO?'objeto antes da ação':nVO>nOV?'ação antes do objeto':'misturado';
+  const hc=hits===4?'4 de 4':hits===3?'3 de 4':hits===2?'2 de 4':'0–1 de 4';
+  $('e4rep').innerHTML=`Ordens registradas: ${out.map(o=>o.ord.replace(/S/g,'quem ').replace(/O/g,'o quê ').replace(/V/g,'ação ').trim().replace(/ (?=quem|o quê|ação)/g,' → ')).join(' · ')}. Informe a ordem mais usada: <b>${cat}</b>; e quantas cenas o intérprete acertou: <b>${hc}</b>.`;
+  $('e4res').hidden=false;$('e4go').disabled=false;$('e4go').textContent='Refazer';};
+
+/* ================= teacher board ================= */
+const BOARD=[
+ {k:'e1',t:'1 · Efeito do olhar',cats:['< 0 ms','0–15 ms','15–30 ms','> 30 ms']},
+ {k:'e2',t:'2 · Perda com a inversão',cats:['invertido melhor','empate (< 5)','5–15 pontos','> 15 pontos']},
+ {k:'e3a',t:'3 · Thatcher de cabeça para baixo',cats:['quase sumiu','diminuiu','igual ou maior']},
+ {k:'e3b',t:'3 · Ficou estranho a',cats:['< 60°','60–90°','90–120°','> 120°']},
+ {k:'e4a',t:'4 · Ordem dos gestos',cats:['objeto antes','ação antes','misturado']},
+ {k:'e4b',t:'4 · O intérprete acertou',cats:['4 de 4','3 de 4','2 de 4','0–1 de 4']}];
+let S={};try{S=JSON.parse(localStorage.getItem('rostos-placar')||'{}')}catch(e){S={}}
+const save=()=>{try{localStorage.setItem('rostos-placar',JSON.stringify(S))}catch(e){}};
+function renderBoard(){const host=$('board');host.innerHTML='';
+  BOARD.forEach(p=>{const div=document.createElement('div');div.className='panel';let max=1;p.cats.forEach((_,i)=>max=Math.max(max,S[p.k+'_'+i]||0));
+    let h=`<h2>${p.t}</h2><div class="bars">`;
+    p.cats.forEach((c,i)=>{const key=p.k+'_'+i,v=S[key]||0;
+      h+=`<div class="bar"><span class="lab">${c}</span><span class="track"><span class="fill" style="width:${100*v/max}%"></span></span><button class="ghost" data-k="${key}" data-d="-1" aria-label="menos ${c}">−</button><button data-k="${key}" data-d="1" aria-label="mais ${c}">+</button><span class="n">${v}</span></div>`;});
+    div.innerHTML=h+'</div>';host.appendChild(div);});
+  host.querySelectorAll('button[data-k]').forEach(b=>b.onclick=()=>{const k=b.dataset.k;S[k]=Math.max(0,(S[k]||0)+(+b.dataset.d));save();renderBoard();});}
+let armed=false;$('reset').onclick=()=>{if(!armed){armed=true;$('reset').textContent='Confirmar: zerar tudo';$('resetMsg').textContent='';return;}
+  S={};save();renderBoard();armed=false;$('reset').textContent='Zerar placar';$('resetMsg').textContent='Placar zerado.';};
+$('toStudent').onclick=e=>{e.preventDefault();location.hash='';route();};
+function route(){const t=location.hash==='#professor';$('prof').hidden=!t;$('student').hidden=t;if(t)renderBoard();}
+window.addEventListener('hashchange',route);route();
+window.__face=face;window.__newFace=newFace;
+})();
+</script>
+
+<script src="config.js"></script>
+<script src="registro.js" data-aula="8"></script>
