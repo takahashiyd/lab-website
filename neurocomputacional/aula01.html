@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neurociência Computacional · Aula 1 — Atividades</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#142033; --muted:#5b6879; --line:#d8dee6;
+  --accent:#0d7377; --accent-ink:#ffffff; --you:#b45309; --soft:#e2f0f0; --warn:#a33a2a; --ok:#15803d; --okbg:#e3f3e8; --nobg:#fbe9e6;
+  --display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --ok:#5fd08a; --okbg:#173a28; --nobg:#3d2020; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --ok:#5fd08a; --okbg:#173a28; --nobg:#3d2020; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:17px/1.5 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:grid;gap:22px}
+header{display:grid;gap:8px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(32px,8vw,50px)/1.02 var(--display);font-stretch:115%;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font:750 23px/1.15 var(--display);font-stretch:108%;margin:0;text-wrap:balance}
+p{margin:0;max-width:65ch}
+.lead{color:var(--muted)}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{font:600 14px/1 var(--body);color:var(--fg);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:9px 12px;background:var(--surface)}
+nav a.done{border-color:var(--ok);color:var(--ok)}
+a{color:var(--accent)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,nav a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.exp>*{min-width:0}
+section.exp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 18px;display:grid;gap:16px;min-width:0;scroll-margin-top:12px}
+.num{font:600 13px/1 var(--mono);color:var(--you);letter-spacing:.06em;text-transform:uppercase}
+.meta{font:500 13px/1.3 var(--mono);color:var(--muted)}
+.q{display:grid;gap:8px;border-top:1px dashed var(--line);padding-top:14px}
+.q>.qt{font-weight:600}
+.q .qt i{font-family:var(--mono);font-style:normal;color:var(--you);margin-right:6px}
+.opts{display:grid;gap:8px}
+@media (min-width:560px){.opts.two{grid-template-columns:1fr 1fr}}
+.opt{display:flex;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;cursor:pointer;min-height:48px;background:var(--bg)}
+.opt input{width:20px;height:20px;accent-color:var(--accent);flex:none}
+.opt:has(input:checked){border-color:var(--accent);background:var(--soft)}
+.opt.right{border-color:var(--ok);background:var(--okbg)}
+.opt.wrong{border-color:var(--warn);background:var(--nobg)}
+textarea,input[type=number],input[type=text]{width:100%;font:500 17px/1.4 var(--body);color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;min-height:48px}
+textarea{min-height:90px;resize:vertical}
+.inline{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.inline label{display:grid;gap:4px;font-size:14px;font-weight:600;flex:1 1 140px;min-width:0}
+select{font:500 17px var(--body);color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px;min-height:48px;width:100%}
+button{font:700 16px/1 var(--display);border:0;border-radius:10px;padding:14px 18px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px;touch-action:manipulation}
+button.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+button:disabled{opacity:.45;cursor:default}
+.send{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.sent{font:600 14px/1.3 var(--mono);color:var(--ok)}
+.sent.pend{color:var(--you)}
+.fb{background:var(--soft);border-radius:10px;padding:14px 16px;display:grid;gap:8px;font-size:16px}
+.fb h3{margin:0;font:700 17px/1.2 var(--display)}
+.fb .score{font:700 22px/1 var(--display);color:var(--you)}
+.fb ul{margin:0;padding-left:20px;display:grid;gap:6px}
+.mark{font-weight:700}
+.mark.ok{color:var(--ok)} .mark.no{color:var(--warn)}
+figure{margin:0;display:grid;gap:6px}
+figure img{width:100%;height:auto;border-radius:8px;background:#fff;border:1px solid var(--line)}
+figcaption{font-size:13px;color:var(--muted)}
+.tablewrap{overflow-x:auto}
+table.dec{border-collapse:collapse;width:100%;font:500 15px/1.2 var(--mono);text-align:center}
+table.dec th,table.dec td{border:1px solid var(--line);padding:8px 3px}
+table.dec th{background:var(--soft);font:600 13px/1.2 var(--body)}
+table.dec td.test{background:color-mix(in srgb,var(--you) 18%,transparent);font-weight:700}
+table.dec td.hi{font-weight:700;color:var(--accent)}
+.dots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.dots label{display:grid;gap:4px;font:600 13px/1.2 var(--body);text-align:center;min-width:0}
+.dots input{min-width:0;font-size:15px;padding:10px 2px;text-align:center}
+.opts.five{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+.opts.five .opt{padding:10px 6px;gap:6px;justify-content:center}
+.dots input{text-align:center;padding:10px 4px;font-family:var(--mono)}
+.dots input.right{border-color:var(--ok);background:var(--okbg)}
+.dots input.wrong{border-color:var(--warn);background:var(--nobg)}
+.marr{display:grid;gap:10px}
+.marr .st{display:grid;gap:8px;border:1px solid var(--line);border-radius:10px;padding:12px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.seg label{border:1.5px solid var(--line);border-radius:8px;text-align:center;padding:10px 4px;font:700 14px/1.1 var(--display);cursor:pointer;min-height:44px;display:grid;place-items:center;background:var(--bg)}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){border-color:var(--accent);background:var(--soft);color:var(--accent)}
+.seg label.right{border-color:var(--ok)!important;background:var(--okbg)!important;color:var(--ok)!important}
+.seg label.wrong{border-color:var(--warn)!important;background:var(--nobg)!important;color:var(--warn)!important}
+.seg label:focus-within{outline:3px solid var(--accent);outline-offset:1px}
+.xor{display:grid;gap:12px}
+.xor table{border-collapse:collapse;font:500 16px/1 var(--mono);text-align:center;width:100%;max-width:420px}
+.xor th,.xor td{border:1px solid var(--line);padding:9px}
+.xor th{background:var(--soft);font:600 13px var(--body)}
+.xor td.ok{color:var(--ok);font-weight:700} .xor td.no{color:var(--warn);font-weight:700}
+.xor .ctl{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.xor .ctl label{display:grid;gap:4px;font:600 13px/1.2 var(--mono)}
+.xor input[type=range]{width:100%;accent-color:var(--accent)}
+.badge{font:700 14px/1.2 var(--mono)}
+footer{font-size:13px;color:var(--muted);display:grid;gap:6px}
+/* cartão de identificação (registro.js) */
+.nc-id{background:var(--surface);border:2px solid var(--accent);border-radius:14px;padding:18px;display:grid;gap:12px}
+.nc-id.nc-in{border:0;padding:0;background:none}
+.nc-id h2{margin:0 0 4px}
+.nc-lead{color:var(--muted);margin:0 0 12px!important}
+.nc-row{display:grid;gap:10px;grid-template-columns:1fr}
+@media (min-width:560px){.nc-row{grid-template-columns:1fr 1.6fr}}
+.nc-id label{display:grid;gap:4px;font:600 14px/1.2 var(--body)}
+.nc-id input{font:17px var(--body);padding:12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);min-height:48px;width:100%}
+.nc-err{color:var(--warn);font-size:14px;min-height:1em;margin:6px 0!important}
+.nc-priv{font-size:13px;color:var(--muted);margin-top:10px!important}
+.nc-who{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:15px;background:var(--soft);border-radius:10px;padding:10px 14px}
+.nc-link{background:none!important;border:0!important;color:var(--accent)!important;font:600 14px var(--body)!important;padding:4px 0!important;min-height:0!important;text-decoration:underline;cursor:pointer}
+.nc-fila{font:500 13px var(--mono);color:var(--muted)}
+.nc-flash{animation:ncflash 1.2s 2}
+@keyframes ncflash{50%{box-shadow:0 0 0 6px var(--you)}}
+@media (prefers-reduced-motion:reduce){.nc-flash{animation:none}}
+</style>
+
+<div class="wrap" id="student">
+<header>
+  <span class="eyebrow">Neurociência Computacional · Aula 1 · UFRN</span>
+  <h1>O Grande Quadro</h1>
+  <p class="lead">Atividades em sala. Identifique-se abaixo, faça cada atividade quando o professor pedir e toque em <b>Enviar</b> — sua resposta fica registrada e o gabarito aparece em seguida.</p>
+</header>
+
+<nav aria-label="Atividades">
+  <a href="#a1">1 · Estimativas</a><a href="#a2">2 · Curva f–I</a><a href="#a3">3 · AP5</a><a href="#a4">4 · Decodificador</a><a href="#a5">5 · Braitenberg</a><a href="#a6">6 · Marr</a><a href="#a7">7 · XOR</a>
+</nav>
+
+<!-- ============ ATIVIDADE 1 ============ -->
+<section class="exp" id="a1" data-titulo="Estimativas: o seu cérebro">
+  <div><p class="num">Atividade 1 · 3 min · individual</p><h2>Quanto você sabe sobre o seu cérebro?</h2></div>
+  <p class="lead">Chute antes de consultar qualquer coisa. Não vale pesquisar!</p>
+  <div class="q" data-q="neur"><p class="qt"><i>a</i>Quantos neurônios há no cérebro humano?</p>
+    <div class="opts two">
+      <label class="opt"><input type="radio" name="a1a" value="86 milhões">86 milhões</label>
+      <label class="opt"><input type="radio" name="a1a" value="86 bilhões">86 bilhões</label>
+      <label class="opt"><input type="radio" name="a1a" value="86 trilhões">86 trilhões</label>
+      <label class="opt"><input type="radio" name="a1a" value="8,6 quatrilhões">8,6 quatrilhões</label>
+    </div></div>
+  <div class="q"><p class="qt"><i>b</i>Quantas sinapses (entradas) recebe um neurônio cortical típico?</p>
+    <div class="opts two">
+      <label class="opt"><input type="radio" name="a1b" value="cerca de 10">cerca de 10</label>
+      <label class="opt"><input type="radio" name="a1b" value="cerca de 100">cerca de 100</label>
+      <label class="opt"><input type="radio" name="a1b" value="cerca de 10.000">cerca de 10.000</label>
+      <label class="opt"><input type="radio" name="a1b" value="cerca de 10 milhões">cerca de 10 milhões</label>
+    </div></div>
+  <div class="q"><p class="qt"><i>c</i>Por quanto tempo um neurônio "soma" suas entradas antes de disparar?</p>
+    <div class="opts two">
+      <label class="opt"><input type="radio" name="a1c" value="~20 microssegundos">~20 microssegundos</label>
+      <label class="opt"><input type="radio" name="a1c" value="~20 milissegundos">~20 milissegundos</label>
+      <label class="opt"><input type="radio" name="a1c" value="~2 segundos">~2 segundos</label>
+      <label class="opt"><input type="radio" name="a1c" value="~1 minuto">~1 minuto</label>
+    </div></div>
+  <div class="q"><p class="qt"><i>d</i>Quanta energia o cérebro consome?</p>
+    <div class="opts two">
+      <label class="opt"><input type="radio" name="a1d" value="~2 W">~2 W</label>
+      <label class="opt"><input type="radio" name="a1d" value="~20 W">~20 W (uma lâmpada)</label>
+      <label class="opt"><input type="radio" name="a1d" value="~200 W">~200 W (um notebook potente)</label>
+      <label class="opt"><input type="radio" name="a1d" value="~2.000 W">~2.000 W (um secador)</label>
+    </div></div>
+  <div class="send"><button data-send="a1">Enviar</button><span class="sent" data-status="a1"></span></div>
+  <div class="fb" data-fb="a1" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 2 ============ -->
+<section class="exp" id="a2" data-titulo="Curva f–I: qual modelo descreve o neurônio?">
+  <div><p class="num">Atividade 2 · 4 min · em duplas</p><h2>Qual modelo descreve este neurônio?</h2></div>
+  <figure><img src="img/aula01/fI_CA1.png" alt="Curvas de frequência de disparo em função da corrente injetada num neurônio CA1: as curvas iniciais sobem até mais de 200 Hz; a curva adaptada fica em torno de 50 Hz a 2,5 nA. Abaixo de cerca de 0,5 nA não há disparo." loading="lazy">
+    <figcaption>Frequência de disparo vs corrente injetada (pulsos de 1,5 s) num neurônio CA1. Curvas 1–3: primeiros intervalos; "adapted": regime adaptado. Rolls (2023, Fig. 1.4), orig. Lanthorn, Storm &amp; Andersen (1984).</figcaption></figure>
+  <figure><img src="img/aula01/ativacao.png" alt="Quatro funções de ativação: linear, linear com limiar, sigmoide e binária." loading="lazy" style="max-width:420px"></figure>
+  <p class="lead">Explore também a aba "Neurônio" da <a href="simulacoes/aula01.html" target="_blank" rel="noopener">simulação da aula</a>.</p>
+  <div class="q"><p class="qt"><i>a</i>Qual função de ativação se ajusta melhor à curva "adapted"?</p>
+    <div class="opts two">
+      <label class="opt"><input type="radio" name="a2a" value="Linear">Linear</label>
+      <label class="opt"><input type="radio" name="a2a" value="Linear com limiar">Linear com limiar</label>
+      <label class="opt"><input type="radio" name="a2a" value="Sigmoide">Sigmoide</label>
+      <label class="opt"><input type="radio" name="a2a" value="Binária">Binária</label>
+    </div></div>
+  <div class="q"><p class="qt"><i>b</i>Estime o limiar e a inclinação da curva adaptada.</p>
+    <div class="inline">
+      <label>Limiar θ (nA)<input type="number" step="0.05" min="0" max="3" inputmode="decimal" name="a2th" placeholder="ex.: 1,0"></label>
+      <label>Inclinação (Hz por nA)<input type="number" step="1" min="0" max="500" inputmode="decimal" name="a2k" placeholder="ex.: 100"></label>
+    </div></div>
+  <div class="q"><p class="qt"><i>c</i>Que propriedade do neurônio real nenhuma função f(h) estática consegue capturar?</p>
+    <div class="opts two">
+      <label class="opt"><input type="radio" name="a2c" value="O limiar">O limiar</label>
+      <label class="opt"><input type="radio" name="a2c" value="A saturação">A saturação</label>
+      <label class="opt"><input type="radio" name="a2c" value="A adaptação">A adaptação (a taxa cai ao longo do pulso)</label>
+      <label class="opt"><input type="radio" name="a2c" value="A faixa linear">A faixa linear</label>
+    </div>
+    <textarea name="a2c2" placeholder="Que variável extra o modelo precisaria ter? (1–2 frases)"></textarea></div>
+  <div class="q"><p class="qt"><i>d</i>Por que seria vantajoso para um neurônio adaptar sua taxa de disparo?</p>
+    <textarea name="a2d" placeholder="Sua resposta"></textarea></div>
+  <div class="send"><button data-send="a2">Enviar</button><span class="sent" data-status="a2"></span></div>
+  <div class="fb" data-fb="a2" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 3 ============ -->
+<section class="exp" id="a3" data-titulo="Preveja o experimento (AP5, Morris 1989)">
+  <div><p class="num">Atividade 3 · 3 min · opcional</p><h2>Preveja o resultado do experimento</h2></div>
+  <p>Ratos aprendem a achar uma plataforma escondida numa piscina de leite opaco, guiando-se por pistas da sala — uma tarefa que depende do hipocampo. Antes do treino, um grupo recebe <b>AP5</b> no hipocampo, um bloqueador dos receptores <b>NMDA</b> (Morris, 1989).</p>
+  <div class="q"><p class="qt"><i>a</i>Os ratos com AP5 aprendem onde está a plataforma?</p>
+    <div class="opts two"><label class="opt"><input type="radio" name="a3a" value="Sim">Sim</label><label class="opt"><input type="radio" name="a3a" value="Não">Não</label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Se o AP5 for dado <u>depois</u> de o rato já ter aprendido, ele ainda encontra a plataforma?</p>
+    <div class="opts two"><label class="opt"><input type="radio" name="a3b" value="Sim">Sim</label><label class="opt"><input type="radio" name="a3b" value="Não">Não</label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Justifique: o que o receptor NMDA faz na indução da LTP, e o que o AMPA faz na expressão?</p>
+    <textarea name="a3c" placeholder="Sua justificativa"></textarea></div>
+  <div class="send"><button data-send="a3">Enviar</button><span class="sent" data-status="a3"></span></div>
+  <div class="fb" data-fb="a3" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 4 ============ -->
+<section class="exp" id="a4" data-titulo="Seja o decodificador">
+  <div><p class="num">Atividade 4 · 7 min · em duplas, com calculadora</p><h2>Seja o decodificador</h2></div>
+  <p>Quatro neurônios do córtex inferotemporal foram registrados enquanto o animal via cinco rostos. A tabela mostra a resposta média (spikes/s). Numa nova tentativa, a população respondeu com a coluna <b>Teste</b>. Qual rosto foi visto?</p>
+  <div class="tablewrap"><table class="dec">
+    <thead><tr><th></th><th colspan="5">Rosto</th><th rowspan="2">Teste</th></tr><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th></tr></thead>
+    <tbody>
+      <tr><th>N1</th><td class="hi">40</td><td>6</td><td>10</td><td>5</td><td>18</td><td class="test">12</td></tr>
+      <tr><th>N2</th><td>8</td><td class="hi">35</td><td>10</td><td>28</td><td>5</td><td class="test">13</td></tr>
+      <tr><th>N3</th><td>12</td><td>15</td><td class="hi">42</td><td>4</td><td>10</td><td class="test">36</td></tr>
+      <tr><th>N4</th><td>5</td><td>10</td><td>20</td><td>8</td><td class="hi">36</td><td class="test">17</td></tr>
+    </tbody></table></div>
+  <p class="meta">N1–N4 = neurônios 1 a 4. Dados ilustrativos, no espírito da Fig. 2.17 de Rolls (2023).</p>
+  <div class="q"><p class="qt"><i>a</i>Calcule o produto escalar do teste com cada rosto. Exemplo: A = 12×40 + 13×8 + 36×12 + 17×5 = 1101.</p>
+    <div class="dots">
+      <label>A<input type="text" inputmode="numeric" name="a4A" value="1101" readonly></label>
+      <label>B<input type="text" inputmode="numeric" name="a4B"></label>
+      <label>C<input type="text" inputmode="numeric" name="a4C"></label>
+      <label>D<input type="text" inputmode="numeric" name="a4D"></label>
+      <label>E<input type="text" inputmode="numeric" name="a4E"></label>
+    </div>
+    <p class="qt" style="margin-top:6px">Qual rosto foi visto?</p>
+    <div class="opts five">
+      <label class="opt"><input type="radio" name="a4f" value="A">A</label><label class="opt"><input type="radio" name="a4f" value="B">B</label><label class="opt"><input type="radio" name="a4f" value="C">C</label><label class="opt"><input type="radio" name="a4f" value="D">D</label><label class="opt"><input type="radio" name="a4f" value="E">E</label>
+    </div></div>
+  <div class="q"><p class="qt"><i>b</i>Quantos neurônios contribuem para a resposta "rosto C"?</p>
+    <div class="opts two">
+      <label class="opt"><input type="radio" name="a4b" value="Só o neurônio 3 (código local)">Só o neurônio 3 — é uma "célula da avó"</label>
+      <label class="opt"><input type="radio" name="a4b" value="Os quatro (código distribuído)">Os quatro — a informação está no padrão</label>
+    </div></div>
+  <div class="q"><p class="qt"><i>c</i>"Lesione" um neurônio (remova a linha dele) e refaça a conta. Qual rosto o decodificador escolhe?</p>
+    <div class="inline">
+      <label>Sem o neurônio 2<select name="a4c2"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></label>
+      <label>Sem o neurônio 3<select name="a4c3"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></label>
+    </div></div>
+  <div class="q"><p class="qt"><i>d</i>Em que sentido um neurônio cujos pesos são a coluna do rosto C faz esse mesmo cálculo?</p>
+    <textarea name="a4d" placeholder="Sua resposta"></textarea></div>
+  <p class="lead">Depois de enviar, explore a aba "Seja o decodificador" da <a href="simulacoes/aula01.html" target="_blank" rel="noopener">simulação</a>.</p>
+  <div class="send"><button data-send="a4">Enviar</button><span class="sent" data-status="a4"></span></div>
+  <div class="fb" data-fb="a4" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 5 ============ -->
+<section class="exp" id="a5" data-titulo="Braitenberg: preveja, depois simule">
+  <div><p class="num">Atividade 5 · 5 min · individual</p><h2>Preveja, depois simule</h2></div>
+  <p>Um veículo tem dois sensores de luz e duas rodas. No <b>2a</b>, cada sensor acelera a roda do <b>mesmo lado</b>; no <b>2b</b>, a roda do <b>lado oposto</b>. O veículo começa à esquerda da luz, apontando um pouco para cima dela.</p>
+  <div class="q"><p class="qt"><i>a</i>O que faz o veículo 2a?</p>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="a5a" value="Vira para longe da luz e se afasta">Vira para longe da luz e se afasta</label>
+      <label class="opt"><input type="radio" name="a5a" value="Vira para a luz e acelera até ela">Vira para a luz e acelera até ela</label>
+      <label class="opt"><input type="radio" name="a5a" value="Segue reto, ignorando a luz">Segue reto, ignorando a luz</label>
+    </div></div>
+  <div class="q"><p class="qt"><i>b</i>E o veículo 2b?</p>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="a5b" value="Vira para longe da luz e se afasta">Vira para longe da luz e se afasta</label>
+      <label class="opt"><input type="radio" name="a5b" value="Vira para a luz e acelera até ela">Vira para a luz e acelera até ela</label>
+      <label class="opt"><input type="radio" name="a5b" value="Segue reto, ignorando a luz">Segue reto, ignorando a luz</label>
+    </div>
+    <textarea name="a5b2" placeholder="Em uma frase: por que o 2b acelera ao se aproximar da luz?"></textarea></div>
+  <div class="q"><p class="qt"><i>c</i>Agora rode a aba "Veículos de Braitenberg" da <a href="simulacoes/aula01.html" target="_blank" rel="noopener">simulação</a>. Sua previsão acertou? Com duas luzes, o que faz o veículo 3a?</p>
+    <textarea name="a5c" placeholder="Sua resposta"></textarea></div>
+  <div class="q"><p class="qt"><i>d</i>Invente um veículo novo (por exemplo, um sensor excitatório e outro inibitório). Que "personalidade" ele teria?</p>
+    <textarea name="a5d" placeholder="Descreva a fiação e o comportamento esperado"></textarea></div>
+  <div class="send"><button data-send="a5">Enviar</button><span class="sent" data-status="a5"></span></div>
+  <div class="fb" data-fb="a5" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 6 ============ -->
+<section class="exp" id="a6" data-titulo="Em que nível de Marr?">
+  <div><p class="num">Atividade 6 · 4 min · em duplas</p><h2>Em que nível de Marr está cada afirmação?</h2></div>
+  <p class="lead"><b>C</b> = computacional (o quê e por quê) · <b>A</b> = algorítmico (como) · <b>I</b> = implementação (com quê)</p>
+  <div class="marr" id="marrList"></div>
+  <div class="send"><button data-send="a6">Enviar</button><span class="sent" data-status="a6"></span></div>
+  <div class="fb" data-fb="a6" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 7 ============ -->
+<section class="exp" id="a7" data-titulo="O problema XOR">
+  <div><p class="num">Atividade 7 · 6 min · em grupos · opcional</p><h2>O problema XOR — e um neurônio que o resolve</h2></div>
+  <p>A saída deve ser 1 quando as entradas A e B são <b>diferentes</b>. Tente achar pesos para um único neurônio: <span class="badge">y = 1 se w₁·A + w₂·B &gt; θ</span>.</p>
+  <div class="xor">
+    <div class="ctl">
+      <label>w₁ = <span id="vw1">1.0</span><input type="range" id="w1" min="-2" max="2" step="0.1" value="1"></label>
+      <label>w₂ = <span id="vw2">1.0</span><input type="range" id="w2" min="-2" max="2" step="0.1" value="1"></label>
+      <label>θ = <span id="vth">0.5</span><input type="range" id="th" min="-2" max="2" step="0.1" value="0.5"></label>
+    </div>
+    <table><thead><tr><th>A</th><th>B</th><th>XOR desejado</th><th>saída do neurônio</th></tr></thead><tbody id="xorBody"></tbody></table>
+    <p class="badge" id="xorScore"></p>
+  </div>
+  <div class="q"><p class="qt"><i>a</i>Computacional: o que XOR computa? Por que um animal precisaria detectar "um ou outro, mas não os dois"?</p>
+    <textarea name="a7a" placeholder="Sua resposta"></textarea></div>
+  <div class="q"><p class="qt"><i>b</i>Algorítmico: um único neurônio consegue computar XOR?</p>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="a7b" value="Sim, com os pesos certos">Sim, com os pesos certos</label>
+      <label class="opt"><input type="radio" name="a7b" value="Não: XOR não é linearmente separável; precisa de uma camada oculta">Não: nenhuma reta separa os casos; precisa de uma camada intermediária</label>
+    </div></div>
+  <div class="q"><p class="qt"><i>c</i>Implementação: Gidon et al. (2020) acharam, em dendritos de neurônios piramidais humanos, potenciais de ação que respondem a entradas fracas e são <u>suprimidos</u> por entradas fortes. Por que isso importa para o XOR?</p>
+    <textarea name="a7c" placeholder="Sua resposta"></textarea></div>
+  <div class="send"><button data-send="a7">Enviar</button><span class="sent" data-status="a7"></span></div>
+  <div class="fb" data-fb="a7" hidden></div>
+</section>
+
+<footer>
+  <p>Materiais: <a href="simulacoes/aula01.html">simulações interativas da Aula 1</a> · <a href="index.html">todas as aulas</a></p>
+  <p>Prof. Daniel Y. Takahashi · Instituto do Cérebro, UFRN</p>
+</footer>
+</div>
+
+<script>
+(() => {
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const val = (n) => { const el = $(`[name="${n}"]:checked`) || $(`[name="${n}"]:not([type=radio])`); return el ? String(el.value).trim() : ''; };
+const num = (n) => { const v = parseFloat(String(val(n)).replace(',', '.')); return isNaN(v) ? null : v; };
+const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const tag = (ok) => `<span class="mark ${ok ? 'ok' : 'no'}">${ok ? '✓' : '✗'}</span>`;
+function markRadio(name, correct) { $$(`[name="${name}"]`).forEach(i => { const l = i.closest('label'); l.classList.remove('right', 'wrong'); if (i.value === correct) l.classList.add('right'); else if (i.checked) l.classList.add('wrong'); }); }
+
+/* ---------- Atividade 6: afirmações ---------- */
+const MARR = [
+  ['O receptor NMDA só conduz Ca²⁺ quando a célula pós-sináptica está despolarizada.', 'I', 'mecanismo molecular'],
+  ['O sistema visual precisa reconhecer um rosto em qualquer tamanho e posição.', 'C', 'o problema e sua exigência'],
+  ['O peso da sinapse muda com o produto das atividades pré e pós-sináptica.', 'A', 'regra de aprendizagem (Hebb)'],
+  ['Os neurônios do córtex inferotemporal recebem entradas de V4.', 'I', 'anatomia'],
+  ['Qual rosto foi visto é lido por produto escalar de um código distribuído.', 'A', 'representação e procedimento de leitura'],
+  ['A memória episódica precisa associar rapidamente o quê, onde e quando.', 'C', 'o que a memória precisa fazer'],
+  ['A fibra trepadeira dispara menos de 10 vezes por segundo.', 'I', 'propriedade fisiológica'],
+  ['Uma rede recorrente recupera o padrão completo a partir de uma pista parcial.', 'A', 'algoritmo de completar padrões'],
+];
+$('#marrList').innerHTML = MARR.map(([t], k) => `<div class="st"><span>${k + 1}. ${t}</span><div class="seg" role="radiogroup" aria-label="Nível da afirmação ${k + 1}">
+  ${['C', 'A', 'I'].map(l => `<label><input type="radio" name="m${k}" value="${l}">${l}</label>`).join('')}</div></div>`).join('');
+
+/* ---------- Atividade 7: XOR interativo ---------- */
+function xorDraw() {
+  const w1 = +$('#w1').value, w2 = +$('#w2').value, th = +$('#th').value;
+  $('#vw1').textContent = w1.toFixed(1); $('#vw2').textContent = w2.toFixed(1); $('#vth').textContent = th.toFixed(1);
+  let ok = 0;
+  $('#xorBody').innerHTML = [[0, 0], [0, 1], [1, 0], [1, 1]].map(([a, b]) => {
+    const want = a ^ b, y = (w1 * a + w2 * b > th) ? 1 : 0; if (y === want) ok++;
+    return `<tr><td>${a}</td><td>${b}</td><td>${want}</td><td class="${y === want ? 'ok' : 'no'}">${y}</td></tr>`;
+  }).join('');
+  $('#xorScore').textContent = ok === 4 ? '4 de 4 — impossível… confira!' : `${ok} de 4 casos certos — o máximo que um neurônio consegue é 3.`;
+}
+['w1', 'w2', 'th'].forEach(id => $('#' + id).addEventListener('input', xorDraw)); xorDraw();
+
+/* ---------- correção e feedback de cada atividade ---------- */
+const DOT = { A: 1101, B: 1237, C: 2102, D: 704, E: 1253 };
+const ACT = {
+  a1() {
+    const R = { a1a: '86 bilhões', a1b: 'cerca de 10.000', a1c: '~20 milissegundos', a1d: '~20 W' };
+    let s = 0; Object.entries(R).forEach(([n, c]) => { markRadio(n, c); if (val(n) === c) s++; });
+    return { score: `${s}/4`, resp: Object.keys(R).map(n => `${n.slice(2)}: ${val(n) || '—'}`).join(' | '),
+      fb: `<p class="score">${s} de 4</p><ul>
+      <li>${tag(val('a1a') === R.a1a)} ~86 bilhões de neurônios (Azevedo et al., 2009).</li>
+      <li>${tag(val('a1b') === R.a1b)} 5.000 a 20.000 sinapses por neurônio cortical (Rolls, 2023).</li>
+      <li>${tag(val('a1c') === R.a1c)} Constante de tempo de 15–25 ms.</li>
+      <li>${tag(val('a1d') === R.a1d)} ~20 W — cerca de 20% da energia do corpo.</li></ul>
+      <p>Um neurônio é milhões de vezes mais lento que um transistor, e mesmo assim reconhecemos um rosto em ~100–200 ms. Como? Computação paralela, com produto escalar e limiar em cada neurônio.</p>` };
+  },
+  a2() {
+    const a = val('a2a'), th = num('a2th'), k = num('a2k'), c = val('a2c');
+    const okA = a === 'Linear com limiar' || a === 'Sigmoide';
+    const okTh = th !== null && th >= 0.3 && th <= 0.8, okK = k !== null && k >= 10 && k <= 60, okC = c === 'A adaptação';
+    markRadio('a2a', 'Linear com limiar'); if (a === 'Sigmoide') $('[name="a2a"][value="Sigmoide"]').closest('label').classList.replace('wrong', 'right');
+    markRadio('a2c', 'A adaptação');
+    const s = [okA, okTh, okK, okC].filter(Boolean).length;
+    return { score: `${s}/4 objetivas`, resp: `a: ${a || '—'} | θ = ${th ?? '—'} nA | inclinação = ${k ?? '—'} Hz/nA | c: ${c || '—'} — ${val('a2c2')} | d: ${val('a2d')}`,
+      fb: `<p class="score">${s} de 4 itens objetivos</p><ul>
+      <li>${tag(okA)} <b>Linear com limiar</b> (ou sigmoide, se incluir a saturação): ≈ 0 abaixo de ~0,5 nA e quase linear depois.</li>
+      <li>${tag(okTh)} Limiar ≈ <b>0,5 nA</b>.</li>
+      <li>${tag(okK)} A curva adaptada vai de ~0 Hz (0,5 nA) a ~50 Hz (2,5 nA): ≈ <b>25 Hz/nA</b>. As curvas iniciais são muito mais íngremes.</li>
+      <li>${tag(okC)} A <b>adaptação</b>: a taxa depende da história recente. Falta uma variável lenta — por exemplo, uma corrente de potássio que cresce a cada spike.</li></ul>
+      <p><b>d)</b> Adaptar ajuda a sinalizar mudanças mais do que níveis constantes, economiza energia e preserva a faixa dinâmica (codificação eficiente; Barlow, 1961).</p>` };
+  },
+  a3() {
+    const a = val('a3a'), b = val('a3b'); markRadio('a3a', 'Não'); markRadio('a3b', 'Sim');
+    const s = (a === 'Não') + (b === 'Sim');
+    return { score: `${s}/2`, resp: `a: ${a || '—'} | b: ${b || '—'} | c: ${val('a3c')}`,
+      fb: `<p class="score">${s} de 2</p><ul>
+      <li>${tag(a === 'Não')} <b>Não aprendem.</b> Sem NMDA, a coincidência pré + pós não abre o canal, não entra Ca²⁺ e não há indução de LTP.</li>
+      <li>${tag(b === 'Sim')} <b>Ainda encontram.</b> A memória já armazenada é expressa pelos receptores AMPA, que o AP5 não bloqueia.</li></ul>
+      <p>É o mesmo padrão da LTP em fatias de hipocampo: o AP5 bloqueia a <i>indução</i>, não a <i>expressão</i>. Uma rede que aprende precisa de algo com as propriedades da LTP: local, associativo e específico da sinapse.</p>` };
+  },
+  a4() {
+    let okDots = 0; ['B', 'C', 'D', 'E'].forEach(L => { const v = num('a4' + L), el = $(`[name="a4${L}"]`); const ok = v === DOT[L]; el.classList.toggle('right', ok); el.classList.toggle('wrong', !ok); if (ok) okDots++; });
+    const f = val('a4f'), b = val('a4b'), c2 = val('a4c2'), c3 = val('a4c3');
+    markRadio('a4f', 'C'); markRadio('a4b', 'Os quatro (código distribuído)');
+    const s = okDots + (f === 'C') + (b.startsWith('Os quatro')) + (c2 === 'C') + (c3 === 'E');
+    return { score: `${s}/8`, resp: `B=${num('a4B') ?? '—'} C=${num('a4C') ?? '—'} D=${num('a4D') ?? '—'} E=${num('a4E') ?? '—'} | rosto: ${f || '—'} | b: ${b || '—'} | sem n2: ${c2 || '—'} | sem n3: ${c3 || '—'} | d: ${val('a4d')}`,
+      fb: `<p class="score">${s} de 8</p><ul>
+      <li>${tag(okDots === 4)} Produtos escalares: A = 1101, B = 1237, <b>C = 2102</b>, D = 704, E = 1253.</li>
+      <li>${tag(f === 'C')} O rosto visto foi o <b>C</b>.</li>
+      <li>${tag(b.startsWith('Os quatro'))} <b>Os quatro</b> contribuem: o neurônio 3 domina, mas 1, 2 e 4 também respondem a C. A informação está no padrão — código distribuído.</li>
+      <li>${tag(c2 === 'C')} Sem o neurônio 2: ainda <b>C</b> (1972) — degradação graciosa.</li>
+      <li>${tag(c3 === 'E')} Sem o neurônio 3, o mais seletivo a C: o decodificador erra e escolhe <b>E</b> (893 vs 590).</li></ul>
+      <p><b>d)</b> A ativação desse neurônio é h = Σ wⱼxⱼ com wⱼ = resposta típica ao rosto C: é exatamente o produto escalar, e o limiar decide.</p>` };
+  },
+  a5() {
+    const a = val('a5a'), b = val('a5b');
+    markRadio('a5a', 'Vira para longe da luz e se afasta'); markRadio('a5b', 'Vira para a luz e acelera até ela');
+    const s = (a === 'Vira para longe da luz e se afasta') + (b === 'Vira para a luz e acelera até ela');
+    return { score: `${s}/2`, resp: `2a: ${a || '—'} | 2b: ${b || '—'} — ${val('a5b2')} | c: ${val('a5c')} | d: ${val('a5d')}`,
+      fb: `<p class="score">${s} de 2</p>
+      <figure><img src="img/aula01/braitenberg.png" alt="Trajetórias simuladas de quatro veículos de Braitenberg em torno de uma fonte de luz." loading="lazy"><figcaption>Trajetórias simuladas: 2a ("medo"), 2b ("agressão"), 3a ("amor"), 3b ("exploração").</figcaption></figure>
+      <ul><li>${tag(a === 'Vira para longe da luz e se afasta')} <b>2a</b>: o sensor mais iluminado acelera a roda do mesmo lado; o veículo vira para longe da luz.</li>
+      <li>${tag(b === 'Vira para a luz e acelera até ela')} <b>2b</b>: o sensor mais iluminado acelera a roda oposta; o veículo vira para a luz. Quanto mais perto, mais intensa a luz nos dois sensores — mais rápido.</li>
+      <li><b>3a</b> ("amor") desacelera perto da luz e para junto de uma delas.</li></ul>
+      <p>Chamamos de "medo" e "agressão" o que é só fiação. Antes de atribuir intenção a um comportamento, pergunte qual é o circuito mínimo capaz de produzi-lo.</p>` };
+  },
+  a6() {
+    let s = 0;
+    MARR.forEach(([, c], k) => { const v = val('m' + k); if (v === c) s++;
+      $$(`[name="m${k}"]`).forEach(i => { const l = i.closest('label'); l.classList.remove('right', 'wrong'); if (i.value === c) l.classList.add('right'); else if (i.checked) l.classList.add('wrong'); }); });
+    return { score: `${s}/8`, resp: MARR.map((_, k) => `${k + 1}:${val('m' + k) || '—'}`).join(' '),
+      fb: `<p class="score">${s} de 8</p><ul>${MARR.map(([, c, why], k) => `<li>${tag(val('m' + k) === c)} ${k + 1}. <b>${c}</b> — ${why}</li>`).join('')}</ul>
+      <p>O nível computacional fala de objetivos e restrições, sem citar neurônios; o algorítmico, de representações e regras; o de implementação, de moléculas, células e lugares.</p>` };
+  },
+  a7() {
+    const b = val('a7b'); markRadio('a7b', 'Não: XOR não é linearmente separável; precisa de uma camada oculta');
+    const ok = b.startsWith('Não');
+    return { score: `${ok ? 1 : 0}/1`, resp: `pesos testados: w1=${$('#w1').value} w2=${$('#w2').value} θ=${$('#th').value} | a: ${val('a7a')} | b: ${b || '—'} | c: ${val('a7c')}`,
+      fb: `<ul><li><b>Computacional:</b> XOR detecta discordância entre dois sinais — por exemplo, conflito entre o que vejo e o que esperava.</li>
+      <li>${tag(ok)} <b>Algorítmico:</b> nenhuma reta separa {(0,1),(1,0)} de {(0,0),(1,1)}; um neurônio com limiar acerta no máximo 3 de 4 (Minsky &amp; Papert, 1969). Com uma camada intermediária resolve: XOR = (A OU B) E NÃO (A E B).</li>
+      <li><b>Implementação:</b> o modelo de neurônio supõe um dendrito que só soma. Os potenciais dendríticos de cálcio de Gidon et al. (2020) <i>diminuem</i> com entradas fortes: o neurônio responde a "uma entrada" e não a "duas" — computa XOR sozinho. O dendrito faz o papel da camada oculta.</li></ul>` };
+  },
+};
+
+/* ---------- envio ---------- */
+const done = new Set();
+$$('[data-send]').forEach(btn => btn.addEventListener('click', () => {
+  const id = btn.dataset.send, sec = document.getElementById(id);
+  if (!window.Registro || !Registro.identificado()) { window.Registro && Registro.pedeId(); return; }
+  const r = ACT[id]();
+  const ok = Registro.atividade(id, sec.dataset.titulo, r.score, r.resp);
+  const fb = $(`[data-fb="${id}"]`); fb.innerHTML = '<h3>Gabarito</h3>' + r.fb; fb.hidden = false;
+  const st = $(`[data-status="${id}"]`);
+  const first = Registro.aluno().n.split(' ')[0];
+  st.textContent = ok ? `✓ Resposta registrada para ${first}. Você pode corrigir e reenviar.` : 'Identifique-se no topo da página.';
+  btn.textContent = 'Reenviar';
+  done.add(id); const a = $(`nav a[href="#${id}"]`); if (a) a.classList.add('done');
+  fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}));
+})();
+</script>
+<script src="config.js?v=1"></script>
+<script src="registro.js?v=1" data-aula="1"></script>

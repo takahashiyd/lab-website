@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulações — Aula 1: O Grande Quadro</title>
+<style>
+  :root {
+    --teal: #0D7377;
+    --teal-d: #0A5255;
+    --teal-l: #E0F4F5;
+    --blue: #1A56DB;
+    --amber: #B45309;
+    --amber-l: #FEF3C7;
+    --violet: #6D28D9;
+    --violet-l: #EDE9FE;
+    --green: #15803D;
+    --dark: #1E293B;
+    --slate: #475569;
+    --lgray: #F1F5F9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #F8FAFC; color: var(--dark); }
+
+  header {
+    background: var(--teal-d); color: white;
+    padding: 20px 32px 16px; border-bottom: 4px solid var(--amber);
+  }
+  header .label { font-size: 11px; letter-spacing: 3px; color: #7ECFD3; font-weight: 600; text-transform: uppercase; margin-bottom: 6px; }
+  header h1 { font-size: 26px; font-weight: 700; }
+  header p { font-size: 14px; color: #CCF0F2; margin-top: 4px; }
+
+  nav { display: flex; gap: 4px; background: var(--dark); padding: 8px 24px; overflow-x: auto; }
+  nav button {
+    background: transparent; border: 2px solid #334155; color: #94A3B8;
+    padding: 8px 18px; border-radius: 6px; cursor: pointer; font-size: 13px;
+    font-weight: 600; white-space: nowrap; transition: all 0.2s;
+  }
+  nav button.active, nav button:hover { background: var(--teal); border-color: var(--teal); color: white; }
+
+  .sim-panel { display: none; padding: 24px 32px; }
+  .sim-panel.active { display: block; }
+  .sim-title { font-size: 20px; font-weight: 700; color: var(--teal-d); margin-bottom: 4px; }
+  .sim-desc { font-size: 14px; color: var(--slate); margin-bottom: 20px; line-height: 1.6; max-width: 800px; }
+
+  /* ─── BRAITENBERG ─── */
+  #braitenberg-layout { display: grid; grid-template-columns: 1fr 300px; gap: 20px; align-items: start; }
+  #braitenberg-canvas { border-radius: 12px; cursor: crosshair; display: block; background: #0A1628; box-shadow: 0 4px 20px rgba(0,0,0,0.2); width: 100%; max-width: 660px; }
+  .braitenberg-controls { display: flex; flex-direction: column; gap: 14px; }
+  .ctrl-section { background: white; border-radius: 10px; padding: 16px; box-shadow: 0 1px 6px rgba(0,0,0,0.08); }
+  .ctrl-section h3 { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--slate); margin-bottom: 12px; }
+  .vehicle-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .vbtn { padding: 10px 8px; border-radius: 8px; border: 2px solid #E2E8F0; cursor: pointer; font-size: 12px; font-weight: 600; text-align: center; background: white; transition: all 0.15s; color: var(--dark); }
+  .vbtn.active { border-color: var(--teal); background: var(--teal-l); color: var(--teal-d); }
+  .vbtn .vname { font-size: 13px; font-weight: 700; display: block; margin-bottom: 2px; }
+  .vbtn .vdesc { font-size: 10px; color: var(--slate); font-weight: 400; display: block; }
+  .meter-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 12px; }
+  .meter-label { width: 90px; color: var(--slate); }
+  .meter-bar { flex: 1; height: 8px; background: #E2E8F0; border-radius: 4px; overflow: hidden; }
+  .meter-fill { height: 100%; border-radius: 4px; transition: width 0.08s; }
+  .meter-value { width: 36px; text-align: right; font-weight: 600; font-size: 11px; }
+  .info-box { background: var(--teal-l); border-left: 3px solid var(--teal); border-radius: 0 8px 8px 0; padding: 12px; font-size: 12px; line-height: 1.6; color: var(--dark); }
+  .info-box strong { color: var(--teal-d); }
+  .ctrl-btn { width: 100%; padding: 10px; border-radius: 8px; border: none; background: var(--teal); color: white; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+  .ctrl-btn:hover { background: var(--teal-d); }
+  .ctrl-btn.secondary { background: #64748B; }
+  .ctrl-btn.secondary:hover { background: var(--dark); }
+
+  /* ─── MARR QUIZ ─── */
+  .marr-layout { max-width: 900px; }
+  .marr-score-bar { display: flex; align-items: center; justify-content: space-between; background: var(--dark); color: white; border-radius: 10px; padding: 12px 20px; margin-bottom: 20px; }
+  .marr-score-bar .score { font-size: 22px; font-weight: 700; color: var(--amber); }
+  .marr-score-bar .score-label { font-size: 12px; color: #94A3B8; }
+  .marr-question-area { background: white; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); min-height: 130px; }
+  .marr-question-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--slate); margin-bottom: 10px; }
+  .marr-question-text { font-size: 18px; font-weight: 600; color: var(--dark); line-height: 1.5; }
+  .marr-question-context { font-size: 13px; color: var(--slate); margin-top: 8px; font-style: italic; }
+  .marr-choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+  .marr-choice { border-radius: 12px; padding: 20px 16px; cursor: pointer; border: 3px solid transparent; transition: all 0.2s; text-align: center; font-weight: 700; font-size: 15px; color: white; }
+  .marr-choice .level-num { font-size: 30px; display: block; margin-bottom: 4px; opacity: 0.9; }
+  .marr-choice .level-name { font-size: 16px; display: block; }
+  .marr-choice .level-hint { font-size: 11px; display: block; margin-top: 4px; font-weight: 400; opacity: 0.8; }
+  .marr-choice:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+  @keyframes pulse-correct { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+  .marr-feedback { border-radius: 10px; padding: 16px 20px; font-size: 14px; line-height: 1.6; display: none; margin-bottom: 16px; }
+  .marr-feedback.show { display: block; }
+  .marr-feedback.correct-fb { background: #DCFCE7; border-left: 4px solid var(--green); color: #14532D; }
+  .marr-feedback.wrong-fb { background: #FEE2E2; border-left: 4px solid #DC2626; color: #7F1D1D; }
+  .marr-next { text-align: center; }
+  .marr-next button { background: var(--violet); color: white; border: none; border-radius: 8px; padding: 12px 32px; font-size: 15px; font-weight: 600; cursor: pointer; display: none; }
+  .marr-next button.show { display: inline-block; }
+
+  /* ─── ORG LEVELS ─── */
+  .org-grid { display: grid; grid-template-columns: 280px 1fr; gap: 24px; align-items: start; }
+  .org-levels { display: flex; flex-direction: column; gap: 4px; }
+  .org-level { border-radius: 10px; padding: 13px 16px; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; display: flex; align-items: center; gap: 12px; }
+  .org-level:hover, .org-level.active { border-color: currentColor; }
+  .org-level .scale-badge { font-size: 10px; font-weight: 700; padding: 3px 7px; border-radius: 12px; background: rgba(0,0,0,0.12); white-space: nowrap; min-width: 54px; text-align: center; }
+  .org-level .lname { font-size: 13px; font-weight: 700; }
+  .org-level .lexample { font-size: 10px; opacity: 0.7; margin-top: 1px; }
+  .org-detail { background: white; border-radius: 12px; padding: 26px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); min-height: 400px; }
+  .org-detail-header { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; }
+  .org-detail-icon { width: 52px; height: 52px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 26px; }
+  .org-detail-title { font-size: 21px; font-weight: 700; }
+  .org-detail-scale { font-size: 13px; color: var(--slate); margin-top: 2px; }
+  .org-fact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+  .org-fact { background: var(--lgray); border-radius: 8px; padding: 11px; border-left: 3px solid var(--teal); }
+  .org-fact .fact-label { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--slate); margin-bottom: 3px; }
+  .org-fact .fact-value { font-size: 13px; font-weight: 600; }
+  .marr-tag { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; margin: 3px; color: white; }
+
+  /* ─── NOVOS PAINÉIS (v2) ─── */
+  .two-col { display: grid; grid-template-columns: minmax(0,1fr) 300px; gap: 20px; align-items: start; }
+  .canvas-card { background: white; border-radius: 12px; padding: 12px 14px; box-shadow: 0 1px 6px rgba(0,0,0,0.08); margin-bottom: 14px; }
+  .canvas-card canvas { width: 100%; height: auto; display: block; }
+  .cc-title { font-size: 12px; font-weight: 600; color: var(--slate); margin-bottom: 6px; }
+  .side { display: flex; flex-direction: column; gap: 14px; }
+  .sl { display: block; font-size: 12px; color: var(--slate); margin-bottom: 10px; }
+  .sl b { float: right; color: var(--dark); }
+  .sl input { width: 100%; margin-top: 4px; accent-color: var(--teal); }
+  .chk { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--dark); margin-top: 10px; }
+  .seg { display: grid; grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 4px; margin-bottom: 10px; }
+  .seg button { padding: 7px 4px; border-radius: 6px; border: 2px solid #E2E8F0; background: white; font-size: 11.5px; font-weight: 600; cursor: pointer; color: var(--slate); }
+  .seg button.on { border-color: var(--teal); background: var(--teal-l); color: var(--teal-d); }
+  .readout { font-size: 13px; line-height: 1.6; color: var(--dark); margin-top: 6px; }
+  .guess { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 10px 0 4px; }
+  .guess button { padding: 10px 0; border-radius: 8px; border: 2px solid var(--amber); background: var(--amber-l); color: var(--amber); font-weight: 700; font-size: 15px; cursor: pointer; }
+  .guess button:hover { background: var(--amber); color: white; }
+  @media (max-width: 900px) { .two-col, #braitenberg-layout, .org-grid { grid-template-columns: 1fr; } .marr-choices { grid-template-columns: 1fr; } .sim-panel { padding: 16px; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="label">Neurociência Computacional · Aula 1</div>
+  <h1>Simulações Interativas — O Grande Quadro</h1>
+  <p style="margin-top:2px">Da neurobiologia aos modelos · baseado em Rolls (2023), <em>Brain Computations and Connectivity</em></p>
+  <p>Prof. Daniel Y Takahashi · Instituto do Cérebro, UFRN</p>
+</header>
+
+<nav>
+  <button class="active" onclick="showPanel('neuron', this)">⚡ Neurônio: curva f–I</button>
+  <button onclick="showPanel('ltp', this)">🔗 Sinapse: LTP e Hebb</button>
+  <button onclick="showPanel('decoder', this)">👁 Seja o decodificador</button>
+  <button onclick="showPanel('braitenberg', this)">🚗 Veículos de Braitenberg</button>
+  <button onclick="showPanel('marr', this)">🧠 Quiz: 3 Níveis de Marr</button>
+  <button onclick="showPanel('org', this)">🔬 Níveis de Organização</button>
+</nav>
+
+<!-- ═══════════ PAINEL NOVO A — NEURÔNIO (f–I) ═══════════ -->
+<div id="panel-neuron" class="sim-panel active">
+  <div class="sim-title">⚡ Neurônio: da corrente ao disparo (curva f–I)</div>
+  <div class="sim-desc">Na biologia, a "função de ativação" de um neurônio é medida injetando corrente no soma e contando os disparos — a <strong>curva frequência–corrente (f–I)</strong> (Rolls, 2023, Fig. 1.4). Aqui um neurônio <em>integra-e-dispara com adaptação</em> (τ = 20 ms, limiar de corrente ≈ 0,5 nA, como o neurônio CA1 do livro) recebe pulsos de 1,5 s. <strong>Varie a corrente</strong> e veja o traço de voltagem; depois <strong>ajuste um modelo f(h)</strong> à curva medida.</div>
+  <div class="two-col">
+    <div>
+      <div class="canvas-card">
+        <div class="cc-title">Potencial de membrana durante o pulso de corrente</div>
+        <canvas id="nrn-v" width="680" height="230"></canvas>
+      </div>
+      <div class="canvas-card">
+        <div class="cc-title">Curva f–I: <span style="color:#B45309">● inicial (1/1º intervalo)</span> · <span style="color:#0D7377">● adaptada (último 0,5 s)</span> · <span style="color:#6D28D9">— seu modelo f(h)</span></div>
+        <canvas id="nrn-fi" width="680" height="260"></canvas>
+      </div>
+    </div>
+    <div class="side">
+      <div class="ctrl-section">
+        <h3>Neurônio (biologia)</h3>
+        <label class="sl">Corrente injetada I <b id="nrn-I-v">1.00 nA</b><input type="range" id="nrn-I" min="0" max="3" step="0.05" value="1"></label>
+        <label class="sl">Força da adaptação <b id="nrn-a-v">1.0</b><input type="range" id="nrn-a" min="0" max="3" step="0.1" value="1"></label>
+        <div class="readout" id="nrn-read"></div>
+      </div>
+      <div class="ctrl-section">
+        <h3>Modelo f(h) (computação)</h3>
+        <div class="seg" id="nrn-type">
+          <button data-t="lin" class="on">Linear c/ limiar</button><button data-t="sig">Sigmoide</button><button data-t="bin">Binária</button>
+        </div>
+        <label class="sl">Limiar θ <b id="nrn-th-v">0.50 nA</b><input type="range" id="nrn-th" min="0" max="2" step="0.05" value="0.5"></label>
+        <label class="sl" id="nrn-k-row">Inclinação <b id="nrn-k-v">20 Hz/nA</b><input type="range" id="nrn-k" min="2" max="150" step="1" value="20"></label>
+        <label class="sl" id="nrn-max-row">Taxa máxima <b id="nrn-max-v">60 Hz</b><input type="range" id="nrn-max" min="10" max="250" step="5" value="60"></label>
+        <div class="readout" id="nrn-err"></div>
+      </div>
+      <div class="info-box"><strong>O que observar:</strong> (1) abaixo de ~0,5 nA não há disparo — o <em>limiar</em>; (2) a taxa inicial é bem maior que a adaptada — <em>adaptação</em>; (3) com adaptação = 0, as duas curvas coincidem e uma f(h) estática descreve tudo. Que variável a mais o modelo precisaria para capturar a adaptação?</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PAINEL NOVO B — SINAPSE (LTP/LTD) ═══════════ -->
+<div id="panel-ltp" class="sim-panel">
+  <div class="sim-title">🔗 Sinapse que aprende: LTP, LTD e a regra de Hebb</div>
+  <div class="sim-desc">Um neurônio recebe duas vias, <strong>A</strong> e <strong>B</strong>. Escolha a intensidade de cada via e aplique um trem de estímulos. O receptor <strong>NMDA</strong> só deixa entrar Ca²⁺ se a célula pós-sináptica estiver fortemente despolarizada: acima do limiar NMDA, as sinapses <em>ativas</em> sofrem LTP e as inativas, LTD heterossináptica; numa ativação intermediária, as sinapses ativas sofrem LTD homossináptica (Rolls, 2023, Fig. 1.5). Reproduza os quatro painéis da figura!</div>
+  <div class="two-col">
+    <div>
+      <div class="canvas-card">
+        <div class="cc-title">Circuito (tamanho da sinapse = peso; cor do soma = ativação pós-sináptica)</div>
+        <canvas id="ltp-c" width="680" height="300"></canvas>
+      </div>
+      <div class="canvas-card">
+        <div class="cc-title">Histórico dos pesos: <span style="color:#1A56DB">— w<sub>A</sub></span> · <span style="color:#B45309">— w<sub>B</sub></span></div>
+        <canvas id="ltp-h" width="680" height="170"></canvas>
+      </div>
+    </div>
+    <div class="side">
+      <div class="ctrl-section">
+        <h3>Via A</h3>
+        <div class="seg" id="ltp-A"><button data-v="0">nenhuma</button><button data-v="1" class="on">fraca</button><button data-v="1.6">média</button><button data-v="2.6">forte</button></div>
+        <h3 style="margin-top:12px">Via B</h3>
+        <div class="seg" id="ltp-B"><button data-v="0" class="on">nenhuma</button><button data-v="1">fraca</button><button data-v="1.6">média</button><button data-v="2.6">forte</button></div>
+        <label class="chk"><input type="checkbox" id="ltp-ap5"> Aplicar AP5 (bloqueia o NMDA)</label>
+        <div style="height:8px"></div>
+        <button class="ctrl-btn" onclick="ltpStim()">⚡ Aplicar trem de estímulos</button>
+        <div style="height:8px"></div>
+        <button class="ctrl-btn secondary" onclick="ltpReset()">↺ Restaurar pesos</button>
+      </div>
+      <div class="ctrl-section">
+        <h3>Resultado</h3>
+        <div class="readout" id="ltp-read">Escolha as vias e aplique um trem.</div>
+      </div>
+      <div class="info-box"><strong>Desafios:</strong> (a) Faça só A fraca: nada muda. (b) A forte: LTP em A, LTD em B. (c) A e B fracas <em>juntas</em>: ambas potencializam — <em>associatividade</em>. (d) A média: LTD homossináptica. (e) Com AP5, tente induzir LTP. (f) Depois de potencializar A, repita "A fraca": por que agora o resultado mudou?</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PAINEL NOVO C — DECODIFICADOR ═══════════ -->
+<div id="panel-decoder" class="sim-panel">
+  <div class="sim-title">👁 Seja o decodificador: código populacional no córtex inferotemporal</div>
+  <div class="sim-desc">Cada neurônio "IT" simulado responde a vários dos 5 rostos (A–E), com intensidades diferentes e ruído de Poisson em cada tentativa — como na Fig. 2.17 de Rolls (2023). Um neurônio leitor compara a resposta da população com o padrão médio de cada rosto usando o <strong>produto escalar</strong>. <strong>Tente adivinhar antes do decodificador</strong>, depois veja como a acurácia cresce com o número de neurônios e resiste a lesões.</div>
+  <div class="two-col">
+    <div>
+      <div class="canvas-card">
+        <div class="cc-title">Respostas médias aprendidas (spikes/s) — cada coluna é um neurônio, cada linha um rosto</div>
+        <canvas id="dec-t" width="680" height="190"></canvas>
+      </div>
+      <div class="canvas-card">
+        <div class="cc-title">Tentativa atual: resposta da população (barras) e similaridade com cada rosto</div>
+        <canvas id="dec-r" width="680" height="200"></canvas>
+      </div>
+      <div class="canvas-card">
+        <div class="cc-title">Acurácia do decodificador vs número de neurônios (200 tentativas por ponto)</div>
+        <canvas id="dec-a" width="680" height="170"></canvas>
+      </div>
+    </div>
+    <div class="side">
+      <div class="ctrl-section">
+        <h3>População</h3>
+        <label class="sl">Nº de neurônios <b id="dec-n-v">8</b><input type="range" id="dec-n" min="1" max="40" step="1" value="8"></label>
+        <label class="sl">Seletividade (esparsidade) <b id="dec-s-v">média</b><input type="range" id="dec-s" min="1" max="3" step="1" value="2"></label>
+        <label class="sl">Janela de contagem <b id="dec-w-v">200 ms</b><input type="range" id="dec-w" min="50" max="500" step="50" value="200"></label>
+        <label class="chk"><input type="checkbox" id="dec-cos"> Normalizar (cosseno em vez de produto escalar)</label>
+        <div style="height:6px"></div>
+        <button class="ctrl-btn secondary" onclick="decNewPop()">🎲 Sortear nova população</button>
+        <div style="height:6px"></div>
+        <button class="ctrl-btn secondary" onclick="decLesion()">✂ Lesionar 25% dos neurônios</button>
+      </div>
+      <div class="ctrl-section">
+        <h3>Jogue contra o decodificador</h3>
+        <button class="ctrl-btn" onclick="decTrial()">▶ Nova tentativa</button>
+        <div class="guess" id="dec-guess"></div>
+        <div class="readout" id="dec-read">Clique em "Nova tentativa", olhe as barras e escolha um rosto.</div>
+        <div class="readout" id="dec-score"></div>
+      </div>
+      <div class="info-box"><strong>Para pensar:</strong> com 1 neurônio, por que o decodificador erra tanto? Por que a acurácia sobe rápido com poucos neurônios a mais? O que a janela de contagem tem a ver com o tempo que o cérebro tem para decidir (~15–20 ms por estágio)?</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PAINEL 1 — BRAITENBERG ═══════════ -->
+<div id="panel-braitenberg" class="sim-panel">
+  <div class="sim-title">🚗 Simulação: Veículos de Braitenberg</div>
+  <div class="sim-desc">Veículos com sensores de luz exibem comportamentos complexos — medo, agressão, amor — sem nenhum processamento inteligente. <strong>Clique na arena</strong> para adicionar/remover fontes de luz (☀). Observe como simples conexões sensor→motor geram comportamentos ricos.</div>
+
+  <div id="braitenberg-layout">
+    <div>
+      <canvas id="braitenberg-canvas" width="660" height="480"></canvas>
+      <div style="margin-top:8px;font-size:12px;color:var(--slate);text-align:center;">
+        💡 Clique para adicionar luz · Clique em ☀ para remover · <kbd>Espaço</kbd> = pausar
+      </div>
+    </div>
+
+    <div class="braitenberg-controls">
+      <div class="ctrl-section">
+        <h3>Tipo de Veículo</h3>
+        <div class="vehicle-btns">
+          <button class="vbtn active" onclick="setVehicle(0)">
+            <span class="vname">2a — Medo</span>
+            <span class="vdesc">Foge da luz</span>
+          </button>
+          <button class="vbtn" onclick="setVehicle(1)">
+            <span class="vname">2b — Agressão</span>
+            <span class="vdesc">Ataca a luz</span>
+          </button>
+          <button class="vbtn" onclick="setVehicle(2)">
+            <span class="vname">3a — Amor</span>
+            <span class="vdesc">Permanece perto</span>
+          </button>
+          <button class="vbtn" onclick="setVehicle(3)">
+            <span class="vname">3b — Exploração</span>
+            <span class="vdesc">Orbita fontes</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="ctrl-section">
+        <h3>Sensores em Tempo Real</h3>
+        <div class="meter-row">
+          <span class="meter-label">Sensor Esq.</span>
+          <div class="meter-bar"><div class="meter-fill" id="meter-sl" style="width:0%;background:#F59E0B"></div></div>
+          <span class="meter-value" id="val-sl">0.00</span>
+        </div>
+        <div class="meter-row">
+          <span class="meter-label">Sensor Dir.</span>
+          <div class="meter-bar"><div class="meter-fill" id="meter-sr" style="width:0%;background:#F59E0B"></div></div>
+          <span class="meter-value" id="val-sr">0.00</span>
+        </div>
+        <div class="meter-row">
+          <span class="meter-label">Motor Esq.</span>
+          <div class="meter-bar"><div class="meter-fill" id="meter-ml" style="width:0%;background:var(--teal)"></div></div>
+          <span class="meter-value" id="val-ml">0.00</span>
+        </div>
+        <div class="meter-row">
+          <span class="meter-label">Motor Dir.</span>
+          <div class="meter-bar"><div class="meter-fill" id="meter-mr" style="width:0%;background:var(--teal)"></div></div>
+          <span class="meter-value" id="val-mr">0.00</span>
+        </div>
+      </div>
+
+      <div class="ctrl-section">
+        <div class="info-box" id="vehicle-info-box">
+          <strong>Veículo 2a — Medo</strong><br>
+          Conexão ipsilateral excitatória: sensor esquerdo → motor esquerdo. Quanto mais luz um sensor detecta, mais rápido o motor do mesmo lado gira — o veículo <em>foge</em> da fonte de luz.
+        </div>
+      </div>
+
+      <div class="ctrl-section">
+        <h3>Velocidade</h3>
+        <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--slate)">
+          <span>Lento</span>
+          <input type="range" id="speed-slider" min="0.5" max="3" step="0.1" value="1.2" style="flex:1">
+          <span>Rápido</span>
+        </div>
+      </div>
+
+      <div class="ctrl-section">
+        <h3>Controles</h3>
+        <button class="ctrl-btn" id="pause-btn" onclick="togglePause()">⏸ Pausar</button>
+        <div style="height:8px"></div>
+        <button class="ctrl-btn secondary" onclick="resetVehicle()">↺ Resetar Veículo</button>
+        <div style="height:8px"></div>
+        <button class="ctrl-btn secondary" onclick="clearLights()">🔆 Limpar Luzes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PAINEL 2 — MARR QUIZ ═══════════ -->
+<div id="panel-marr" class="sim-panel">
+  <div class="sim-title">🧠 Quiz: Os 3 Níveis de Análise de Marr</div>
+  <div class="sim-desc">Para cada afirmação, identifique a qual nível de Marr ela pertence. O <strong>Computacional</strong> pergunta <em>o quê e por quê</em>, o <strong>Algorítmico</strong> pergunta <em>como</em>, e a <strong>Implementação</strong> pergunta <em>onde e com quê</em>.</div>
+
+  <div class="marr-layout">
+    <div class="marr-score-bar">
+      <div>
+        <div class="score-label">PONTUAÇÃO</div>
+        <div class="score"><span id="score-val">0</span> / <span id="total-val">0</span></div>
+      </div>
+      <div style="color:#94A3B8;font-size:13px;" id="progress-text">Pergunta 1 de 18</div>
+      <button onclick="resetQuiz()" style="background:#334155;border:none;color:#94A3B8;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px;">↺ Recomeçar</button>
+    </div>
+
+    <div class="marr-question-area">
+      <div class="marr-question-label">Afirmação / Pergunta</div>
+      <div class="marr-question-text" id="marr-q-text">Carregando...</div>
+      <div class="marr-question-context" id="marr-q-ctx"></div>
+    </div>
+
+    <div class="marr-choices">
+      <div class="marr-choice" style="background:#B45309" onclick="submitAnswer(0)">
+        <span class="level-num">1</span>
+        <span class="level-name">Computacional</span>
+        <span class="level-hint">O QUÊ e POR QUÊ</span>
+      </div>
+      <div class="marr-choice" style="background:#6D28D9" onclick="submitAnswer(1)">
+        <span class="level-num">2</span>
+        <span class="level-name">Algorítmico</span>
+        <span class="level-hint">COMO</span>
+      </div>
+      <div class="marr-choice" style="background:#0D7377" onclick="submitAnswer(2)">
+        <span class="level-num">3</span>
+        <span class="level-name">Implementação</span>
+        <span class="level-hint">ONDE e COM QUÊ</span>
+      </div>
+    </div>
+
+    <div class="marr-feedback" id="marr-feedback"></div>
+    <div class="marr-next"><button id="next-btn" onclick="nextQuestion()">Próxima pergunta →</button></div>
+  </div>
+</div>
+
+<!-- ═══════════ PAINEL 3 — ORGANIZAÇÃO ═══════════ -->
+<div id="panel-org" class="sim-panel">
+  <div class="sim-title">🔬 Níveis de Organização do Sistema Nervoso</div>
+  <div class="sim-desc">O sistema nervoso é organizado em múltiplas escalas — da molécula ao comportamento. Clique em cada nível para explorar o que é estudado, exemplos de modelos, e qual nível de Marr se aplica.</div>
+
+  <div class="org-grid">
+    <div class="org-levels" id="org-levels-list"></div>
+    <div class="org-detail" id="org-detail-panel">
+      <div style="color:var(--slate);text-align:center;padding-top:80px;font-size:16px;">← Selecione um nível para explorar</div>
+    </div>
+  </div>
+
+  <canvas id="org-canvas" width="900" height="160" style="margin-top:24px;border-radius:12px;display:block;width:100%;max-width:900px;"></canvas>
+</div>
+
+<script>
+// ═══════════ NAV ═══════════
+function showPanel(name, btn) {
+  document.querySelectorAll('.sim-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name === 'org') { buildOrgLevels(); drawOrgTimeline(); }
+}
+
+// ═══════════ BRAITENBERG ═══════════
+const bCanvas = document.getElementById('braitenberg-canvas');
+const bCtx = bCanvas.getContext('2d');
+
+const VTYPES = [
+  { name:'2a — Medo',      color:'#E74C3C', w:[1,0,0,1],   desc:'<strong>Veículo 2a — Medo</strong><br>Conexão ipsilateral excitatória: sensor E → motor E, sensor D → motor D. Quanto mais luz, mais rápido o motor do mesmo lado gira — o veículo <em>foge</em>.' },
+  { name:'2b — Agressão',  color:'#E67E22', w:[0,1,1,0],   desc:'<strong>Veículo 2b — Agressão</strong><br>Conexão cruzada excitatória: sensor E → motor D, sensor D → motor E. O veículo <em>ataca</em> a fonte de luz.' },
+  { name:'3a — Amor',      color:'#27AE60', w:[-0.8,0,0,-0.8], desc:'<strong>Veículo 3a — Amor</strong><br>Conexão ipsilateral inibitória: a luz <em>desacelera</em> o motor do mesmo lado. O veículo para perto da luz, como se a amasse.' },
+  { name:'3b — Exploração',color:'#8E44AD', w:[0,-0.7,-0.7,0], desc:'<strong>Veículo 3b — Exploração</strong><br>Conexão cruzada inibitória: o veículo orbita as fontes de luz em curvas suaves, <em>explorando</em> o espaço.' }
+];
+
+let vehicleType = 0, paused = false;
+let lights = [{ x: 180, y: 200 }, { x: 480, y: 300 }];
+let vehicle = { x: 330, y: 240, theta: 0.5, trail: [] };
+const MAX_TRAIL = 500, BASE_SPD = 65, SDIST = 18, SANG = 0.55;
+let lastTime = null;
+
+function sensorPos(v) {
+  return {
+    L: { x: v.x + SDIST*Math.cos(v.theta+SANG), y: v.y + SDIST*Math.sin(v.theta+SANG) },
+    R: { x: v.x + SDIST*Math.cos(v.theta-SANG), y: v.y + SDIST*Math.sin(v.theta-SANG) }
+  };
+}
+
+function lightAt(sx, sy) {
+  let I = 0;
+  lights.forEach(l => { I += 4500 / ((sx-l.x)**2 + (sy-l.y)**2 + 80); });
+  return Math.min(I, 3);
+}
+
+function updateVehicle(dt) {
+  const { L, R } = sensorPos(vehicle);
+  const sl = lightAt(L.x, L.y), sr = lightAt(R.x, R.y);
+  const wt = VTYPES[vehicleType].w;
+  const speed = parseFloat(document.getElementById('speed-slider').value);
+
+  let ml = 1 + (wt[0]*sl + wt[1]*sr) * 0.8;
+  let mr = 1 + (wt[2]*sl + wt[3]*sr) * 0.8;
+  ml = Math.max(0.05, Math.min(ml, 3.5));
+  mr = Math.max(0.05, Math.min(mr, 3.5));
+
+  const vl = ml*BASE_SPD*speed, vr = mr*BASE_SPD*speed;
+  vehicle.theta += (vr - vl) / 32 * dt;
+  vehicle.x += (vl+vr)/2 * Math.cos(vehicle.theta) * dt;
+  vehicle.y += (vl+vr)/2 * Math.sin(vehicle.theta) * dt;
+
+  const W = bCanvas.width, H = bCanvas.height, m = 22;
+  if (vehicle.x < m) { vehicle.x = m; vehicle.theta = Math.PI - vehicle.theta; }
+  if (vehicle.x > W-m) { vehicle.x = W-m; vehicle.theta = Math.PI - vehicle.theta; }
+  if (vehicle.y < m) { vehicle.y = m; vehicle.theta = -vehicle.theta; }
+  if (vehicle.y > H-m) { vehicle.y = H-m; vehicle.theta = -vehicle.theta; }
+
+  vehicle.trail.push({ x: vehicle.x, y: vehicle.y });
+  if (vehicle.trail.length > MAX_TRAIL) vehicle.trail.shift();
+
+  // meters
+  const p = v => Math.min(100, v/3.5*100) + '%';
+  document.getElementById('meter-sl').style.width = p(sl);
+  document.getElementById('val-sl').textContent = sl.toFixed(2);
+  document.getElementById('meter-sr').style.width = p(sr);
+  document.getElementById('val-sr').textContent = sr.toFixed(2);
+  document.getElementById('meter-ml').style.width = p(ml);
+  document.getElementById('val-ml').textContent = ml.toFixed(2);
+  document.getElementById('meter-mr').style.width = p(mr);
+  document.getElementById('val-mr').textContent = mr.toFixed(2);
+}
+
+function drawScene() {
+  const W = bCanvas.width, H = bCanvas.height;
+  bCtx.clearRect(0, 0, W, H);
+  bCtx.fillStyle = '#0A1628'; bCtx.fillRect(0, 0, W, H);
+
+  // Grid
+  bCtx.strokeStyle = 'rgba(255,255,255,0.035)'; bCtx.lineWidth = 1;
+  for (let x = 0; x < W; x += 44) { bCtx.beginPath(); bCtx.moveTo(x,0); bCtx.lineTo(x,H); bCtx.stroke(); }
+  for (let y = 0; y < H; y += 44) { bCtx.beginPath(); bCtx.moveTo(0,y); bCtx.lineTo(W,y); bCtx.stroke(); }
+
+  // Lights
+  lights.forEach(l => {
+    const g = bCtx.createRadialGradient(l.x,l.y,0,l.x,l.y,110);
+    g.addColorStop(0,'rgba(255,230,80,0.32)'); g.addColorStop(1,'rgba(255,200,50,0)');
+    bCtx.beginPath(); bCtx.arc(l.x,l.y,110,0,Math.PI*2);
+    bCtx.fillStyle = g; bCtx.fill();
+    bCtx.beginPath(); bCtx.arc(l.x,l.y,13,0,Math.PI*2);
+    bCtx.fillStyle = '#FFE066'; bCtx.fill();
+    bCtx.beginPath(); bCtx.arc(l.x,l.y,7,0,Math.PI*2);
+    bCtx.fillStyle = '#fff'; bCtx.fill();
+  });
+
+  // Trail
+  if (vehicle.trail.length > 2) {
+    bCtx.beginPath();
+    vehicle.trail.forEach((p,i) => { i ? bCtx.lineTo(p.x,p.y) : bCtx.moveTo(p.x,p.y); });
+    bCtx.strokeStyle = VTYPES[vehicleType].color + '50'; bCtx.lineWidth = 2; bCtx.stroke();
+  }
+
+  // Sensors
+  const { L, R } = sensorPos(vehicle);
+  const sl = lightAt(L.x, L.y), sr = lightAt(R.x, R.y);
+  [[L,'E',sl],[R,'D',sr]].forEach(([p,lbl,s]) => {
+    bCtx.beginPath(); bCtx.arc(p.x,p.y,6,0,Math.PI*2);
+    bCtx.fillStyle = `rgba(255,230,100,${0.4+Math.min(s,2)*0.28})`; bCtx.fill();
+    bCtx.strokeStyle='white'; bCtx.lineWidth=1; bCtx.stroke();
+    bCtx.fillStyle='rgba(255,255,255,0.7)'; bCtx.font='9px Arial'; bCtx.textAlign='center';
+    bCtx.fillText(lbl,p.x,p.y+3.5);
+  });
+
+  // Body
+  bCtx.save();
+  bCtx.translate(vehicle.x, vehicle.y);
+  bCtx.rotate(vehicle.theta);
+  bCtx.beginPath();
+  bCtx.moveTo(20,0); bCtx.lineTo(-13,12); bCtx.lineTo(-7,0); bCtx.lineTo(-13,-12); bCtx.closePath();
+  bCtx.fillStyle = VTYPES[vehicleType].color; bCtx.fill();
+  bCtx.strokeStyle = 'rgba(255,255,255,0.8)'; bCtx.lineWidth = 1.5; bCtx.stroke();
+  // Nose line
+  bCtx.beginPath(); bCtx.moveTo(20,0); bCtx.lineTo(28,0);
+  bCtx.strokeStyle='rgba(255,255,255,0.5)'; bCtx.lineWidth=2; bCtx.stroke();
+  bCtx.restore();
+}
+
+function loop(ts) {
+  if (!paused) {
+    if (lastTime) {
+      const dt = Math.min((ts-lastTime)/1000, 0.05);
+      updateVehicle(dt);
+    }
+    lastTime = ts;
+    drawScene();
+  }
+  requestAnimationFrame(loop);
+}
+
+bCanvas.addEventListener('click', e => {
+  const r = bCanvas.getBoundingClientRect();
+  const sx = bCanvas.width/r.width, sy = bCanvas.height/r.height;
+  const mx = (e.clientX-r.left)*sx, my = (e.clientY-r.top)*sy;
+  const idx = lights.findIndex(l => Math.hypot(l.x-mx,l.y-my) < 22);
+  if (idx >= 0) lights.splice(idx,1);
+  else lights.push({x:mx,y:my});
+});
+
+document.addEventListener('keydown', e => { if (e.code==='Space') { e.preventDefault(); togglePause(); } });
+
+function setVehicle(i) {
+  vehicleType = i; vehicle.trail = [];
+  document.querySelectorAll('.vbtn').forEach((b,j) => b.classList.toggle('active',j===i));
+  document.getElementById('vehicle-info-box').innerHTML = VTYPES[i].desc;
+}
+
+function togglePause() {
+  paused = !paused; lastTime = null;
+  document.getElementById('pause-btn').textContent = paused ? '▶ Continuar' : '⏸ Pausar';
+}
+
+function resetVehicle() { vehicle = {x:330,y:240,theta:Math.random()*Math.PI*2,trail:[]}; }
+function clearLights() { lights = []; }
+
+requestAnimationFrame(loop);
+
+// ═══════════ MARR QUIZ ═══════════
+const MARR_QS = [
+  { q:'O córtex inferotemporal deve representar objetos de forma invariante à posição e ao tamanho, para que o que se aprende sobre um objeto generalize.', ctx:'Via visual ventral · Rolls (2023, cap. 2)', a:0,
+    ok:'✅ <strong>Nível Computacional</strong>. Diz QUAL problema a via ventral resolve (invariância) e POR QUÊ isso é útil (generalização), sem falar de neurônios ou regras.',
+    no:'❌ É o <strong>Nível Computacional</strong>. A afirmação define o objetivo (representação invariante) e sua justificativa — não o procedimento nem o substrato.' },
+  { q:'Uma hierarquia de redes competitivas, cada uma combinando poucas características do estágio anterior, forma neurônios que respondem a objetos.', ctx:'Modelo VisNet · Rolls (2023, seção 2.8)', a:1,
+    ok:'✅ <strong>Nível Algorítmico</strong>. Descreve a representação (características combinadas em estágios) e o procedimento (aprendizado competitivo) — o COMO.',
+    no:'❌ É o <strong>Nível Algorítmico</strong>. Arquitetura em estágios + regra de aprendizado competitivo é um algoritmo, independente de quais neurônios o executam.' },
+  { q:'Cada célula de Purkinje do cerebelo recebe uma única fibra trepadeira, vinda da oliva inferior.', ctx:'Anatomia do cerebelo · Rolls (2023, Fig. 17.1)', a:2,
+    ok:'✅ <strong>Nível de Implementação</strong>. É um fato anatômico sobre células e conexões — o substrato que, segundo Marr-Albus-Ito, implementa o "professor" do perceptron.',
+    no:'❌ É o <strong>Nível de Implementação</strong>. Contar fibras e identificar de onde vêm é descrever o hardware biológico.' },
+  { q:'A identidade de um rosto pode ser lida da população de neurônios IT por produto escalar entre a resposta e o padrão médio de cada rosto.', ctx:'Código distribuído · Rolls (2023, seção 1.7)', a:1,
+    ok:'✅ <strong>Nível Algorítmico</strong>. Especifica a representação (vetor de taxas, código distribuído) e o procedimento de leitura (produto escalar).',
+    no:'❌ É o <strong>Nível Algorítmico</strong>. Representação + operação de leitura = algoritmo.' },
+  { q:'Por que o cérebro usaria um código esparso distribuído em vez de uma "célula da avó" para cada objeto?', ctx:'Capacidade e generalização · Rolls (2023, seção 1.7.2)', a:0,
+    ok:'✅ <strong>Nível Computacional</strong>. Pergunta POR QUE uma forma de codificar é vantajosa (capacidade exponencial, similaridade, generalização).',
+    no:'❌ É o <strong>Nível Computacional</strong>. Uma pergunta de "por quê" sobre o princípio de uma representação é Nível 1.' },
+  { q:'Neurônios CA1 começam a disparar com ~0,5 nA de corrente injetada e sua taxa diminui ao longo de um pulso longo (adaptação).', ctx:'Curva f–I · Lanthorn, Storm & Andersen (1984), em Rolls (2023, Fig. 1.4)', a:2,
+    ok:'✅ <strong>Nível de Implementação</strong>. Propriedades biofísicas medidas em células específicas descrevem o substrato físico.',
+    no:'❌ É o <strong>Nível de Implementação</strong>. Limiar de corrente e adaptação medidos com eletrodo são propriedades do hardware biológico.' },
+  { q:'Qual é o objetivo do sistema visual humano?', ctx:'Sistema: retina → LGN → V1 → V4 → IT', a:0,
+    ok:'✅ <strong>Nível Computacional</strong>. Perguntar qual é a <em>função</em> ou <em>objetivo</em> de um sistema é sempre o Nível 1 — o QUÊ que o sistema computa.',
+    no:'❌ É o <strong>Nível Computacional</strong>. Perguntar qual a <em>tarefa</em> de um sistema — o que ele faz e por quê existe — é sempre o Nível 1 de Marr.' },
+  { q:'Neurônios da área MT do córtex visual disparam seletivamente a estímulos em movimento.', ctx:'Eletrofisiologia em macaco rhesus (Maunsell & Van Essen, 1983)', a:2,
+    ok:'✅ <strong>Nível de Implementação</strong>. Identificar quais neurônios e em quais áreas cerebrais realizam um processamento é estudar o substrato físico.',
+    no:'❌ É o <strong>Nível de Implementação</strong>. Dados de eletrof isiologia que identificam neurônios e suas propriedades descrevem o substrato físico do processamento.' },
+  { q:'A retropropagação calcula o gradiente da função de perda via regra da cadeia e atualiza os pesos.', ctx:'Rumelhart, Hinton & Williams (1986)', a:1,
+    ok:'✅ <strong>Nível Algorítmico</strong>. A retropropagação é um <em>algoritmo</em>: descreve o procedimento e a representação (pesos, ativações, gradientes) — o COMO.',
+    no:'❌ É o <strong>Nível Algorítmico</strong>. A retropropagação é um procedimento computacional — um algoritmo. Não pergunta o objetivo (NC1) nem o substrato (NC3).' },
+  { q:'Por que o hipocampo armazena memórias episódicas?', ctx:'Sistema de memória declarativa humana', a:0,
+    ok:'✅ <strong>Nível Computacional</strong>. Perguntar <em>por que</em> uma estrutura existe para uma função é sempre uma pergunta do Nível Computacional.',
+    no:'❌ É o <strong>Nível Computacional</strong>. Perguntar <em>por que</em> — qual a função adaptativa — é o Nível 1 de Marr.' },
+  { q:'"Células que disparam juntas, conectam-se juntas" — Regra de Hebb: Δw = η · xᵢ · xⱼ', ctx:'Hebb (1949) — postulado de plasticidade sináptica', a:1,
+    ok:'✅ <strong>Nível Algorítmico</strong>. A regra de Hebb é um <em>algoritmo de aprendizado</em>: define a representação (pesos) e a regra de atualização — o COMO.',
+    no:'❌ É o <strong>Nível Algorítmico</strong>. Uma regra de atualização de pesos (Δw = η·x·y) é um algoritmo — o procedimento que realiza o aprendizado.' },
+  { q:'Receptores NMDA funcionam como detectores de coincidência: abrem apenas quando pré E pós-sináptico estão ativos simultaneamente.', ctx:'Farmacologia da plasticidade — mecanismo molecular da LTP', a:2,
+    ok:'✅ <strong>Nível de Implementação</strong>. Receptores NMDA são moléculas biofísicas — o mecanismo molecular que realiza a detecção de coincidência.',
+    no:'❌ É o <strong>Nível de Implementação</strong>. Descrever proteínas, canais iônicos e mecanismos moleculares é sempre o Nível 3 — o substrato físico.' },
+  { q:'Como o cerebelo corrige erros motores em tempo real durante o movimento?', ctx:'Teoria de controle motor · circuito olivo-cerebelar (Marr-Albus-Ito)', a:1,
+    ok:'✅ <strong>Nível Algorítmico</strong>. Perguntar <em>como</em> um sistema realiza uma função pede o algoritmo — o procedimento e a representação usados.',
+    no:'❌ É o <strong>Nível Algorítmico</strong>. A palavra <em>"como"</em> é o marcador do Nível 2. O cerebelo usa um algoritmo de controle preditivo baseado em sinais de erro.' },
+  { q:'O potencial de ação tem amplitude ~100 mV e duração ~2 ms em neurônios piramidais corticais.', ctx:'Eletrofisiologia · patch clamp · Hodgkin & Huxley (1952)', a:2,
+    ok:'✅ <strong>Nível de Implementação</strong>. Medir propriedades biofísicas (voltagem, duração) de neurônios específicos descreve o hardware biológico.',
+    no:'❌ É o <strong>Nível de Implementação</strong>. Dados sobre potenciais de ação, condutâncias iônicas e propriedades de membrana descrevem o substrato físico.' },
+  { q:'O sistema auditivo deve separar fontes sonoras individuais em ambientes com múltiplos sons simultâneos.', ctx:'"Cocktail party problem" — Cherry (1953)', a:0,
+    ok:'✅ <strong>Nível Computacional</strong>. Definir o <em>problema</em> que o sistema deve resolver — a tarefa computacional — é o Nível 1.',
+    no:'❌ É o <strong>Nível Computacional</strong>. Especificar qual problema deve ser resolvido (separar fontes) é sempre o Nível 1 de Marr.' },
+  { q:'O algoritmo k-means itera entre atribuição de pontos ao centróide mais próximo e atualização dos centróides.', ctx:'Lloyd (1957/1982) · Aprendizado não-supervisionado', a:1,
+    ok:'✅ <strong>Nível Algorítmico</strong>. k-means é um algoritmo: descreve a representação (clusters, centróides) e o procedimento iterativo de otimização.',
+    no:'❌ É o <strong>Nível Algorítmico</strong>. k-means descreve o procedimento computacional de agrupamento — a representação e as operações — não o objetivo nem o substrato.' },
+  { q:'O núcleo accumbens e o estriado dorsal processam sinais dopaminérgicos para aprendizado de recompensa.', ctx:'Schultz, Dayan & Montague (1997)', a:2,
+    ok:'✅ <strong>Nível de Implementação</strong>. Identificar estruturas cerebrais específicas e seus neuromoduladores descreve o substrato físico.',
+    no:'❌ É o <strong>Nível de Implementação</strong>. Nomear estruturas cerebrais (núcleo accumbens) e neuromoduladores (dopamina) é sempre o Nível 3.' },
+  { q:'Por que os neurônios do córtex visual primário codificam informação de forma esparsa?', ctx:'Hipótese de eficiência (Barlow, 1961) · Olshausen & Field (1996)', a:0,
+    ok:'✅ <strong>Nível Computacional</strong>. Perguntar <em>por que</em> uma representação existe — qual a vantagem computacional — é o Nível 1.',
+    no:'❌ É o <strong>Nível Computacional</strong>. Perguntar <em>por que</em> um padrão de ativação existe — qual o princípio que o justifica — é sempre o Nível 1 de Marr.' }
+];
+
+let qIdx = 0, shuffled = [], score = 0, answered = false;
+
+function shuffle(arr) {
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+function resetQuiz() {
+  score=0; qIdx=0; shuffled=shuffle(MARR_QS); answered=false;
+  document.getElementById('next-btn').classList.remove('show');
+  document.getElementById('marr-feedback').className='marr-feedback';
+  document.querySelectorAll('.marr-choice').forEach(c=>{c.style.opacity='1';c.style.pointerEvents='';c.style.outline='';});
+  updateQuizUI();
+}
+
+function updateQuizUI() {
+  const q=shuffled[qIdx];
+  document.getElementById('marr-q-text').textContent=q.q;
+  document.getElementById('marr-q-ctx').textContent=q.ctx;
+  document.getElementById('score-val').textContent=score;
+  document.getElementById('total-val').textContent=qIdx;
+  document.getElementById('progress-text').textContent=`Pergunta ${qIdx+1} de ${shuffled.length}`;
+}
+
+function submitAnswer(choice) {
+  if(answered)return;
+  answered=true;
+  const q=shuffled[qIdx];
+  const ok=choice===q.a;
+  if(ok)score++;
+  document.querySelectorAll('.marr-choice').forEach((c,i)=>{
+    c.style.pointerEvents='none';
+    if(i===q.a)c.style.outline='4px solid white';
+    if(i===choice&&!ok)c.style.opacity='0.4';
+  });
+  const fb=document.getElementById('marr-feedback');
+  fb.innerHTML=ok?q.ok:q.no;
+  fb.className='marr-feedback show '+(ok?'correct-fb':'wrong-fb');
+  document.getElementById('next-btn').classList.add('show');
+}
+
+function nextQuestion() {
+  qIdx++; answered=false;
+  document.getElementById('next-btn').classList.remove('show');
+  document.getElementById('marr-feedback').className='marr-feedback';
+  document.querySelectorAll('.marr-choice').forEach(c=>{c.style.opacity='1';c.style.pointerEvents='';c.style.outline='';});
+  if(qIdx>=shuffled.length){
+    const pct=Math.round(score/shuffled.length*100);
+    const msg=pct>=83?'🏆 Excelente domínio dos 3 Níveis de Marr!':pct>=60?'👍 Bom! Revise os exemplos que errou.':'📚 Continue praticando. Os 3 Níveis são fundamentais.';
+    document.getElementById('marr-q-text').textContent=`Quiz completo! Você acertou ${score}/${shuffled.length} (${pct}%)`;
+    document.getElementById('marr-q-ctx').textContent=msg;
+    document.getElementById('score-val').textContent=score;
+    document.getElementById('total-val').textContent=shuffled.length;
+    return;
+  }
+  updateQuizUI();
+}
+
+resetQuiz();
+
+// ═══════════ NÍVEIS DE ORGANIZAÇÃO ═══════════
+const ORG = [
+  { name:'Moléculas & Íons', scale:'0.1–10 nm', color:'#0D7377', bg:'#E0F4F5', icon:'⚗️',
+    ex:'Canais iônicos (Na⁺, K⁺, Ca²⁺), receptores NMDA, AMPA, proteínas G, ATP',
+    models:'Equações de Hodgkin-Huxley (condutâncias iônicas), modelos de Markov para canais',
+    marr:['Implementação'],
+    facts:[['Íons relevantes','4 principais (Na⁺, K⁺, Cl⁻, Ca²⁺)'],['Velocidade de difusão','~10⁻⁹ m²/s'],['Abertura de canal','Microssegundos–milissegundos'],['Modelos','Markov, equações diferenciais']],
+    desc:'No nível molecular, estudamos canais iônicos que abrem e fecham em resposta a voltagem ou neurotransmissores. Esses canais determinam as propriedades elétricas dos neurônios. O modelo de Hodgkin-Huxley (1952, Prêmio Nobel) captura essas dinâmicas.' },
+  { name:'Sinapses', scale:'1–10 μm', color:'#15803D', bg:'#DCFCE7', icon:'🔗',
+    ex:'Sináptico glutamatérgico (AMPA/NMDA), GABAérgico, dopaminérgico, LTP, LTD',
+    models:'Regra de Hebb, STDP (Bi & Poo, 1998), modelos de liberação vesicular (Tsodyks-Markram)',
+    marr:['Implementação','Algorítmico'],
+    facts:[['Largura da fenda','20–40 nm'],['Transmissão sináptica','0.5–2 ms'],['Vesículas por terminal','~200–500'],['Modulação por LTP','Fator 2–5× (horas–anos)']],
+    desc:'A sinapse é o ponto de comunicação entre neurônios. A força sináptica é modificável pela atividade (plasticidade) — essa é a base celular do aprendizado e memória. LTP (potenciação de longo prazo) é o correlato molecular da regra de Hebb.' },
+  { name:'Neurônios', scale:'10–100 μm', color:'#1A56DB', bg:'#EFF6FF', icon:'🧠',
+    ex:'Neurônio piramidal, interneurônio, célula de Purkinje, motoneurônio, célula granular',
+    models:'Integrate-and-Fire, Hodgkin-Huxley, McCulloch-Pitts, modelos compartimentais',
+    marr:['Implementação','Algorítmico'],
+    facts:[['No cérebro humano','~86 bilhões'],['Sinapses por neurônio','~7.000 (média)'],['Vel. do pot. de ação','0.5–120 m/s'],['Taxa de disparo típica','1–100 Hz']],
+    desc:'O neurônio integra sinais de milhares de sinapses e gera potenciais de ação quando o limiar é atingido. Diferentes tipos têm propriedades distintas. O Integrate-and-Fire captura a essência com dV/dt = -(V-V_rest)/τ + I/C.' },
+  { name:'Redes & Circuitos', scale:'0.1–10 mm', color:'#6D28D9', bg:'#EDE9FE', icon:'🕸️',
+    ex:'Coluna cortical de V1, circuito CA3-CA1 do hipocampo, balanço E/I (80%/20%)',
+    models:'Redes de Hopfield, Perceptron, MLP, modelos de campo médio, redes de taxa de disparo',
+    marr:['Algorítmico','Implementação'],
+    facts:[['Neurônios/mini-coluna','~80–100'],['Mini-colunas no córtex','~150–200 milhões'],['Balanço E/I','80% exc., 20% iníb.'],['Oscilações','1–100 Hz (δ a γ)']],
+    desc:'Circuitos são padrões específicos de conectividade que realizam computações. O balanço E/I é crucial — desequilíbrio causa epilepsia. Os Veículos de Braitenberg são um exemplo de como circuitos simples geram comportamentos ricos.' },
+  { name:'Áreas & Mapas', scale:'1–50 mm', color:'#B45309', bg:'#FEF3C7', icon:'🗺️',
+    ex:'V1, M1, hipocampo, amígdala, mapa somatotópico (homúnculo de Penfield)',
+    models:'Mapas auto-organizados de Kohonen, modelos de campos receptivos, topografia cortical',
+    marr:['Computacional','Algorítmico'],
+    facts:[['Áreas corticais (HCP 2016)','~180'],['Espessura do córtex','1.5–4.5 mm'],['Área total (planificado)','~2.500 cm²'],['Reorganização plástica','Semanas a meses']],
+    desc:'O córtex é organizado em áreas especializadas com topografia: o mapa somatossensorial preserva a vizinhança do corpo (homúnculo de Penfield). A representação é distorcida — mais área para regiões de alta sensibilidade (mãos, lábios). Mapas de Kohonen modelam essa auto-organização.' },
+  { name:'Sistemas', scale:'1–10 cm', color:'#0A5255', bg:'#CCFBF1', icon:'🔄',
+    ex:'Via visual ventral (V1→IT), sistema dopaminérgico (VTA→estriado), memória (hipocampo→córtex)',
+    models:'CNNs (visão), Actor-Critic (reforço), modelos de codificação preditiva (Rao & Ballard, 1999)',
+    marr:['Computacional','Algorítmico'],
+    facts:[['Vias visuais principais','Ventral (O quê) · Dorsal (Onde)'],['Latência retina→IT','~150–200 ms'],['Áreas visuais (humano)','>30 identificadas'],['Modelo CNN-IT (r)','r > 0.7 (Yamins et al.)']],
+    desc:'Sistemas interconectam áreas para computar funções complexas. As vias ventral (identificação do objeto) e dorsal (localização/ação) são o exemplo clássico de Marr. CNNs treinadas em ImageNet predizem ativação do córtex IT com alta correlação.' },
+  { name:'Comportamento', scale:'0.1–10 m', color:'#1E293B', bg:'#F1F5F9', icon:'🐀',
+    ex:'Reconhecimento de faces, navegação espacial, linguagem, decisão, condicionamento pavloviano',
+    models:'Drift-Diffusion (Ratcliff, 1978), Bayesianos (Knill & Pouget, 2004), Rescorla-Wagner, Braitenberg',
+    marr:['Computacional'],
+    facts:[['Reconhecimento de face','~100–150 ms'],['Tempo de reação (RT)','150–500 ms'],['Vocabulário adulto médio','~20.000–35.000 palavras'],['Melhora perceptual','~30% após 1000 trials']],
+    desc:'No nível comportamental, estudamos o que o organismo faz. Esta é a perspectiva privilegiada do Nível Computacional de Marr — o que o sistema computa? Os Veículos de Braitenberg nesta simulação mostram que comportamentos como "medo" e "amor" emergem de circuitos simples.' }
+];
+
+let orgBuilt = false;
+
+function buildOrgLevels() {
+  if (orgBuilt) return; orgBuilt = true;
+  const container = document.getElementById('org-levels-list');
+  container.innerHTML = '';
+  ORG.forEach((lvl, i) => {
+    const div = document.createElement('div');
+    div.className = 'org-level';
+    div.style.background = lvl.bg;
+    div.style.color = lvl.color;
+    div.innerHTML = `<span class="scale-badge" style="background:${lvl.color};color:white">${lvl.scale}</span><div><div class="lname">${lvl.icon} ${lvl.name}</div><div class="lexample">${lvl.ex.split(',')[0]}</div></div>`;
+    div.onclick = () => showOrgDetail(i);
+    container.appendChild(div);
+  });
+}
+
+function showOrgDetail(i) {
+  const lvl = ORG[i];
+  document.querySelectorAll('.org-level').forEach((l,j) => l.classList.toggle('active', j===i));
+  const mTags = lvl.marr.map(m => {
+    const c = {Computacional:'#6D28D9', Algorítmico:'#0D7377', Implementação:'#B45309'}[m];
+    return `<span class="marr-tag" style="background:${c}">${m}</span>`;
+  }).join('');
+  const facts = lvl.facts.map(([l,v]) => `<div class="org-fact"><div class="fact-label">${l}</div><div class="fact-value">${v}</div></div>`).join('');
+  document.getElementById('org-detail-panel').innerHTML = `
+    <div class="org-detail-header">
+      <div class="org-detail-icon" style="background:${lvl.bg}">${lvl.icon}</div>
+      <div><div class="org-detail-title" style="color:${lvl.color}">${lvl.name}</div><div class="org-detail-scale">Escala: ${lvl.scale}</div></div>
+    </div>
+    <p style="font-size:14px;line-height:1.7;color:#1E293B;margin-bottom:14px">${lvl.desc}</p>
+    <div style="font-size:12px;color:#475569;margin-bottom:10px"><strong>Exemplos:</strong> ${lvl.ex}</div>
+    <div class="org-fact-grid">${facts}</div>
+    <div style="margin-top:14px;padding:12px;background:#F1F5F9;border-radius:8px">
+      <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#475569;margin-bottom:6px">Modelos Computacionais</div>
+      <div style="font-size:13px;color:#1E293B">${lvl.models}</div>
+    </div>
+    <div style="margin-top:14px">
+      <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#475569;margin-bottom:8px">Nível(is) de Marr relevante(s)</div>
+      ${mTags}
+    </div>`;
+}
+
+function drawOrgTimeline() {
+  const canvas = document.getElementById('org-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = '#F8FAFC'; ctx.fillRect(0,0,W,H);
+  const n = ORG.length, bw = W/n;
+  ORG.forEach((lvl,i) => {
+    const x = i*bw, w = bw-4;
+    const barH = 28 + (i/(n-1))*82;
+    const barY = H - barH - 24;
+    const g = ctx.createLinearGradient(x,barY,x,H-24);
+    g.addColorStop(0, lvl.color+'BB'); g.addColorStop(1, lvl.color+'22');
+    ctx.fillStyle=g;
+    ctx.beginPath(); ctx.roundRect(x+2,barY,w,barH,[4,4,0,0]); ctx.fill();
+    ctx.font='16px serif'; ctx.textAlign='center'; ctx.fillText(lvl.icon, x+bw/2, barY-5);
+    ctx.font='bold 9.5px Arial'; ctx.fillStyle=lvl.color;
+    lvl.name.split(' & ').forEach((part,pi) => ctx.fillText(part, x+bw/2, barY+14+pi*12));
+    ctx.font='8.5px Arial'; ctx.fillStyle='#64748B'; ctx.fillText(lvl.scale, x+bw/2, H-6);
+  });
+  ctx.fillStyle='#94A3B8'; ctx.font='bold 10px Arial';
+  ctx.textAlign='left'; ctx.fillText('← Menor escala / Maior detalhe', 6, 13);
+  ctx.textAlign='right'; ctx.fillText('Maior integração / Comportamento →', W-6, 13);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NOVO A — NEURÔNIO INTEGRA-E-DISPARA COM ADAPTAÇÃO (curva f–I)
+// ═══════════════════════════════════════════════════════════════
+const NRN = { tauM: 20, EL: -70, Vth: -50, Vr: -65, R: 40, EK: -80, tauA: 250, dA: 0.2, tRef: 2, dt: 0.1 };
+// I em nA, R em MΩ → R·I em mV. Limiar de corrente = (Vth−EL)/R = 0,5 nA.
+function lifRun(I, aScale, T = 1800, on = 150, off = 1650) {
+  const p = NRN; let V = p.EL, g = 0, ref = 0; const Vs = [], spikes = [];
+  const n = Math.round(T / p.dt);
+  for (let k = 0; k < n; k++) {
+    const t = k * p.dt; const Iin = (t >= on && t < off) ? I : 0;
+    g -= g / p.tauA * p.dt;
+    if (ref > 0) { ref -= p.dt; V = p.Vr; }
+    else {
+      V += (-(V - p.EL) + p.R * Iin - g * (V - p.EK)) / p.tauM * p.dt;
+      if (V >= p.Vth) { spikes.push(t); V = p.Vr; ref = p.tRef; g += p.dA * aScale; Vs.push(20); continue; }
+    }
+    Vs.push(V);
+  }
+  return { Vs, spikes, on, off };
+}
+function rates(res) {
+  const s = res.spikes.filter(t => t >= res.on && t < res.off);
+  const init = s.length >= 2 ? 1000 / (s[1] - s[0]) : (s.length === 1 ? 0 : 0);
+  const adapted = s.filter(t => t >= res.off - 500).length / 0.5;
+  return { init, adapted, n: s.length };
+}
+let nrnType = 'lin', nrnCurve = null, nrnCurveA = -1;
+function nrnModel(I) {
+  const th = +document.getElementById('nrn-th').value, k = +document.getElementById('nrn-k').value, mx = +document.getElementById('nrn-max').value;
+  if (nrnType === 'lin') return Math.max(0, k * (I - th));
+  if (nrnType === 'bin') return I > th ? mx : 0;
+  return mx / (1 + Math.exp(-(4 * k / mx) * (I - th)));  // θ = ponto de meia altura; k = inclinação em θ
+}
+function nrnComputeCurve(a) {
+  const pts = [];
+  for (let I = 0; I <= 3.0001; I += 0.1) { const r = rates(lifRun(I, a)); pts.push({ I, ...r }); }
+  return pts;
+}
+function nrnDraw() {
+  const I = +document.getElementById('nrn-I').value, a = +document.getElementById('nrn-a').value;
+  document.getElementById('nrn-I-v').textContent = I.toFixed(2) + ' nA';
+  document.getElementById('nrn-a-v').textContent = a.toFixed(1);
+  document.getElementById('nrn-th-v').textContent = (+document.getElementById('nrn-th').value).toFixed(2) + ' nA';
+  document.getElementById('nrn-k-v').textContent = document.getElementById('nrn-k').value + ' Hz/nA';
+  document.getElementById('nrn-max-v').textContent = document.getElementById('nrn-max').value + ' Hz';
+  document.getElementById('nrn-k-row').style.display = nrnType === 'bin' ? 'none' : '';
+  document.getElementById('nrn-max-row').style.display = nrnType === 'lin' ? 'none' : '';
+  if (nrnCurveA !== a) { nrnCurve = nrnComputeCurve(a); nrnCurveA = a; }
+  const res = lifRun(I, a); const r = rates(res);
+  // traço de voltagem
+  const c = document.getElementById('nrn-v'), x = c.getContext('2d'), W = c.width, H = c.height;
+  x.clearRect(0, 0, W, H); x.fillStyle = '#fff'; x.fillRect(0, 0, W, H);
+  const L = 46, Rr = 24, T = 14, B = 34, pw = W - L - Rr, ph = H - T - B;
+  const vy = v => T + ph * (1 - (v + 80) / 105);
+  x.strokeStyle = '#E2E8F0'; x.lineWidth = 1; x.font = '11px Arial'; x.fillStyle = '#64748B'; x.textAlign = 'right';
+  [-80, -60, -40, -20, 0, 20].forEach(v => { x.beginPath(); x.moveTo(L, vy(v)); x.lineTo(W - Rr, vy(v)); x.stroke(); x.fillText(v, L - 6, vy(v) + 4); });
+  x.save(); x.translate(12, T + ph / 2); x.rotate(-Math.PI / 2); x.textAlign = 'center'; x.fillText('V (mV)', 0, 0); x.restore();
+  x.textAlign = 'center'; [0, 300, 600, 900, 1200, 1500, 1800].forEach(t => x.fillText(t + ' ms', L + pw * t / 1800, H - 12));
+  x.fillStyle = 'rgba(245,158,11,0.10)'; x.fillRect(L + pw * res.on / 1800, T, pw * (res.off - res.on) / 1800, ph);
+  x.strokeStyle = '#0D7377'; x.lineWidth = 1; x.beginPath();
+  const step = Math.max(1, Math.floor(res.Vs.length / (pw * 2)));
+  for (let k = 0; k < res.Vs.length; k += step) {
+    let v = res.Vs[k]; for (let j = k; j < Math.min(k + step, res.Vs.length); j++) if (res.Vs[j] > v) v = res.Vs[j];
+    const px = L + pw * (k * NRN.dt) / 1800; k === 0 ? x.moveTo(px, vy(v)) : x.lineTo(px, vy(v));
+  }
+  x.stroke();
+  x.strokeStyle = '#B45309'; x.setLineDash([4, 4]); x.beginPath(); x.moveTo(L, vy(NRN.Vth)); x.lineTo(W - Rr, vy(NRN.Vth)); x.stroke(); x.setLineDash([]);
+  x.fillStyle = '#B45309'; x.textAlign = 'left'; x.fillText('limiar', W - Rr - 40, vy(NRN.Vth) - 4);
+  document.getElementById('nrn-read').innerHTML = `Spikes no pulso: <b>${r.n}</b><br>Taxa inicial: <b>${r.init.toFixed(0)} Hz</b><br>Taxa adaptada: <b>${r.adapted.toFixed(0)} Hz</b>`;
+  // curva f–I
+  const c2 = document.getElementById('nrn-fi'), y = c2.getContext('2d'), W2 = c2.width, H2 = c2.height;
+  y.clearRect(0, 0, W2, H2); y.fillStyle = '#fff'; y.fillRect(0, 0, W2, H2);
+  const maxF = Math.max(80, ...nrnCurve.map(p => p.init)) * 1.08;
+  const px = I0 => L + pw * I0 / 3, py = f => T + (H2 - T - B) * (1 - f / maxF);
+  y.strokeStyle = '#E2E8F0'; y.font = '11px Arial'; y.fillStyle = '#64748B'; y.textAlign = 'right';
+  const tick = maxF > 300 ? 100 : 50;
+  for (let f = 0; f <= maxF; f += tick) { y.beginPath(); y.moveTo(L, py(f)); y.lineTo(W2 - Rr, py(f)); y.stroke(); y.fillText(f, L - 6, py(f) + 4); }
+  y.textAlign = 'center'; for (let I0 = 0; I0 <= 3; I0 += 0.5) y.fillText(I0.toFixed(1), px(I0), H2 - 18);
+  y.fillText('corrente injetada (nA)', L + pw / 2, H2 - 1);
+  y.save(); y.translate(12, T + (H2 - T - B) / 2); y.rotate(-Math.PI / 2); y.fillText('taxa (Hz)', 0, 0); y.restore();
+  const series = (key, col) => {
+    y.strokeStyle = col; y.lineWidth = 2; y.beginPath(); nrnCurve.forEach((p, i) => i ? y.lineTo(px(p.I), py(p[key])) : y.moveTo(px(p.I), py(p[key]))); y.stroke();
+    y.fillStyle = col; nrnCurve.forEach(p => { y.beginPath(); y.arc(px(p.I), py(p[key]), 3, 0, 7); y.fill(); });
+  };
+  series('init', '#B45309'); series('adapted', '#0D7377');
+  y.strokeStyle = '#6D28D9'; y.lineWidth = 2.5; y.beginPath();
+  for (let I0 = 0; I0 <= 3.0001; I0 += 0.01) { const f = Math.min(nrnModel(I0), maxF); I0 ? y.lineTo(px(I0), py(f)) : y.moveTo(px(I0), py(f)); }
+  y.stroke();
+  y.strokeStyle = '#94A3B8'; y.setLineDash([3, 3]); y.beginPath(); y.moveTo(px(I), T); y.lineTo(px(I), H2 - B); y.stroke(); y.setLineDash([]);
+  let se = 0; nrnCurve.forEach(p => { se += (nrnModel(p.I) - p.adapted) ** 2; });
+  const rmse = Math.sqrt(se / nrnCurve.length);
+  document.getElementById('nrn-err').innerHTML = `Erro (RMSE) do seu modelo vs curva adaptada: <b style="color:${rmse < 6 ? '#15803D' : rmse < 15 ? '#B45309' : '#DC2626'}">${rmse.toFixed(1)} Hz</b>${rmse < 6 ? ' — ótimo ajuste!' : ''}`;
+}
+['nrn-I', 'nrn-a', 'nrn-th', 'nrn-k', 'nrn-max'].forEach(id => document.getElementById(id).addEventListener('input', nrnDraw));
+document.querySelectorAll('#nrn-type button').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('#nrn-type button').forEach(o => o.classList.remove('on')); b.classList.add('on'); nrnType = b.dataset.t; nrnDraw();
+}));
+
+// ═══════════════════════════════════════════════════════════════
+// NOVO B — SINAPSE: LTP / LTD COM LIMIAR NMDA (Rolls, Fig. 1.5)
+// ═══════════════════════════════════════════════════════════════
+const LTP = { thLTD: 1.2, thNMDA: 1.8 };
+let ltpW = { A: 1, B: 1 }, ltpX = { A: 1, B: 0 }, ltpHist = [{ A: 1, B: 1 }], ltpLast = null;
+function segInit(id, key) {
+  document.querySelectorAll('#' + id + ' button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('#' + id + ' button').forEach(o => o.classList.remove('on')); b.classList.add('on'); ltpX[key] = +b.dataset.v; ltpLast = null; ltpDraw();
+  }));
+}
+segInit('ltp-A', 'A'); segInit('ltp-B', 'B');
+document.getElementById('ltp-ap5').addEventListener('change', () => { ltpLast = null; ltpDraw(); });
+function ltpH() { return ltpW.A * ltpX.A + ltpW.B * ltpX.B; }
+function ltpStim() {
+  const h = ltpH(), ap5 = document.getElementById('ltp-ap5').checked;
+  const d = { A: 0, B: 0 }; let regime;
+  if (h >= LTP.thNMDA && !ap5) {
+    regime = 'ltp';
+    ['A', 'B'].forEach(k => { d[k] = ltpX[k] > 0 ? 0.12 * ltpX[k] : (ltpW[k] > 0.2 ? -0.06 : 0); });
+  } else if (h >= LTP.thLTD && !ap5) {
+    regime = 'ltd';
+    ['A', 'B'].forEach(k => { d[k] = ltpX[k] > 0 ? -0.07 * ltpX[k] : 0; });
+  } else regime = ap5 && h >= LTP.thLTD ? 'ap5' : 'none';
+  ['A', 'B'].forEach(k => { ltpW[k] = Math.min(3, Math.max(0.05, ltpW[k] + d[k])); });
+  ltpHist.push({ ...ltpW }); if (ltpHist.length > 60) ltpHist.shift();
+  ltpLast = { h, d, regime };
+  ltpDraw();
+}
+function ltpReset() { ltpW = { A: 1, B: 1 }; ltpHist = [{ A: 1, B: 1 }]; ltpLast = null; ltpDraw(); }
+function ltpDraw() {
+  const c = document.getElementById('ltp-c'), x = c.getContext('2d'), W = c.width, H = c.height;
+  x.clearRect(0, 0, W, H); x.fillStyle = '#fff'; x.fillRect(0, 0, W, H);
+  const h = ltpH(), act = Math.min(1, h / 3);
+  const sx = 400, sy = 190;
+  // dendrito
+  x.strokeStyle = '#0D7377'; x.lineWidth = 8; x.beginPath(); x.moveTo(sx, sy - 30); x.lineTo(sx, 40); x.stroke();
+  // soma
+  const shade = `rgb(${Math.round(240 - act * 200)},${Math.round(250 - act * 150)},${Math.round(250 - act * 150)})`;
+  x.fillStyle = act > 0 ? `rgba(13,115,119,${0.15 + act * 0.85})` : '#E0F4F5';
+  x.strokeStyle = '#0D7377'; x.lineWidth = 3; x.beginPath(); x.moveTo(sx - 40, sy + 30); x.lineTo(sx + 40, sy + 30); x.lineTo(sx, sy - 35); x.closePath(); x.fill(); x.stroke();
+  x.lineWidth = 2; x.beginPath(); x.moveTo(sx, sy + 30); x.lineTo(sx, H - 10); x.stroke();
+  // vias
+  const paths = [['A', 85, '#1A56DB'], ['B', 135, '#B45309']];
+  paths.forEach(([k, yy, col]) => {
+    x.strokeStyle = col; x.lineWidth = 2.5; x.beginPath(); x.moveTo(60, yy); x.lineTo(sx - 6, yy); x.stroke();
+    x.fillStyle = col; x.font = 'bold 16px Arial'; x.textAlign = 'left'; x.fillText(k, 30, yy + 6);
+    const n = ltpX[k] === 0 ? 0 : ltpX[k] < 1.3 ? 3 : ltpX[k] < 2 ? 4 : 6;
+    for (let i = 0; i < n; i++) { x.beginPath(); x.moveTo(90 + i * 16, yy - 12); x.lineTo(90 + i * 16, yy + 12); x.stroke(); }
+    x.font = '12px Arial'; x.fillText(['nenhuma', 'fraca', 'média', 'forte'][[0, 1, 1.6, 2.6].indexOf(ltpX[k])], 210, yy - 10);
+    const r = 6 + ltpW[k] * 7;
+    x.beginPath(); x.arc(sx - 10 - r * 0.3, yy, r, 0, 7); x.fill();
+    x.fillStyle = '#1E293B'; x.font = '12px Arial'; x.fillText('w = ' + ltpW[k].toFixed(2), sx + 18, yy + 4);
+    if (ltpLast && ltpLast.d[k] !== 0) {
+      x.fillStyle = ltpLast.d[k] > 0 ? '#15803D' : '#DC2626'; x.font = 'bold 13px Arial';
+      x.fillText(ltpLast.d[k] > 0 ? '▲ LTP' : '▼ LTD', sx + 85, yy + 4);
+    }
+  });
+  // medidor de ativação
+  const mx = 560, my = 60, mh = 200;  // medidor
+  x.fillStyle = '#F1F5F9'; x.fillRect(mx, my, 26, mh);
+  const yv = v => my + mh * (1 - Math.min(v, 3) / 3);
+  x.fillStyle = h >= LTP.thNMDA ? '#15803D' : h >= LTP.thLTD ? '#B45309' : '#94A3B8';
+  x.fillRect(mx, yv(h), 26, my + mh - yv(h));
+  x.strokeStyle = '#1E293B'; x.lineWidth = 1.5; x.setLineDash([4, 3]);
+  [[LTP.thNMDA, 'NMDA'], [LTP.thLTD, 'LTD']].forEach(([v, t]) => { x.beginPath(); x.moveTo(mx - 6, yv(v)); x.lineTo(mx + 32, yv(v)); x.stroke(); x.fillStyle = '#1E293B'; x.font = '11px Arial'; x.fillText(t, mx + 36, yv(v) + 4); });
+  x.setLineDash([]); x.fillStyle = '#475569'; x.font = '12px Arial'; x.textAlign = 'center';
+  x.fillText('ativação pós', mx + 13, my + mh + 18); x.fillText('h = ' + h.toFixed(2), mx + 13, my + mh + 34);
+  if (document.getElementById('ltp-ap5').checked) { x.fillStyle = '#DC2626'; x.font = 'bold 13px Arial'; x.textAlign = 'left'; x.fillText('AP5: NMDA bloqueado', 30, 30); }
+  // histórico
+  const c2 = document.getElementById('ltp-h'), y = c2.getContext('2d'), W2 = c2.width, H2 = c2.height;
+  y.clearRect(0, 0, W2, H2); y.fillStyle = '#fff'; y.fillRect(0, 0, W2, H2);
+  const L = 40, T = 10, Bm = 22, pw = W2 - L - 10, ph = H2 - T - Bm;
+  y.strokeStyle = '#E2E8F0'; y.fillStyle = '#64748B'; y.font = '11px Arial'; y.textAlign = 'right';
+  [0, 1, 2, 3].forEach(v => { const yy = T + ph * (1 - v / 3); y.beginPath(); y.moveTo(L, yy); y.lineTo(W2 - 10, yy); y.stroke(); y.fillText(v, L - 6, yy + 4); });
+  y.textAlign = 'center'; y.fillText('trens de estímulo', L + pw / 2, H2 - 4);
+  [['A', '#1A56DB'], ['B', '#B45309']].forEach(([k, col]) => {
+    y.strokeStyle = col; y.lineWidth = 2.2; y.beginPath();
+    ltpHist.forEach((w, i) => { const px = L + pw * i / 59, py = T + ph * (1 - w[k] / 3); i ? y.lineTo(px, py) : y.moveTo(px, py); }); y.stroke();
+  });
+  // texto
+  const el = document.getElementById('ltp-read');
+  if (!ltpLast) { el.innerHTML = `Ativação prevista: <b>h = ${h.toFixed(2)}</b>. Aplique um trem para ver o que acontece.`; return; }
+  const m = {
+    ltp: `<b style="color:#15803D">Limiar NMDA excedido.</b> Entra Ca²⁺ nas sinapses ativas → <b>LTP</b>${ltpX.A > 0 && ltpX.B > 0 && ltpX.A < 2 && ltpX.B < 2 ? ' — <b>associativa</b>: duas entradas fracas juntas!' : ''}.${(ltpX.A === 0 || ltpX.B === 0) ? ' A via inativa sofre <b>LTD heterossináptica</b>.' : ''}`,
+    ltd: `<b style="color:#B45309">Ativação intermediária.</b> Abaixo do limiar NMDA mas acima do de LTD → <b>LTD homossináptica</b> nas sinapses ativas.`,
+    none: `<b>Ativação fraca:</b> nenhuma mudança de peso.`,
+    ap5: `<b style="color:#DC2626">AP5 bloqueou os receptores NMDA:</b> sem entrada de Ca²⁺, sem plasticidade — mesmo com despolarização forte.`,
+  };
+  el.innerHTML = `h = ${ltpLast.h.toFixed(2)}. ` + m[ltpLast.regime];
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NOVO C — DECODIFICADOR POPULACIONAL (produto escalar)
+// ═══════════════════════════════════════════════════════════════
+const FACES = ['A', 'B', 'C', 'D', 'E'];
+let decTpl = [], decAlive = [], decCur = null, decGuessed = false, decWins = { me: 0, dec: 0, n: 0 };
+function rnd() { return Math.random(); }
+function poisson(lam) { if (lam > 60) { return Math.max(0, Math.round(lam + Math.sqrt(lam) * gauss())); } let L = Math.exp(-lam), k = 0, p = 1; do { k++; p *= rnd(); } while (p > L); return k - 1; }
+function gauss() { let u = 0, v = 0; while (!u) u = rnd(); while (!v) v = rnd(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+function makeNeuron(sel) {
+  // seletividade: 1 = ampla, 3 = esparsa. Taxa de base 3–8 Hz; pico até ~50 Hz
+  const pow = [0, 1, 2.5, 5][sel];
+  return FACES.map(() => 3 + 5 * rnd() + 45 * Math.pow(rnd(), pow));
+}
+function decNewPop() {
+  const sel = +document.getElementById('dec-s').value;
+  decTpl = Array.from({ length: 40 }, () => makeNeuron(sel));
+  decAlive = Array(40).fill(true); decCur = null; decDraw(); decAccCurve();
+}
+function decLesion() {
+  const N = +document.getElementById('dec-n').value;
+  const idx = [...Array(N).keys()].filter(i => decAlive[i]); const k = Math.max(1, Math.round(N * 0.25));
+  for (let j = 0; j < k && idx.length; j++) { const p = Math.floor(rnd() * idx.length); decAlive[idx[p]] = false; idx.splice(p, 1); }
+  decDraw(); decAccCurve();
+}
+function decResponse(face, N) {
+  const win = +document.getElementById('dec-w').value / 1000;
+  return decTpl.slice(0, N).map((t, i) => decAlive[i] ? poisson(t[face] * win) / win : 0);
+}
+function decScores(r, N) {
+  const cos = document.getElementById('dec-cos').checked;
+  return FACES.map((_, f) => {
+    let dot = 0, n1 = 0, n2 = 0;
+    for (let i = 0; i < N; i++) { if (!decAlive[i]) continue; const w = decTpl[i][f]; dot += w * r[i]; n1 += w * w; n2 += r[i] * r[i]; }
+    return cos ? (n1 && n2 ? dot / Math.sqrt(n1 * n2) : 0) : dot;
+  });
+}
+const argmax = a => a.reduce((b, v, i) => v > a[b] ? i : b, 0);
+function decTrial() {
+  const N = +document.getElementById('dec-n').value;
+  const face = Math.floor(rnd() * 5); const r = decResponse(face, N);
+  decCur = { face, r, s: decScores(r, N) }; decGuessed = false;
+  document.getElementById('dec-guess').innerHTML = FACES.map((f, i) => `<button onclick="decGuess(${i})">${f}</button>`).join('');
+  document.getElementById('dec-read').innerHTML = 'Qual rosto foi visto? Compare as barras com as colunas do dicionário acima.';
+  decDraw(true);
+}
+function decGuess(g) {
+  if (!decCur || decGuessed) return; decGuessed = true;
+  const d = argmax(decCur.s); decWins.n++; if (g === decCur.face) decWins.me++; if (d === decCur.face) decWins.dec++;
+  document.getElementById('dec-read').innerHTML = `Rosto real: <b>${FACES[decCur.face]}</b> · você: <b style="color:${g === decCur.face ? '#15803D' : '#DC2626'}">${FACES[g]}</b> · decodificador: <b style="color:${d === decCur.face ? '#15803D' : '#DC2626'}">${FACES[d]}</b>`;
+  document.getElementById('dec-score').innerHTML = `Placar em ${decWins.n} tentativas — você: <b>${decWins.me}</b> · decodificador: <b>${decWins.dec}</b>`;
+  decDraw(false);
+}
+function heat(v) { const t = Math.min(1, v / 50); return `rgb(${Math.round(239 - t * 213)},${Math.round(246 - t * 160)},${Math.round(255 - t * 36)})`; }
+function decDraw(hide) {
+  const N = +document.getElementById('dec-n').value;
+  document.getElementById('dec-n-v').textContent = N;
+  document.getElementById('dec-s-v').textContent = ['', 'ampla', 'média', 'esparsa'][+document.getElementById('dec-s').value];
+  document.getElementById('dec-w-v').textContent = document.getElementById('dec-w').value + ' ms';
+  // dicionário (transposto: linhas = neurônios até 40, mostramos colunas = neurônios para caber)
+  const c = document.getElementById('dec-t'), x = c.getContext('2d'), W = c.width, H = c.height;
+  x.clearRect(0, 0, W, H); x.fillStyle = '#fff'; x.fillRect(0, 0, W, H);
+  const L = 60, T = 8, cw = (W - L - 10) / N, ch = (H - T - 22) / 5;
+  FACES.forEach((f, j) => {
+    x.fillStyle = '#475569'; x.font = 'bold 12px Arial'; x.textAlign = 'right'; x.fillText('Rosto ' + f, L - 8, T + ch * j + ch / 2 + 4);
+    for (let i = 0; i < N; i++) {
+      x.fillStyle = decAlive[i] ? heat(decTpl[i][j]) : '#F1F5F9'; x.fillRect(L + i * cw + 1, T + j * ch + 1, cw - 2, ch - 2);
+      if (!decAlive[i] && j === 2) { x.fillStyle = '#DC2626'; x.font = '12px Arial'; x.textAlign = 'center'; x.fillText('✕', L + i * cw + cw / 2, T + j * ch + ch / 2 + 4); }
+      if (N <= 12 && decAlive[i]) { x.fillStyle = decTpl[i][j] > 30 ? '#fff' : '#1E293B'; x.font = '11px Arial'; x.textAlign = 'center'; x.fillText(Math.round(decTpl[i][j]), L + i * cw + cw / 2, T + j * ch + ch / 2 + 4); }
+    }
+  });
+  x.fillStyle = '#64748B'; x.font = '11px Arial'; x.textAlign = 'center'; x.fillText('neurônios 1 … ' + N, L + (W - L - 10) / 2, H - 6);
+  // resposta + similaridade
+  const c2 = document.getElementById('dec-r'), y = c2.getContext('2d'), W2 = c2.width, H2 = c2.height;
+  y.clearRect(0, 0, W2, H2); y.fillStyle = '#fff'; y.fillRect(0, 0, W2, H2);
+  if (!decCur) { y.fillStyle = '#94A3B8'; y.font = '14px Arial'; y.textAlign = 'center'; y.fillText('Clique em "Nova tentativa"', W2 / 2, H2 / 2); return; }
+  const r = decCur.r, Nn = Math.min(N, r.length), pw = 420, bw = (pw - 10) / Nn, maxR = Math.max(50, ...r);
+  y.fillStyle = '#475569'; y.font = 'bold 12px Arial'; y.textAlign = 'left'; y.fillText('Resposta (spikes/s)', L, 16);
+  for (let i = 0; i < Nn; i++) { const hgt = (H2 - 50) * r[i] / maxR; y.fillStyle = decAlive[i] ? '#B45309' : '#E2E8F0'; y.fillRect(L + i * bw + 1, H2 - 24 - hgt, Math.max(1, bw - 2), hgt); }
+  y.strokeStyle = '#CBD5E1'; y.beginPath(); y.moveTo(L, H2 - 24); y.lineTo(L + pw - 10, H2 - 24); y.stroke();
+  // similaridades
+  const sx = L + pw + 20, sw = W2 - sx - 10; const s = decCur.s, ms = Math.max(...s) || 1, best = argmax(s);
+  y.fillStyle = '#475569'; y.fillText(document.getElementById('dec-cos').checked ? 'Cosseno' : 'Produto escalar', sx, 16);
+  s.forEach((v, j) => {
+    const yy = 30 + j * 30; y.fillStyle = '#475569'; y.font = '12px Arial'; y.textAlign = 'left'; y.fillText(FACES[j], sx, yy + 13);
+    y.fillStyle = hide ? '#CBD5E1' : (j === best ? '#6D28D9' : '#CBD5E1'); y.fillRect(sx + 16, yy, (sw - 20) * Math.max(0, v) / ms, 18);
+    if (!hide && j === decCur.face) { y.fillStyle = '#15803D'; y.fillText('✔ real', sx + 20 + (sw - 20) * Math.max(0, v) / ms - 44, yy + 13); }
+  });
+  if (hide) { y.fillStyle = '#64748B'; y.font = 'italic 11px Arial'; y.fillText('(oculto até você escolher)', sx + 16, 30 + 5 * 30 + 4); }
+}
+function decAccCurve() {
+  const c = document.getElementById('dec-a'), x = c.getContext('2d'), W = c.width, H = c.height;
+  x.clearRect(0, 0, W, H); x.fillStyle = '#fff'; x.fillRect(0, 0, W, H);
+  const L = 46, T = 10, B = 26, pw = W - L - 14, ph = H - T - B;
+  const pts = [];
+  for (let N = 1; N <= 40; N++) {
+    let ok = 0; for (let t = 0; t < 200; t++) { const f = Math.floor(rnd() * 5); if (argmax(decScores(decResponse(f, N), N)) === f) ok++; }
+    pts.push(ok / 200);
+  }
+  x.strokeStyle = '#E2E8F0'; x.fillStyle = '#64748B'; x.font = '11px Arial'; x.textAlign = 'right';
+  [0, 0.2, 0.4, 0.6, 0.8, 1].forEach(v => { const yy = T + ph * (1 - v); x.beginPath(); x.moveTo(L, yy); x.lineTo(W - 14, yy); x.stroke(); x.fillText(Math.round(v * 100) + '%', L - 6, yy + 4); });
+  x.textAlign = 'center'; [1, 10, 20, 30, 40].forEach(n => x.fillText(n, L + pw * (n - 1) / 39, H - 8));
+  const yc = T + ph * (1 - 0.2); x.strokeStyle = '#94A3B8'; x.setLineDash([4, 4]); x.beginPath(); x.moveTo(L, yc); x.lineTo(W - 14, yc); x.stroke(); x.setLineDash([]);
+  x.fillStyle = '#94A3B8'; x.textAlign = 'left'; x.fillText('acaso (20%)', W - 90, yc - 4);
+  x.strokeStyle = '#1A56DB'; x.lineWidth = 2.2; x.beginPath(); pts.forEach((p, i) => { const px = L + pw * i / 39, py = T + ph * (1 - p); i ? x.lineTo(px, py) : x.moveTo(px, py); }); x.stroke();
+  const N = +document.getElementById('dec-n').value; const pxN = L + pw * (N - 1) / 39;
+  x.fillStyle = '#B45309'; x.beginPath(); x.arc(pxN, T + ph * (1 - pts[N - 1]), 5, 0, 7); x.fill();
+  x.font = 'bold 11px Arial'; x.fillText(Math.round(pts[N - 1] * 100) + '%', pxN + 8, T + ph * (1 - pts[N - 1]) - 6);
+}
+['dec-n', 'dec-w'].forEach(id => document.getElementById(id).addEventListener('input', () => { decCur = null; decDraw(); decAccCurve(); }));
+document.getElementById('dec-s').addEventListener('input', decNewPop);
+document.getElementById('dec-cos').addEventListener('change', () => { if (decCur) { const N = +document.getElementById('dec-n').value; decCur.s = decScores(decCur.r, N); } decDraw(!decGuessed); decAccCurve(); });
+
+// inicialização dos novos painéis
+nrnDraw(); ltpDraw(); decNewPop();
+
+</script>
+</body>
+</html>
