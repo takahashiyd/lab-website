@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neurociência Computacional · Aula 3 — Atividades</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#142033; --muted:#5b6879; --line:#d8dee6;
+  --accent:#0d7377; --accent-ink:#ffffff; --you:#b45309; --soft:#e2f0f0; --warn:#a33a2a; --ok:#15803d; --okbg:#e3f3e8; --nobg:#fbe9e6;
+  --display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --ok:#5fd08a; --okbg:#173a28; --nobg:#3d2020; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --ok:#5fd08a; --okbg:#173a28; --nobg:#3d2020; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:17px/1.5 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:grid;gap:22px}
+header{display:grid;gap:8px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(32px,8vw,50px)/1.02 var(--display);font-stretch:115%;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font:750 23px/1.15 var(--display);font-stretch:108%;margin:0;text-wrap:balance}
+p{margin:0;max-width:65ch}
+.lead{color:var(--muted)}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{font:600 14px/1 var(--body);color:var(--fg);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:9px 12px;background:var(--surface)}
+nav a.done{border-color:var(--ok);color:var(--ok)}
+a{color:var(--accent)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,nav a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.exp>*{min-width:0}
+section.exp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 18px;display:grid;gap:16px;min-width:0;scroll-margin-top:12px}
+.num{font:600 13px/1 var(--mono);color:var(--you);letter-spacing:.06em;text-transform:uppercase}
+.meta{font:500 13px/1.3 var(--mono);color:var(--muted)}
+.q{display:grid;gap:8px;border-top:1px dashed var(--line);padding-top:14px}
+.q>.qt{font-weight:600}
+.q .qt i{font-family:var(--mono);font-style:normal;color:var(--you);margin-right:6px}
+.opts{display:grid;gap:8px}
+@media (min-width:560px){.opts.two{grid-template-columns:1fr 1fr}}
+.opt{display:flex;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;cursor:pointer;min-height:48px;background:var(--bg)}
+.opt input{width:20px;height:20px;accent-color:var(--accent);flex:none}
+.opt:has(input:checked){border-color:var(--accent);background:var(--soft)}
+.opt.right{border-color:var(--ok);background:var(--okbg)}
+.opt.wrong{border-color:var(--warn);background:var(--nobg)}
+textarea,input[type=number],input[type=text]{width:100%;font:500 17px/1.4 var(--body);color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;min-height:48px}
+textarea{min-height:90px;resize:vertical}
+.inline{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.inline label{display:grid;gap:4px;font-size:14px;font-weight:600;flex:1 1 140px;min-width:0}
+select{font:500 17px var(--body);color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px;min-height:48px;width:100%}
+button{font:700 16px/1 var(--display);border:0;border-radius:10px;padding:14px 18px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px;touch-action:manipulation}
+button.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+button:disabled{opacity:.45;cursor:default}
+.send{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.sent{font:600 14px/1.3 var(--mono);color:var(--ok)}
+.sent.pend{color:var(--you)}
+.fb{background:var(--soft);border-radius:10px;padding:14px 16px;display:grid;gap:8px;font-size:16px}
+.fb h3{margin:0;font:700 17px/1.2 var(--display)}
+.fb .score{font:700 22px/1 var(--display);color:var(--you)}
+.fb ul{margin:0;padding-left:20px;display:grid;gap:6px}
+.mark{font-weight:700}
+.mark.ok{color:var(--ok)} .mark.no{color:var(--warn)}
+figure{margin:0;display:grid;gap:6px}
+figure img{width:100%;height:auto;border-radius:8px;background:#fff;border:1px solid var(--line)}
+figcaption{font-size:13px;color:var(--muted)}
+.tablewrap{overflow-x:auto}
+table.dec{border-collapse:collapse;width:100%;font:500 15px/1.2 var(--mono);text-align:center}
+table.dec th,table.dec td{border:1px solid var(--line);padding:8px 3px}
+table.dec th{background:var(--soft);font:600 13px/1.2 var(--body)}
+table.dec td.test{background:color-mix(in srgb,var(--you) 18%,transparent);font-weight:700}
+table.dec td.hi{font-weight:700;color:var(--accent)}
+.dots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.dots label{display:grid;gap:4px;font:600 13px/1.2 var(--body);text-align:center;min-width:0}
+.dots input{min-width:0;font-size:15px;padding:10px 2px;text-align:center}
+.opts.five{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+.opts.five .opt{padding:10px 6px;gap:6px;justify-content:center}
+.dots input{text-align:center;padding:10px 4px;font-family:var(--mono)}
+.dots input.right{border-color:var(--ok);background:var(--okbg)}
+.dots input.wrong{border-color:var(--warn);background:var(--nobg)}
+.marr{display:grid;gap:10px}
+.marr .st{display:grid;gap:8px;border:1px solid var(--line);border-radius:10px;padding:12px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.seg label{border:1.5px solid var(--line);border-radius:8px;text-align:center;padding:10px 4px;font:700 14px/1.1 var(--display);cursor:pointer;min-height:44px;display:grid;place-items:center;background:var(--bg)}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){border-color:var(--accent);background:var(--soft);color:var(--accent)}
+.seg label.right{border-color:var(--ok)!important;background:var(--okbg)!important;color:var(--ok)!important}
+.seg label.wrong{border-color:var(--warn)!important;background:var(--nobg)!important;color:var(--warn)!important}
+.seg label:focus-within{outline:3px solid var(--accent);outline-offset:1px}
+.xor{display:grid;gap:12px}
+.xor table{border-collapse:collapse;font:500 16px/1 var(--mono);text-align:center;width:100%;max-width:420px}
+.xor th,.xor td{border:1px solid var(--line);padding:9px}
+.xor th{background:var(--soft);font:600 13px var(--body)}
+.xor td.ok{color:var(--ok);font-weight:700} .xor td.no{color:var(--warn);font-weight:700}
+.xor .ctl{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.xor .ctl label{display:grid;gap:4px;font:600 13px/1.2 var(--mono)}
+.xor input[type=range]{width:100%;accent-color:var(--accent)}
+.badge{font:700 14px/1.2 var(--mono)}
+footer{font-size:13px;color:var(--muted);display:grid;gap:6px}
+/* cartão de identificação (registro.js) */
+.nc-id{background:var(--surface);border:2px solid var(--accent);border-radius:14px;padding:18px;display:grid;gap:12px}
+.nc-id.nc-in{border:0;padding:0;background:none}
+.nc-id h2{margin:0 0 4px}
+.nc-lead{color:var(--muted);margin:0 0 12px!important}
+.nc-row{display:grid;gap:10px;grid-template-columns:1fr}
+@media (min-width:560px){.nc-row{grid-template-columns:1fr 1.6fr}}
+.nc-id label{display:grid;gap:4px;font:600 14px/1.2 var(--body)}
+.nc-id input{font:17px var(--body);padding:12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);min-height:48px;width:100%}
+.nc-err{color:var(--warn);font-size:14px;min-height:1em;margin:6px 0!important}
+.nc-priv{font-size:13px;color:var(--muted);margin-top:10px!important}
+.nc-who{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:15px;background:var(--soft);border-radius:10px;padding:10px 14px}
+.nc-link{background:none!important;border:0!important;color:var(--accent)!important;font:600 14px var(--body)!important;padding:4px 0!important;min-height:0!important;text-decoration:underline;cursor:pointer}
+.nc-fila{font:500 13px var(--mono);color:var(--muted)}
+.nc-flash{animation:ncflash 1.2s 2}
+@keyframes ncflash{50%{box-shadow:0 0 0 6px var(--you)}}
+@media (prefers-reduced-motion:reduce){.nc-flash{animation:none}}
+canvas.plot{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;touch-action:none}
+.ctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.ctl label{display:grid;gap:4px;font:600 13px/1.2 var(--mono)}
+.ctl input[type=range]{width:100%;accent-color:var(--accent)}
+.readout{font:600 15px/1.4 var(--mono);color:var(--accent)}
+.mp{display:grid;gap:10px}
+.mp .row{display:grid;gap:8px;border:1px solid var(--line);border-radius:10px;padding:12px}
+.mp .ins{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.mp .ins label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center;min-width:0}
+.mp .ins input{text-align:center;padding:9px 2px;font-family:var(--mono);min-width:0}
+.tt{display:flex;flex-wrap:wrap;gap:6px;font:500 13px/1 var(--mono)}
+.tt span{border:1px solid var(--line);border-radius:6px;padding:6px 7px}
+.tt span.ok{border-color:var(--ok);color:var(--ok);background:var(--okbg)}
+.tt span.no{border-color:var(--warn);color:var(--warn);background:var(--nobg)}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btns button{padding:11px 14px;min-height:44px;font-size:15px}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.trio label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center;min-width:0}
+.trio input{text-align:center;padding:9px 2px;font-family:var(--mono);min-width:0}
+.trio input.right,.inline input.right{border-color:var(--ok);background:var(--okbg)}
+.trio input.wrong,.inline input.wrong{border-color:var(--warn);background:var(--nobg)}
+table.log{border-collapse:collapse;width:100%;font:500 13px/1.2 var(--mono);text-align:center}
+table.log th,table.log td{border:1px solid var(--line);padding:5px 2px}
+table.log th{background:var(--soft);font:600 12px var(--body)}
+table.log tr.err td{color:var(--warn)}
+.match{display:grid;gap:8px}
+.match .m{display:grid;grid-template-columns:1fr minmax(0,1.3fr);gap:8px;align-items:center}
+.match .m span{font-weight:600}
+@media (max-width:420px){.match .m{grid-template-columns:1fr}}
+.grid64{display:grid;grid-template-columns:auto repeat(4,minmax(0,1fr));gap:5px;align-items:center;max-width:420px}
+.grid64 span{font:600 12px/1 var(--mono);color:var(--muted);text-align:center}
+.grid64 input{text-align:center;padding:8px 2px;min-height:40px;font-family:var(--mono);min-width:0}
+.grid64 input.right{border-color:var(--ok);background:var(--okbg)}
+.grid64 input.wrong{border-color:var(--warn);background:var(--nobg)}
+.quad{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;max-width:420px}
+.quad label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center;min-width:0}
+.quad input{text-align:center;padding:9px 2px;font-family:var(--mono);min-width:0}
+.quad input.right{border-color:var(--ok);background:var(--okbg)}
+.quad input.wrong{border-color:var(--warn);background:var(--nobg)}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;max-width:300px}
+.pair label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center}
+.pair input{text-align:center;font-family:var(--mono)}
+.pair input.right{border-color:var(--ok);background:var(--okbg)}
+.pair input.wrong{border-color:var(--warn);background:var(--nobg)}
+table.cases{border-collapse:collapse;width:100%;font-size:15px}
+table.cases td,table.cases th{border-bottom:1px solid var(--line);padding:8px 4px;vertical-align:middle;text-align:left}
+table.cases th{font:600 13px var(--body);color:var(--muted)}
+table.cases select{min-height:44px;padding:6px;font-size:15px}
+select.right{border-color:var(--ok);background:var(--okbg)}
+select.wrong{border-color:var(--warn);background:var(--nobg)}
+.tb{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1fr);gap:6px;align-items:center}
+.tb b{font-size:13px;color:var(--muted)}
+.tb select{font-size:14px;padding:8px 4px}
+</style>
+
+<div class="wrap" id="student">
+<header>
+  <span class="eyebrow">Neurociência Computacional · Aula 3 · UFRN</span>
+  <h1>Sinapses que aprendem</h1>
+  <p class="lead">Plasticidade sináptica e aprendizado hebbiano. Identifique-se abaixo, faça cada atividade quando o professor pedir e toque em <b>Enviar</b> — sua resposta fica registrada e o gabarito aparece em seguida.</p>
+</header>
+
+<nav aria-label="Atividades">
+  <a href="#a1">1 · LTP</a><a href="#a2">2 · Regras</a><a href="#a3">3 · STDP</a><a href="#a4">4 · Memória</a><a href="#a5">5 · Hebb × Oja</a><a href="#a6">6 · Competição</a><a href="#a7">7 · Marr</a>
+</nav>
+
+<!-- ============ ATIVIDADE 1 ============ -->
+<section class="exp" id="a1" data-titulo="Preveja o resultado do experimento de LTP">
+  <div><p class="num">Atividade 1 · 5 min · em duplas</p><h2>Preveja o resultado do experimento</h2></div>
+  <p>Fatia de hipocampo; duas vias de entrada, <b>A</b> e <b>B</b>, chegam aos mesmos neurônios de CA1. Para cada caso, a sinapse sofre LTP, LTD ou nada?</p>
+  <div class="match" id="caseBody"></div>
+  <div class="q"><p class="qt"><i>f</i>Por que fixar a célula em −70 mV (voltage clamp) impede a LTP?</p>
+    <textarea name="a1f" placeholder="Sua resposta (1–2 frases)"></textarea></div>
+  <div class="send"><button data-send="a1">Enviar</button><span class="sent" data-status="a1"></span></div>
+  <div class="fb" data-fb="a1" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 2 ============ -->
+<section class="exp" id="a2" data-titulo="Que regra produz cada mudança?">
+  <div><p class="num">Atividade 2 · 4 min · em duplas</p><h2>Que regra produz cada mudança?</h2></div>
+  <p>Complete a tabela de Rolls: o que acontece com uma sinapse para cada combinação de atividade pré e pós-sináptica?</p>
+  <div class="match" id="tbGrid"></div>
+  <div class="q"><p class="qt"><i>a</i>A regra de Hebb pura, <span class="badge">δw = α·y·x</span>, produz:</p><div class="opts" id="r_a2a"></div></div>
+  <div class="q"><p class="qt"><i>b</i>A regra de covariância, <span class="badge">δw = α·y·(x − x̄)</span>, produz:</p><div class="opts" id="r_a2b"></div></div>
+  <div class="q"><p class="qt"><i>c</i>A regra BCM, <span class="badge">δw = α·x·y·(y − θₘ)</span>, produz:</p><div class="opts" id="r_a2c"></div></div>
+  <div class="send"><button data-send="a2">Enviar</button><span class="sent" data-status="a2"></span></div>
+  <div class="fb" data-fb="a2" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 3 ============ -->
+<section class="exp" id="a3" data-titulo="Calcule com a janela de STDP">
+  <div><p class="num">Atividade 3 · 5 min · individual, com calculadora</p><h2>Calcule com a janela de STDP</h2></div>
+  <p><span class="badge">Δw = A₊·exp(−Δt/τ)</span> se Δt &gt; 0; <span class="badge">Δw = −A₋·exp(Δt/τ)</span> se Δt &lt; 0, com Δt = t(pós) − t(pré), A₊ = 0,010, A₋ = 0,012, τ = 20 ms. (e^−0,5 ≈ 0,61; e^−2 ≈ 0,135)</p>
+  <canvas class="plot" id="stC" width="600" height="300" aria-label="Janela de STDP: mudança de peso em função do intervalo entre spikes"></canvas>
+  <div class="ctl"><label>Δt = <span id="stDv">10</span> ms<input type="range" id="stD" min="-80" max="80" step="1" value="10"></label></div>
+  <p class="readout" id="stR"></p>
+  <div class="q"><p class="qt"><i>a</i>Calcule Δw (em unidades de 10⁻³) para cada intervalo. Faça a conta antes de mexer no controle!</p>
+    <div class="trio"><label>Δt = +10<input type="text" inputmode="decimal" name="a3a1"></label><label>Δt = −10<input type="text" inputmode="decimal" name="a3a2"></label><label>Δt = +40<input type="text" inputmode="decimal" name="a3a3"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>O neurônio A sempre dispara 10 ms antes do B, e cada um faz sinapse no outro. O que acontece?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a3b" value="ambas fortalecem">As duas sinapses fortalecem</label><label class="opt"><input type="radio" name="a3b" value="A→B fortalece, B→A enfraquece">A → B fortalece; B → A enfraquece</label><label class="opt"><input type="radio" name="a3b" value="A→B enfraquece, B→A fortalece">A → B enfraquece; B → A fortalece</label><label class="opt"><input type="radio" name="a3b" value="ambas enfraquecem">As duas enfraquecem</label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Uma entrada dispara em tempos aleatórios, sem relação com o pós. Em média, sua sinapse…</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a3c" value="fortalece">fortalece</label><label class="opt"><input type="radio" name="a3c" value="enfraquece">enfraquece</label><label class="opt"><input type="radio" name="a3c" value="fica igual">fica igual</label></div></div>
+  <div class="send"><button data-send="a3">Enviar</button><span class="sent" data-status="a3"></span></div>
+  <div class="fb" data-fb="a3" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 4 ============ -->
+<section class="exp" id="a4" data-titulo="Memória associativa à mão">
+  <div><p class="num">Atividade 4 · 8 min · em duplas, no papel</p><h2>Memória associativa à mão</h2></div>
+  <p>6 axônios de entrada, 4 neurônios de saída (exemplo de Rolls, 2023, seção B.2.2). Pesos iniciais 0; <span class="badge">δwᵢⱼ = yᵢ·xⱼ</span>; um neurônio dispara (y = 1) se <span class="badge">h ≥ 2</span>.</p>
+  <div class="q"><p class="qt"><i>a</i>Aprenda <b>CS1 = 101010 → UCS1 = 1100</b> e depois <b>CS2 = 110001 → UCS2 = 0101</b>. Preencha a matriz W (linha = axônio de entrada, coluna = neurônio de saída).</p>
+    <div class="grid64" id="wGrid"></div></div>
+  <div class="q"><p class="qt"><i>b</i>Apresente a pista nova <b>110100</b>. Calcule h e a saída y.</p>
+    <p class="meta">ativação h</p><div class="quad" id="hRow"></div>
+    <p class="meta">saída y (h ≥ 2)</p><div class="quad" id="yRow"></div>
+    <p class="qt" style="margin-top:6px">Que memória foi lembrada?</p>
+    <div class="opts two"><label class="opt"><input type="radio" name="a4m" value="UCS1">UCS1 (1100)</label><label class="opt"><input type="radio" name="a4m" value="UCS2">UCS2 (0101)</label><label class="opt"><input type="radio" name="a4m" value="mistura">uma mistura das duas</label><label class="opt"><input type="radio" name="a4m" value="nenhuma">nenhuma</label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Zere duas sinapses: <b>linha 2–coluna 4</b> e <b>linha 5–coluna 2</b>. Apresente CS2 (110001). Qual a saída y?</p>
+    <div class="inline"><label>Saída (4 dígitos)<input type="text" inputmode="numeric" name="a4c" placeholder="ex.: 1010"></label></div></div>
+  <div class="q"><p class="qt"><i>d</i>Por que essas propriedades exigem um código distribuído? O que aconteceria com CS = 100000?</p>
+    <textarea name="a4d" placeholder="Sua resposta"></textarea></div>
+  <div class="send"><button data-send="a4">Enviar</button><span class="sent" data-status="a4"></span></div>
+  <div class="fb" data-fb="a4" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 5 ============ -->
+<section class="exp" id="a5" data-titulo="Hebb ou Oja?">
+  <div><p class="num">Atividade 5 · 4 min · individual · opcional</p><h2>Hebb ou Oja?</h2></div>
+  <p>Cada ponto é um padrão de entrada (x₁, x₂). O neurônio é linear, <span class="badge">y = w·x</span>. Rode as duas regras a partir do mesmo w: Hebb, <span class="badge">Δw = η·y·x</span>; Oja, <span class="badge">Δw = η·y·(x − y·w)</span>.</p>
+  <canvas class="plot" id="ojC" width="440" height="440" style="max-width:360px" aria-label="Nuvem de pontos e o vetor de pesos do neurônio"></canvas>
+  <div class="ctl"><label>inclinação da nuvem = <span id="ojAv">30</span>°<input type="range" id="ojA" min="0" max="180" step="5" value="30"></label></div>
+  <div class="btns"><button type="button" class="ghost" id="ojH">Rodar Hebb</button><button type="button" class="ghost" id="ojO">Rodar Oja</button><button type="button" class="ghost" id="ojR">Reiniciar</button></div>
+  <p class="readout" id="ojT"></p>
+  <div class="q"><p class="qt"><i>a</i>Com Hebb puro, o que acontece com o tamanho |w|?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a5a" value="cresce sem limite">cresce sem limite</label><label class="opt"><input type="radio" name="a5a" value="converge">converge para um valor fixo</label><label class="opt"><input type="radio" name="a5a" value="vai a zero">vai a zero</label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Com Oja (nuvem a 30°), para quanto converge |w|? E qual o ângulo final de w (0–180°)?</p>
+    <div class="inline"><label>|w| final<input type="text" inputmode="decimal" name="a5b"></label><label>ângulo (graus)<input type="text" inputmode="decimal" name="a5c"></label></div></div>
+  <div class="q"><p class="qt"><i>d</i>Que mecanismo biológico faz o papel do termo −η·y²·w?</p>
+    <textarea name="a5d" placeholder="Sua resposta"></textarea></div>
+  <div class="send"><button data-send="a5">Enviar</button><span class="sent" data-status="a5"></span></div>
+  <div class="fb" data-fb="a5" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 6 ============ -->
+<section class="exp" id="a6" data-titulo="Aprendizado competitivo à mão">
+  <div><p class="num">Atividade 6 · 5 min · em duplas</p><h2>Aprendizado competitivo à mão</h2></div>
+  <p>Dois neurônios: <b>w₁ = (0,8; 0,6)</b> e <b>w₂ = (0,6; 0,8)</b>. Vence o de maior <span class="badge">h = w·x</span>; só o vencedor aprende: <span class="badge">w ← w + 0,5·(x − w)</span>.</p>
+  <div class="q"><p class="qt"><i>a</i>Entrada x = (1; 0). Quem vence, e qual o novo vetor do vencedor?</p>
+    <div class="opts two"><label class="opt"><input type="radio" name="a6a" value="1">neurônio 1</label><label class="opt"><input type="radio" name="a6a" value="2">neurônio 2</label></div>
+    <div class="pair"><label>componente 1<input type="text" inputmode="decimal" name="a6a1"></label><label>componente 2<input type="text" inputmode="decimal" name="a6a2"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Em seguida, x = (0; 1). Quem vence, e qual o novo vetor do vencedor?</p>
+    <div class="opts two"><label class="opt"><input type="radio" name="a6b" value="1">neurônio 1</label><label class="opt"><input type="radio" name="a6b" value="2">neurônio 2</label></div>
+    <div class="pair"><label>componente 1<input type="text" inputmode="decimal" name="a6b1"></label><label>componente 2<input type="text" inputmode="decimal" name="a6b2"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Repetindo muitas vezes, o que acontece?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a6c" value="especializam">cada neurônio se especializa num tipo de entrada</label><label class="opt"><input type="radio" name="a6c" value="iguais">os dois acabam com os mesmos pesos</label><label class="opt"><input type="radio" name="a6c" value="explodem">os pesos crescem sem limite</label></div></div>
+  <div class="send"><button data-send="a6">Enviar</button><span class="sent" data-status="a6"></span></div>
+  <div class="fb" data-fb="a6" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 7 ============ -->
+<section class="exp" id="a7" data-titulo="Capacidade e níveis de Marr">
+  <div><p class="num">Atividade 7 · 4 min · individual · opcional</p><h2>Capacidade e níveis de Marr</h2></div>
+  <div class="q"><p class="qt"><i>a</i>Com C = 10.000 sinapses e saídas com esparsidade a = 0,01, quantas associações um neurônio armazena? Use <span class="badge">p ≈ C / [a·ln(1/a)]</span> e ln 100 ≈ 4,6.</p>
+    <div class="inline"><label>Associações<input type="text" inputmode="numeric" name="a7a" placeholder="ex.: 50000"></label></div></div>
+  <p class="lead"><b>C</b> = computacional (o quê e por quê) · <b>A</b> = algorítmico (como) · <b>I</b> = implementação (com quê)</p>
+  <div class="marr" id="marrList"></div>
+  <div class="send"><button data-send="a7">Enviar</button><span class="sent" data-status="a7"></span></div>
+  <div class="fb" data-fb="a7" hidden></div>
+</section>
+
+<footer>
+  <p>Materiais: <a href="simulacoes/aula03.html">simulações interativas da Aula 3</a> · <a href="index.html">todas as aulas</a></p>
+  <p>Prof. Daniel Y. Takahashi · Instituto do Cérebro, UFRN</p>
+</footer>
+</div>
+
+<script>
+(() => {
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const val = (n) => { const el = $(`[name="${n}"]:checked`) || $(`[name="${n}"]:not([type=radio]):not([type=checkbox])`); return el ? String(el.value).trim() : ''; };
+const num = (n) => { let t = String(val(n)).replace(/\s/g, ''); if (/^-?\d{1,3}(\.\d{3})+$/.test(t)) t = t.replace(/\./g, ''); t = t.replace(',', '.').replace('−', '-'); const v = parseFloat(t); return isNaN(v) ? null : v; };
+const tag = (ok) => `<span class="mark ${ok ? 'ok' : 'no'}">${ok ? '✓' : '✗'}</span>`;
+function markRadio(name, correct) { $$(`[name="${name}"]`).forEach(i => { const l = i.closest('label'); l.classList.remove('right', 'wrong'); if (i.value === correct) l.classList.add('right'); else if (i.checked) l.classList.add('wrong'); }); }
+function markEl(el, ok) { el.classList.toggle('right', ok); el.classList.toggle('wrong', !ok); }
+const markInput = (name, ok) => markEl($(`[name="${name}"]`), ok);
+const near = (v, x, tol) => v !== null && Math.abs(v - x) <= tol;
+function setupCanvas(c) { const r = window.devicePixelRatio || 1; const w = c.width, h = c.height; c.width = w * r; c.height = h * r; const g = c.getContext('2d'); g.scale(r, r); return { g, w, h }; }
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const radios = (id, name, opts) => { $('#' + id).innerHTML = opts.map(o => `<label class="opt"><input type="radio" name="${name}" value="${o}">${o}</label>`).join(''); };
+
+/* ---------- Atividade 1 ---------- */
+const OPT3 = ['—', 'LTP', 'LTD', 'nada'];
+const CASES = [
+  ['a', 'trem fraco só na via A', 'nada', null],
+  ['b', 'trem forte na via A; via B silenciosa', 'LTP', ['nada', 'LTD']],
+  ['c', 'trem fraco em A e trem fraco em B, ao mesmo tempo', 'LTP', ['LTP']],
+  ['d', 'trem forte em A, com a célula fixada em −70 mV', 'nada', null],
+  ['e', 'trem forte em A, com AP5 (bloqueador de NMDA)', 'nada', null],
+];
+const sel = (name) => `<select name="${name}">${OPT3.map(o => `<option value="${o === '—' ? '' : o}">${o}</option>`).join('')}</select>`;
+$('#caseBody').innerHTML = CASES.map(([k, t, , b]) => `<div class="row" style="display:grid;gap:8px;border:1px solid var(--line);border-radius:10px;padding:12px"><span><b>${k}</b> · ${t}</span>
+  <div class="inline"><label>Via A${sel('c' + k + 'A')}</label>${b ? `<label>Via B${sel('c' + k + 'B')}</label>` : ''}</div></div>`).join('');
+
+/* ---------- Atividade 2 ---------- */
+const TBO = ['—', 'LTP', 'LTD homossináptica', 'LTD heterossináptica', 'nada'];
+const TBA = { t00: 'nada', t01: 'LTD heterossináptica', t10: 'LTD homossináptica', t11: 'LTP' };
+const tsel = (n) => `<select name="${n}">${TBO.map(o => `<option value="${o === '—' ? '' : o}">${o}</option>`).join('')}</select>`;
+$('#tbGrid').innerHTML = [['t00', 'pré inativo · pós inativo'], ['t01', 'pré inativo · pós muito ativo'], ['t10', 'pré ativo · pós pouco ativo'], ['t11', 'pré ativo · pós muito ativo']]
+  .map(([n, l]) => `<div class="m"><span>${l}</span>${tsel(n)}</div>`).join('');
+const RULEO = ['só LTP', 'LTP e LTD heterossináptica', 'LTP e LTD homossináptica', 'só LTD'];
+radios('r_a2a', 'a2a', RULEO); radios('r_a2b', 'a2b', RULEO); radios('r_a2c', 'a2c', RULEO);
+
+/* ---------- Atividade 3: janela de STDP ---------- */
+const ST = setupCanvas($('#stC'));
+const stdp = (dt) => dt > 0 ? 0.010 * Math.exp(-dt / 20) : (dt < 0 ? -0.012 * Math.exp(dt / 20) : 0);
+function stDraw() {
+  const d = +$('#stD').value; $('#stDv').textContent = d;
+  const { g, w, h } = ST; g.clearRect(0, 0, w, h);
+  const X = (t) => 30 + (w - 50) * (t + 80) / 160, Y = (v) => h / 2 - v * (h * 0.38) / 0.012;
+  g.strokeStyle = css('--line'); g.lineWidth = 1;
+  g.beginPath(); g.moveTo(30, h / 2); g.lineTo(w - 20, h / 2); g.stroke(); g.beginPath(); g.moveTo(X(0), 12); g.lineTo(X(0), h - 12); g.stroke();
+  g.fillStyle = css('--muted'); g.font = '13px ui-monospace,monospace'; g.fillText('Δt (ms)', w - 80, h / 2 + 18); g.fillText('−80', 22, h / 2 + 18); g.fillText('+80', w - 50, h / 2 - 8);
+  g.fillText('LTP: pré antes do pós', X(4), 22); g.fillText('LTD: pós antes do pré', 34, h - 14);
+  g.lineWidth = 2.5;
+  g.strokeStyle = '#1a56db'; g.beginPath(); for (let t = 0.5; t <= 80; t += 0.5) { const p = [X(t), Y(stdp(t))]; t === 0.5 ? g.moveTo(...p) : g.lineTo(...p); } g.stroke();
+  g.strokeStyle = '#b45309'; g.beginPath(); for (let t = -80; t <= -0.5; t += 0.5) { const p = [X(t), Y(stdp(t))]; t === -80 ? g.moveTo(...p) : g.lineTo(...p); } g.stroke();
+  g.fillStyle = css('--fg'); g.beginPath(); g.arc(X(d), Y(stdp(d)), 6, 0, 7); g.fill();
+  $('#stR').textContent = `Δt = ${d} ms → Δw = ${(stdp(d) * 1000).toFixed(2).replace('.', ',')} × 10⁻³`;
+}
+$('#stD').addEventListener('input', stDraw); stDraw();
+
+/* ---------- Atividade 4: grade ---------- */
+const WANS = [[1, 2, 0, 1], [0, 1, 0, 1], [1, 1, 0, 0], [0, 0, 0, 0], [1, 1, 0, 0], [0, 1, 0, 1]];
+$('#wGrid').innerHTML = '<span></span>' + [1, 2, 3, 4].map(j => `<span>n${j}</span>`).join('') +
+  WANS.map((r, i) => `<span>x${i + 1}</span>` + r.map((_, j) => `<input type="text" inputmode="numeric" name="w${i}${j}" aria-label="peso da entrada ${i + 1} para o neurônio ${j + 1}">`).join('')).join('');
+$('#hRow').innerHTML = [1, 2, 3, 4].map(j => `<label>h${j}<input type="text" inputmode="numeric" name="h${j}"></label>`).join('');
+$('#yRow').innerHTML = [1, 2, 3, 4].map(j => `<label>y${j}<input type="text" inputmode="numeric" name="y${j}"></label>`).join('');
+
+/* ---------- Atividade 5: Hebb × Oja ---------- */
+const OJ = setupCanvas($('#ojC'));
+let oj = null, ojTimer = null;
+function gauss() { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+function ojReset() {
+  clearInterval(ojTimer); ojTimer = null;
+  const a = +$('#ojA').value * Math.PI / 180; $('#ojAv').textContent = $('#ojA').value;
+  const pts = Array.from({ length: 400 }, () => { const u = 1.6 * gauss(), v = 0.45 * gauss(); return [u * Math.cos(a) - v * Math.sin(a), u * Math.sin(a) + v * Math.cos(a)]; });
+  oj = { pts, w: [0.2, 0.9], trail: [[0.2, 0.9]], rule: null, k: 0 };
+  ojDraw();
+}
+function ojDraw() {
+  const { g, w, h } = OJ; g.clearRect(0, 0, w, h); const S = w / 7.2, X = (x) => w / 2 + x * S, Y = (y) => h / 2 - y * S;
+  g.fillStyle = css('--line'); oj.pts.forEach(([x, y]) => g.fillRect(X(x) - 1.5, Y(y) - 1.5, 3, 3));
+  g.strokeStyle = css('--muted'); g.setLineDash([3, 4]); g.beginPath(); g.arc(X(0), Y(0), S, 0, 7); g.stroke(); g.setLineDash([]);
+  g.strokeStyle = css('--accent'); g.lineWidth = 1.2; g.beginPath(); oj.trail.forEach((p, k) => { const n = Math.hypot(...p), s = n > 3 ? 3 / n : 1; k ? g.lineTo(X(p[0] * s), Y(p[1] * s)) : g.moveTo(X(p[0] * s), Y(p[1] * s)); }); g.stroke();
+  const n = Math.hypot(...oj.w), s = n > 3 ? 3 / n : 1;
+  g.strokeStyle = oj.rule === 'hebb' ? css('--warn') : css('--accent'); g.lineWidth = 3.5; g.beginPath(); g.moveTo(X(0), Y(0)); g.lineTo(X(oj.w[0] * s), Y(oj.w[1] * s)); g.stroke();
+  g.fillStyle = css('--muted'); g.font = '12px ui-monospace,monospace'; g.fillText('círculo: |w| = 1', 8, h - 10); if (n > 3) g.fillText('(vetor encurtado para caber)', 8, h - 26);
+  const ang = ((Math.atan2(oj.w[1], oj.w[0]) * 180 / Math.PI) % 180 + 180) % 180;
+  $('#ojT').textContent = `${oj.rule ? (oj.rule === 'hebb' ? 'Hebb' : 'Oja') + ' · ' : ''}${oj.k} apresentações · |w| = ${n > 1e5 ? n.toExponential(1) : n.toFixed(2)} · ângulo = ${ang.toFixed(0)}°`;
+}
+function ojRun(rule) {
+  if (!oj || (oj.rule && oj.rule !== rule) || oj.k >= 600) ojReset();
+  oj.rule = rule; clearInterval(ojTimer);
+  ojTimer = setInterval(() => {
+    for (let r = 0; r < 10; r++) {
+      const x = oj.pts[oj.k % oj.pts.length], y = oj.w[0] * x[0] + oj.w[1] * x[1], eta = 0.01;
+      if (rule === 'hebb') oj.w = [oj.w[0] + eta * y * x[0], oj.w[1] + eta * y * x[1]];
+      else oj.w = [oj.w[0] + eta * y * (x[0] - y * oj.w[0]), oj.w[1] + eta * y * (x[1] - y * oj.w[1])];
+      oj.k++; if (oj.k % 5 === 0) oj.trail.push(oj.w.slice());
+    }
+    ojDraw(); if (oj.k >= 600 || !isFinite(oj.w[0])) clearInterval(ojTimer);
+  }, 30);
+}
+$('#ojH').addEventListener('click', () => ojRun('hebb')); $('#ojO').addEventListener('click', () => ojRun('oja'));
+$('#ojR').addEventListener('click', ojReset); $('#ojA').addEventListener('input', ojReset); ojReset();
+
+/* ---------- Atividade 7 ---------- */
+const MARR = [
+  ['O Mg²⁺ bloqueia o canal NMDA em potenciais negativos.', 'I', 'mecanismo molecular'],
+  ['O hipocampo precisa guardar um episódio depois de uma única experiência.', 'C', 'o que a memória precisa fazer'],
+  ['δw = α·y·(x − x̄).', 'A', 'a regra de aprendizado'],
+  ['Uma rede precisa prever o próximo evento de uma sequência.', 'C', 'o problema (prever)'],
+  ['A regra de Oja extrai a componente principal das entradas.', 'A', 'o que a regra calcula'],
+  ['A CaMKII é ativada pelo Ca²⁺ que entra pelo NMDA.', 'I', 'bioquímica'],
+];
+$('#marrList').innerHTML = MARR.map(([t], k) => `<div class="st"><span>${k + 1}. ${t}</span><div class="seg" role="radiogroup" aria-label="Nível da afirmação ${k + 1}">
+  ${['C', 'A', 'I'].map(l => `<label><input type="radio" name="m${k}" value="${l}">${l}</label>`).join('')}</div></div>`).join('');
+
+/* ---------- correção ---------- */
+const ACT = {
+  a1() {
+    let s = 0, n = 0; const parts = [];
+    CASES.forEach(([k, , a, b]) => {
+      const ea = $(`[name="c${k}A"]`); const oka = ea.value === a; markEl(ea, oka); s += oka; n++; parts.push(`${k}A:${ea.value || '—'}`);
+      if (b) { const eb = $(`[name="c${k}B"]`); const okb = b.includes(eb.value); markEl(eb, okb); s += okb; n++; parts.push(`${k}B:${eb.value || '—'}`); }
+    });
+    return { score: `${s}/${n}`, resp: parts.join(' ') + ` | f: ${val('a1f')}`,
+      fb: `<p class="score">${s} de ${n}</p><ul>
+      <li><b>a</b> nada — pouca despolarização: o NMDA continua bloqueado.</li>
+      <li><b>b</b> A: LTP; B: nada (ou LTD heterossináptica) — <b>especificidade</b>.</li>
+      <li><b>c</b> A e B: LTP — <b>associatividade e cooperatividade</b>: entradas fracas juntas ultrapassam o limiar.</li>
+      <li><b>d</b> nada — sem despolarização, o Mg²⁺ fica no poro do NMDA: o "pós" é necessário.</li>
+      <li><b>e</b> nada (só a potenciação pós-tetânica, que some em minutos) — sem NMDA não entra Ca²⁺.</li></ul>
+      <figure><img src="img/aula03/h2_nmda.png" alt="Curva da fração de canais NMDA sem bloqueio de magnésio em função da voltagem, e tabela mostrando que o cálcio só entra com glutamato e despolarização juntos." loading="lazy"><figcaption>O receptor NMDA como porta E: glutamato (pré) E despolarização (pós).</figcaption></figure>
+      <figure><img src="img/aula03/ltp_rules.png" alt="Esquema de Rolls com as situações de estimulação das vias A e B e o resultado: nenhuma mudança, LTP, LTD heterossináptica, LTP associativa e LTD homossináptica." loading="lazy"><figcaption>Regras reveladas por LTP e LTD. Rolls (2023, Fig. 1.5).</figcaption></figure>` };
+  },
+  a2() {
+    let s = 0; Object.entries(TBA).forEach(([n, a]) => { const el = $(`[name="${n}"]`); const ok = el.value === a; markEl(el, ok); s += ok; });
+    const R = { a2a: 'só LTP', a2b: 'LTP e LTD heterossináptica', a2c: 'LTP e LTD homossináptica' };
+    Object.entries(R).forEach(([n, c]) => { markRadio(n, c); if (val(n) === c) s++; });
+    return { score: `${s}/7`, resp: Object.keys(TBA).map(n => `${n}:${$(`[name="${n}"]`).value || '—'}`).join(' ') + ' | ' + Object.keys(R).map(n => `${n.slice(2)}: ${val(n) || '—'}`).join(' | '),
+      fb: `<p class="score">${s} de 7</p><ul>
+      <li>Tabela: pré inativo/pós inativo → <b>nada</b>; pré inativo/pós ativo → <b>LTD heterossináptica</b>; pré ativo/pós pouco ativo → <b>LTD homossináptica</b>; os dois ativos → <b>LTP</b> (Rolls, 2023, Tabela B.1).</li>
+      <li>${tag(val('a2a') === R.a2a)} Hebb puro: <b>só LTP</b> — se x ou y é zero, nada muda.</li>
+      <li>${tag(val('a2b') === R.a2b)} Covariância: <b>LTP e LTD heterossináptica</b> — subtrai a média e torna as memórias menos parecidas.</li>
+      <li>${tag(val('a2c') === R.a2c)} BCM: <b>LTP e LTD homossináptica</b> — y abaixo do limiar θₘ enfraquece.</li></ul>
+      <figure><img src="img/aula03/h3_calcium_bcm.png" alt="Hipótese do cálcio (nada, LTD e LTP conforme a concentração de cálcio) e a regra BCM com limiar deslizante." loading="lazy"></figure>` };
+  },
+  a3() {
+    const a = [num('a3a1'), num('a3a2'), num('a3a3')], want = [6.1, -7.3, 1.4];
+    let oka = 0; ['a3a1', 'a3a2', 'a3a3'].forEach((n, k) => { const ok = near(a[k], want[k], 0.35); markInput(n, ok); oka += ok; });
+    const b = val('a3b'), c = val('a3c'); markRadio('a3b', 'A→B fortalece, B→A enfraquece'); markRadio('a3c', 'enfraquece');
+    const s = oka + (b === 'A→B fortalece, B→A enfraquece') + (c === 'enfraquece');
+    return { score: `${s}/5`, resp: `Δw(+10,−10,+40) = ${a.map(v => v ?? '—').join(', ')} | b: ${b || '—'} | c: ${c || '—'}`,
+      fb: `<p class="score">${s} de 5</p><ul>
+      <li>${tag(oka === 3)} <b>+6,1 · −7,3 · +1,4</b> (× 10⁻³): 0,010 × 0,61; −0,012 × 0,61; 0,010 × 0,135.</li>
+      <li>${tag(b.startsWith('A→B fortalece'))} <b>A → B fortalece, B → A enfraquece</b>: em B → A o pré (B) dispara depois do pós (A). A rede guarda a ordem.</li>
+      <li>${tag(c === 'enfraquece')} <b>Enfraquece</b>: a área de LTD (0,012 × 20 = 0,24) é maior que a de LTP (0,20). Só sobrevivem entradas que preveem o disparo.</li></ul>
+      <figure><img src="img/aula03/h9_sequence.png" alt="Seis neurônios treinados em sequência e a matriz de pesos resultante, com conexões só para a frente." loading="lazy"><figcaption>Com STDP, uma rede treinada com uma sequência aprende só conexões "para a frente".</figcaption></figure>` };
+  },
+  a4() {
+    let okW = 0; WANS.forEach((r, i) => r.forEach((v, j) => { const el = $(`[name="w${i}${j}"]`); const ok = num(`w${i}${j}`) === v; markEl(el, ok); okW += ok; }));
+    const H = [1, 3, 0, 2], Yv = [0, 1, 0, 1]; let okH = 0, okY = 0;
+    H.forEach((v, j) => { const ok = num('h' + (j + 1)) === v; markInput('h' + (j + 1), ok); okH += ok; });
+    Yv.forEach((v, j) => { const ok = num('y' + (j + 1)) === v; markInput('y' + (j + 1), ok); okY += ok; });
+    const m = val('a4m'); markRadio('a4m', 'UCS2'); const c = val('a4c').replace(/\D/g, ''); const okc = c === '0101'; markInput('a4c', okc);
+    const s = (okW === 24) + (okH === 4) + (okY === 4) + (m === 'UCS2') + okc;
+    return { score: `${s}/5 (W: ${okW}/24)`, resp: `W=${WANS.map((r, i) => r.map((_, j) => num(`w${i}${j}`) ?? '·').join('')).join('/')} | h=${H.map((_, j) => num('h' + (j + 1)) ?? '—').join(',')} | y=${Yv.map((_, j) => num('y' + (j + 1)) ?? '—').join('')} | memória: ${m || '—'} | lesão: ${c || '—'} | d: ${val('a4d')}`,
+      fb: `<p class="score">${s} de 5</p><figure><img src="img/aula03/h5_assoc.png" alt="Matriz de pesos após os dois pares e a recordação com a pista 110100, que dá saída 0101." loading="lazy"></figure><ul>
+      <li>${tag(okW === 24)} W, linha a linha: <b>1201 · 0101 · 1100 · 0000 · 1100 · 0101</b> (${okW} de 24 certos).</li>
+      <li>${tag(okH === 4 && okY === 4)} Pista 110100: <b>h = (1, 3, 0, 2)</b> → <b>y = 0101</b>.</li>
+      <li>${tag(m === 'UCS2')} Lembrou <b>UCS2</b>: a pista é parecida com CS2 — <b>generalização</b>.</li>
+      <li>${tag(okc)} Com a lesão, h = (1, 4, 0, 2) → <b>0101</b>: <b>degradação graciosa</b>.</li></ul>
+      <p><b>d)</b> Com código local (100000), perder o único axônio ativo leva h a zero: nada é lembrado. Generalização e tolerância a lesões dependem de muitos elementos ativos (Rolls, 2023, B.2.4.3).</p>` };
+  },
+  a5() {
+    const a = val('a5a'), b = num('a5b'), c = num('a5c'); markRadio('a5a', 'cresce sem limite');
+    const okb = near(b, 1, 0.1), angOk = c !== null && (Math.abs(((c % 180) + 180) % 180 - 30) <= 8);
+    markInput('a5b', okb); markInput('a5c', angOk);
+    const s = (a === 'cresce sem limite') + okb + angOk;
+    return { score: `${s}/3`, resp: `Hebb |w|: ${a || '—'} | Oja |w| = ${b ?? '—'}, ângulo = ${c ?? '—'} | d: ${val('a5d')}`,
+      fb: `<p class="score">${s} de 3</p><figure><img src="img/aula03/h6_hebb_oja.png" alt="Tamanho do vetor de pesos sob Hebb (cresce exponencialmente) e sob Oja (converge para 1), e a trajetória de w até a direção principal da nuvem." loading="lazy"></figure><ul>
+      <li>${tag(a === 'cresce sem limite')} Hebb: |w| <b>cresce sem limite</b> — retroalimentação positiva.</li>
+      <li>${tag(okb)} Oja: |w| → <b>1</b>.</li>
+      <li>${tag(angOk)} Ângulo ≈ <b>30°</b>: a direção de maior variância, a 1ª componente principal. Hebb também gira para lá, mas explode.</li></ul>
+      <p><b>d)</b> LTD heterossináptica proporcional ao peso, ou escalonamento sináptico: o neurônio reduz todas as sinapses na mesma proporção quando dispara demais (Turrigiano et al., 1998).</p>` };
+  },
+  a6() {
+    const a = val('a6a'), b = val('a6b'), c = val('a6c'); markRadio('a6a', '1'); markRadio('a6b', '2'); markRadio('a6c', 'especializam');
+    const ok = (n, x) => { const r = near(num(n), x, 0.011); markInput(n, r); return r; };
+    const oa = ok('a6a1', 0.9) & ok('a6a2', 0.3), ob = ok('a6b1', 0.3) & ok('a6b2', 0.9);
+    const s = (a === '1') + !!oa + (b === '2') + !!ob + (c === 'especializam');
+    return { score: `${s}/5`, resp: `x1: venc ${a || '—'}, w=(${num('a6a1') ?? '—'}; ${num('a6a2') ?? '—'}) | x2: venc ${b || '—'}, w=(${num('a6b1') ?? '—'}; ${num('a6b2') ?? '—'}) | c: ${c || '—'}`,
+      fb: `<p class="score">${s} de 5</p><ul>
+      <li>${tag(a === '1' && oa)} x = (1; 0): vence o <b>1</b> (0,8 &gt; 0,6) → w₁ = <b>(0,9; 0,3)</b>.</li>
+      <li>${tag(b === '2' && ob)} x = (0; 1): vence o <b>2</b> (0,8 &gt; 0,3) → w₂ = <b>(0,3; 0,9)</b>.</li>
+      <li>${tag(c === 'especializam')} Cada neurônio <b>se especializa</b>: categorias descobertas sem professor.</li></ul>
+      <figure><img src="img/aula03/h7_competitive.png" alt="Três vetores de pesos que, partindo de direções próximas, migram cada um para o centro de um grupo de entradas na circunferência." loading="lazy" style="max-width:360px"></figure>` };
+  },
+  a7() {
+    const a = num('a7a'); const oa = a !== null && a >= 195000 && a <= 240000; markInput('a7a', oa);
+    let s = 0;
+    MARR.forEach(([, c], k) => { const v = val('m' + k); if (v === c) s++;
+      $$(`[name="m${k}"]`).forEach(i => { const l = i.closest('label'); l.classList.remove('right', 'wrong'); if (i.value === c) l.classList.add('right'); else if (i.checked) l.classList.add('wrong'); }); });
+    return { score: `${s + oa}/7`, resp: `p = ${a ?? '—'} | ` + MARR.map((_, k) => `${k + 1}:${val('m' + k) || '—'}`).join(' '),
+      fb: `<p class="score">${s + oa} de 7</p><ul><li>${tag(oa)} p ≈ 10.000 / (0,01 × 4,6) ≈ <b>217.000</b> associações — com código denso seriam da ordem de 10.000.</li>
+      ${MARR.map(([, c, why], k) => `<li>${tag(val('m' + k) === c)} ${k + 1}. <b>${c}</b> — ${why}</li>`).join('')}</ul>
+      <figure><img src="img/aula03/h8_capacity.png" alt="Associações por sinapse em função da esparsidade: cresce muito para códigos esparsos." loading="lazy" style="max-width:420px"></figure>` };
+  },
+};
+
+/* ---------- envio ---------- */
+$$('[data-send]').forEach(btn => btn.addEventListener('click', () => {
+  const id = btn.dataset.send, sec = document.getElementById(id);
+  if (!window.Registro || !Registro.identificado()) { window.Registro && Registro.pedeId(); return; }
+  const r = ACT[id]();
+  const ok = Registro.atividade(id, sec.dataset.titulo, r.score, r.resp);
+  const fb = $(`[data-fb="${id}"]`); fb.innerHTML = '<h3>Gabarito</h3>' + r.fb; fb.hidden = false;
+  const st = $(`[data-status="${id}"]`);
+  const first = Registro.aluno().n.split(' ')[0];
+  st.textContent = ok ? `✓ Resposta registrada para ${first}. Você pode corrigir e reenviar.` : 'Identifique-se no topo da página.';
+  btn.textContent = 'Reenviar';
+  const a = $(`nav a[href="#${id}"]`); if (a) a.classList.add('done');
+  fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}));
+})();
+</script>
+<script src="config.js?v=2"></script>
+<script src="registro.js?v=2" data-aula="3"></script>

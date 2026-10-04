@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neurociência Computacional · Aula 2 — Atividades</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#142033; --muted:#5b6879; --line:#d8dee6;
+  --accent:#0d7377; --accent-ink:#ffffff; --you:#b45309; --soft:#e2f0f0; --warn:#a33a2a; --ok:#15803d; --okbg:#e3f3e8; --nobg:#fbe9e6;
+  --display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --ok:#5fd08a; --okbg:#173a28; --nobg:#3d2020; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --ok:#5fd08a; --okbg:#173a28; --nobg:#3d2020; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:17px/1.5 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:grid;gap:22px}
+header{display:grid;gap:8px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(32px,8vw,50px)/1.02 var(--display);font-stretch:115%;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font:750 23px/1.15 var(--display);font-stretch:108%;margin:0;text-wrap:balance}
+p{margin:0;max-width:65ch}
+.lead{color:var(--muted)}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{font:600 14px/1 var(--body);color:var(--fg);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:9px 12px;background:var(--surface)}
+nav a.done{border-color:var(--ok);color:var(--ok)}
+a{color:var(--accent)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,nav a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.exp>*{min-width:0}
+section.exp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 18px;display:grid;gap:16px;min-width:0;scroll-margin-top:12px}
+.num{font:600 13px/1 var(--mono);color:var(--you);letter-spacing:.06em;text-transform:uppercase}
+.meta{font:500 13px/1.3 var(--mono);color:var(--muted)}
+.q{display:grid;gap:8px;border-top:1px dashed var(--line);padding-top:14px}
+.q>.qt{font-weight:600}
+.q .qt i{font-family:var(--mono);font-style:normal;color:var(--you);margin-right:6px}
+.opts{display:grid;gap:8px}
+@media (min-width:560px){.opts.two{grid-template-columns:1fr 1fr}}
+.opt{display:flex;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;cursor:pointer;min-height:48px;background:var(--bg)}
+.opt input{width:20px;height:20px;accent-color:var(--accent);flex:none}
+.opt:has(input:checked){border-color:var(--accent);background:var(--soft)}
+.opt.right{border-color:var(--ok);background:var(--okbg)}
+.opt.wrong{border-color:var(--warn);background:var(--nobg)}
+textarea,input[type=number],input[type=text]{width:100%;font:500 17px/1.4 var(--body);color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;min-height:48px}
+textarea{min-height:90px;resize:vertical}
+.inline{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.inline label{display:grid;gap:4px;font-size:14px;font-weight:600;flex:1 1 140px;min-width:0}
+select{font:500 17px var(--body);color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px;min-height:48px;width:100%}
+button{font:700 16px/1 var(--display);border:0;border-radius:10px;padding:14px 18px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px;touch-action:manipulation}
+button.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+button:disabled{opacity:.45;cursor:default}
+.send{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.sent{font:600 14px/1.3 var(--mono);color:var(--ok)}
+.sent.pend{color:var(--you)}
+.fb{background:var(--soft);border-radius:10px;padding:14px 16px;display:grid;gap:8px;font-size:16px}
+.fb h3{margin:0;font:700 17px/1.2 var(--display)}
+.fb .score{font:700 22px/1 var(--display);color:var(--you)}
+.fb ul{margin:0;padding-left:20px;display:grid;gap:6px}
+.mark{font-weight:700}
+.mark.ok{color:var(--ok)} .mark.no{color:var(--warn)}
+figure{margin:0;display:grid;gap:6px}
+figure img{width:100%;height:auto;border-radius:8px;background:#fff;border:1px solid var(--line)}
+figcaption{font-size:13px;color:var(--muted)}
+.tablewrap{overflow-x:auto}
+table.dec{border-collapse:collapse;width:100%;font:500 15px/1.2 var(--mono);text-align:center}
+table.dec th,table.dec td{border:1px solid var(--line);padding:8px 3px}
+table.dec th{background:var(--soft);font:600 13px/1.2 var(--body)}
+table.dec td.test{background:color-mix(in srgb,var(--you) 18%,transparent);font-weight:700}
+table.dec td.hi{font-weight:700;color:var(--accent)}
+.dots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.dots label{display:grid;gap:4px;font:600 13px/1.2 var(--body);text-align:center;min-width:0}
+.dots input{min-width:0;font-size:15px;padding:10px 2px;text-align:center}
+.opts.five{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+.opts.five .opt{padding:10px 6px;gap:6px;justify-content:center}
+.dots input{text-align:center;padding:10px 4px;font-family:var(--mono)}
+.dots input.right{border-color:var(--ok);background:var(--okbg)}
+.dots input.wrong{border-color:var(--warn);background:var(--nobg)}
+.marr{display:grid;gap:10px}
+.marr .st{display:grid;gap:8px;border:1px solid var(--line);border-radius:10px;padding:12px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.seg label{border:1.5px solid var(--line);border-radius:8px;text-align:center;padding:10px 4px;font:700 14px/1.1 var(--display);cursor:pointer;min-height:44px;display:grid;place-items:center;background:var(--bg)}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){border-color:var(--accent);background:var(--soft);color:var(--accent)}
+.seg label.right{border-color:var(--ok)!important;background:var(--okbg)!important;color:var(--ok)!important}
+.seg label.wrong{border-color:var(--warn)!important;background:var(--nobg)!important;color:var(--warn)!important}
+.seg label:focus-within{outline:3px solid var(--accent);outline-offset:1px}
+.xor{display:grid;gap:12px}
+.xor table{border-collapse:collapse;font:500 16px/1 var(--mono);text-align:center;width:100%;max-width:420px}
+.xor th,.xor td{border:1px solid var(--line);padding:9px}
+.xor th{background:var(--soft);font:600 13px var(--body)}
+.xor td.ok{color:var(--ok);font-weight:700} .xor td.no{color:var(--warn);font-weight:700}
+.xor .ctl{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.xor .ctl label{display:grid;gap:4px;font:600 13px/1.2 var(--mono)}
+.xor input[type=range]{width:100%;accent-color:var(--accent)}
+.badge{font:700 14px/1.2 var(--mono)}
+footer{font-size:13px;color:var(--muted);display:grid;gap:6px}
+/* cartão de identificação (registro.js) */
+.nc-id{background:var(--surface);border:2px solid var(--accent);border-radius:14px;padding:18px;display:grid;gap:12px}
+.nc-id.nc-in{border:0;padding:0;background:none}
+.nc-id h2{margin:0 0 4px}
+.nc-lead{color:var(--muted);margin:0 0 12px!important}
+.nc-row{display:grid;gap:10px;grid-template-columns:1fr}
+@media (min-width:560px){.nc-row{grid-template-columns:1fr 1.6fr}}
+.nc-id label{display:grid;gap:4px;font:600 14px/1.2 var(--body)}
+.nc-id input{font:17px var(--body);padding:12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);min-height:48px;width:100%}
+.nc-err{color:var(--warn);font-size:14px;min-height:1em;margin:6px 0!important}
+.nc-priv{font-size:13px;color:var(--muted);margin-top:10px!important}
+.nc-who{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:15px;background:var(--soft);border-radius:10px;padding:10px 14px}
+.nc-link{background:none!important;border:0!important;color:var(--accent)!important;font:600 14px var(--body)!important;padding:4px 0!important;min-height:0!important;text-decoration:underline;cursor:pointer}
+.nc-fila{font:500 13px var(--mono);color:var(--muted)}
+.nc-flash{animation:ncflash 1.2s 2}
+@keyframes ncflash{50%{box-shadow:0 0 0 6px var(--you)}}
+@media (prefers-reduced-motion:reduce){.nc-flash{animation:none}}
+canvas.plot{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;touch-action:none}
+.ctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.ctl label{display:grid;gap:4px;font:600 13px/1.2 var(--mono)}
+.ctl input[type=range]{width:100%;accent-color:var(--accent)}
+.readout{font:600 15px/1.4 var(--mono);color:var(--accent)}
+.mp{display:grid;gap:10px}
+.mp .row{display:grid;gap:8px;border:1px solid var(--line);border-radius:10px;padding:12px}
+.mp .ins{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.mp .ins label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center;min-width:0}
+.mp .ins input{text-align:center;padding:9px 2px;font-family:var(--mono);min-width:0}
+.tt{display:flex;flex-wrap:wrap;gap:6px;font:500 13px/1 var(--mono)}
+.tt span{border:1px solid var(--line);border-radius:6px;padding:6px 7px}
+.tt span.ok{border-color:var(--ok);color:var(--ok);background:var(--okbg)}
+.tt span.no{border-color:var(--warn);color:var(--warn);background:var(--nobg)}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btns button{padding:11px 14px;min-height:44px;font-size:15px}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.trio label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center;min-width:0}
+.trio input{text-align:center;padding:9px 2px;font-family:var(--mono);min-width:0}
+.trio input.right,.inline input.right{border-color:var(--ok);background:var(--okbg)}
+.trio input.wrong,.inline input.wrong{border-color:var(--warn);background:var(--nobg)}
+table.log{border-collapse:collapse;width:100%;font:500 13px/1.2 var(--mono);text-align:center}
+table.log th,table.log td{border:1px solid var(--line);padding:5px 2px}
+table.log th{background:var(--soft);font:600 12px var(--body)}
+table.log tr.err td{color:var(--warn)}
+.match{display:grid;gap:8px}
+.match .m{display:grid;grid-template-columns:1fr minmax(0,1.3fr);gap:8px;align-items:center}
+.match .m span{font-weight:600}
+@media (max-width:420px){.match .m{grid-template-columns:1fr}}
+select.right{border-color:var(--ok);background:var(--okbg)}
+select.wrong{border-color:var(--warn);background:var(--nobg)}
+</style>
+
+<div class="wrap" id="student">
+<header>
+  <span class="eyebrow">Neurociência Computacional · Aula 2 · UFRN</span>
+  <h1>O neurônio: da biofísica ao perceptron</h1>
+  <p class="lead">Atividades em sala. Identifique-se abaixo, faça cada atividade quando o professor pedir e toque em <b>Enviar</b> — sua resposta fica registrada e o gabarito aparece em seguida.</p>
+</header>
+
+<nav aria-label="Atividades">
+  <a href="#a1">1 · Somação</a><a href="#a2">2 · Curva f–I</a><a href="#a3">3 · McCulloch-Pitts</a><a href="#a4">4 · Separabilidade</a><a href="#a5">5 · Perceptron</a><a href="#a6">6 · Cerebelo</a><a href="#a7">7 · Marr</a>
+</nav>
+
+<!-- ============ ATIVIDADE 1 ============ -->
+<section class="exp" id="a1" data-titulo="Quantas entradas para disparar?">
+  <div><p class="num">Atividade 1 · 4 min · individual, com calculadora</p><h2>Quantas entradas para disparar?</h2></div>
+  <p>Repouso: <b>−70 mV</b>. Limiar: <b>−55 mV</b>. Cada EPSP: <b>+0,5 mV</b>, decaindo com τ ≈ 20 ms. O neurônio tem <b>10.000</b> sinapses.</p>
+  <div class="q"><p class="qt"><i>a</i>Quantas entradas precisam chegar ao mesmo tempo para o neurônio disparar?</p>
+    <div class="inline"><label>Número de entradas<input type="text" inputmode="numeric" name="a1a" placeholder="ex.: 100"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Que fração das 10.000 sinapses é isso (em %)?</p>
+    <div class="inline"><label>Porcentagem<input type="text" inputmode="decimal" name="a1b" placeholder="ex.: 5"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Uma única sinapse disparando a 200 Hz leva o neurônio ao limiar?</p>
+    <div class="opts two"><label class="opt"><input type="radio" name="a1c" value="Sim">Sim — os EPSPs vão se acumulando</label><label class="opt"><input type="radio" name="a1c" value="Não">Não — a soma satura antes do limiar</label></div></div>
+  <div class="q"><p class="qt"><i>d</i>Uma sinapse inibitória produz um IPSP de −2 mV. Quantos EPSPs ela cancela?</p>
+    <div class="inline"><label>Número de EPSPs<input type="text" inputmode="numeric" name="a1d"></label></div></div>
+  <div class="send"><button data-send="a1">Enviar</button><span class="sent" data-status="a1"></span></div>
+  <div class="fb" data-fb="a1" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 2 ============ -->
+<section class="exp" id="a2" data-titulo="Calcule a curva f–I do integra-e-dispara">
+  <div><p class="num">Atividade 2 · 5 min · em duplas</p><h2>Calcule a curva f–I</h2></div>
+  <p><span class="badge">τ dV/dt = −(V − Vₗ) + R·I</span>; quando V ≥ Vθ, o neurônio dispara e volta a Vₗ, com 2 ms de período refratário. Parâmetros: τ = 20 ms, R = 10 MΩ, Vθ − Vₗ = 15 mV. Fórmula: <span class="badge">r = 1 / [tref + τ·ln(R·I / (R·I − 15 mV))]</span>; ln 2 ≈ 0,69.</p>
+  <canvas class="plot" id="lifV" width="600" height="300" aria-label="Potencial de membrana do modelo integra-e-dispara ao longo do tempo"></canvas>
+  <div class="ctl">
+    <label>corrente I = <span id="lifIv">2.0</span> nA<input type="range" id="lifI" min="0" max="6" step="0.1" value="2"></label>
+    <label>τ = <span id="lifTv">20</span> ms<input type="range" id="lifT" min="5" max="60" step="1" value="20"></label>
+    <label style="align-content:end"><span><input type="checkbox" id="lifA"> com adaptação</span></label>
+  </div>
+  <p class="readout" id="lifR"></p>
+  <div class="q"><p class="qt"><i>a</i>Qual a corrente de limiar Iθ?</p>
+    <div class="inline"><label>Iθ (nA)<input type="text" inputmode="decimal" name="a2a"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Qual a taxa de disparo para I = 3 nA (τ = 20 ms)?</p>
+    <div class="inline"><label>Taxa (Hz)<input type="text" inputmode="decimal" name="a2b"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Qual a taxa máxima possível, para corrente muito alta?</p>
+    <div class="inline"><label>Taxa máxima (Hz)<input type="text" inputmode="decimal" name="a2c"></label></div></div>
+  <div class="q"><p class="qt"><i>d</i>Se τ dobrar para 40 ms, o que acontece com a corrente de limiar? E qual a nova taxa a 3 nA?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a2d" value="aumenta">Iθ aumenta</label><label class="opt"><input type="radio" name="a2d" value="não muda">Iθ não muda</label><label class="opt"><input type="radio" name="a2d" value="diminui">Iθ diminui</label></div>
+    <div class="inline"><label>Nova taxa a 3 nA (Hz)<input type="text" inputmode="decimal" name="a2d2"></label></div></div>
+  <div class="q"><p class="qt"><i>e</i>Que propriedade do neurônio CA1 (Aula 1) este modelo ainda não tem? (Ligue a adaptação acima e compare.)</p>
+    <div class="opts two"><label class="opt"><input type="radio" name="a2e" value="Limiar">Limiar</label><label class="opt"><input type="radio" name="a2e" value="Saturação">Saturação</label><label class="opt"><input type="radio" name="a2e" value="Adaptação">Adaptação</label><label class="opt"><input type="radio" name="a2e" value="Período refratário">Período refratário</label></div></div>
+  <div class="send"><button data-send="a2">Enviar</button><span class="sent" data-status="a2"></span></div>
+  <div class="fb" data-fb="a2" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 3 ============ -->
+<section class="exp" id="a3" data-titulo="Projete neurônios de McCulloch-Pitts">
+  <div><p class="num">Atividade 3 · 5 min · em duplas</p><h2>Projete neurônios de McCulloch-Pitts</h2></div>
+  <p>Regra: <span class="badge">y = 1 se Σ wⱼxⱼ ≥ θ</span>, senão y = 0. Escolha pesos (podem ser negativos) e o limiar. A tabela-verdade é conferida na hora: cada caixinha mostra <i>entradas → saída</i>.</p>
+  <div class="mp" id="mpList"></div>
+  <div class="send"><button data-send="a3">Enviar</button><span class="sent" data-status="a3"></span></div>
+  <div class="fb" data-fb="a3" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 4 ============ -->
+<section class="exp" id="a4" data-titulo="Quais funções um neurônio consegue computar?">
+  <div><p class="num">Atividade 4 · 4 min · individual · opcional</p><h2>Quais funções um neurônio consegue computar?</h2></div>
+  <p>Escolha uma função e tente achar uma reta que separe os pontos ● (saída 1) dos ○ (saída 0).</p>
+  <div class="inline"><label>Função<select id="sepF"></select></label></div>
+  <canvas class="plot" id="sepC" width="420" height="420" style="max-width:340px" aria-label="Quadrado com os quatro padrões de entrada e a reta de decisão do neurônio"></canvas>
+  <div class="ctl">
+    <label>w₁ = <span id="sw1v">1.0</span><input type="range" id="sw1" min="-2" max="2" step="0.1" value="1"></label>
+    <label>w₂ = <span id="sw2v">1.0</span><input type="range" id="sw2" min="-2" max="2" step="0.1" value="1"></label>
+    <label>θ = <span id="sthv">1.5</span><input type="range" id="sth" min="-2" max="3" step="0.1" value="1.5"></label>
+  </div>
+  <p class="readout" id="sepR"></p>
+  <div class="q"><p class="qt"><i>a</i>Quais funções são linearmente separáveis? (marque todas)</p>
+    <div class="checks" id="sepChecks"></div></div>
+  <div class="q"><p class="qt"><i>b</i>Existem 16 funções booleanas de duas entradas. Quantas um único neurônio consegue computar?</p>
+    <div class="inline"><label>Quantas<input type="text" inputmode="numeric" name="a4b"></label></div></div>
+  <div class="send"><button data-send="a4">Enviar</button><span class="sent" data-status="a4"></span></div>
+  <div class="fb" data-fb="a4" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 5 ============ -->
+<section class="exp" id="a5" data-titulo="Treine um perceptron à mão">
+  <div><p class="num">Atividade 5 · 7 min · em duplas, no papel</p><h2>Treine um perceptron à mão</h2></div>
+  <p>Função <b>E (AND)</b>. Início: w₁ = w₂ = 0, b = 0, η = 1. Ordem: (0,0), (0,1), (1,0), (1,1). Saída: <span class="badge">y = 1 se w₁x₁ + w₂x₂ + b &gt; 0</span>. Regra: <span class="badge">Δwⱼ = η(t − y)xⱼ</span>, <span class="badge">Δb = η(t − y)</span>.</p>
+  <div class="q"><p class="qt"><i>a</i>Faça à mão: pesos ao fim da época 1 e da época 2.</p>
+    <p class="meta">Época 1</p>
+    <div class="trio"><label>w₁<input type="text" inputmode="numeric" name="p1a"></label><label>w₂<input type="text" inputmode="numeric" name="p1b"></label><label>b<input type="text" inputmode="numeric" name="p1c"></label></div>
+    <p class="meta">Época 2</p>
+    <div class="trio"><label>w₁<input type="text" inputmode="numeric" name="p2a"></label><label>w₂<input type="text" inputmode="numeric" name="p2b"></label><label>b<input type="text" inputmode="numeric" name="p2c"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Agora confira no simulador e continue até uma época sem erros. Quais os pesos finais?</p>
+    <div class="inline"><label>Função<select id="pcF"><option value="and">E (AND)</option><option value="or">OU (OR)</option><option value="andnot">x₁ E NÃO x₂</option><option value="xor">XOR</option></select></label></div>
+    <canvas class="plot" id="pcC" width="420" height="420" style="max-width:300px" aria-label="Fronteira de decisão do perceptron"></canvas>
+    <div class="btns"><button type="button" class="ghost" id="pcStep">Um passo</button><button type="button" class="ghost" id="pcEpoch">Uma época</button><button type="button" class="ghost" id="pcReset">Reiniciar</button></div>
+    <p class="readout" id="pcR"></p>
+    <div class="tablewrap"><table class="log"><thead><tr><th>época</th><th>x₁x₂</th><th>t</th><th>h</th><th>y</th><th>t−y</th><th>w₁ w₂ b</th></tr></thead><tbody id="pcLog"></tbody></table></div>
+    <p class="meta">Pesos finais (E/AND)</p>
+    <div class="trio"><label>w₁<input type="text" inputmode="numeric" name="pfa"></label><label>w₂<input type="text" inputmode="numeric" name="pfb"></label><label>b<input type="text" inputmode="numeric" name="pfc"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Troque para XOR e rode várias épocas. O que acontece, e por quê?</p>
+    <textarea name="a5c" placeholder="Sua resposta"></textarea></div>
+  <div class="send"><button data-send="a5">Enviar</button><span class="sent" data-status="a5"></span></div>
+  <div class="fb" data-fb="a5" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 6 ============ -->
+<section class="exp" id="a6" data-titulo="O cerebelo é um perceptron?">
+  <div><p class="num">Atividade 6 · 4 min · em duplas</p><h2>O cerebelo é um perceptron?</h2></div>
+  <figure><img src="img/aula02/g10_cerebellum.png" alt="Esquema do córtex cerebelar: fibras musgosas chegam às células granulares, cujas fibras paralelas cruzam o dendrito de uma célula de Purkinje; uma fibra trepadeira, vinda da oliva inferior, também contacta a Purkinje." loading="lazy">
+    <figcaption>O circuito do córtex cerebelar (Rolls, 2023, cap. 17).</figcaption></figure>
+  <p>Associe cada estrutura ao seu papel no perceptron.</p>
+  <div class="match" id="cbList"></div>
+  <div class="q"><p class="qt"><i>bônus</i>Quantas fibras trepadeiras contactam cada célula de Purkinje?</p>
+    <div class="opts two"><label class="opt"><input type="radio" name="a6b" value="1">Uma</label><label class="opt"><input type="radio" name="a6b" value="~10">Cerca de 10</label><label class="opt"><input type="radio" name="a6b" value="~200">Cerca de 200</label><label class="opt"><input type="radio" name="a6b" value="~80.000">Cerca de 80.000</label></div>
+    <textarea name="a6b2" placeholder="Por que isso importa para a regra do perceptron? (1–2 frases)"></textarea></div>
+  <div class="send"><button data-send="a6">Enviar</button><span class="sent" data-status="a6"></span></div>
+  <div class="fb" data-fb="a6" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 7 ============ -->
+<section class="exp" id="a7" data-titulo="Capacidade e níveis de Marr">
+  <div><p class="num">Atividade 7 · 4 min · individual · opcional</p><h2>Capacidade e níveis de Marr</h2></div>
+  <div class="q"><p class="qt"><i>a</i>Uma célula de Purkinje com 80.000 sinapses classifica até quantos padrões aleatórios?</p>
+    <div class="inline"><label>Número de padrões<input type="text" inputmode="numeric" name="a7a" placeholder="ex.: 1000"></label></div></div>
+  <p class="lead"><b>C</b> = computacional (o quê e por quê) · <b>A</b> = algorítmico (como) · <b>I</b> = implementação (com quê)</p>
+  <div class="marr" id="marrList"></div>
+  <div class="send"><button data-send="a7">Enviar</button><span class="sent" data-status="a7"></span></div>
+  <div class="fb" data-fb="a7" hidden></div>
+</section>
+
+<footer>
+  <p>Materiais: <a href="simulacoes/aula02.html">simulações interativas da Aula 2</a> · <a href="index.html">todas as aulas</a></p>
+  <p>Prof. Daniel Y. Takahashi · Instituto do Cérebro, UFRN</p>
+</footer>
+</div>
+
+<script>
+(() => {
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const val = (n) => { const el = $(`[name="${n}"]:checked`) || $(`[name="${n}"]:not([type=radio]):not([type=checkbox])`); return el ? String(el.value).trim() : ''; };
+const num = (n) => { let t = String(val(n)).replace(/\s/g, ''); if (/^-?\d{1,3}(\.\d{3})+$/.test(t)) t = t.replace(/\./g, ''); t = t.replace(',', '.'); const v = parseFloat(t); return isNaN(v) ? null : v; };
+const tag = (ok) => `<span class="mark ${ok ? 'ok' : 'no'}">${ok ? '✓' : '✗'}</span>`;
+function markRadio(name, correct) { $$(`[name="${name}"]`).forEach(i => { const l = i.closest('label'); l.classList.remove('right', 'wrong'); if (i.value === correct) l.classList.add('right'); else if (i.checked) l.classList.add('wrong'); }); }
+function markInput(name, ok) { const el = $(`[name="${name}"]`); el.classList.toggle('right', ok); el.classList.toggle('wrong', !ok); }
+const near = (v, x, tol) => v !== null && Math.abs(v - x) <= tol;
+function setupCanvas(c) { const r = window.devicePixelRatio || 1; const w = c.width, h = c.height; c.width = w * r; c.height = h * r; const g = c.getContext('2d'); g.scale(r, r); return { g, w, h }; }
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+/* ---------- Atividade 2: integra-e-dispara ---------- */
+const LIF = setupCanvas($('#lifV'));
+function lifSim(I, tau, adapt, T = 300, dt = 0.05) {
+  let V = -70, a = 0, last = -1e9; const vs = [], sp = [];
+  for (let k = 0; k < T / dt; k++) {
+    const t = k * dt;
+    if (t - last < 2) V = -70; else { V += dt / tau * (-(V + 70) + 10 * (I - a)); if (V >= -55) { sp.push(t); last = t; V = -70; if (adapt) a += 0.25; } }
+    a -= dt * a / 100; vs.push(V);
+  }
+  return { vs, sp, dt, T };
+}
+function lifDraw() {
+  const I = +$('#lifI').value, tau = +$('#lifT').value, ad = $('#lifA').checked;
+  $('#lifIv').textContent = I.toFixed(1); $('#lifTv').textContent = tau;
+  const { g, w, h } = LIF; const r = lifSim(I, tau, ad);
+  g.clearRect(0, 0, w, h);
+  const X = (t) => 36 + (w - 46) * t / r.T, Y = (v) => 12 + (h - 34) * (1 - (v + 75) / 100);
+  g.strokeStyle = css('--line'); g.lineWidth = 1; g.font = '12px ui-monospace,monospace'; g.fillStyle = css('--muted');
+  [-70, -55, 0].forEach(v => { g.beginPath(); g.moveTo(36, Y(v)); g.lineTo(w - 10, Y(v)); g.stroke(); g.fillText(String(v), 2, Y(v) + 4); });
+  g.fillText('tempo (ms) →', w - 100, h - 6);
+  g.strokeStyle = css('--you'); g.setLineDash([4, 4]); g.beginPath(); g.moveTo(36, Y(-55)); g.lineTo(w - 10, Y(-55)); g.stroke(); g.setLineDash([]);
+  g.strokeStyle = css('--accent'); g.lineWidth = 1.8; g.beginPath();
+  r.vs.forEach((v, k) => { if (k % 4) return; const x = X(k * r.dt), y = Y(v); k ? g.lineTo(x, y) : g.moveTo(x, y); }); g.stroke();
+  r.sp.forEach(s => { g.beginPath(); g.moveTo(X(s), Y(-55)); g.lineTo(X(s), Y(20)); g.stroke(); });
+  const late = r.sp.filter(s => s > 150).length / 0.15;
+  const theo = 10 * I > 15 ? 1000 / (2 + tau * Math.log(10 * I / (10 * I - 15))) : 0;
+  $('#lifR').textContent = `${r.sp.length} spikes em 300 ms · taxa ${ad ? 'adaptada (últimos 150 ms)' : 'pela fórmula'} ≈ ${(ad ? late : theo).toFixed(0)} Hz`;
+}
+['lifI', 'lifT', 'lifA'].forEach(id => $('#' + id).addEventListener('input', lifDraw)); lifDraw();
+
+/* ---------- Atividade 3: McCulloch-Pitts ---------- */
+const MP = [
+  { id: 'and', t: 'a · E (AND)', n: 2, f: (x) => x[0] & x[1] },
+  { id: 'or', t: 'b · OU (OR)', n: 2, f: (x) => x[0] | x[1] },
+  { id: 'not', t: 'c · NÃO (NOT) — uma entrada', n: 1, f: (x) => 1 - x[0] },
+  { id: 'andnot', t: 'd · x₁ E NÃO x₂', n: 2, f: (x) => x[0] & (1 - x[1]) },
+  { id: 'maj', t: 'e · MAIORIA (pelo menos 2 de 3)', n: 3, f: (x) => +(x[0] + x[1] + x[2] >= 2) },
+];
+const combos = (n) => Array.from({ length: 2 ** n }, (_, k) => Array.from({ length: n }, (_, j) => (k >> (n - 1 - j)) & 1));
+$('#mpList').innerHTML = MP.map(m => `<div class="row" data-mp="${m.id}"><b>${m.t}</b><div class="ins">
+  ${['w₁', 'w₂', 'w₃'].map((l, j) => `<label>${l}<input type="text" inputmode="decimal" name="mp_${m.id}_${j}" ${j >= m.n ? 'disabled placeholder="—"' : ''}></label>`).join('')}
+  <label>θ<input type="text" inputmode="decimal" name="mp_${m.id}_t"></label></div><div class="tt" id="tt_${m.id}"></div></div>`).join('');
+function mpEval(m) {
+  const w = [0, 1, 2].map(j => num(`mp_${m.id}_${j}`)), th = num(`mp_${m.id}_t`);
+  const filled = w.slice(0, m.n).every(v => v !== null) && th !== null;
+  let ok = 0;
+  const rows = combos(m.n).map(x => { const want = m.f(x); const y = filled ? +(x.reduce((s, xi, j) => s + xi * w[j], 0) >= th) : null; if (y === want) ok++;
+    return `<span class="${y === null ? '' : (y === want ? 'ok' : 'no')}">${x.join('')}→${y === null ? '?' : y}</span>`; }).join('');
+  $('#tt_' + m.id).innerHTML = rows;
+  return { filled, ok: filled && ok === 2 ** m.n, w: w.slice(0, m.n), th };
+}
+$('#mpList').addEventListener('input', () => MP.forEach(mpEval)); MP.forEach(mpEval);
+
+/* ---------- Atividade 4: separabilidade ---------- */
+const FUNS = { 'E (AND)': [0, 0, 0, 1], 'OU (OR)': [0, 1, 1, 1], 'NÃO-E (NAND)': [1, 1, 1, 0], 'NÃO-OU (NOR)': [1, 0, 0, 0], 'XOR': [0, 1, 1, 0], 'XNOR': [1, 0, 0, 1], 'x₁ E NÃO x₂': [0, 0, 1, 0] };
+const SEPOK = { 'E (AND)': 1, 'OU (OR)': 1, 'NÃO-E (NAND)': 1, 'NÃO-OU (NOR)': 1, 'XOR': 0, 'XNOR': 0, 'x₁ E NÃO x₂': 1 };
+$('#sepF').innerHTML = Object.keys(FUNS).map(k => `<option>${k}</option>`).join('');
+$('#sepChecks').innerHTML = Object.keys(FUNS).map(k => `<label class="opt"><input type="checkbox" name="sep" value="${k}">${k}</label>`).join('');
+const SEP = setupCanvas($('#sepC'));
+const PTS = [[0, 0], [0, 1], [1, 0], [1, 1]];
+function sqDraw(G, outs, w1, w2, th, strict) {
+  const { g, w, h } = G; g.clearRect(0, 0, w, h);
+  const X = (x) => 50 + (w - 100) * (x + 0.25) / 1.5, Y = (y) => h - 50 - (h - 100) * (y + 0.25) / 1.5;
+  // região de disparo
+  g.fillStyle = css('--soft');
+  for (let i = 0; i <= 60; i++) for (let j = 0; j <= 60; j++) { const x = -0.25 + 1.5 * i / 60, y = -0.25 + 1.5 * j / 60; const hh = w1 * x + w2 * y; if (strict ? hh > th : hh >= th) g.fillRect(X(x) - 3, Y(y) - 3, 6, 6); }
+  g.strokeStyle = css('--line'); g.strokeRect(X(-0.25), Y(1.25), X(1.25) - X(-0.25), Y(-0.25) - Y(1.25));
+  if (Math.abs(w2) > 1e-9 || Math.abs(w1) > 1e-9) {
+    g.save(); g.beginPath(); g.rect(X(-0.25), Y(1.25), X(1.25) - X(-0.25), Y(-0.25) - Y(1.25)); g.clip();
+    g.strokeStyle = css('--accent'); g.lineWidth = 2.5; g.beginPath();
+    if (Math.abs(w2) > 1e-9) { const y0 = (th - w1 * -0.25) / w2, y1 = (th - w1 * 1.25) / w2; g.moveTo(X(-0.25), Y(y0)); g.lineTo(X(1.25), Y(y1)); }
+    else { const x0 = th / w1; g.moveTo(X(x0), Y(-0.25)); g.lineTo(X(x0), Y(1.25)); }
+    g.stroke(); g.restore();
+  }
+  let ok = 0;
+  PTS.forEach(([x, y], k) => { const hh = w1 * x + w2 * y; const yy = (strict ? hh > th : hh >= th) ? 1 : 0; const good = yy === outs[k]; if (good) ok++;
+    g.beginPath(); g.arc(X(x), Y(y), 13, 0, 7); g.fillStyle = outs[k] ? css('--fg') : css('--surface'); g.fill(); g.lineWidth = 3; g.strokeStyle = good ? css('--ok') : css('--warn'); g.stroke(); g.lineWidth = 1; });
+  g.fillStyle = css('--muted'); g.font = '13px ui-monospace,monospace'; g.fillText('x₁', w - 40, h - 18); g.fillText('x₂', 12, 40);
+  g.fillText('0', X(0) - 4, h - 22); g.fillText('1', X(1) - 4, h - 22); g.fillText('0', 26, Y(0) + 4); g.fillText('1', 26, Y(1) + 4);
+  return ok;
+}
+function sepDraw() {
+  const w1 = +$('#sw1').value, w2 = +$('#sw2').value, th = +$('#sth').value;
+  $('#sw1v').textContent = w1.toFixed(1); $('#sw2v').textContent = w2.toFixed(1); $('#sthv').textContent = th.toFixed(1);
+  const ok = sqDraw(SEP, FUNS[$('#sepF').value], w1, w2, th, false);
+  $('#sepR').textContent = ok === 4 ? '4 de 4 pontos certos — separável com esta reta!' : `${ok} de 4 pontos certos (contorno verde = certo, vermelho = errado)`;
+}
+['sw1', 'sw2', 'sth', 'sepF'].forEach(id => $('#' + id).addEventListener('input', sepDraw)); sepDraw();
+
+/* ---------- Atividade 5: perceptron ---------- */
+const TGT = { and: [0, 0, 0, 1], or: [0, 1, 1, 1], andnot: [0, 0, 1, 0], xor: [0, 1, 1, 0] };
+const PC = setupCanvas($('#pcC'));
+let pc;
+function pcReset() { pc = { w1: 0, w2: 0, b: 0, k: 0, ep: 1, errEp: 0, log: [], hist: [] }; pcDraw(); }
+function pcStep() {
+  const t = TGT[$('#pcF').value]; const [x1, x2] = PTS[pc.k]; const h = pc.w1 * x1 + pc.w2 * x2 + pc.b; const y = h > 0 ? 1 : 0; const e = t[pc.k] - y;
+  pc.w1 += e * x1; pc.w2 += e * x2; pc.b += e; if (e) pc.errEp++;
+  pc.log.push([pc.ep, `${x1}${x2}`, t[pc.k], h, y, e, `${pc.w1} ${pc.w2} ${pc.b}`]);
+  pc.k++; if (pc.k === 4) { pc.hist.push(pc.errEp); pc.k = 0; pc.ep++; pc.errEp = 0; }
+  pcDraw();
+}
+function pcDraw() {
+  sqDraw(PC, TGT[$('#pcF').value], pc.w1, pc.w2, -pc.b, true);
+  $('#pcLog').innerHTML = pc.log.slice(-12).map(r => `<tr class="${r[5] ? 'err' : ''}">${r.map((c, j) => `<td>${j === 5 && c > 0 ? '+' + c : c}</td>`).join('')}</tr>`).join('');
+  const last = pc.hist.length ? pc.hist[pc.hist.length - 1] : null;
+  $('#pcR').textContent = `época ${pc.ep}${pc.k ? ` (padrão ${pc.k + 1} de 4)` : ''} · w = (${pc.w1}, ${pc.w2}) · b = ${pc.b}` + (pc.hist.length ? ` · erros por época: ${pc.hist.join(', ')}` : '') + (last === 0 ? ' · convergiu ✓' : '');
+}
+$('#pcStep').addEventListener('click', pcStep);
+$('#pcEpoch').addEventListener('click', () => { do pcStep(); while (pc.k !== 0); });
+$('#pcReset').addEventListener('click', pcReset); $('#pcF').addEventListener('change', pcReset); pcReset();
+
+/* ---------- Atividade 6: cerebelo ---------- */
+const CB = [['fibras musgosas', 'entradas x'], ['células granulares', 'recodificação que expande as entradas'], ['sinapses fibra paralela–Purkinje', 'pesos ajustáveis w'],
+  ['célula de Purkinje', 'soma e saída do neurônio'], ['fibra trepadeira', 'professor: sinal de erro t − y'], ['LTD dessas sinapses', 'regra de aprendizado Δw ∝ erro × x']];
+const ROLES = CB.map(c => c[1]).sort();
+$('#cbList').innerHTML = CB.map(([s], k) => `<div class="m"><span>${k + 1}. ${s}</span><select name="cb${k}"><option value="">— escolha —</option>${ROLES.map(r => `<option>${r}</option>`).join('')}</select></div>`).join('');
+
+/* ---------- Atividade 7: Marr ---------- */
+const MARR = [
+  ['A célula de Purkinje recebe ~80.000 sinapses de fibras paralelas.', 'I', 'anatomia'],
+  ['O cerebelo precisa corrigir movimentos a partir dos erros.', 'C', 'o problema a resolver'],
+  ['Δw = η (t − y) x.', 'A', 'a regra de aprendizado'],
+  ['A LTD depende do Ca²⁺ que entra quando a fibra trepadeira dispara.', 'I', 'mecanismo molecular'],
+  ['Uma camada de expansão torna os padrões linearmente separáveis.', 'A', 'representação'],
+  ['Separar contextos em "corrigir o movimento" e "não corrigir".', 'C', 'o que é computado'],
+];
+$('#marrList').innerHTML = MARR.map(([t], k) => `<div class="st"><span>${k + 1}. ${t}</span><div class="seg" role="radiogroup" aria-label="Nível da afirmação ${k + 1}">
+  ${['C', 'A', 'I'].map(l => `<label><input type="radio" name="m${k}" value="${l}">${l}</label>`).join('')}</div></div>`).join('');
+
+/* ---------- correção ---------- */
+const ACT = {
+  a1() {
+    const a = num('a1a'), b = num('a1b'), c = val('a1c'), d = num('a1d');
+    const oa = a === 30, ob = near(b, 0.3, 0.02), oc = c === 'Não', od = d === 4;
+    markInput('a1a', oa); markInput('a1b', ob); markRadio('a1c', 'Não'); markInput('a1d', od);
+    const s = oa + ob + oc + od;
+    return { score: `${s}/4`, resp: `a: ${a ?? '—'} | b: ${b ?? '—'}% | c: ${c || '—'} | d: ${d ?? '—'}`,
+      fb: `<p class="score">${s} de 4</p><figure><img src="img/aula02/g2_summation.png" alt="Três painéis: um EPSP isolado; a soma de EPSPs de uma sinapse a 200 Hz saturando em poucos milivolts; trinta EPSPs simultâneos alcançando o limiar." loading="lazy"></figure><ul>
+      <li>${tag(oa)} <b>30 entradas</b>: 15 mV ÷ 0,5 mV.</li>
+      <li>${tag(ob)} <b>0,3%</b> das sinapses — poucas, mas precisam chegar juntas.</li>
+      <li>${tag(oc)} <b>Não.</b> A cada 5 ms o EPSP anterior já caiu para 0,78; a soma converge para 0,5 / (1 − 0,78) ≈ 2,3 mV.</li>
+      <li>${tag(od)} <b>4 EPSPs</b> (na prática, inibição perto do soma pesa mais).</li></ul>
+      <p>Um neurônio cortical depende da convergência de muitas entradas coincidentes: é isso que h = Σ wⱼxⱼ representa.</p>` };
+  },
+  a2() {
+    const a = num('a2a'), b = num('a2b'), c = num('a2c'), d = val('a2d'), d2 = num('a2d2'), e = val('a2e');
+    const oa = near(a, 1.5, 0.05), ob = near(b, 63, 4), oc = near(c, 500, 10), od = d === 'não muda', od2 = near(d2, 34, 3), oe = e === 'Adaptação';
+    markInput('a2a', oa); markInput('a2b', ob); markInput('a2c', oc); markRadio('a2d', 'não muda'); markInput('a2d2', od2); markRadio('a2e', 'Adaptação');
+    const s = oa + ob + oc + od + od2 + oe;
+    return { score: `${s}/6`, resp: `Iθ=${a ?? '—'} | r(3nA)=${b ?? '—'} | rmax=${c ?? '—'} | τ×2: ${d || '—'}, ${d2 ?? '—'} Hz | e: ${e || '—'}`,
+      fb: `<p class="score">${s} de 6</p><figure><img src="img/aula02/g3_lif.png" alt="Traços do integra-e-dispara para 1,2, 1,8 e 3,0 nA e a curva f–I com e sem adaptação." loading="lazy"></figure><ul>
+      <li>${tag(oa)} <b>Iθ = 1,5 nA</b> (15 mV ÷ 10 MΩ).</li>
+      <li>${tag(ob)} <b>≈ 63 Hz</b>: 20 ms × ln(30/15) = 13,9 ms, mais 2 ms de refratário.</li>
+      <li>${tag(oc)} <b>500 Hz</b> = 1/tref.</li>
+      <li>${tag(od && od2)} Iθ <b>não muda</b> (só depende de R); a taxa a 3 nA cai para <b>≈ 34 Hz</b>.</li>
+      <li>${tag(oe)} <b>Adaptação</b>: falta uma variável lenta, como uma corrente de K⁺ que cresce a cada spike.</li></ul>` };
+  },
+  a3() {
+    const r = MP.map(mpEval); const s = r.filter(x => x.ok).length;
+    return { score: `${s}/5`, resp: MP.map((m, k) => `${m.id}: w=(${r[k].w.map(v => v ?? '—').join(',')}) θ=${r[k].th ?? '—'}${r[k].ok ? ' ✓' : ''}`).join(' | '),
+      fb: `<p class="score">${s} de 5 funções corretas</p><figure><img src="img/aula02/g4_mp.png" alt="Quatro neurônios de McCulloch-Pitts com pesos e limiares para E, OU, NÃO e MAIORIA." loading="lazy"></figure>
+      <p>Soluções possíveis: E (1, 1; θ = 2) · OU (1, 1; θ = 1) · NÃO (−1; θ = 0) · x₁ E NÃO x₂ (1, −1; θ = 1) · MAIORIA (1, 1, 1; θ = 2). Há infinitas: multiplicar pesos e limiar pelo mesmo número positivo não muda nada — o que importa é a reta Σ wⱼxⱼ = θ. O peso negativo em "x₁ E NÃO x₂" é uma inibição que veta a saída.</p>` };
+  },
+  a4() {
+    const sel = $$('[name="sep"]:checked').map(i => i.value); let okc = 0;
+    $$('[name="sep"]').forEach(i => { const l = i.closest('label'); l.classList.remove('right', 'wrong'); const want = !!SEPOK[i.value]; if (i.checked === want) okc++; if (want) l.classList.add('right'); else if (i.checked) l.classList.add('wrong'); });
+    const b = num('a4b'), ob = b === 14; markInput('a4b', ob);
+    const oa = okc === 7; const s = oa + ob;
+    return { score: `${s}/2 (${okc}/7 marcações)`, resp: `separáveis: ${sel.join(', ') || '—'} | b: ${b ?? '—'}`,
+      fb: `<p class="score">${s} de 2</p><figure><img src="img/aula02/g5_separability.png" alt="E, OU e x1 E NÃO x2 separados por uma reta; no XOR os pontos de saída 1 ficam na diagonal e nenhuma reta os separa." loading="lazy"></figure><ul>
+      <li>${tag(oa)} Todas são separáveis, <b>exceto XOR e XNOR</b>: seus pontos com saída 1 ficam numa diagonal.</li>
+      <li>${tag(ob)} <b>14 de 16.</b> Com 3 entradas, 104 de 256; com 4, só 1.882 de 65.536.</li></ul>` };
+  },
+  a5() {
+    const g = (n) => num(n); const ep1 = [g('p1a'), g('p1b'), g('p1c')], ep2 = [g('p2a'), g('p2b'), g('p2c')], fin = [g('pfa'), g('pfb'), g('pfc')];
+    const chk = (names, want) => { let all = true; names.forEach((n, k) => { const ok = g(n) === want[k]; markInput(n, ok); if (!ok) all = false; }); return all; };
+    const o1 = chk(['p1a', 'p1b', 'p1c'], [1, 1, 1]), o2 = chk(['p2a', 'p2b', 'p2c'], [2, 1, 0]), o3 = chk(['pfa', 'pfb', 'pfc'], [2, 1, -2]);
+    const s = o1 + o2 + o3;
+    return { score: `${s}/3`, resp: `época1=(${ep1.map(v => v ?? '—')}) | época2=(${ep2.map(v => v ?? '—')}) | final=(${fin.map(v => v ?? '—')}) | c: ${val('a5c')}`,
+      fb: `<p class="score">${s} de 3</p><figure><img src="img/aula02/g7_perceptron_and.png" alt="Fronteira do perceptron ao fim das épocas 1 a 5 e o número de erros por época." loading="lazy"></figure><ul>
+      <li>${tag(o1)} Época 1: <b>(1, 1, 1)</b> — só o padrão (1,1) erra.</li>
+      <li>${tag(o2)} Época 2: <b>(2, 1, 0)</b> — erram (0,0), (0,1) e (1,1).</li>
+      <li>${tag(o3)} Finais: <b>(2, 1, −2)</b>, na época 5; a época 6 passa sem erros. Erros por época: 1, 3, 3, 2, 1, 0.</li></ul>
+      <p><b>c)</b> Com XOR os erros nunca zeram: não existe reta que separe os padrões, e o teorema de convergência só vale para problemas linearmente separáveis.</p>` };
+  },
+  a6() {
+    let s = 0; CB.forEach(([, r], k) => { const el = $(`[name="cb${k}"]`); const ok = el.value === r; el.classList.toggle('right', ok); el.classList.toggle('wrong', !ok); if (ok) s++; });
+    const b = val('a6b'); markRadio('a6b', '1'); const ob = b === '1';
+    return { score: `${s + ob}/7`, resp: CB.map((_, k) => `${k + 1}:${$(`[name="cb${k}"]`).value || '—'}`).join(' | ') + ` | trepadeiras: ${b || '—'} — ${val('a6b2')}`,
+      fb: `<p class="score">${s + ob} de 7</p><ul>${CB.map(([st, r], k) => `<li>${tag($(`[name="cb${k}"]`).value === r)} ${st} → <b>${r}</b></li>`).join('')}
+      <li>${tag(ob)} <b>Uma</b> fibra trepadeira por Purkinje: cada neurônio de saída tem seu próprio "professor" — exatamente o que a regra do perceptron exige (Rolls, 2023, p. 702).</li></ul>
+      <p>Ressalva: a fibra trepadeira dispara ~1 vez por segundo e pode sinalizar também recompensa — talvez o cerebelo faça um pouco de aprendizado por reforço.</p>` };
+  },
+  a7() {
+    const a = num('a7a'); const oa = a === 160000; markInput('a7a', oa);
+    let s = 0;
+    MARR.forEach(([, c], k) => { const v = val('m' + k); if (v === c) s++;
+      $$(`[name="m${k}"]`).forEach(i => { const l = i.closest('label'); l.classList.remove('right', 'wrong'); if (i.value === c) l.classList.add('right'); else if (i.checked) l.classList.add('wrong'); }); });
+    return { score: `${s + oa}/7`, resp: `a: ${a ?? '—'} | ` + MARR.map((_, k) => `${k + 1}:${val('m' + k) || '—'}`).join(' '),
+      fb: `<p class="score">${s + oa} de 7</p><ul><li>${tag(oa)} <b>2C = 160.000</b> padrões (Cover, 1965; Rolls, 2023, p. 918).</li>
+      ${MARR.map(([, c, why], k) => `<li>${tag(val('m' + k) === c)} ${k + 1}. <b>${c}</b> — ${why}</li>`).join('')}</ul>
+      <p>O cerebelo é um raro caso em que a teoria costurou os três níveis antes da biologia: a anatomia sugeriu o algoritmo, e o algoritmo previu a LTD.</p>` };
+  },
+};
+
+/* ---------- envio ---------- */
+$$('[data-send]').forEach(btn => btn.addEventListener('click', () => {
+  const id = btn.dataset.send, sec = document.getElementById(id);
+  if (!window.Registro || !Registro.identificado()) { window.Registro && Registro.pedeId(); return; }
+  const r = ACT[id]();
+  const ok = Registro.atividade(id, sec.dataset.titulo, r.score, r.resp);
+  const fb = $(`[data-fb="${id}"]`); fb.innerHTML = '<h3>Gabarito</h3>' + r.fb; fb.hidden = false;
+  const st = $(`[data-status="${id}"]`);
+  const first = Registro.aluno().n.split(' ')[0];
+  st.textContent = ok ? `✓ Resposta registrada para ${first}. Você pode corrigir e reenviar.` : 'Identifique-se no topo da página.';
+  btn.textContent = 'Reenviar';
+  const a = $(`nav a[href="#${id}"]`); if (a) a.classList.add('done');
+  fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}));
+})();
+</script>
+<script src="config.js?v=2"></script>
+<script src="registro.js?v=2" data-aula="2"></script>

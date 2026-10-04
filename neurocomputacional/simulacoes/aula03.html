@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Simulações — Aula 3 · Aprendizado Hebbiano</title>
+<style>
+  :root {
+    --teal:#0D7377; --blue:#1A56DB; --amber:#B45309; --violet:#6D28D9;
+    --green:#15803D; --green-dark:#0F5C2D; --green-light:#DCFCE7;
+    --dark:#1E293B; --grey:#475569; --grey-light:#F1F5F9; --bg:#FAFAF9;
+    --amber-light:#FEF3C7; --red:#DC2626;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--dark); line-height: 1.5;
+  }
+  header {
+    background: var(--dark); color: white; padding: 20px 32px;
+    border-left: 6px solid var(--green);
+  }
+  header h1 { margin: 0 0 4px 0; font-size: 22px; }
+  header p { margin: 0; color: #CBD5E1; font-size: 13px; }
+  header .accent { color: var(--green-light); font-weight: 600; letter-spacing: 0.1em; font-size: 11px; }
+
+  nav.tabs {
+    display: flex; background: white; border-bottom: 2px solid var(--grey-light);
+    padding: 0 32px; gap: 4px; overflow-x: auto;
+  }
+  nav.tabs button {
+    background: none; border: none; padding: 14px 20px; cursor: pointer;
+    font-size: 14px; font-weight: 600; color: var(--grey);
+    border-bottom: 3px solid transparent; transition: all 0.15s;
+    white-space: nowrap;
+  }
+  nav.tabs button:hover { color: var(--dark); }
+  nav.tabs button.active { color: var(--green); border-bottom-color: var(--green); }
+
+  main { padding: 24px 32px 60px; max-width: 1280px; margin: 0 auto; }
+  section.tab-panel { display: none; }
+  section.tab-panel.active { display: block; }
+
+  h2 { color: var(--dark); margin: 0 0 8px 0; font-size: 24px; }
+  .lead { color: var(--grey); font-size: 14px; margin-bottom: 20px; max-width: 880px; }
+
+  .panel {
+    background: white; border: 1px solid var(--grey-light); border-radius: 8px;
+    padding: 20px; margin-bottom: 16px;
+  }
+
+  .sim-layout { display: grid; grid-template-columns: 1fr 320px; gap: 20px; }
+  @media (max-width: 900px) { .sim-layout { grid-template-columns: 1fr; } }
+
+  canvas { display: block; background: white; border: 1px solid var(--grey-light); border-radius: 6px; width: 100%; }
+
+  .ctrl-block { margin-bottom: 16px; }
+  .ctrl-block label {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 13px; font-weight: 600; color: var(--dark); margin-bottom: 6px;
+  }
+  .ctrl-block label span.val { color: var(--green); font-family: "Courier New", monospace; font-weight: 700; }
+  .ctrl-block input[type=range] { width: 100%; }
+
+  .btn {
+    background: var(--green); color: white; border: none; padding: 10px 16px;
+    border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer;
+    margin-right: 8px; margin-bottom: 6px;
+  }
+  .btn:hover { background: var(--green-dark); }
+  .btn.secondary { background: var(--grey); }
+  .btn.secondary:hover { background: var(--dark); }
+  .btn.amber { background: var(--amber); }
+  .btn.violet { background: var(--violet); }
+
+  .notes-box {
+    background: var(--green-light); border-left: 4px solid var(--green);
+    padding: 12px 16px; border-radius: 4px; margin-top: 16px;
+    font-size: 13px; color: var(--dark);
+  }
+  .notes-box h4 {
+    margin: 0 0 6px 0; font-size: 11px; letter-spacing: 0.1em;
+    color: var(--green-dark); text-transform: uppercase;
+  }
+
+  .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 12px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.05em;
+    background: var(--green); color: white;
+  }
+
+  /* Quiz */
+  .quiz-progress {
+    height: 6px; background: var(--grey-light); border-radius: 3px;
+    margin-bottom: 16px; overflow: hidden;
+  }
+  .quiz-progress .fill { height: 100%; background: var(--green); transition: width 0.3s; }
+  .quiz-question h3 { color: var(--dark); margin: 0 0 16px 0; font-size: 18px; }
+  .quiz-options { display: grid; gap: 8px; }
+  .quiz-options button {
+    text-align: left; padding: 12px 16px; background: white;
+    border: 2px solid var(--grey-light); border-radius: 6px;
+    cursor: pointer; font-size: 14px; color: var(--dark);
+    transition: all 0.15s;
+  }
+  .quiz-options button:hover:not(:disabled) {
+    border-color: var(--green); background: var(--green-light);
+  }
+  .quiz-options button.correct {
+    border-color: var(--green); background: var(--green-light); color: var(--green-dark);
+  }
+  .quiz-options button.wrong {
+    border-color: var(--red); background: #FEE2E2; color: var(--red);
+  }
+  .quiz-options button:disabled { cursor: default; }
+  .quiz-feedback {
+    margin-top: 14px; padding: 12px; border-radius: 6px;
+    font-size: 13px; line-height: 1.5;
+  }
+  .quiz-feedback.correct { background: var(--green-light); color: var(--green-dark); }
+  .quiz-feedback.wrong { background: #FEE2E2; color: var(--red); }
+  .quiz-score {
+    font-size: 14px; color: var(--grey); margin-bottom: 12px;
+  }
+  .quiz-final {
+    text-align: center; padding: 32px 16px;
+  }
+  .quiz-final h2 { font-size: 32px; color: var(--green); }
+  .quiz-final p { color: var(--grey); margin-bottom: 16px; }
+
+  /* Pavlov */
+  .pavlov-stimuli { display: flex; gap: 10px; margin-bottom: 16px; }
+  .pavlov-stimuli button { flex: 1; }
+  .weight-bars { margin: 12px 0; }
+  .weight-bar {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+    font-size: 12px;
+  }
+  .weight-bar .label { width: 80px; font-weight: 600; }
+  .weight-bar .bar-bg {
+    flex: 1; height: 14px; background: var(--grey-light); border-radius: 4px; overflow: hidden;
+  }
+  .weight-bar .bar-fg { height: 100%; background: var(--green); transition: width 0.3s; }
+  .weight-bar .value { width: 50px; text-align: right; font-family: "Courier New", monospace; }
+
+  .footer {
+    text-align: center; color: var(--grey); font-size: 12px;
+    padding: 20px; border-top: 1px solid var(--grey-light); margin-top: 20px;
+  }
+
+  details summary { cursor: pointer; font-weight: 600; color: var(--green-dark); font-size: 13px; padding: 6px 0; }
+  details[open] summary { margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="accent">NEUROCIÊNCIA COMPUTACIONAL · UFRN</p>
+  <h1>Simulações — Aula 3: Aprendizado Hebbiano</h1>
+  <p>Plasticidade sináptica, STDP, regra de Oja e condicionamento clássico · Daniel Y Takahashi · Instituto do Cérebro · <a href="../aula03.html" style="color:inherit">atividades da Aula 3</a></p>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="t-stdp">Janela STDP</button>
+  <button class="tab-btn" data-tab="t-oja">Regra de Oja → PCA</button>
+  <button class="tab-btn" data-tab="t-pavlov">Associador Pavloviano</button>
+  <button class="tab-btn" data-tab="t-memory">Memória Hebbiana</button>
+  <button class="tab-btn" data-tab="t-quiz">Quiz de Conceitos</button>
+</nav>
+
+<main>
+
+<!-- ============================================ -->
+<!-- SIMULAÇÃO 1: JANELA STDP                     -->
+<!-- ============================================ -->
+<section id="t-stdp" class="tab-panel active">
+  <h2><span class="badge">SIM 1</span> Janela de STDP — Δw como função de Δt</h2>
+  <p class="lead">
+    A regra STDP (<em>Spike-Timing-Dependent Plasticity</em>, Bi &amp; Poo 1998) ajusta o peso
+    sináptico segundo a diferença temporal Δt = t<sub>pós</sub> − t<sub>pré</sub>. Se o pré dispara
+    antes do pós (Δt &gt; 0), a sinapse fortalece (LTP); se dispara depois (Δt &lt; 0), enfraquece
+    (LTD). Mexa nos sliders abaixo e observe como a janela muda.
+  </p>
+
+  <div class="sim-layout">
+    <div class="panel">
+      <canvas id="stdp-canvas" width="800" height="420"></canvas>
+      <div style="margin-top: 12px; font-size: 13px; color: var(--grey);">
+        <strong style="color: var(--dark);">Leitura:</strong>
+        Clique no gráfico para escolher um Δt específico. O ponto destacado mostra Δw resultante.
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3 style="margin-top: 0; font-size: 14px; color: var(--dark);">Parâmetros da janela</h3>
+
+      <div class="ctrl-block">
+        <label>A<sub>+</sub> (amplitude LTP) <span class="val" id="v-apos">0.010</span></label>
+        <input type="range" id="s-apos" min="0" max="0.030" step="0.001" value="0.010">
+      </div>
+      <div class="ctrl-block">
+        <label>A<sub>−</sub> (amplitude LTD) <span class="val" id="v-aneg">0.012</span></label>
+        <input type="range" id="s-aneg" min="0" max="0.030" step="0.001" value="0.012">
+      </div>
+      <div class="ctrl-block">
+        <label>τ<sub>+</sub> (constante LTP, ms) <span class="val" id="v-tpos">20</span></label>
+        <input type="range" id="s-tpos" min="5" max="60" step="1" value="20">
+      </div>
+      <div class="ctrl-block">
+        <label>τ<sub>−</sub> (constante LTD, ms) <span class="val" id="v-tneg">20</span></label>
+        <input type="range" id="s-tneg" min="5" max="60" step="1" value="20">
+      </div>
+
+      <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--grey-light);">
+        <button class="btn" onclick="stdpPreset('bipoo')">Preset Bi &amp; Poo</button>
+        <button class="btn secondary" onclick="stdpPreset('symmetric')">Simétrica</button>
+        <button class="btn secondary" onclick="stdpPreset('reset')">Reset</button>
+      </div>
+
+      <div class="notes-box">
+        <h4>O que observar</h4>
+        Quando ∫Δw dΔt &lt; 0 (LTD domina), a rede produz competição global e os pesos
+        convergem para uma distribuição bimodal (Aula 3, Fig. 4.2).
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- SIMULAÇÃO 2: OJA → PCA                       -->
+<!-- ============================================ -->
+<section id="t-oja" class="tab-panel">
+  <h2><span class="badge">SIM 2</span> Regra de Oja — aprendizado online de PCA</h2>
+  <p class="lead">
+    A regra de Oja (1982), <em>Δw = η · y · (x − y·w)</em>, é Hebb com normalização implícita.
+    Treinada em dados 2D, o vetor w converge para o autovetor principal (PC1) da matriz de
+    covariância — exatamente a direção de maior variância. PCA biológico, sem álgebra linear
+    explícita.
+  </p>
+
+  <div class="sim-layout">
+    <div class="panel">
+      <canvas id="oja-canvas" width="700" height="500"></canvas>
+      <div style="margin-top: 12px; font-size: 13px; color: var(--grey);">
+        <strong style="color: var(--dark);">Pontos azuis:</strong> dados 2D ·
+        <strong style="color: var(--green);">Seta verde:</strong> vetor w (peso aprendido) ·
+        <strong style="color: var(--violet);">Seta violeta:</strong> PC1 exato (análise espectral).
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3 style="margin-top: 0; font-size: 14px; color: var(--dark);">Parâmetros</h3>
+
+      <div class="ctrl-block">
+        <label>Ângulo da elipse (°) <span class="val" id="v-angle">30</span></label>
+        <input type="range" id="s-angle" min="0" max="180" step="5" value="30">
+      </div>
+      <div class="ctrl-block">
+        <label>Razão eixo maior/menor <span class="val" id="v-ratio">6.0</span></label>
+        <input type="range" id="s-ratio" min="1.5" max="10" step="0.5" value="6">
+      </div>
+      <div class="ctrl-block">
+        <label>η (taxa de aprendizado) <span class="val" id="v-eta">0.005</span></label>
+        <input type="range" id="s-eta" min="0.001" max="0.020" step="0.001" value="0.005">
+      </div>
+      <div class="ctrl-block">
+        <label>Velocidade (passos/frame) <span class="val" id="v-speed">3</span></label>
+        <input type="range" id="s-speed" min="1" max="20" step="1" value="3">
+      </div>
+
+      <div style="margin-top: 14px;">
+        <button class="btn" onclick="ojaStart()">▶ Iniciar</button>
+        <button class="btn secondary" onclick="ojaPause()">⏸ Pausar</button>
+        <button class="btn amber" onclick="ojaReset()">↻ Reset (novo w)</button>
+      </div>
+
+      <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--grey-light); font-size: 13px;">
+        <div>Iterações: <strong id="oja-iter">0</strong></div>
+        <div>‖w‖: <strong id="oja-norm">1.000</strong></div>
+        <div>Ângulo w: <strong id="oja-wangle">—</strong></div>
+        <div>Erro vs PC1: <strong id="oja-err">—</strong></div>
+      </div>
+
+      <div class="notes-box">
+        <h4>Por que funciona</h4>
+        O termo extra −η·y²·w penaliza pesos grandes, mantendo ‖w‖ ≈ 1 automaticamente.
+        Sem esse termo (Hebb puro), w divergiria.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- SIMULAÇÃO 3: ASSOCIADOR PAVLOVIANO           -->
+<!-- ============================================ -->
+<section id="t-pavlov" class="tab-panel">
+  <h2><span class="badge">SIM 3</span> Associador Hebbiano — Condicionamento de Pavlov</h2>
+  <p class="lead">
+    Um neurônio recebe dois estímulos: EC (estímulo condicionado, ex. cheiro) e
+    EI (estímulo incondicionado, ex. comida). A regra de Hebb fortalece a sinapse de
+    qualquer entrada ativa quando o neurônio dispara. Treine com EC+EI juntos e depois
+    teste só com EC.
+  </p>
+
+  <div class="sim-layout">
+    <div class="panel">
+      <canvas id="pavlov-canvas" width="700" height="420"></canvas>
+
+      <div class="weight-bars" style="margin-top: 16px;">
+        <div class="weight-bar">
+          <div class="label" style="color: var(--blue);">w<sub>EC</sub> (cheiro)</div>
+          <div class="bar-bg"><div class="bar-fg" id="bar-wec" style="background: var(--blue); width: 5%;"></div></div>
+          <div class="value" id="val-wec">0.10</div>
+        </div>
+        <div class="weight-bar">
+          <div class="label" style="color: var(--amber);">w<sub>EI</sub> (comida)</div>
+          <div class="bar-bg"><div class="bar-fg" id="bar-wei" style="background: var(--amber); width: 5%;"></div></div>
+          <div class="value" id="val-wei">0.10</div>
+        </div>
+        <div class="weight-bar">
+          <div class="label" style="color: var(--green);">Saída (salivação)</div>
+          <div class="bar-bg"><div class="bar-fg" id="bar-out" style="background: var(--green); width: 0%;"></div></div>
+          <div class="value" id="val-out">0.00</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3 style="margin-top: 0; font-size: 14px; color: var(--dark);">Estímulos</h3>
+
+      <div class="pavlov-stimuli" style="flex-direction: column;">
+        <button class="btn" onclick="pavlovTrial(true, true)">Treinar EC + EI (par)</button>
+        <button class="btn secondary" onclick="pavlovTrial(true, false)">Testar só EC</button>
+        <button class="btn secondary" onclick="pavlovTrial(false, true)">Testar só EI</button>
+      </div>
+
+      <div class="ctrl-block" style="margin-top: 16px;">
+        <label>η (taxa Hebb) <span class="val" id="v-pavlov-eta">0.05</span></label>
+        <input type="range" id="s-pavlov-eta" min="0.01" max="0.30" step="0.01" value="0.05">
+      </div>
+      <div class="ctrl-block">
+        <label>Decaimento c (estabilidade) <span class="val" id="v-pavlov-c">0.005</span></label>
+        <input type="range" id="s-pavlov-c" min="0" max="0.05" step="0.001" value="0.005">
+      </div>
+
+      <div style="margin-top: 12px;">
+        <button class="btn amber" onclick="pavlovTrain20()">⚡ Treino rápido (20 pareados)</button>
+        <button class="btn secondary" onclick="pavlovReset()">↻ Reset</button>
+      </div>
+
+      <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--grey-light); font-size: 13px;">
+        Total de treinos: <strong id="pavlov-trials">0</strong>
+      </div>
+
+      <div class="notes-box">
+        <h4>O que esperar</h4>
+        Após várias apresentações EC+EI, w<sub>EC</sub> cresce até que EC sozinho ative a saída.
+        Esse é o condicionamento clássico, descrito por Pavlov muito antes de Hebb teorizá-lo.
+      </div>
+    </div>
+  </div>
+
+  <details class="panel" style="margin-top: 16px;">
+    <summary>Equação utilizada</summary>
+    <p style="font-size: 14px; line-height: 1.7; color: var(--dark); margin: 8px 0 0;">
+      A cada apresentação: <code>y = w_EC·x_EC + w_EI·x_EI</code>; depois aplicamos Hebb com
+      decaimento: <code>Δw_i = η·y·x_i − c·w_i</code>. O decaimento <code>c</code> evita que os
+      pesos cresçam sem limite (cf. Aula 3, Seção 5.3).
+    </p>
+  </details>
+</section>
+
+<!-- ============================================ -->
+<!-- SIMULAÇÃO 4: QUIZ                            -->
+<!-- ============================================ -->
+<section id="t-quiz" class="tab-panel">
+  <h2><span class="badge">SIM 4</span> Quiz — fixação dos conceitos da aula</h2>
+  <p class="lead">
+    10 perguntas de múltipla escolha cobrindo Hebb, LTP/LTD, NMDA, STDP, Oja e aprendizado
+    competitivo. Cada resposta traz justificativa — leia com atenção.
+  </p>
+
+  <div class="panel">
+    <div class="quiz-progress"><div class="fill" id="quiz-progress-fill" style="width: 0%;"></div></div>
+    <div class="quiz-score" id="quiz-score">Pergunta 1 de 10 · Acertos: 0</div>
+    <div id="quiz-body"></div>
+    <div id="quiz-final-screen" class="quiz-final" style="display:none;"></div>
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- SIMULAÇÃO 5: MEMÓRIA HEBBIANA                -->
+<!-- ============================================ -->
+<section id="t-memory" class="tab-panel">
+  <h2><span class="badge">SIM 5</span> Memória Hebbiana — aprendendo padrões e completando entradas</h2>
+  <p class="lead">
+    Hebb não é só uma regra de plasticidade — é um mecanismo concreto de
+    <strong>aprendizado</strong>. Aqui, uma rede com 144 neurônios (grade 12×12) memoriza padrões
+    inteiros e os recupera mesmo a partir de entradas corrompidas ou parciais. A regra de Hebb
+    constrói a matriz de pesos como soma de produtos externos dos padrões. Esta é a forma mais
+    antiga (e ainda mais elegante) de demonstração de que <em>fortalecer sinapses</em> equivale a
+    <em>armazenar informação</em>.
+  </p>
+
+  <div class="sim-layout">
+    <div class="panel">
+      <canvas id="mem-canvas" width="540" height="540" style="cursor: crosshair; image-rendering: pixelated;"></canvas>
+      <div style="margin-top: 12px; font-size: 13px; color: var(--grey);">
+        <strong style="color: var(--dark);">Como usar:</strong>
+        Carregue um padrão pré-definido (ou desenhe clicando nas células), aperte
+        <em>Memorizar</em>, repita para 2–3 padrões, depois adicione ruído e veja a rede
+        <em>completar</em> o padrão original.
+      </div>
+
+      <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+        <button class="btn secondary" onclick="memLoad('smiley')">😊 Smiley</button>
+        <button class="btn secondary" onclick="memLoad('heart')">♥ Coração</button>
+        <button class="btn secondary" onclick="memLoad('cross')">✕ X</button>
+        <button class="btn secondary" onclick="memLoad('A')">A</button>
+        <button class="btn secondary" onclick="memLoad('7')">7</button>
+        <button class="btn secondary" onclick="memClear()">⬛ Limpar grade</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3 style="margin-top: 0; font-size: 14px; color: var(--dark);">Treinar a memória</h3>
+      <button class="btn" onclick="memMemorize()" style="width: 100%;">
+        💾 Memorizar padrão atual (regra de Hebb)
+      </button>
+
+      <div style="margin: 12px 0; font-size: 13px;">
+        Padrões memorizados: <strong id="mem-count">0</strong>
+        / capacidade teórica ≈ <strong>20</strong> (0.14 × N)
+      </div>
+
+      <div id="mem-thumbs" style="display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;"></div>
+
+      <h3 style="margin-top: 16px; font-size: 14px; color: var(--dark);">Testar recuperação</h3>
+
+      <div class="ctrl-block">
+        <label>Ruído (% bits invertidos) <span class="val" id="v-noise">20</span></label>
+        <input type="range" id="s-noise" min="0" max="50" step="5" value="20">
+      </div>
+
+      <button class="btn amber" onclick="memAddNoise()" style="width: 100%;">
+        🌪 Adicionar ruído ao padrão atual
+      </button>
+      <div style="height: 8px;"></div>
+      <button class="btn violet" onclick="memRecallStep()" style="width: 100%;">
+        ↻ Recuperar — 1 passo
+      </button>
+      <div style="height: 8px;"></div>
+      <button class="btn" onclick="memRecallFull()" style="width: 100%;">
+        ▶ Recuperar — até estabilizar (animado)
+      </button>
+
+      <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--grey-light); font-size: 13px;">
+        <div>Iteração atual: <strong id="mem-iter">0</strong></div>
+        <div>Overlap com padrões: <strong id="mem-overlap">—</strong></div>
+      </div>
+
+      <div style="margin-top: 14px;">
+        <button class="btn secondary" onclick="memReset()" style="width: 100%;">↻ Reset memória</button>
+      </div>
+
+      <div class="notes-box">
+        <h4>O que esperar</h4>
+        Com 2–3 padrões armazenados e ruído de até 30%, a rede converge ao padrão original em
+        poucas iterações. Acima de ~20 padrões (≈ 0.14·N), começam a aparecer "estados espúrios" —
+        a capacidade da memória hebbiana clássica é limitada (cf. Aula 9).
+      </div>
+    </div>
+  </div>
+
+  <details class="panel" style="margin-top: 16px;">
+    <summary>Equações utilizadas</summary>
+    <p style="font-size: 14px; line-height: 1.7; color: var(--dark); margin: 8px 0 0;">
+      Treinamento Hebbiano (matriz de pesos por soma de produtos externos dos P padrões):
+      <code style="background:#F1F5F9;padding:2px 6px;border-radius:3px;">
+        W<sub>ij</sub> = (1/N) Σ<sub>p</sub> ξ<sub>i</sub><sup>(p)</sup> · ξ<sub>j</sub><sup>(p)</sup>
+      </code>, com W<sub>ii</sub> = 0.
+      <br>
+      Recuperação (atualização assíncrona):
+      <code style="background:#F1F5F9;padding:2px 6px;border-radius:3px;">
+        s<sub>i</sub> ← sign(Σ<sub>j</sub> W<sub>ij</sub> s<sub>j</sub>)
+      </code> com neurônios ±1.
+      <br>
+      É exatamente a rede de Hopfield (Aula 9), que vamos analisar em mais detalhe — aqui vemos
+      apenas a parte de aprendizado puramente hebbiano.
+    </p>
+  </details>
+</section>
+
+<div class="footer">
+  Simulações — Aula 3 · Neurociência Computacional · UFRN · 2026
+</div>
+
+</main>
+
+<script>
+// ===========================================================
+// TAB SWITCHING
+// ===========================================================
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ===========================================================
+// SIM 1: STDP WINDOW
+// ===========================================================
+const stdpCanvas = document.getElementById('stdp-canvas');
+const stdpCtx = stdpCanvas.getContext('2d');
+const stdpState = { aPos: 0.010, aNeg: 0.012, tauPos: 20, tauNeg: 20, dtMark: 15 };
+
+function stdpFn(dt, p) {
+  if (dt > 0) return p.aPos * Math.exp(-dt / p.tauPos);
+  if (dt < 0) return -p.aNeg * Math.exp(dt / p.tauNeg);
+  return 0;
+}
+
+function drawSTDP() {
+  const W = stdpCanvas.width, H = stdpCanvas.height;
+  const pad = { l: 60, r: 30, t: 30, b: 50 };
+  const innerW = W - pad.l - pad.r, innerH = H - pad.t - pad.b;
+  stdpCtx.clearRect(0, 0, W, H);
+
+  // axes
+  const xMin = -80, xMax = 80;
+  const yMax = 0.035, yMin = -0.035;
+  function px(x) { return pad.l + (x - xMin) / (xMax - xMin) * innerW; }
+  function py(y) { return pad.t + (yMax - y) / (yMax - yMin) * innerH; }
+
+  // grid
+  stdpCtx.strokeStyle = '#F1F5F9'; stdpCtx.lineWidth = 1;
+  for (let x = xMin; x <= xMax; x += 20) {
+    stdpCtx.beginPath(); stdpCtx.moveTo(px(x), pad.t); stdpCtx.lineTo(px(x), H - pad.b); stdpCtx.stroke();
+  }
+  for (let y = -0.03; y <= 0.03; y += 0.01) {
+    stdpCtx.beginPath(); stdpCtx.moveTo(pad.l, py(y)); stdpCtx.lineTo(W - pad.r, py(y)); stdpCtx.stroke();
+  }
+
+  // zero lines
+  stdpCtx.strokeStyle = '#94A3B8'; stdpCtx.lineWidth = 1.5;
+  stdpCtx.beginPath(); stdpCtx.moveTo(px(0), pad.t); stdpCtx.lineTo(px(0), H - pad.b); stdpCtx.stroke();
+  stdpCtx.beginPath(); stdpCtx.moveTo(pad.l, py(0)); stdpCtx.lineTo(W - pad.r, py(0)); stdpCtx.stroke();
+
+  // shaded regions
+  stdpCtx.fillStyle = 'rgba(21, 128, 61, 0.06)';
+  stdpCtx.fillRect(px(0), pad.t, innerW / 2, innerH);
+  stdpCtx.fillStyle = 'rgba(180, 83, 9, 0.06)';
+  stdpCtx.fillRect(pad.l, pad.t, innerW / 2, innerH);
+
+  // labels
+  stdpCtx.fillStyle = '#475569'; stdpCtx.font = '12px sans-serif';
+  stdpCtx.fillText('Δw', 20, py(yMax / 2));
+  stdpCtx.fillText('Δt (ms)', W - 80, py(0) + 32);
+  stdpCtx.fillStyle = '#15803D'; stdpCtx.font = '13px sans-serif';
+  stdpCtx.fillText('LTP (Δt > 0: pré antes do pós)', px(15), pad.t + 18);
+  stdpCtx.fillStyle = '#B45309';
+  stdpCtx.fillText('LTD (Δt < 0: pós antes do pré)', px(-75), H - pad.b - 12);
+
+  // tick labels
+  stdpCtx.fillStyle = '#475569'; stdpCtx.font = '11px sans-serif';
+  for (let x = xMin; x <= xMax; x += 20) {
+    stdpCtx.fillText(x.toString(), px(x) - 8, H - pad.b + 16);
+  }
+  for (let y = -0.03; y <= 0.03; y += 0.01) {
+    if (Math.abs(y) < 0.0001) continue;
+    stdpCtx.fillText(y.toFixed(2), pad.l - 38, py(y) + 4);
+  }
+
+  // curve
+  stdpCtx.strokeStyle = '#15803D'; stdpCtx.lineWidth = 3;
+  stdpCtx.beginPath();
+  let first = true;
+  for (let dt = xMin; dt <= xMax; dt += 0.5) {
+    const y = stdpFn(dt, stdpState);
+    if (first) { stdpCtx.moveTo(px(dt), py(y)); first = false; }
+    else stdpCtx.lineTo(px(dt), py(y));
+  }
+  stdpCtx.stroke();
+
+  // mark point
+  const mY = stdpFn(stdpState.dtMark, stdpState);
+  stdpCtx.fillStyle = '#1A56DB';
+  stdpCtx.beginPath();
+  stdpCtx.arc(px(stdpState.dtMark), py(mY), 6, 0, 2 * Math.PI);
+  stdpCtx.fill();
+  // dashed lines to axes
+  stdpCtx.strokeStyle = '#1A56DB'; stdpCtx.setLineDash([4, 4]); stdpCtx.lineWidth = 1;
+  stdpCtx.beginPath();
+  stdpCtx.moveTo(px(stdpState.dtMark), py(mY));
+  stdpCtx.lineTo(px(stdpState.dtMark), py(0));
+  stdpCtx.moveTo(px(stdpState.dtMark), py(mY));
+  stdpCtx.lineTo(pad.l, py(mY));
+  stdpCtx.stroke();
+  stdpCtx.setLineDash([]);
+
+  // label
+  stdpCtx.fillStyle = '#1A56DB'; stdpCtx.font = 'bold 13px sans-serif';
+  stdpCtx.fillText('Δt = ' + stdpState.dtMark.toFixed(0) + ' ms · Δw = ' + mY.toFixed(4),
+    px(stdpState.dtMark) + 12, py(mY) - 8);
+}
+
+function stdpUpdate() {
+  stdpState.aPos = parseFloat(document.getElementById('s-apos').value);
+  stdpState.aNeg = parseFloat(document.getElementById('s-aneg').value);
+  stdpState.tauPos = parseFloat(document.getElementById('s-tpos').value);
+  stdpState.tauNeg = parseFloat(document.getElementById('s-tneg').value);
+  document.getElementById('v-apos').textContent = stdpState.aPos.toFixed(3);
+  document.getElementById('v-aneg').textContent = stdpState.aNeg.toFixed(3);
+  document.getElementById('v-tpos').textContent = stdpState.tauPos.toFixed(0);
+  document.getElementById('v-tneg').textContent = stdpState.tauNeg.toFixed(0);
+  drawSTDP();
+}
+['s-apos','s-aneg','s-tpos','s-tneg'].forEach(id =>
+  document.getElementById(id).addEventListener('input', stdpUpdate));
+
+stdpCanvas.addEventListener('click', e => {
+  const r = stdpCanvas.getBoundingClientRect();
+  const x = (e.clientX - r.left) * (stdpCanvas.width / r.width);
+  const pad = { l: 60, r: 30 }, innerW = stdpCanvas.width - pad.l - pad.r;
+  const dt = -80 + (x - pad.l) / innerW * 160;
+  stdpState.dtMark = Math.max(-80, Math.min(80, dt));
+  drawSTDP();
+});
+
+function stdpPreset(name) {
+  const presets = {
+    bipoo:    { aPos: 0.010, aNeg: 0.012, tauPos: 20, tauNeg: 20 },
+    symmetric:{ aPos: 0.015, aNeg: 0.015, tauPos: 25, tauNeg: 25 },
+    reset:    { aPos: 0.010, aNeg: 0.012, tauPos: 20, tauNeg: 20 },
+  };
+  const p = presets[name];
+  document.getElementById('s-apos').value = p.aPos;
+  document.getElementById('s-aneg').value = p.aNeg;
+  document.getElementById('s-tpos').value = p.tauPos;
+  document.getElementById('s-tneg').value = p.tauNeg;
+  stdpUpdate();
+}
+
+drawSTDP();
+
+// ===========================================================
+// SIM 2: OJA RULE
+// ===========================================================
+const ojaCanvas = document.getElementById('oja-canvas');
+const ojaCtx = ojaCanvas.getContext('2d');
+const ojaState = {
+  data: [], w: [0, 0], iter: 0, running: false,
+  angle: 30, ratio: 6, eta: 0.005, speed: 3,
+  pc1: [0, 0],
+};
+
+function ojaGenData() {
+  const n = 600;
+  const theta = ojaState.angle * Math.PI / 180;
+  const sigMaj = 2.0, sigMin = sigMaj / ojaState.ratio;
+  const cos = Math.cos(theta), sin = Math.sin(theta);
+  ojaState.data = [];
+  for (let i = 0; i < n; i++) {
+    // Box-Muller
+    let u1 = Math.random(), u2 = Math.random();
+    const z0 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+    u1 = Math.random(); u2 = Math.random();
+    const z1 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+    const a = z0 * sigMaj, b = z1 * sigMin;
+    ojaState.data.push([a * cos - b * sin, a * sin + b * cos]);
+  }
+  ojaState.pc1 = [cos, sin];
+}
+
+function ojaInitW() {
+  // random unit vector
+  const a = Math.random() * 2 * Math.PI;
+  ojaState.w = [Math.cos(a), Math.sin(a)];
+  ojaState.iter = 0;
+}
+
+function ojaStep() {
+  for (let k = 0; k < ojaState.speed; k++) {
+    const x = ojaState.data[Math.floor(Math.random() * ojaState.data.length)];
+    const y = ojaState.w[0] * x[0] + ojaState.w[1] * x[1];
+    ojaState.w[0] += ojaState.eta * y * (x[0] - y * ojaState.w[0]);
+    ojaState.w[1] += ojaState.eta * y * (x[1] - y * ojaState.w[1]);
+    ojaState.iter++;
+  }
+}
+
+function drawOja() {
+  const W = ojaCanvas.width, H = ojaCanvas.height;
+  ojaCtx.clearRect(0, 0, W, H);
+  ojaCtx.fillStyle = '#FAFAF9';
+  ojaCtx.fillRect(0, 0, W, H);
+
+  const cx = W / 2, cy = H / 2;
+  const scale = Math.min(W, H) / 12;
+
+  // axes
+  ojaCtx.strokeStyle = '#E2E8F0';
+  ojaCtx.lineWidth = 1;
+  ojaCtx.beginPath(); ojaCtx.moveTo(0, cy); ojaCtx.lineTo(W, cy); ojaCtx.stroke();
+  ojaCtx.beginPath(); ojaCtx.moveTo(cx, 0); ojaCtx.lineTo(cx, H); ojaCtx.stroke();
+
+  // data
+  ojaCtx.fillStyle = 'rgba(26, 86, 219, 0.45)';
+  for (const p of ojaState.data) {
+    ojaCtx.beginPath();
+    ojaCtx.arc(cx + p[0] * scale, cy - p[1] * scale, 2.5, 0, 2 * Math.PI);
+    ojaCtx.fill();
+  }
+
+  // PC1 reference (violet)
+  function drawArrow(vec, color, lineWidth, len) {
+    const tipX = cx + vec[0] * len, tipY = cy - vec[1] * len;
+    const tailX = cx - vec[0] * len, tailY = cy + vec[1] * len;
+    ojaCtx.strokeStyle = color; ojaCtx.lineWidth = lineWidth;
+    ojaCtx.beginPath(); ojaCtx.moveTo(tailX, tailY); ojaCtx.lineTo(tipX, tipY); ojaCtx.stroke();
+    // arrowhead
+    const ang = Math.atan2(vec[1], vec[0]);
+    const hd = 14;
+    ojaCtx.beginPath();
+    ojaCtx.moveTo(tipX, tipY);
+    ojaCtx.lineTo(tipX - hd * Math.cos(ang - 0.4), tipY + hd * Math.sin(ang - 0.4));
+    ojaCtx.lineTo(tipX - hd * Math.cos(ang + 0.4), tipY + hd * Math.sin(ang + 0.4));
+    ojaCtx.closePath();
+    ojaCtx.fillStyle = color; ojaCtx.fill();
+  }
+  drawArrow(ojaState.pc1, '#6D28D9', 3, scale * 4.5);
+  drawArrow(ojaState.w, '#15803D', 4, scale * 4.5);
+
+  // stats
+  const norm = Math.sqrt(ojaState.w[0] ** 2 + ojaState.w[1] ** 2);
+  const wAngle = Math.atan2(ojaState.w[1], ojaState.w[0]) * 180 / Math.PI;
+  // Disambiguate ±180: align with PC1 direction
+  const dot = ojaState.w[0] * ojaState.pc1[0] + ojaState.w[1] * ojaState.pc1[1];
+  const err = Math.abs(Math.acos(Math.max(-1, Math.min(1, Math.abs(dot) / norm))) * 180 / Math.PI);
+
+  document.getElementById('oja-iter').textContent = ojaState.iter;
+  document.getElementById('oja-norm').textContent = norm.toFixed(3);
+  document.getElementById('oja-wangle').textContent = wAngle.toFixed(1) + '°';
+  document.getElementById('oja-err').textContent = err.toFixed(1) + '°';
+}
+
+let ojaRAF = null;
+function ojaLoop() {
+  if (!ojaState.running) return;
+  ojaStep();
+  drawOja();
+  ojaRAF = requestAnimationFrame(ojaLoop);
+}
+function ojaStart() {
+  ojaState.running = true;
+  if (ojaRAF) cancelAnimationFrame(ojaRAF);
+  ojaLoop();
+}
+function ojaPause() { ojaState.running = false; }
+function ojaReset() {
+  ojaState.running = false;
+  ojaInitW();
+  ojaGenData();
+  drawOja();
+}
+
+function ojaUpdateParams() {
+  ojaState.angle = parseFloat(document.getElementById('s-angle').value);
+  ojaState.ratio = parseFloat(document.getElementById('s-ratio').value);
+  ojaState.eta = parseFloat(document.getElementById('s-eta').value);
+  ojaState.speed = parseInt(document.getElementById('s-speed').value);
+  document.getElementById('v-angle').textContent = ojaState.angle.toFixed(0);
+  document.getElementById('v-ratio').textContent = ojaState.ratio.toFixed(1);
+  document.getElementById('v-eta').textContent = ojaState.eta.toFixed(3);
+  document.getElementById('v-speed').textContent = ojaState.speed;
+  ojaGenData();
+  drawOja();
+}
+['s-angle','s-ratio','s-eta','s-speed'].forEach(id =>
+  document.getElementById(id).addEventListener('input', ojaUpdateParams));
+
+ojaGenData(); ojaInitW(); drawOja();
+
+// ===========================================================
+// SIM 3: PAVLOV
+// ===========================================================
+const pavCanvas = document.getElementById('pavlov-canvas');
+const pavCtx = pavCanvas.getContext('2d');
+const pavState = {
+  wEC: 0.10, wEI: 0.10, output: 0,
+  trials: 0, eta: 0.05, c: 0.005,
+  lastEC: false, lastEI: false,
+  flash: 0,
+};
+
+function pavlovTrial(ec, ei) {
+  const xEC = ec ? 1 : 0;
+  const xEI = ei ? 1 : 0;
+  const y = pavState.wEC * xEC + pavState.wEI * xEI;
+  // Hebb with decay
+  pavState.wEC += pavState.eta * y * xEC - pavState.c * pavState.wEC;
+  pavState.wEI += pavState.eta * y * xEI - pavState.c * pavState.wEI;
+  pavState.wEC = Math.max(0, Math.min(1, pavState.wEC));
+  pavState.wEI = Math.max(0, Math.min(1, pavState.wEI));
+  pavState.output = y;
+  pavState.trials++;
+  pavState.lastEC = ec;
+  pavState.lastEI = ei;
+  pavState.flash = 30; // frames of highlight
+  updatePavlov();
+}
+
+function pavlovTrain20() {
+  let k = 0;
+  const id = setInterval(() => {
+    pavlovTrial(true, true);
+    k++;
+    if (k >= 20) clearInterval(id);
+  }, 80);
+}
+
+function pavlovReset() {
+  pavState.wEC = 0.10; pavState.wEI = 0.10; pavState.output = 0;
+  pavState.trials = 0; pavState.lastEC = false; pavState.lastEI = false;
+  updatePavlov();
+}
+
+function updatePavlov() {
+  document.getElementById('val-wec').textContent = pavState.wEC.toFixed(2);
+  document.getElementById('val-wei').textContent = pavState.wEI.toFixed(2);
+  document.getElementById('val-out').textContent = pavState.output.toFixed(2);
+  document.getElementById('bar-wec').style.width = (pavState.wEC * 100) + '%';
+  document.getElementById('bar-wei').style.width = (pavState.wEI * 100) + '%';
+  document.getElementById('bar-out').style.width = Math.min(100, pavState.output * 100) + '%';
+  document.getElementById('pavlov-trials').textContent = pavState.trials;
+  drawPavlov();
+}
+
+function drawPavlov() {
+  const W = pavCanvas.width, H = pavCanvas.height;
+  pavCtx.clearRect(0, 0, W, H);
+
+  // Layout: EC (top-left), EI (bottom-left), Output neuron (right)
+  const xIn = 130, xOut = 530;
+  const yEC = 110, yEI = 310, yOut = 210;
+  const r = 50;
+
+  function neuron(x, y, label, sublabel, active, color) {
+    pavCtx.fillStyle = active ? color : '#F1F5F9';
+    pavCtx.strokeStyle = color;
+    pavCtx.lineWidth = 3;
+    pavCtx.beginPath(); pavCtx.arc(x, y, r, 0, 2 * Math.PI); pavCtx.fill(); pavCtx.stroke();
+    pavCtx.fillStyle = active ? 'white' : color;
+    pavCtx.font = 'bold 18px sans-serif';
+    pavCtx.textAlign = 'center'; pavCtx.textBaseline = 'middle';
+    pavCtx.fillText(label, x, y - 8);
+    pavCtx.font = '11px sans-serif';
+    pavCtx.fillText(sublabel, x, y + 12);
+  }
+
+  // synapse lines
+  function synapse(x1, y1, x2, y2, weight, color, active) {
+    pavCtx.strokeStyle = color;
+    pavCtx.lineWidth = 1 + weight * 10;
+    pavCtx.globalAlpha = active ? 1 : 0.5;
+    pavCtx.beginPath(); pavCtx.moveTo(x1, y1); pavCtx.lineTo(x2, y2); pavCtx.stroke();
+    pavCtx.globalAlpha = 1;
+
+    // label
+    const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+    pavCtx.fillStyle = 'white';
+    pavCtx.fillRect(mx - 30, my - 14, 60, 22);
+    pavCtx.strokeStyle = '#E2E8F0';
+    pavCtx.lineWidth = 1;
+    pavCtx.strokeRect(mx - 30, my - 14, 60, 22);
+    pavCtx.fillStyle = color;
+    pavCtx.font = 'bold 12px monospace';
+    pavCtx.textAlign = 'center'; pavCtx.textBaseline = 'middle';
+    pavCtx.fillText('w=' + weight.toFixed(2), mx, my - 2);
+  }
+
+  // Background tint when flashing
+  if (pavState.flash > 0) {
+    pavCtx.fillStyle = 'rgba(21, 128, 61, ' + (pavState.flash / 80) + ')';
+    pavCtx.fillRect(0, 0, W, H);
+    pavState.flash--;
+    requestAnimationFrame(drawPavlov);
+  }
+
+  // Output spike threshold visualization
+  const fired = pavState.output > 0.15;
+
+  // Synapses
+  synapse(xIn + r, yEC, xOut - r, yOut, pavState.wEC, '#1A56DB', pavState.lastEC);
+  synapse(xIn + r, yEI, xOut - r, yOut, pavState.wEI, '#B45309', pavState.lastEI);
+
+  // Neurons
+  neuron(xIn, yEC, 'EC', 'cheiro', pavState.lastEC, '#1A56DB');
+  neuron(xIn, yEI, 'EI', 'comida', pavState.lastEI, '#B45309');
+  neuron(xOut, yOut, fired ? '⚡' : 'Y', 'salivação', fired, '#15803D');
+
+  // Output activation bar
+  pavCtx.fillStyle = '#475569';
+  pavCtx.font = '11px sans-serif';
+  pavCtx.textAlign = 'left';
+  pavCtx.fillText('y = w_EC·x_EC + w_EI·x_EI = ' + pavState.output.toFixed(3),
+    xOut - 100, yOut + r + 28);
+  pavCtx.textBaseline = 'alphabetic';
+}
+
+document.getElementById('s-pavlov-eta').addEventListener('input', e => {
+  pavState.eta = parseFloat(e.target.value);
+  document.getElementById('v-pavlov-eta').textContent = pavState.eta.toFixed(2);
+});
+document.getElementById('s-pavlov-c').addEventListener('input', e => {
+  pavState.c = parseFloat(e.target.value);
+  document.getElementById('v-pavlov-c').textContent = pavState.c.toFixed(3);
+});
+
+updatePavlov();
+
+// ===========================================================
+// SIM 4: QUIZ
+// ===========================================================
+const QUESTIONS = [
+  {
+    q: "Qual é a versão popularizada do postulado de Hebb (1949) por Carla Shatz?",
+    options: [
+      "Neurons that fire together wire together.",
+      "Use it or lose it.",
+      "What fires later, sticks better.",
+      "Pre causes post, post causes pre.",
+    ],
+    correct: 0,
+    why: "Carla Shatz (1992) reformulou Hebb com essa frase compacta. O original de Hebb (1949) era mais longo e técnico."
+  },
+  {
+    q: "Por que o receptor NMDA é chamado de \"detector de coincidência\"?",
+    options: [
+      "Detecta sinais elétricos coincidentes em dendritos opostos.",
+      "Só abre se houver glutamato (pré) E despolarização (pós) ao mesmo tempo.",
+      "Coincide com o pico do potencial de ação axonal.",
+      "Detecta a chegada simultânea de Ca²⁺ e Na⁺.",
+    ],
+    correct: 1,
+    why: "O canal NMDA precisa de DOIS sinais simultâneos: glutamato (pré) E despolarização suficiente para remover o bloco de Mg²⁺ (pós). É a regra de Hebb implementada bioquimicamente."
+  },
+  {
+    q: "Na STDP, se o pré-sináptico dispara 10 ms DEPOIS do pós-sináptico (Δt = -10 ms), o que acontece?",
+    options: [
+      "LTP: a sinapse fortalece.",
+      "LTD: a sinapse enfraquece.",
+      "Nada — só Δt = 0 produz mudança.",
+      "Depende da frequência de disparo.",
+    ],
+    correct: 1,
+    why: "Δt < 0 (pós antes do pré) → LTD. O pré-sináptico não pôde ter contribuído causalmente, então a sinapse enfraquece."
+  },
+  {
+    q: "Qual é o principal problema da regra de Hebb clássica Δw = η·y·x?",
+    options: [
+      "Os pesos podem ser negativos.",
+      "Funciona apenas em redes com 2 neurônios.",
+      "Δw é sempre ≥ 0, então os pesos divergem.",
+      "Precisa de um sinal de erro externo.",
+    ],
+    correct: 2,
+    why: "Com y, x ≥ 0, temos Δw ≥ 0 sempre. Pesos só crescem — divergem. Daí a necessidade de Oja, BCM, weight decay, etc."
+  },
+  {
+    q: "Qual é a propriedade mágica da regra de Oja (1982)?",
+    options: [
+      "Implementa retropropagação de erros sem rótulos.",
+      "Converge para o autovetor principal (PC1) da matriz de covariância.",
+      "Garante estabilidade através de competição global.",
+      "Replica exatamente a STDP em escala de milissegundos.",
+    ],
+    correct: 1,
+    why: "Oja descobriu que uma simples adição (−η·y²·w) faz com que a regra de Hebb implemente PCA — w converge para a direção de máxima variância dos dados."
+  },
+  {
+    q: "Bliss e Lømo (1973) demonstraram experimentalmente:",
+    options: [
+      "STDP em culturas de neurônios hipocampais.",
+      "LTP no caminho perfurante do hipocampo de coelho.",
+      "A existência do receptor NMDA.",
+      "A regra de aprendizado competitivo de Kohonen.",
+    ],
+    correct: 1,
+    why: "Bliss & Lømo aplicaram estimulação tetânica de alta frequência no caminho perfurante do hipocampo de coelho anestesiado, e a resposta EPSP cresceu ~60% e durou horas — primeira evidência direta de plasticidade hebbiana."
+  },
+  {
+    q: "Qual mecanismo de estabilização corresponde ao scaling sináptico de Turrigiano (1998)?",
+    options: [
+      "Decaimento de peso (weight decay): −c·w.",
+      "Normalização: ‖w‖ = constante.",
+      "Limiar adaptativo θₘ ∝ ⟨y⟩² (BCM).",
+      "Janela STDP assimétrica.",
+    ],
+    correct: 1,
+    why: "Turrigiano mostrou que neurônios ajustam globalmente suas entradas para manter a taxa média de disparo — uma forma de homeostase que mantém ‖w‖ aproximadamente constante."
+  },
+  {
+    q: "No aprendizado competitivo (winner-take-all), o que acontece após a competição?",
+    options: [
+      "Todos os neurônios atualizam seus pesos igualmente.",
+      "Os pesos de TODOS aumentam para o estímulo apresentado.",
+      "Apenas o neurônio vencedor atualiza seus pesos via Hebb.",
+      "O neurônio vencedor é eliminado para evitar dominância.",
+    ],
+    correct: 2,
+    why: "WTA: o neurônio mais ativo inibe os demais (inibição lateral) e só ele aplica a regra de Hebb. Resultado: cada neurônio se especializa em uma categoria de estímulo."
+  },
+  {
+    q: "Que análise pelos 3 Níveis de Marr é correta para a STDP?",
+    options: [
+      "Computacional: detectar correlações temporais causais.",
+      "Algorítmico: receptor NMDA + cálcio + CaMKII.",
+      "Implementação: minimizar erro de predição.",
+      "Computacional: janela exponencial Δw = A·exp(-Δt/τ).",
+    ],
+    correct: 0,
+    why: "Marr Computacional = O QUE/POR QUE. STDP detecta causalidade temporal (correlações). O algoritmo é a janela exponencial; a implementação são NMDA, Ca²⁺, CaMKII."
+  },
+  {
+    q: "O resultado da rede STDP com neurônios IF aplicada a entradas com Poisson é:",
+    options: [
+      "Distribuição uniforme dos pesos.",
+      "Pesos divergem para infinito.",
+      "Distribuição bimodal: pesos vão para 0 ou para o máximo.",
+      "Distribuição Gaussiana centrada em w₀.",
+    ],
+    correct: 2,
+    why: "A combinação STDP + competição implícita leva os pesos a uma distribuição BIMODAL: cada sinapse ou é totalmente eliminada (~0) ou totalmente potenciada (~max). É uma forma natural de seleção sináptica."
+  },
+];
+
+const quizState = { idx: 0, correct: 0, answered: false };
+
+function renderQuiz() {
+  const body = document.getElementById('quiz-body');
+  const finalScreen = document.getElementById('quiz-final-screen');
+  if (quizState.idx >= QUESTIONS.length) {
+    body.style.display = 'none';
+    finalScreen.style.display = 'block';
+    finalScreen.innerHTML =
+      '<h2>' + quizState.correct + ' / ' + QUESTIONS.length + '</h2>' +
+      '<p>' + getMsg(quizState.correct) + '</p>' +
+      '<button class="btn" onclick="resetQuiz()">Refazer o quiz</button>';
+    document.getElementById('quiz-progress-fill').style.width = '100%';
+    document.getElementById('quiz-score').textContent =
+      'Concluído · Acertos: ' + quizState.correct + ' / ' + QUESTIONS.length;
+    return;
+  }
+  body.style.display = 'block';
+  finalScreen.style.display = 'none';
+  const q = QUESTIONS[quizState.idx];
+  document.getElementById('quiz-progress-fill').style.width =
+    ((quizState.idx) / QUESTIONS.length * 100) + '%';
+  document.getElementById('quiz-score').textContent =
+    'Pergunta ' + (quizState.idx + 1) + ' de ' + QUESTIONS.length + ' · Acertos: ' + quizState.correct;
+
+  let html = '<div class="quiz-question"><h3>' + q.q + '</h3>';
+  html += '<div class="quiz-options" id="quiz-opts">';
+  q.options.forEach((opt, i) => {
+    html += '<button data-i="' + i + '">' + opt + '</button>';
+  });
+  html += '</div><div id="quiz-fb" style="display:none;"></div></div>';
+  body.innerHTML = html;
+
+  document.querySelectorAll('#quiz-opts button').forEach(btn => {
+    btn.addEventListener('click', () => answerQuiz(parseInt(btn.dataset.i)));
+  });
+  quizState.answered = false;
+}
+
+function answerQuiz(choice) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+  const q = QUESTIONS[quizState.idx];
+  const buttons = document.querySelectorAll('#quiz-opts button');
+  buttons.forEach((b, i) => {
+    b.disabled = true;
+    if (i === q.correct) b.classList.add('correct');
+    if (i === choice && i !== q.correct) b.classList.add('wrong');
+  });
+  const fb = document.getElementById('quiz-fb');
+  const isCorrect = choice === q.correct;
+  if (isCorrect) quizState.correct++;
+  fb.style.display = 'block';
+  fb.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'wrong');
+  fb.innerHTML =
+    '<strong>' + (isCorrect ? '✓ Correto.' : '✗ Não é essa.') + '</strong> ' + q.why +
+    '<div style="margin-top:10px;"><button class="btn" onclick="nextQuiz()">' +
+    (quizState.idx === QUESTIONS.length - 1 ? 'Ver resultado' : 'Próxima pergunta →') +
+    '</button></div>';
+}
+
+function nextQuiz() {
+  quizState.idx++;
+  renderQuiz();
+}
+
+function resetQuiz() {
+  quizState.idx = 0; quizState.correct = 0; quizState.answered = false;
+  renderQuiz();
+}
+
+function getMsg(n) {
+  if (n === QUESTIONS.length) return "Domínio total dos conceitos da Aula 3. Hebb estaria orgulhoso.";
+  if (n >= 8) return "Excelente. Você dominou os pontos principais.";
+  if (n >= 6) return "Bom. Revise as questões erradas — vale a pena reler as Seções 4 e 5.";
+  if (n >= 4) return "Você está no caminho. Releia a aula com atenção e refaça o quiz.";
+  return "Vale a pena revisar a aula completa antes de tentar de novo.";
+}
+
+renderQuiz();
+
+// ===========================================================
+// SIM 5: HEBBIAN PATTERN MEMORY
+// ===========================================================
+const MEM_N = 12;             // grid is N×N
+const MEM_TOTAL = MEM_N * MEM_N;
+const memCanvas = document.getElementById('mem-canvas');
+const memCtx = memCanvas.getContext('2d');
+const CELL = memCanvas.width / MEM_N;
+
+const memState = {
+  state: new Array(MEM_TOTAL).fill(-1),      // current network state (bipolar ±1)
+  W: null,                                    // weight matrix
+  patterns: [],                               // stored patterns
+  iter: 0,
+  animating: false,
+};
+
+// Initialize weight matrix to zero
+function memInitW() {
+  memState.W = [];
+  for (let i = 0; i < MEM_TOTAL; i++) {
+    memState.W.push(new Float32Array(MEM_TOTAL));
+  }
+}
+memInitW();
+
+// Built-in patterns (each is a 12×12 array of ±1)
+// '.' = -1 (off), '#' = +1 (on)
+const PATTERN_DEFS = {
+  smiley: [
+    "............",
+    "...######...",
+    "..########..",
+    ".#.######.#.",
+    ".##.####.##.",
+    ".##########.",
+    ".#.######.#.",
+    ".#.##..##.#.",
+    "..##....##..",
+    "..########..",
+    "...######...",
+    "............",
+  ],
+  heart: [
+    "............",
+    "...##..##...",
+    "..####.####.",
+    ".###########",
+    ".###########",
+    ".###########",
+    "..#########.",
+    "...#######..",
+    "....#####...",
+    ".....###....",
+    "......#.....",
+    "............",
+  ],
+  cross: [
+    "............",
+    ".##........#",
+    ".###......##",
+    "..###....##.",
+    "...###..##..",
+    "....######..",
+    "....#####...",
+    "...######...",
+    "..###..###..",
+    ".###....###.",
+    "##........##",
+    "#..........#",
+  ],
+  A: [
+    "............",
+    "....####....",
+    "...##..##...",
+    "..##....##..",
+    "..##....##..",
+    "..########..",
+    "..##....##..",
+    "..##....##..",
+    "..##....##..",
+    "..##....##..",
+    "............",
+    "............",
+  ],
+  '7': [
+    "............",
+    "..########..",
+    "..########..",
+    ".......##...",
+    "......##....",
+    "......##....",
+    ".....##.....",
+    ".....##.....",
+    "....##......",
+    "....##......",
+    "...##.......",
+    "............",
+  ],
+};
+
+function memPatternFromString(rows) {
+  const out = new Array(MEM_TOTAL).fill(-1);
+  for (let i = 0; i < MEM_N; i++) {
+    for (let j = 0; j < MEM_N; j++) {
+      out[i * MEM_N + j] = (rows[i][j] === '#') ? 1 : -1;
+    }
+  }
+  return out;
+}
+
+function memDraw() {
+  memCtx.clearRect(0, 0, memCanvas.width, memCanvas.height);
+  for (let i = 0; i < MEM_N; i++) {
+    for (let j = 0; j < MEM_N; j++) {
+      const v = memState.state[i * MEM_N + j];
+      memCtx.fillStyle = v > 0 ? '#15803D' : '#FAFAF9';
+      memCtx.fillRect(j * CELL, i * CELL, CELL, CELL);
+      memCtx.strokeStyle = '#E2E8F0';
+      memCtx.lineWidth = 1;
+      memCtx.strokeRect(j * CELL, i * CELL, CELL, CELL);
+    }
+  }
+}
+
+memCanvas.addEventListener('click', e => {
+  const r = memCanvas.getBoundingClientRect();
+  const x = (e.clientX - r.left) * (memCanvas.width / r.width);
+  const y = (e.clientY - r.top) * (memCanvas.height / r.height);
+  const j = Math.floor(x / CELL), i = Math.floor(y / CELL);
+  if (i < 0 || i >= MEM_N || j < 0 || j >= MEM_N) return;
+  memState.state[i * MEM_N + j] *= -1;
+  memDraw();
+  updateOverlap();
+});
+
+function memLoad(name) {
+  memState.state = memPatternFromString(PATTERN_DEFS[name]).slice();
+  memState.iter = 0;
+  document.getElementById('mem-iter').textContent = '0';
+  memDraw();
+  updateOverlap();
+}
+
+function memClear() {
+  memState.state = new Array(MEM_TOTAL).fill(-1);
+  memState.iter = 0;
+  document.getElementById('mem-iter').textContent = '0';
+  memDraw();
+  updateOverlap();
+}
+
+function memMemorize() {
+  const p = memState.state.slice();
+  memState.patterns.push(p);
+  // Hebbian outer product, accumulated
+  for (let i = 0; i < MEM_TOTAL; i++) {
+    for (let j = 0; j < MEM_TOTAL; j++) {
+      if (i === j) continue;
+      memState.W[i][j] += p[i] * p[j] / MEM_TOTAL;
+    }
+  }
+  document.getElementById('mem-count').textContent = memState.patterns.length;
+  renderThumbs();
+  // Brief visual flash
+  memCtx.fillStyle = 'rgba(21, 128, 61, 0.18)';
+  memCtx.fillRect(0, 0, memCanvas.width, memCanvas.height);
+  setTimeout(memDraw, 180);
+  updateOverlap();
+}
+
+function renderThumbs() {
+  const container = document.getElementById('mem-thumbs');
+  container.innerHTML = '';
+  memState.patterns.forEach((p, idx) => {
+    const size = 60;
+    const cnv = document.createElement('canvas');
+    cnv.width = size; cnv.height = size;
+    cnv.title = 'Padrão ' + (idx + 1) + ' · clique para carregar';
+    cnv.style.cursor = 'pointer';
+    cnv.style.border = '2px solid #E2E8F0';
+    cnv.style.borderRadius = '4px';
+    const c = cnv.getContext('2d');
+    const cs = size / MEM_N;
+    for (let i = 0; i < MEM_N; i++) {
+      for (let j = 0; j < MEM_N; j++) {
+        c.fillStyle = p[i * MEM_N + j] > 0 ? '#15803D' : '#FAFAF9';
+        c.fillRect(j * cs, i * cs, cs, cs);
+      }
+    }
+    cnv.addEventListener('click', () => {
+      memState.state = p.slice();
+      memState.iter = 0;
+      document.getElementById('mem-iter').textContent = '0';
+      memDraw();
+      updateOverlap();
+    });
+    container.appendChild(cnv);
+  });
+}
+
+function memAddNoise() {
+  const pct = parseInt(document.getElementById('s-noise').value);
+  const nFlip = Math.floor(MEM_TOTAL * pct / 100);
+  const indices = [];
+  while (indices.length < nFlip) {
+    const r = Math.floor(Math.random() * MEM_TOTAL);
+    if (!indices.includes(r)) indices.push(r);
+  }
+  indices.forEach(i => { memState.state[i] *= -1; });
+  memState.iter = 0;
+  document.getElementById('mem-iter').textContent = '0';
+  memDraw();
+  updateOverlap();
+}
+
+// Compute h_i = sum_j W_ij * s_j for a single neuron
+function memFieldAt(i) {
+  let h = 0;
+  const Wi = memState.W[i];
+  for (let j = 0; j < MEM_TOTAL; j++) h += Wi[j] * memState.state[j];
+  return h;
+}
+
+// One neuron update (used for animated sweeps)
+function memUpdateNeuron(i) {
+  const h = memFieldAt(i);
+  const ns = h >= 0 ? 1 : -1;
+  const changed = ns !== memState.state[i];
+  memState.state[i] = ns;
+  return changed;
+}
+
+// Build a randomly-shuffled order of neuron indices
+function memShuffledOrder() {
+  const order = [];
+  for (let i = 0; i < MEM_TOTAL; i++) order.push(i);
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  return order;
+}
+
+// "1 step" = animated single sweep over all neurons in random order
+function memRecallStep() {
+  if (memState.animating) return;
+  if (!memState.W || memState.patterns.length === 0) {
+    alert('Memorize ao menos um padrão antes.');
+    return;
+  }
+  memState.animating = true;
+  const order = memShuffledOrder();
+  let k = 0;
+  function tick() {
+    // update a small batch of neurons per frame so animation is visible but not too slow
+    const batch = 3;
+    for (let b = 0; b < batch && k < order.length; b++, k++) {
+      memUpdateNeuron(order[k]);
+    }
+    memDraw();
+    updateOverlap();
+    if (k < order.length) {
+      requestAnimationFrame(tick);
+    } else {
+      memState.iter++;
+      document.getElementById('mem-iter').textContent = memState.iter;
+      memState.animating = false;
+    }
+  }
+  tick();
+}
+
+// Full recall: animate multiple sweeps until convergence
+function memRecallFull() {
+  if (memState.animating) return;
+  if (!memState.W || memState.patterns.length === 0) {
+    alert('Memorize ao menos um padrão antes.');
+    return;
+  }
+  memState.animating = true;
+  const maxSweeps = 12;
+  let sweep = 0;
+  let lastState = memState.state.slice();
+
+  function sweepOnce(done) {
+    const order = memShuffledOrder();
+    let k = 0;
+    function step() {
+      const batch = 3;
+      for (let b = 0; b < batch && k < order.length; b++, k++) {
+        memUpdateNeuron(order[k]);
+      }
+      memDraw();
+      updateOverlap();
+      if (k < order.length) {
+        requestAnimationFrame(step);
+      } else {
+        memState.iter++;
+        document.getElementById('mem-iter').textContent = memState.iter;
+        done();
+      }
+    }
+    step();
+  }
+
+  function nextSweep() {
+    sweep++;
+    // check convergence
+    let same = true;
+    for (let i = 0; i < MEM_TOTAL; i++) {
+      if (memState.state[i] !== lastState[i]) { same = false; break; }
+    }
+    if (same || sweep >= maxSweeps) {
+      memState.animating = false;
+      return;
+    }
+    lastState = memState.state.slice();
+    setTimeout(() => sweepOnce(nextSweep), 250);
+  }
+
+  sweepOnce(nextSweep);
+}
+
+function updateOverlap() {
+  if (memState.patterns.length === 0) {
+    document.getElementById('mem-overlap').textContent = '—';
+    return;
+  }
+  const parts = memState.patterns.map((p, idx) => {
+    let dot = 0;
+    for (let k = 0; k < MEM_TOTAL; k++) dot += p[k] * memState.state[k];
+    const overlap = dot / MEM_TOTAL;
+    return 'P' + (idx + 1) + ': ' + overlap.toFixed(2);
+  });
+  document.getElementById('mem-overlap').textContent = parts.join(' · ');
+}
+
+function memReset() {
+  memInitW();
+  memState.patterns = [];
+  memState.iter = 0;
+  document.getElementById('mem-count').textContent = '0';
+  document.getElementById('mem-iter').textContent = '0';
+  renderThumbs();
+  updateOverlap();
+}
+
+document.getElementById('s-noise').addEventListener('input', e => {
+  document.getElementById('v-noise').textContent = e.target.value;
+});
+
+// Init memory simulation
+memLoad('smiley');
+
+</script>
+
+</body>
+</html>
