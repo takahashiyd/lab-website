@@ -3,4 +3,4 @@
  * Enquanto estiver vazio, as atividades funcionam normalmente e guardam presença e respostas no aparelho do aluno;
  * elas são enviadas quando o endereço for preenchido e o aluno abrir a página de novo.
  */
-window.REGISTRO_URL = "";
+window.REGISTRO_URL = "https://script.google.com/macros/s/AKfycbwjGHRfSMJJHbCx4sLo_2pAXEQFLzueBV59pXipHp0HtiP3tjYxaaNzF2YuyCQNyaismw/exec";
