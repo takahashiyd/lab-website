@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neurociência Computacional · Aula 5 — Atividades</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#142033; --muted:#5b6879; --line:#d8dee6;
+  --accent:#0d7377; --accent-ink:#ffffff; --you:#b45309; --soft:#e2f0f0; --warn:#a33a2a; --ok:#15803d; --okbg:#e3f3e8; --nobg:#fbe9e6;
+  --display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --ok:#5fd08a; --okbg:#173a28; --nobg:#3d2020; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --ok:#5fd08a; --okbg:#173a28; --nobg:#3d2020; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:17px/1.5 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:grid;gap:22px}
+header{display:grid;gap:8px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(32px,8vw,50px)/1.02 var(--display);font-stretch:115%;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font:750 23px/1.15 var(--display);font-stretch:108%;margin:0;text-wrap:balance}
+p{margin:0;max-width:65ch}
+.lead{color:var(--muted)}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{font:600 14px/1 var(--body);color:var(--fg);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:9px 12px;background:var(--surface)}
+nav a.done{border-color:var(--ok);color:var(--ok)}
+a{color:var(--accent)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,nav a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.exp>*{min-width:0}
+section.exp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 18px;display:grid;gap:16px;min-width:0;scroll-margin-top:12px}
+.num{font:600 13px/1 var(--mono);color:var(--you);letter-spacing:.06em;text-transform:uppercase}
+.meta{font:500 13px/1.3 var(--mono);color:var(--muted)}
+.q{display:grid;gap:8px;border-top:1px dashed var(--line);padding-top:14px}
+.q>.qt{font-weight:600}
+.q .qt i{font-family:var(--mono);font-style:normal;color:var(--you);margin-right:6px}
+.opts{display:grid;gap:8px}
+@media (min-width:560px){.opts.two{grid-template-columns:1fr 1fr}}
+.opt{display:flex;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;cursor:pointer;min-height:48px;background:var(--bg)}
+.opt input{width:20px;height:20px;accent-color:var(--accent);flex:none}
+.opt:has(input:checked){border-color:var(--accent);background:var(--soft)}
+.opt.right{border-color:var(--ok);background:var(--okbg)}
+.opt.wrong{border-color:var(--warn);background:var(--nobg)}
+textarea,input[type=number],input[type=text]{width:100%;font:500 17px/1.4 var(--body);color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;min-height:48px}
+textarea{min-height:90px;resize:vertical}
+.inline{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.inline label{display:grid;gap:4px;font-size:14px;font-weight:600;flex:1 1 140px;min-width:0}
+select{font:500 17px var(--body);color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px;min-height:48px;width:100%}
+button{font:700 16px/1 var(--display);border:0;border-radius:10px;padding:14px 18px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px;touch-action:manipulation}
+button.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+button:disabled{opacity:.45;cursor:default}
+.send{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.sent{font:600 14px/1.3 var(--mono);color:var(--ok)}
+.sent.pend{color:var(--you)}
+.fb{background:var(--soft);border-radius:10px;padding:14px 16px;display:grid;gap:8px;font-size:16px}
+.fb h3{margin:0;font:700 17px/1.2 var(--display)}
+.fb .score{font:700 22px/1 var(--display);color:var(--you)}
+.fb ul{margin:0;padding-left:20px;display:grid;gap:6px}
+.mark{font-weight:700}
+.mark.ok{color:var(--ok)} .mark.no{color:var(--warn)}
+figure{margin:0;display:grid;gap:6px}
+figure img{width:100%;height:auto;border-radius:8px;background:#fff;border:1px solid var(--line)}
+figcaption{font-size:13px;color:var(--muted)}
+.tablewrap{overflow-x:auto}
+table.dec{border-collapse:collapse;width:100%;font:500 15px/1.2 var(--mono);text-align:center}
+table.dec th,table.dec td{border:1px solid var(--line);padding:8px 3px}
+table.dec th{background:var(--soft);font:600 13px/1.2 var(--body)}
+table.dec td.test{background:color-mix(in srgb,var(--you) 18%,transparent);font-weight:700}
+table.dec td.hi{font-weight:700;color:var(--accent)}
+.dots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.dots label{display:grid;gap:4px;font:600 13px/1.2 var(--body);text-align:center;min-width:0}
+.dots input{min-width:0;font-size:15px;padding:10px 2px;text-align:center}
+.opts.five{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+.opts.five .opt{padding:10px 6px;gap:6px;justify-content:center}
+.dots input{text-align:center;padding:10px 4px;font-family:var(--mono)}
+.dots input.right{border-color:var(--ok);background:var(--okbg)}
+.dots input.wrong{border-color:var(--warn);background:var(--nobg)}
+.marr{display:grid;gap:10px}
+.marr .st{display:grid;gap:8px;border:1px solid var(--line);border-radius:10px;padding:12px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.seg label{border:1.5px solid var(--line);border-radius:8px;text-align:center;padding:10px 4px;font:700 14px/1.1 var(--display);cursor:pointer;min-height:44px;display:grid;place-items:center;background:var(--bg)}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){border-color:var(--accent);background:var(--soft);color:var(--accent)}
+.seg label.right{border-color:var(--ok)!important;background:var(--okbg)!important;color:var(--ok)!important}
+.seg label.wrong{border-color:var(--warn)!important;background:var(--nobg)!important;color:var(--warn)!important}
+.seg label:focus-within{outline:3px solid var(--accent);outline-offset:1px}
+.xor{display:grid;gap:12px}
+.xor table{border-collapse:collapse;font:500 16px/1 var(--mono);text-align:center;width:100%;max-width:420px}
+.xor th,.xor td{border:1px solid var(--line);padding:9px}
+.xor th{background:var(--soft);font:600 13px var(--body)}
+.xor td.ok{color:var(--ok);font-weight:700} .xor td.no{color:var(--warn);font-weight:700}
+.xor .ctl{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.xor .ctl label{display:grid;gap:4px;font:600 13px/1.2 var(--mono)}
+.xor input[type=range]{width:100%;accent-color:var(--accent)}
+.badge{font:700 14px/1.2 var(--mono)}
+footer{font-size:13px;color:var(--muted);display:grid;gap:6px}
+/* cartão de identificação (registro.js) */
+.nc-id{background:var(--surface);border:2px solid var(--accent);border-radius:14px;padding:18px;display:grid;gap:12px}
+.nc-id.nc-in{border:0;padding:0;background:none}
+.nc-id h2{margin:0 0 4px}
+.nc-lead{color:var(--muted);margin:0 0 12px!important}
+.nc-row{display:grid;gap:10px;grid-template-columns:1fr}
+@media (min-width:560px){.nc-row{grid-template-columns:1fr 1.6fr}}
+.nc-id label{display:grid;gap:4px;font:600 14px/1.2 var(--body)}
+.nc-id input{font:17px var(--body);padding:12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);min-height:48px;width:100%}
+.nc-err{color:var(--warn);font-size:14px;min-height:1em;margin:6px 0!important}
+.nc-priv{font-size:13px;color:var(--muted);margin-top:10px!important}
+.nc-who{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:15px;background:var(--soft);border-radius:10px;padding:10px 14px}
+.nc-link{background:none!important;border:0!important;color:var(--accent)!important;font:600 14px var(--body)!important;padding:4px 0!important;min-height:0!important;text-decoration:underline;cursor:pointer}
+.nc-fila{font:500 13px var(--mono);color:var(--muted)}
+.nc-flash{animation:ncflash 1.2s 2}
+@keyframes ncflash{50%{box-shadow:0 0 0 6px var(--you)}}
+@media (prefers-reduced-motion:reduce){.nc-flash{animation:none}}
+canvas.plot{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;touch-action:none}
+.ctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.ctl label{display:grid;gap:4px;font:600 13px/1.2 var(--mono)}
+.ctl input[type=range]{width:100%;accent-color:var(--accent)}
+.readout{font:600 15px/1.4 var(--mono);color:var(--accent)}
+.mp{display:grid;gap:10px}
+.mp .row{display:grid;gap:8px;border:1px solid var(--line);border-radius:10px;padding:12px}
+.mp .ins{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.mp .ins label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center;min-width:0}
+.mp .ins input{text-align:center;padding:9px 2px;font-family:var(--mono);min-width:0}
+.tt{display:flex;flex-wrap:wrap;gap:6px;font:500 13px/1 var(--mono)}
+.tt span{border:1px solid var(--line);border-radius:6px;padding:6px 7px}
+.tt span.ok{border-color:var(--ok);color:var(--ok);background:var(--okbg)}
+.tt span.no{border-color:var(--warn);color:var(--warn);background:var(--nobg)}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btns button{padding:11px 14px;min-height:44px;font-size:15px}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.trio label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center;min-width:0}
+.trio input{text-align:center;padding:9px 2px;font-family:var(--mono);min-width:0}
+.trio input.right,.inline input.right{border-color:var(--ok);background:var(--okbg)}
+.trio input.wrong,.inline input.wrong{border-color:var(--warn);background:var(--nobg)}
+table.log{border-collapse:collapse;width:100%;font:500 13px/1.2 var(--mono);text-align:center}
+table.log th,table.log td{border:1px solid var(--line);padding:5px 2px}
+table.log th{background:var(--soft);font:600 12px var(--body)}
+table.log tr.err td{color:var(--warn)}
+.match{display:grid;gap:8px}
+.match .m{display:grid;grid-template-columns:1fr minmax(0,1.3fr);gap:8px;align-items:center}
+.match .m span{font-weight:600}
+@media (max-width:420px){.match .m{grid-template-columns:1fr}}
+.grid64{display:grid;grid-template-columns:auto repeat(4,minmax(0,1fr));gap:5px;align-items:center;max-width:420px}
+.grid64 span{font:600 12px/1 var(--mono);color:var(--muted);text-align:center}
+.grid64 input{text-align:center;padding:8px 2px;min-height:40px;font-family:var(--mono);min-width:0}
+.grid64 input.right{border-color:var(--ok);background:var(--okbg)}
+.grid64 input.wrong{border-color:var(--warn);background:var(--nobg)}
+.quad{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;max-width:420px}
+.quad label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center;min-width:0}
+.quad input{text-align:center;padding:9px 2px;font-family:var(--mono);min-width:0}
+.quad input.right{border-color:var(--ok);background:var(--okbg)}
+.quad input.wrong{border-color:var(--warn);background:var(--nobg)}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;max-width:300px}
+.pair label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center}
+.pair input{text-align:center;font-family:var(--mono)}
+.pair input.right{border-color:var(--ok);background:var(--okbg)}
+.pair input.wrong{border-color:var(--warn);background:var(--nobg)}
+table.cases{border-collapse:collapse;width:100%;font-size:15px}
+table.cases td,table.cases th{border-bottom:1px solid var(--line);padding:8px 4px;vertical-align:middle;text-align:left}
+table.cases th{font:600 13px var(--body);color:var(--muted)}
+table.cases select{min-height:44px;padding:6px;font-size:15px}
+select.right{border-color:var(--ok);background:var(--okbg)}
+select.wrong{border-color:var(--warn);background:var(--nobg)}
+.tb{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1fr);gap:6px;align-items:center}
+.tb b{font-size:13px;color:var(--muted)}
+.tb select{font-size:14px;padding:8px 4px}
+/* ---- Aula 5 ---- */
+.seg.two{grid-template-columns:repeat(2,1fr)}
+.six{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.six label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center;min-width:0}
+.six input{text-align:center;padding:9px 2px;font-family:var(--mono);min-width:0}
+.six input.right{border-color:var(--ok);background:var(--okbg)}
+.six input.wrong{border-color:var(--warn);background:var(--nobg)}
+.gdt{display:grid;grid-template-columns:auto repeat(3,minmax(0,1fr));gap:6px;align-items:center}
+.gdt span{font:600 12px/1.1 var(--mono);color:var(--muted);text-align:center}
+.gdt input,.gdt select{text-align:center;padding:8px 2px;min-height:42px;font-family:var(--mono);min-width:0;font-size:15px}
+.gdt select{font-family:var(--body);font-size:13px;padding:6px 2px}
+.gdt input.right{border-color:var(--ok);background:var(--okbg)}
+.gdt input.wrong{border-color:var(--warn);background:var(--nobg)}
+.ctl2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ctl2 label{display:grid;gap:4px;font:600 13px/1.2 var(--mono)}
+.ctl2 select{font-size:15px;min-height:44px;padding:6px}
+table.ep{border-collapse:collapse;width:100%;font:500 13px/1.2 var(--mono);text-align:center}
+table.ep th,table.ep td{border:1px solid var(--line);padding:5px 2px}
+table.ep th{background:var(--soft);font:600 12px var(--body)}
+.req{display:grid;gap:8px}
+.req .st{display:grid;gap:8px;border:1px solid var(--line);border-radius:10px;padding:12px}
+</style>
+
+<div class="wrap" id="student">
+<header>
+  <span class="eyebrow">Neurociência Computacional · Aula 5 · UFRN</span>
+  <h1>Aprender com o erro</h1>
+  <p class="lead">Aprendizado supervisionado: do gradiente à retropropagação. Identifique-se abaixo, faça cada atividade quando o professor pedir e toque em <b>Enviar</b> — sua resposta fica registrada e o gabarito aparece em seguida.</p>
+</header>
+
+<nav aria-label="Atividades">
+  <a href="#a1">1 · Gradiente</a><a href="#a2">2 · Perdas</a><a href="#a3">3 · Cadeia</a><a href="#a4">4 · Retropropagação</a><a href="#a5">5 · Ocultas</a><a href="#a6">6 · Parada</a><a href="#a7">7 · Cérebro</a>
+</nav>
+
+<!-- ============ ATIVIDADE 1 ============ -->
+<section class="exp" id="a1" data-titulo="Descida do gradiente à mão">
+  <div><p class="num">Atividade 1 · 6 min · individual</p><h2>Descida do gradiente à mão</h2></div>
+  <p><span class="badge">L(w) = (w − 3)²</span>, <span class="badge">∂L/∂w = 2(w − 3)</span>, começando em <b>w₀ = 0</b>. Regra: <span class="badge">w ← w − η·2(w − 3)</span>. Faça as contas no papel antes de usar o simulador.</p>
+  <div class="q"><p class="qt"><i>a</i>Calcule w₁ e w₂ e diga o comportamento para cada η.</p>
+    <div class="gdt" id="gdTab"></div>
+    <p class="meta">comportamento</p><div class="match" id="gdBeh"></div></div>
+  <div class="q"><p class="qt"><i>b</i>Qual o maior η para o qual a descida ainda converge? E com que η o mínimo é atingido em um único passo?</p>
+    <div class="inline"><label>maior η<input type="text" inputmode="decimal" name="a1max"></label><label>η de um passo<input type="text" inputmode="decimal" name="a1one"></label></div></div>
+  <p class="meta">Simulador: escolha η e dê passos.</p>
+  <canvas class="plot" id="gdC" width="600" height="300" aria-label="Parábola L(w) com os passos da descida do gradiente"></canvas>
+  <div class="ctl"><label>η = <span id="gdEv">0,10</span><input type="range" id="gdE" min="0.05" max="1.3" step="0.05" value="0.1"></label></div>
+  <div class="btns"><button type="button" class="ghost" id="gdS">Dar um passo</button><button type="button" class="ghost" id="gdR">Reiniciar</button></div>
+  <p class="readout" id="gdT"></p>
+  <div class="send"><button data-send="a1">Enviar</button><span class="sent" data-status="a1"></span></div>
+  <div class="fb" data-fb="a1" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 2 ============ -->
+<section class="exp" id="a2" data-titulo="Qual perda pune mais o erro confiante?">
+  <div><p class="num">Atividade 2 · 5 min · em duplas, com calculadora</p><h2>Qual perda pune mais o erro confiante?</h2></div>
+  <p>Alvo <b>t = 1</b> (a imagem é um gato). A rede dá probabilidade <b>p</b> à classe "gato". Erro quadrático: <span class="badge">(1 − p)²</span>. Entropia cruzada: <span class="badge">−ln p</span>.</p>
+  <p class="meta">ln 0,9 ≈ −0,105 · ln 0,5 ≈ −0,693 · ln 0,1 ≈ −2,303 · ln 0,01 ≈ −4,605</p>
+  <div class="q"><p class="qt"><i>a</i>Calcule as duas perdas para cada p.</p>
+    <p class="meta">erro quadrático (1 − p)²</p>
+    <div class="six"><label>p = 0,9<input type="text" inputmode="decimal" name="m09"></label><label>p = 0,5<input type="text" inputmode="decimal" name="m05"></label><label>p = 0,1<input type="text" inputmode="decimal" name="m01"></label></div>
+    <p class="meta">entropia cruzada −ln p</p>
+    <div class="six"><label>p = 0,9<input type="text" inputmode="decimal" name="c09"></label><label>p = 0,5<input type="text" inputmode="decimal" name="c05"></label><label>p = 0,1<input type="text" inputmode="decimal" name="c01"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Agora p = 0,01. Desde p = 0,1, qual perda cresceu mais?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a2b" value="quadrático">o erro quadrático</label><label class="opt"><input type="radio" name="a2b" value="entropia">a entropia cruzada</label><label class="opt"><input type="radio" name="a2b" value="iguais">cresceram igual</label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Com saída sigmoide, <span class="badge">∂E/∂h = 2(p − 1)·p(1 − p)</span> no erro quadrático e <span class="badge">∂E/∂h = p − 1</span> na entropia cruzada. Calcule os dois em p = 0,01.</p>
+    <div class="inline"><label>quadrático<input type="text" inputmode="decimal" name="g2m"></label><label>entropia cruzada<input type="text" inputmode="decimal" name="g2c"></label></div>
+    <p class="qt" style="margin-top:6px">Qual perda ensina mais à rede quando ela está confiante e errada?</p>
+    <div class="opts two"><label class="opt"><input type="radio" name="a2c" value="quadrático">erro quadrático</label><label class="opt"><input type="radio" name="a2c" value="entropia">entropia cruzada</label></div></div>
+  <p class="meta">Explore depois: arraste p e veja as duas perdas e os dois gradientes.</p>
+  <canvas class="plot" id="lsC" width="600" height="280" aria-label="Erro quadrático e entropia cruzada em função de p"></canvas>
+  <div class="ctl"><label>p = <span id="lsPv">0,10</span><input type="range" id="lsP" min="0.01" max="0.99" step="0.01" value="0.1"></label></div>
+  <p class="readout" id="lsT"></p>
+  <div class="send"><button data-send="a2">Enviar</button><span class="sent" data-status="a2"></span></div>
+  <div class="fb" data-fb="a2" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 3 ============ -->
+<section class="exp" id="a3" data-titulo="Regra da cadeia e o δ de saída">
+  <div><p class="num">Atividade 3 · 5 min · individual</p><h2>Regra da cadeia e o δ de saída</h2></div>
+  <div class="q"><p class="qt"><i>a</i><b>z = (3x + 1)²</b>. Escreva u = 3x + 1 e calcule <span class="badge">dz/dx = (dz/du)(du/dx)</span> em x = 1.</p>
+    <div class="inline"><label>dz/dx<input type="text" inputmode="decimal" name="a3a"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Neurônio sigmoide: entrada <b>x = 2</b>, peso <b>w = 0,55</b> (sem bias), alvo <b>t = 0</b>, <span class="badge">E = ½(y − t)²</span>, η = 0,5. Dado: σ(1,1) ≈ 0,75.</p>
+    <div class="six"><label>h<input type="text" inputmode="decimal" name="b3h"></label><label>y<input type="text" inputmode="decimal" name="b3y"></label><label>f′(h) = y(1−y)<input type="text" inputmode="decimal" name="b3f"></label><label>δ = (y−t)f′<input type="text" inputmode="decimal" name="b3d"></label><label>∂E/∂w = δx<input type="text" inputmode="decimal" name="b3g"></label><label>w novo<input type="text" inputmode="decimal" name="b3w"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>O peso…</p>
+    <div class="opts two"><label class="opt"><input type="radio" name="a3c" value="aumenta">aumenta</label><label class="opt"><input type="radio" name="a3c" value="diminui">diminui</label></div></div>
+  <figure><img src="img/aula05/e4_chain.png" alt="Grafo computacional x, h, y, E com as derivadas locais na volta: dh/dw = x, dy/dh = y(1−y), dE/dy = y − t." loading="lazy"><figcaption>A regra da cadeia: multiplicam-se as derivadas locais, de trás para a frente.</figcaption></figure>
+  <div class="send"><button data-send="a3">Enviar</button><span class="sent" data-status="a3"></span></div>
+  <div class="fb" data-fb="a3" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 4 ============ -->
+<section class="exp" id="a4" data-titulo="Um passo de retropropagação à mão">
+  <div><p class="num">Atividade 4 · 10 min · em duplas, no papel</p><h2>Um passo de retropropagação à mão</h2></div>
+  <p>Rede 2-2-1, sigmoide em todas as unidades, sem bias. Entrada <b>x = (1, 0)</b>, alvo <b>t = 1</b>, η = 0,5, <span class="badge">E = ½(y − t)²</span>. Pesos de entrada (wⱼᵢ: da entrada i para a oculta j): <b>w₁₁ = 0,5</b>, <b>w₁₂ = −0,3</b>, <b>w₂₁ = 0,2</b>, <b>w₂₂ = 0,4</b>; das ocultas para a saída: <b>v₁ = 0,6</b>, <b>v₂ = −0,4</b>.</p>
+  <figure><img src="img/aula05/e5a_net221.png" alt="Rede 2-2-1 com entradas 1 e 0, pesos w11 0,5, w12 −0,3, w21 0,2, w22 0,4, v1 0,6, v2 −0,4 e alvo 1." loading="lazy"></figure>
+  <p class="meta">σ(0,5) ≈ 0,622 · σ(0,2) ≈ 0,550 · σ(0,154) ≈ 0,538. Use 3 casas (4 para os δ das ocultas).</p>
+  <div class="q"><p class="qt"><i>a</i>Ida</p>
+    <div class="six"><label>h₁<input type="text" inputmode="decimal" name="f4h1"></label><label>h₂<input type="text" inputmode="decimal" name="f4h2"></label><label>y<input type="text" inputmode="decimal" name="f4y"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Volta: <span class="badge">δ = (y − t)·y(1 − y)</span>, <span class="badge">δⱼ = hⱼ(1 − hⱼ)·vⱼ·δ</span></p>
+    <div class="six"><label>δ saída<input type="text" inputmode="decimal" name="f4do"></label><label>δ₁<input type="text" inputmode="decimal" name="f4d1"></label><label>δ₂<input type="text" inputmode="decimal" name="f4d2"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Novos pesos: <span class="badge">Δ = −η · δ · (atividade pré)</span></p>
+    <div class="quad"><label>v₁<input type="text" inputmode="decimal" name="f4v1"></label><label>v₂<input type="text" inputmode="decimal" name="f4v2"></label><label>w₁₁<input type="text" inputmode="decimal" name="f4w11"></label><label>w₂₁<input type="text" inputmode="decimal" name="f4w21"></label></div>
+    <p class="qt" style="margin-top:6px">Por que w₁₂ e w₂₂ não mudam?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a4r" value="x2=0">porque x₂ = 0: sem atividade pré-sináptica</label><label class="opt"><input type="radio" name="a4r" value="delta=0">porque o δ dessas ocultas é zero</label><label class="opt"><input type="radio" name="a4r" value="saida">porque não se ligam à saída</label></div></div>
+  <div class="q"><p class="qt"><i>d</i>Com os novos pesos, o erro E…</p>
+    <div class="opts two"><label class="opt"><input type="radio" name="a4d" value="diminui">diminui</label><label class="opt"><input type="radio" name="a4d" value="aumenta">aumenta</label></div></div>
+  <div class="send"><button data-send="a4">Enviar</button><span class="sent" data-status="a4"></span></div>
+  <div class="fb" data-fb="a4" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 5 ============ -->
+<section class="exp" id="a5" data-titulo="O que as unidades ocultas aprendem?">
+  <div><p class="num">Atividade 5 · 8 min · individual · opcional</p><h2>O que as unidades ocultas aprendem?</h2></div>
+  <p>Uma rede pequena treina aqui no celular por retropropagação (tanh nas ocultas, sigmoide na saída, entropia cruzada). Escolha o problema e o número de unidades ocultas e toque em <b>Treinar</b>. A cor de fundo é a resposta da rede.</p>
+  <div class="ctl2"><label>problema<select id="mlP"><option value="xor">XOR</option><option value="moons">duas luas</option></select></label>
+    <label>unidades ocultas<select id="mlH"><option>1</option><option selected>2</option><option>3</option><option>5</option><option>10</option></select></label></div>
+  <canvas class="plot" id="mlC" width="420" height="420" style="max-width:380px" aria-label="Pontos das duas classes e a região de decisão da rede"></canvas>
+  <div class="btns"><button type="button" class="ghost" id="mlT">Treinar</button><button type="button" class="ghost" id="mlR">Reiniciar (novos pesos)</button></div>
+  <p class="readout" id="mlO"></p>
+  <div class="q"><p class="qt"><i>a</i>XOR com 1 unidade oculta: a rede resolve?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a5a" value="não, reta">não — a fronteira é uma reta</label><label class="opt"><input type="radio" name="a5a" value="não, curva">não — a fronteira é curva mas erra</label><label class="opt"><input type="radio" name="a5a" value="sim">sim</label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Qual o menor número de unidades ocultas que resolve o XOR?</p>
+    <div class="inline"><label>unidades<input type="text" inputmode="numeric" name="a5b"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Treine o XOR com 2 unidades 5 vezes (Reiniciar entre elas). Dá certo…</p>
+    <div class="opts two"><label class="opt"><input type="radio" name="a5c" value="sempre">sempre</label><label class="opt"><input type="radio" name="a5c" value="nem sempre">nem sempre</label></div></div>
+  <div class="q"><p class="qt"><i>d</i>Duas luas com 1, 3 e 10 unidades: o que muda na fronteira? Mais unidades é sempre melhor?</p>
+    <textarea name="a5d" placeholder="Sua resposta"></textarea></div>
+  <div class="send"><button data-send="a5">Enviar</button><span class="sent" data-status="a5"></span></div>
+  <div class="fb" data-fb="a5" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 6 ============ -->
+<section class="exp" id="a6" data-titulo="Quando parar o treino?">
+  <div><p class="num">Atividade 6 · 4 min · individual</p><h2>Quando parar o treino?</h2></div>
+  <p>Erros de uma rede ao longo do treino (dados ilustrativos):</p>
+  <div class="tablewrap"><table class="ep" id="epTab"></table></div>
+  <canvas class="plot" id="ovC" width="600" height="280" aria-label="Curvas de erro de treino e validação ao longo das épocas"></canvas>
+  <div class="ctl"><label>parar na época <span id="ovEv">100</span><input type="range" id="ovE" min="0" max="100" step="10" value="100"></label></div>
+  <p class="readout" id="ovT"></p>
+  <div class="q"><p class="qt"><i>a</i>Em que época você pararia o treino?</p>
+    <div class="inline"><label>época<input type="text" inputmode="numeric" name="a6a"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>O que está acontecendo depois dela?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a6b" value="sobreajuste">sobreajuste: a rede decora o treino</label><label class="opt"><input type="radio" name="a6b" value="subajuste">a rede ainda não aprendeu o suficiente</label><label class="opt"><input type="radio" name="a6b" value="divergência">a taxa de aprendizado está grande demais</label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Marque as medidas que <b>reduzem</b> o sobreajuste:</p>
+    <div class="opts" id="a6cOpts"></div></div>
+  <div class="send"><button data-send="a6">Enviar</button><span class="sent" data-status="a6"></span></div>
+  <div class="fb" data-fb="a6" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 7 ============ -->
+<section class="exp" id="a7" data-titulo="Plausibilidade e níveis de Marr">
+  <div><p class="num">Atividade 7 · 5 min · em duplas · opcional</p><h2>Plausibilidade e níveis de Marr</h2></div>
+  <div class="q"><p class="qt"><i>a</i>Para cada exigência da retropropagação: plausível ou problemática no córtex?</p>
+    <div class="req" id="reqList"></div></div>
+  <div class="q"><p class="qt"><i>b</i>Que proposta enfrenta o problema 1 (transporte de pesos)?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a7b" value="alinhamento">alinhamento por retroalimentação (matriz de volta aleatória)</label><label class="opt"><input type="radio" name="a7b" value="adam">o otimizador Adam</label><label class="opt"><input type="radio" name="a7b" value="dropout">dropout</label><label class="opt"><input type="radio" name="a7b" value="camadas">usar mais camadas ocultas</label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Classifique cada afirmação.</p>
+    <p class="lead"><b>C</b> = computacional (o quê e por quê) · <b>A</b> = algorítmico (como) · <b>I</b> = implementação (com quê)</p>
+    <div class="marr" id="marrList"></div></div>
+  <div class="send"><button data-send="a7">Enviar</button><span class="sent" data-status="a7"></span></div>
+  <div class="fb" data-fb="a7" hidden></div>
+</section>
+
+<footer>
+  <p>Materiais: <a href="simulacoes/aula05.html">simulações interativas da Aula 5</a> · <a href="simulacoes/aula05_backprop.html">retropropagação passo a passo</a> · <a href="index.html">todas as aulas</a></p>
+  <p>Prof. Daniel Y. Takahashi · Instituto do Cérebro, UFRN</p>
+</footer>
+</div>
+
+<script>
+(() => {
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const val = (n) => { const el = $(`[name="${n}"]:checked`) || $(`[name="${n}"]:not([type=radio]):not([type=checkbox])`); return el ? String(el.value).trim() : ''; };
+const num = (n) => { let t = String(val(n)).replace(/\s/g, ''); if (/^-?(\d{1,3}(\.\d{3}){2,}|[1-9]\d{1,2}\.\d{3})$/.test(t)) t = t.replace(/\./g, ''); t = t.replace(',', '.').replace('−', '-').replace('–', '-'); const v = parseFloat(t); return isNaN(v) ? null : v; };
+const tag = (ok) => `<span class="mark ${ok ? 'ok' : 'no'}">${ok ? '✓' : '✗'}</span>`;
+function markRadio(name, correct) { $$(`[name="${name}"]`).forEach(i => { const l = i.closest('label'); l.classList.remove('right', 'wrong'); if (i.value === correct) l.classList.add('right'); else if (i.checked) l.classList.add('wrong'); }); }
+function markEl(el, ok) { el.classList.toggle('right', ok); el.classList.toggle('wrong', !ok); }
+const markInput = (name, ok) => markEl($(`[name="${name}"]`), ok);
+const near = (v, x, tol) => v !== null && Math.abs(v - x) <= tol;
+const chk = (name, x, tol) => { const ok = near(num(name), x, tol); markInput(name, ok); return ok; };
+function setupCanvas(c) { const r = window.devicePixelRatio || 1; const w = c.width, h = c.height; c.width = w * r; c.height = h * r; const g = c.getContext('2d'); g.scale(r, r); return { g, w, h }; }
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const fmt = (v, d = 2) => (v < 0 ? '−' : '') + Math.abs(v).toFixed(d).replace('.', ',');
+const sig = (z) => 1 / (1 + Math.exp(-z));
+
+/* ---------- Atividade 1: descida do gradiente ---------- */
+const ETAS = [['0,1', 0.1, 'g1'], ['0,8', 0.8, 'g8'], ['1,2', 1.2, 'g12']];
+const BEH = ['—', 'converge sem oscilar', 'oscila e converge', 'diverge'];
+const BEHK = { g1: 'converge sem oscilar', g8: 'oscila e converge', g12: 'diverge' };
+const gdStep = (w, e) => w - e * 2 * (w - 3);
+$('#gdTab').innerHTML = '<span></span>' + ETAS.map(([l]) => `<span>η = ${l}</span>`).join('') +
+  '<span>w₁</span>' + ETAS.map(([, , k]) => `<input type="text" inputmode="decimal" name="${k}w1" aria-label="w1 para η ${k}">`).join('') +
+  '<span>w₂</span>' + ETAS.map(([, , k]) => `<input type="text" inputmode="decimal" name="${k}w2" aria-label="w2 para η ${k}">`).join('') +
+  '';
+$('#gdBeh').innerHTML = ETAS.map(([l, , k]) => `<div class="m"><span>η = ${l}</span><select name="${k}b" aria-label="comportamento para η ${l}">${BEH.map(o => `<option value="${o === '—' ? '' : o}">${o}</option>`).join('')}</select></div>`).join('');
+const GD = setupCanvas($('#gdC')); let gdW = [0];
+function gdDraw() {
+  const eta = +$('#gdE').value; $('#gdEv').textContent = fmt(eta);
+  const { g, w, h } = GD; g.clearRect(0, 0, w, h);
+  const X = (x) => 30 + (w - 50) * (x + 4) / 14, Y = (y) => h - 25 - (h - 45) * y / 50;
+  g.strokeStyle = css('--line'); g.lineWidth = 1; g.beginPath(); g.moveTo(30, Y(0)); g.lineTo(w - 20, Y(0)); g.stroke();
+  g.fillStyle = css('--muted'); g.font = '12px ui-monospace,monospace';
+  [-4, 0, 3, 6, 10].forEach(t => g.fillText(String(t), X(t) - 4, h - 8)); g.fillText('w', w - 28, h - 8);
+  g.strokeStyle = css('--muted'); g.lineWidth = 2; g.beginPath();
+  for (let x = -4; x <= 10; x += 0.05) { const p = [X(x), Y((x - 3) ** 2)]; x === -4 ? g.moveTo(...p) : g.lineTo(...p); } g.stroke();
+  g.strokeStyle = '#b45309'; g.fillStyle = '#b45309'; g.lineWidth = 2;
+  gdW.forEach((v, k) => { if (Math.abs(v) > 30) return; const L = Math.min((v - 3) ** 2, 52);
+    if (k) { const u = gdW[k - 1]; g.beginPath(); g.moveTo(X(u), Y(Math.min((u - 3) ** 2, 52))); g.lineTo(X(v), Y(L)); g.stroke(); }
+    g.beginPath(); g.arc(X(v), Y(L), 5, 0, 7); g.fill(); });
+  $('#gdT').textContent = 'w: ' + gdW.slice(-7).map(v => Math.abs(v) > 1e4 ? v.toExponential(1) : fmt(v)).join(' → ');
+}
+$('#gdS').addEventListener('click', () => { gdW.push(gdStep(gdW[gdW.length - 1], +$('#gdE').value)); gdDraw(); });
+$('#gdR').addEventListener('click', () => { gdW = [0]; gdDraw(); });
+$('#gdE').addEventListener('input', () => { gdW = [0]; gdDraw(); }); gdDraw();
+
+/* ---------- Atividade 2: perdas ---------- */
+const LS = setupCanvas($('#lsC'));
+function lsDraw() {
+  const p = +$('#lsP').value; $('#lsPv').textContent = fmt(p);
+  const { g, w, h } = LS; g.clearRect(0, 0, w, h);
+  const X = (x) => 34 + (w - 50) * x, Y = (y) => h - 24 - (h - 40) * y / 5;
+  g.strokeStyle = css('--line'); g.lineWidth = 1; g.beginPath(); g.moveTo(34, Y(0)); g.lineTo(w - 10, Y(0)); g.moveTo(34, Y(0)); g.lineTo(34, 10); g.stroke();
+  g.fillStyle = css('--muted'); g.font = '12px ui-monospace,monospace'; g.fillText('p', w - 20, h - 6); g.fillText('0', 30, h - 6); g.fillText('1', w - 18, h - 20);
+  [0, 1, 2, 3, 4, 5].forEach(t => g.fillText(String(t), 18, Y(t) + 4));
+  const curve = (f, col) => { g.strokeStyle = col; g.lineWidth = 2.5; g.beginPath(); for (let x = 0.007; x <= 1; x += 0.004) { const p2 = [X(x), Y(Math.min(f(x), 5))]; x === 0.007 ? g.moveTo(...p2) : g.lineTo(...p2); } g.stroke(); };
+  curve(x => (1 - x) ** 2, '#1a56db'); curve(x => -Math.log(x), '#b45309');
+  g.fillStyle = '#1a56db'; g.beginPath(); g.arc(X(p), Y((1 - p) ** 2), 5, 0, 7); g.fill();
+  g.fillStyle = '#b45309'; g.beginPath(); g.arc(X(p), Y(Math.min(-Math.log(p), 5)), 5, 0, 7); g.fill();
+  g.font = '13px ui-monospace,monospace'; g.fillStyle = '#1a56db'; g.fillText('quadrático', w - 120, 24); g.fillStyle = '#b45309'; g.fillText('entropia', w - 120, 42);
+  $('#lsT').innerHTML = `perdas: ${fmt((1 - p) ** 2, 3)} e ${fmt(-Math.log(p), 3)} · ∂E/∂h: ${fmt(2 * (p - 1) * p * (1 - p), 4)} e ${fmt(p - 1, 3)}`;
+}
+$('#lsP').addEventListener('input', lsDraw); lsDraw();
+
+/* ---------- Atividade 5: MLP no navegador ---------- */
+function rngf(seed) { let s = seed >>> 0; return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
+function gaussf(r) { let u = 0, v = 0; while (!u) u = r(); while (!v) v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+const DATA = { xor: { X: [[0, 0], [0, 1], [1, 0], [1, 1]], T: [0, 1, 1, 0], box: [-0.5, 1.5, -0.5, 1.5] } };
+(() => { const r = rngf(7), X = [], T = []; for (let k = 0; k < 120; k++) { const t = Math.PI * r(), c = k % 2;
+  const x = c ? [1 - Math.cos(t), 0.5 - Math.sin(t)] : [Math.cos(t), Math.sin(t)]; X.push([x[0] + 0.15 * gaussf(r), x[1] + 0.15 * gaussf(r)]); T.push(c); }
+  DATA.moons = { X, T, box: [-1.6, 2.6, -1.3, 1.7] }; })();
+const ML = setupCanvas($('#mlC')); let net = null, mlTimer = null, mlSeed = 1 + Math.floor(Math.random() * 100000);
+function mlInit() {
+  clearInterval(mlTimer); mlTimer = null;
+  const H = +$('#mlH').value, r = rngf(mlSeed++ * 7919);
+  net = { H, W1: Array.from({ length: H }, () => [gaussf(r), gaussf(r)]), b1: Array(H).fill(0), w2: Array.from({ length: H }, () => gaussf(r)), b2: 0, ep: 0, loss: NaN,
+    vW1: Array.from({ length: H }, () => [0, 0]), vb1: Array(H).fill(0), vw2: Array(H).fill(0), vb2: 0 };
+  mlDraw();
+}
+function fwd(x) { const h = net.W1.map((w, j) => Math.tanh(w[0] * x[0] + w[1] * x[1] + net.b1[j])); return { h, y: sig(h.reduce((s, v, j) => s + v * net.w2[j], net.b2)) }; }
+function mlEpoch() {
+  const D = DATA[$('#mlP').value], n = D.X.length, H = net.H;
+  const gW1 = Array.from({ length: H }, () => [0, 0]), gb1 = Array(H).fill(0), gw2 = Array(H).fill(0); let gb2 = 0, L = 0;
+  D.X.forEach((x, k) => { const { h, y } = fwd(x), t = D.T[k], d = (y - t) / n;
+    L -= (t * Math.log(y + 1e-9) + (1 - t) * Math.log(1 - y + 1e-9)) / n;
+    gb2 += d; for (let j = 0; j < H; j++) { gw2[j] += d * h[j]; const dh = d * net.w2[j] * (1 - h[j] * h[j]); gW1[j][0] += dh * x[0]; gW1[j][1] += dh * x[1]; gb1[j] += dh; } });
+  const xor = $('#mlP').value === 'xor', lr = xor ? 0.5 : 0.3, mu = xor ? 0 : 0.9;
+  for (let j = 0; j < H; j++) {
+    for (let i = 0; i < 2; i++) { net.vW1[j][i] = mu * net.vW1[j][i] - lr * gW1[j][i]; net.W1[j][i] += net.vW1[j][i]; }
+    net.vb1[j] = mu * net.vb1[j] - lr * gb1[j]; net.b1[j] += net.vb1[j]; net.vw2[j] = mu * net.vw2[j] - lr * gw2[j]; net.w2[j] += net.vw2[j];
+  }
+  net.vb2 = mu * net.vb2 - lr * gb2; net.b2 += net.vb2; net.ep++; net.loss = L;
+}
+function mlDraw() {
+  const D = DATA[$('#mlP').value], [x0, x1, y0, y1] = D.box, { g, w, h } = ML, N = 56;
+  const X = (x) => (x - x0) / (x1 - x0) * w, Y = (y) => h - (y - y0) / (y1 - y0) * h;
+  g.clearRect(0, 0, w, h); g.fillStyle = '#ffffff'; g.fillRect(0, 0, w, h);
+  for (let a = 0; a < N; a++) for (let b = 0; b < N; b++) {
+    const px = x0 + (a + 0.5) / N * (x1 - x0), py = y0 + (b + 0.5) / N * (y1 - y0), y = fwd([px, py]).y;
+    const al = 0.15 + Math.abs(y - 0.5) * 0.5, c = y > 0.5 ? [245, 180, 40] : [70, 120, 230]; g.fillStyle = `rgb(${c.map(v => Math.round(255 - al * (255 - v))).join(',')})`;
+    g.fillRect(a * w / N, h - (b + 1) * h / N, w / N + 1, h / N + 1);
+  }
+  let ok = 0;
+  D.X.forEach((x, k) => { const t = D.T[k], y = fwd(x).y; ok += (y > 0.5) === (t === 1);
+    g.fillStyle = t ? '#b45309' : '#1a56db'; g.strokeStyle = '#fff'; g.lineWidth = 1.5; const s = D.X.length < 10 ? 9 : 4;
+    g.beginPath(); if (t) g.arc(X(x[0]), Y(x[1]), s, 0, 7); else g.rect(X(x[0]) - s, Y(x[1]) - s, 2 * s, 2 * s); g.fill(); g.stroke(); });
+  net.acc = ok / D.X.length;
+  $('#mlO').textContent = `${net.H} oculta${net.H > 1 ? 's' : ''} · época ${net.ep} · perda ${isNaN(net.loss) ? '—' : fmt(net.loss, 3)} · acerto ${Math.round(100 * net.acc)}%`;
+}
+function mlTrain() {
+  clearInterval(mlTimer); const xor = $('#mlP').value === 'xor', target = net.ep + (xor ? 5000 : 3000), per = xor ? 125 : 60;
+  mlTimer = setInterval(() => { for (let k = 0; k < per && net.ep < target; k++) mlEpoch(); mlDraw(); if (net.ep >= target) { clearInterval(mlTimer); mlTimer = null; } }, 30);
+}
+$('#mlT').addEventListener('click', mlTrain); $('#mlR').addEventListener('click', mlInit);
+$('#mlP').addEventListener('change', mlInit); $('#mlH').addEventListener('change', mlInit); mlInit();
+
+/* ---------- Atividade 6: parada antecipada ---------- */
+const EP = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const TR = [0.500, 0.295, 0.178, 0.111, 0.072, 0.050, 0.037, 0.030, 0.026, 0.023, 0.022];
+const VA = [0.500, 0.311, 0.219, 0.173, 0.151, 0.156, 0.173, 0.196, 0.222, 0.250, 0.281];
+$('#epTab').innerHTML = `<tr><th>época</th><th>treino</th><th>validação</th></tr>` + EP.map((e, k) => `<tr><td>${e}</td><td>${fmt(TR[k], 3)}</td><td>${fmt(VA[k], 3)}</td></tr>`).join('');
+const OV = setupCanvas($('#ovC'));
+function ovDraw() {
+  const e = +$('#ovE').value, k = EP.indexOf(e); $('#ovEv').textContent = e;
+  const { g, w, h } = OV; g.clearRect(0, 0, w, h);
+  const X = (x) => 40 + (w - 60) * x / 100, Y = (y) => h - 26 - (h - 40) * y / 0.52;
+  g.strokeStyle = css('--line'); g.lineWidth = 1; g.beginPath(); g.moveTo(40, Y(0)); g.lineTo(w - 15, Y(0)); g.moveTo(40, Y(0)); g.lineTo(40, 8); g.stroke();
+  g.fillStyle = css('--muted'); g.font = '12px ui-monospace,monospace'; [0, 50, 100].forEach(t => g.fillText(String(t), X(t) - 8, h - 8)); [0, 0.25, 0.5].forEach(t => g.fillText(fmt(t), 4, Y(t) + 4));
+  [[TR, '#1a56db'], [VA, '#b45309']].forEach(([A, c]) => { g.strokeStyle = c; g.fillStyle = c; g.lineWidth = 2.5; g.beginPath(); A.forEach((v, i) => i ? g.lineTo(X(EP[i]), Y(v)) : g.moveTo(X(EP[i]), Y(v))); g.stroke(); A.forEach((v, i) => { g.beginPath(); g.arc(X(EP[i]), Y(v), 3.5, 0, 7); g.fill(); }); });
+  g.strokeStyle = css('--fg'); g.setLineDash([4, 4]); g.beginPath(); g.moveTo(X(e), 8); g.lineTo(X(e), Y(0)); g.stroke(); g.setLineDash([]);
+  g.font = '13px ui-monospace,monospace'; g.fillStyle = '#1a56db'; g.fillText('treino', w - 110, 22); g.fillStyle = '#b45309'; g.fillText('validação', w - 110, 40);
+  $('#ovT').textContent = `parando na época ${e}: treino ${fmt(TR[k], 3)} · validação ${fmt(VA[k], 3)}`;
+}
+$('#ovE').addEventListener('input', ovDraw); ovDraw();
+const A6C = [['mais dados', true], ['mais unidades ocultas', false], ['penalizar pesos grandes', true], ['treinar mais épocas', false], ['menos unidades ocultas', true]];
+$('#a6cOpts').innerHTML = A6C.map(([t], k) => `<label class="opt"><input type="checkbox" name="a6c" value="${k}">${t}</label>`).join('');
+
+/* ---------- Atividade 7 ---------- */
+const REQ = [
+  ['Os pesos da volta precisam ser iguais aos da ida (transporte de pesos).', 'X'],
+  ['Cada neurônio de saída precisa de um alvo próprio.', 'X'],
+  ['O δ de uma oculta depende de erros e pesos de neurônios adiante.', 'X'],
+  ['Duas fases separadas: ida, depois volta.', 'X'],
+  ['A mudança de peso é proporcional a (atividade pré) × (um termo do pós).', 'P'],
+  ['Milhares de repetições de cada exemplo.', 'X'],
+];
+$('#reqList').innerHTML = REQ.map(([t], k) => `<div class="st"><span>${k + 1}. ${t}</span><div class="seg two" role="radiogroup" aria-label="Exigência ${k + 1}">
+  <label><input type="radio" name="r${k}" value="P">plausível</label><label><input type="radio" name="r${k}" value="X">problemática</label></div></div>`).join('');
+const MARR = [
+  ['Achar os pesos que minimizam o erro de classificação.', 'C', 'o objetivo'],
+  ['Calcular o gradiente pela regra da cadeia, camada a camada.', 'A', 'o método de cálculo'],
+  ['A fibra trepadeira induz LTD nas sinapses fibra paralela–Purkinje.', 'I', 'mecanismo celular'],
+  ['Enviar o erro de volta por uma matriz fixa e aleatória B.', 'A', 'outro algoritmo para o mesmo objetivo'],
+  ['O erro estaria no potencial do dendrito apical de piramidais.', 'I', 'onde o erro estaria fisicamente'],
+  ['Prever a consequência sensorial de um movimento.', 'C', 'o problema a resolver'],
+];
+$('#marrList').innerHTML = MARR.map(([t], k) => `<div class="st"><span>${k + 1}. ${t}</span><div class="seg" role="radiogroup" aria-label="Nível da afirmação ${k + 1}">
+  ${['C', 'A', 'I'].map(l => `<label><input type="radio" name="m${k}" value="${l}">${l}</label>`).join('')}</div></div>`).join('');
+function markSeg(name, c) { $$(`[name="${name}"]`).forEach(i => { const l = i.closest('label'); l.classList.remove('right', 'wrong'); if (i.value === c) l.classList.add('right'); else if (i.checked) l.classList.add('wrong'); }); }
+
+/* ---------- correção ---------- */
+const ACT = {
+  a1() {
+    const want = { g1: [0.6, 1.08], g8: [4.8, 1.92], g12: [7.2, -2.88] }; let s = 0; const parts = [];
+    Object.entries(want).forEach(([k, [a, b]]) => { s += chk(k + 'w1', a, 0.02); s += chk(k + 'w2', b, 0.02);
+      const el = $(`[name="${k}b"]`), ok = el.value === BEHK[k]; markEl(el, ok); s += ok;
+      parts.push(`${k.slice(1) === '1' ? '0,1' : k.slice(1) === '8' ? '0,8' : '1,2'}: ${num(k + 'w1') ?? '—'}, ${num(k + 'w2') ?? '—'}, ${el.value || '—'}`); });
+    const om = chk('a1max', 1, 0.001), oo = chk('a1one', 0.5, 0.001); s += om + oo;
+    return { score: `${s}/11`, resp: parts.join(' | ') + ` | máx η: ${num('a1max') ?? '—'} | um passo: ${num('a1one') ?? '—'}`,
+      fb: `<p class="score">${s} de 11</p><ul>
+      <li>Com e = w − 3, cada passo faz <b>e ← (1 − 2η)·e</b>, com e₀ = −3.</li>
+      <li>η = 0,1 (fator 0,8): w = 0 → <b>0,6 → 1,08</b>, <b>converge sem oscilar</b>.</li>
+      <li>η = 0,8 (fator −0,6): w = 0 → <b>4,8 → 1,92</b>, <b>oscila e converge</b>.</li>
+      <li>η = 1,2 (fator −1,4): w = 0 → <b>7,2 → −2,88</b>, <b>diverge</b>.</li>
+      <li>${tag(om)} Converge se |1 − 2η| &lt; 1: <b>η &lt; 1</b>. Em geral, η &lt; 2/curvatura.</li>
+      <li>${tag(oo)} <b>η = 0,5</b> zera o fator: w₁ = 3 num passo só.</li></ul>
+      <figure><img src="img/aula05/e2_gd_lr.png" alt="Três parábolas com os passos da descida do gradiente para η igual a 0,1, 0,8 e 1,2: converge, oscila e converge, diverge." loading="lazy"></figure>` };
+  },
+  a2() {
+    let s = 0; [['m09', 0.01, 0.003], ['m05', 0.25, 0.005], ['m01', 0.81, 0.01], ['c09', 0.105, 0.006], ['c05', 0.693, 0.01], ['c01', 2.303, 0.02]].forEach(([n, x, t]) => { s += chk(n, x, t); });
+    const b = val('a2b'), c = val('a2c'); markRadio('a2b', 'entropia'); markRadio('a2c', 'entropia');
+    const gm = chk('g2m', -0.0196, 0.0012), gc = chk('g2c', -0.99, 0.006);
+    s += (b === 'entropia') + gm + gc + (c === 'entropia');
+    return { score: `${s}/10`, resp: `MSE ${['m09', 'm05', 'm01'].map(n => num(n) ?? '—').join(', ')} | CE ${['c09', 'c05', 'c01'].map(n => num(n) ?? '—').join(', ')} | b: ${b || '—'} | grad ${num('g2m') ?? '—'}, ${num('g2c') ?? '—'} | c: ${c || '—'}`,
+      fb: `<p class="score">${s} de 10</p><ul>
+      <li>(1 − p)²: <b>0,01 · 0,25 · 0,81</b>. −ln p: <b>0,105 · 0,693 · 2,303</b>.</li>
+      <li>${tag(b === 'entropia')} De p = 0,1 a 0,01: quadrático 0,81 → 0,98; entropia 2,30 → <b>4,61</b>. A entropia cruzada não tem teto.</li>
+      <li>${tag(gm && gc)} Em p = 0,01: quadrático <b>−0,0196</b>; entropia <b>−0,99</b>.</li>
+      <li>${tag(c === 'entropia')} A <b>entropia cruzada</b> ensina ~50 vezes mais: no erro quadrático, o fator p(1 − p) cala o erro justo quando a rede está mais errada.</li></ul>
+      <figure><img src="img/aula05/e3_losses.png" alt="Esquerda: as duas perdas em função de p; a entropia cruzada explode perto de p igual a zero. Direita: o gradiente do erro quadrático some perto de p igual a zero, o da entropia cruzada não." loading="lazy"></figure>` };
+  },
+  a3() {
+    const oa = chk('a3a', 24, 0.01);
+    const W = [['b3h', 1.1, 0.01], ['b3y', 0.75, 0.006], ['b3f', 0.1875, 0.005], ['b3d', 0.1406, 0.004], ['b3g', 0.2812, 0.008], ['b3w', 0.4094, 0.008]];
+    let ob = 0; W.forEach(([n, x, t]) => { ob += chk(n, x, t); });
+    const c = val('a3c'); markRadio('a3c', 'diminui');
+    const s = oa + ob + (c === 'diminui');
+    return { score: `${s}/8`, resp: `dz/dx = ${num('a3a') ?? '—'} | ${W.map(([n]) => num(n) ?? '—').join(', ')} | c: ${c || '—'}`,
+      fb: `<p class="score">${s} de 8</p><ul>
+      <li>${tag(oa)} dz/dx = 2u · 3 = 2 · 4 · 3 = <b>24</b>.</li>
+      <li>${tag(ob === 6)} h = <b>1,1</b>; y ≈ <b>0,75</b>; f′ = 0,75 × 0,25 ≈ <b>0,1875</b>; δ = 0,75 × 0,1875 ≈ <b>0,141</b>; ∂E/∂w = δ·x ≈ <b>0,281</b>; w = 0,55 − 0,5 × 0,281 ≈ <b>0,409</b>.</li>
+      <li>${tag(c === 'diminui')} <b>Diminui</b>: y (0,75) está acima do alvo (0) e x &gt; 0.</li></ul>
+      <p>A forma Δw = −η·δ·x é pré × pós, como Hebb — mas o δ depende do alvo, que vem de fora da sinapse.</p>` };
+  },
+  a4() {
+    const W = [['f4h1', 0.622, 0.003], ['f4h2', 0.550, 0.003], ['f4y', 0.538, 0.003], ['f4do', -0.1147, 0.003], ['f4d1', -0.0162, 0.0006], ['f4d2', 0.0114, 0.0006],
+      ['f4v1', 0.636, 0.003], ['f4v2', -0.368, 0.003], ['f4w11', 0.508, 0.0015], ['f4w21', 0.194, 0.0015]];
+    let s = 0; W.forEach(([n, x, t]) => { s += chk(n, x, t); });
+    const r = val('a4r'), d = val('a4d'); markRadio('a4r', 'x2=0'); markRadio('a4d', 'diminui'); s += (r === 'x2=0') + (d === 'diminui');
+    return { score: `${s}/12`, resp: W.map(([n]) => `${n.slice(2)}=${num(n) ?? '—'}`).join(' ') + ` | por quê: ${r || '—'} | E: ${d || '—'}`,
+      fb: `<p class="score">${s} de 12</p><figure><img src="img/aula05/e5b_net221_ans.png" alt="Rede 2-2-1 com as ativações da ida e os deltas da volta: h1 0,622, h2 0,550, y 0,538, delta da saída −0,115, delta1 −0,0162, delta2 0,0114." loading="lazy"></figure><ul>
+      <li>Ida: h₁ = σ(0,5) = <b>0,622</b>; h₂ = σ(0,2) = <b>0,550</b>; y = σ(0,6 × 0,622 − 0,4 × 0,550) = σ(0,154) = <b>0,538</b>.</li>
+      <li>δ saída = (0,538 − 1) × 0,538 × 0,462 = <b>−0,115</b>.</li>
+      <li>δ₁ = 0,622 × 0,378 × 0,6 × (−0,115) = <b>−0,0162</b>; δ₂ = 0,550 × 0,450 × (−0,4) × (−0,115) = <b>+0,0114</b>.</li>
+      <li>v₁ = 0,6 + 0,5 × 0,115 × 0,622 = <b>0,636</b>; v₂ = <b>−0,368</b>; w₁₁ = 0,5 + 0,5 × 0,0162 = <b>0,508</b>; w₂₁ = 0,2 − 0,5 × 0,0114 = <b>0,194</b>.</li>
+      <li>${tag(r === 'x2=0')} w₁₂ e w₂₂ não mudam porque <b>x₂ = 0</b>: sem atividade pré-sináptica, Δw = 0.</li>
+      <li>${tag(d === 'diminui')} E <b>diminui</b>: de 0,1066 para 0,1019 (y vai a 0,549).</li></ul>` };
+  },
+  a5() {
+    const a = val('a5a'), b = num('a5b'), c = val('a5c'); markRadio('a5a', 'não, reta'); markRadio('a5c', 'nem sempre');
+    const ob = b === 2; markInput('a5b', ob); const s = (a === 'não, reta') + ob + (c === 'nem sempre');
+    return { score: `${s}/3`, resp: `1 oculta: ${a || '—'} | mínimo: ${b ?? '—'} | 2 ocultas: ${c || '—'} | d: ${val('a5d')}`,
+      fb: `<p class="score">${s} de 3</p><ul>
+      <li>${tag(a === 'não, reta')} Com 1 oculta a fronteira é <b>uma reta</b>: a saída depende de uma única combinação linear das entradas.</li>
+      <li>${tag(ob)} <b>Duas</b> unidades bastam — como na solução à mão da Aula 2.</li>
+      <li>${tag(c === 'nem sempre')} <b>Nem sempre</b>: dependendo dos pesos iniciais, o treino fica preso. Em 20 inicializações, 2 unidades resolveram 11 vezes; 3 unidades, 17.</li></ul>
+      <p><b>d)</b> Mais unidades dão fronteiras mais flexíveis (1: reta, ~90% de acerto; 3 e 10: curvas, ~100%). Mas com poucos dados ou ruído a rede passa a decorar — e Rolls lembra que, com uma unidade por combinação de entradas, ela vira uma tabela, sem generalização.</p>
+      <figure><img src="img/aula05/e7_moons.png" alt="Duas luas classificadas com 1, 3 e 10 unidades ocultas: uma reta com 90% de acerto e duas fronteiras curvas com 100%." loading="lazy"></figure>` };
+  },
+  a6() {
+    const a = num('a6a'), oa = a === 40; markInput('a6a', oa);
+    const b = val('a6b'); markRadio('a6b', 'sobreajuste');
+    let oc = 0; const chosen = [];
+    $$('[name="a6c"]').forEach(i => { const want = A6C[+i.value][1], ok = i.checked === want; oc += ok; if (i.checked) chosen.push(A6C[+i.value][0]);
+      const l = i.closest('label'); l.classList.remove('right', 'wrong'); if (want) l.classList.add('right'); else if (i.checked) l.classList.add('wrong'); });
+    const s = oa + (b === 'sobreajuste') + oc;
+    return { score: `${s}/7`, resp: `parar: ${a ?? '—'} | ${b || '—'} | medidas: ${chosen.join(', ') || '—'}`,
+      fb: `<p class="score">${s} de 7</p><ul>
+      <li>${tag(oa)} Época <b>40</b>: mínimo da validação (0,151).</li>
+      <li>${tag(b === 'sobreajuste')} Depois, <b>sobreajuste</b>: o treino continua caindo (0,072 → 0,022) e a validação sobe (0,151 → 0,281).</li>
+      <li>${tag(oc === 5)} Reduzem: <b>mais dados, penalizar pesos grandes, menos unidades ocultas</b>. Mais unidades e mais épocas pioram.</li></ul>
+      <figure><img src="img/aula05/e10_overfit.png" alt="Curvas de erro de treino, sempre caindo, e de validação, com mínimo na época 40." loading="lazy"></figure>` };
+  },
+  a7() {
+    let sa = 0; REQ.forEach(([, c], k) => { if (val('r' + k) === c) sa++; markSeg('r' + k, c); });
+    const b = val('a7b'); markRadio('a7b', 'alinhamento');
+    let sc = 0; MARR.forEach(([, c], k) => { if (val('m' + k) === c) sc++; markSeg('m' + k, c); });
+    const s = sa + (b === 'alinhamento') + sc;
+    return { score: `${s}/13`, resp: 'req ' + REQ.map((_, k) => `${k + 1}:${val('r' + k) || '—'}`).join(' ') + ` | b: ${b || '—'} | Marr ` + MARR.map((_, k) => `${k + 1}:${val('m' + k) || '—'}`).join(' '),
+      fb: `<p class="score">${s} de 13</p><ul>
+      ${REQ.map(([t, c], k) => `<li>${tag(val('r' + k) === c)} ${k + 1}. <b>${c === 'P' ? 'plausível' : 'problemática'}</b>${k === 4 ? ' — é a forma pré × pós de Hebb; o difícil é fazer o δ chegar' : k === 5 ? ' — Rolls considera um problema; é discutível' : ''}</li>`).join('')}
+      <li>${tag(b === 'alinhamento')} <b>Alinhamento por retroalimentação</b> (Lillicrap et al., 2016): a volta por uma matriz aleatória funciona porque os pesos de ida se alinham com ela.</li>
+      ${MARR.map(([, c, why], k) => `<li>${tag(val('m' + k) === c)} ${k + 1}. <b>${c}</b> — ${why}</li>`).join('')}</ul>
+      <figure><img src="img/aula05/e12_fa.png" alt="Esquema da retropropagação, com a volta pela transposta dos pesos, e do alinhamento por retroalimentação, com uma matriz aleatória B; à direita, as duas regras aprendem quase igualmente bem." loading="lazy"></figure>` };
+  },
+};
+
+/* ---------- envio ---------- */
+$$('[data-send]').forEach(btn => btn.addEventListener('click', () => {
+  const id = btn.dataset.send, sec = document.getElementById(id);
+  if (!window.Registro || !Registro.identificado()) { window.Registro && Registro.pedeId(); return; }
+  const r = ACT[id]();
+  const ok = Registro.atividade(id, sec.dataset.titulo, r.score, r.resp);
+  const fb = $(`[data-fb="${id}"]`); fb.innerHTML = '<h3>Gabarito</h3>' + r.fb; fb.hidden = false;
+  const st = $(`[data-status="${id}"]`);
+  const first = Registro.aluno().n.split(' ')[0];
+  st.textContent = ok ? `✓ Resposta registrada para ${first}. Você pode corrigir e reenviar.` : 'Identifique-se no topo da página.';
+  btn.textContent = 'Reenviar';
+  const a = $(`nav a[href="#${id}"]`); if (a) a.classList.add('done');
+  fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}));
+})();
+</script>
+<script src="config.js?v=2"></script>
+<script src="registro.js?v=2" data-aula="5"></script>

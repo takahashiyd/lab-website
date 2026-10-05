@@ -1,0 +1,769 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Retropropagação passo a passo — Aula 5: Aprendizado supervisionado, do gradiente à retropropagação</title>
+<style>
+:root{
+  --teal:#0D7377; --blue:#1A56DB; --amber:#B45309; --violet:#6D28D9;
+  --green:#15803D; --dark:#1E293B; --red:#DC2626;
+  --l-blue:#EFF6FF; --l-amber:#FFFBEB; --l-violet:#F5F3FF; --l-green:#E0F4EA;
+  --gray:#475569; --lg:#94A3B8; --xlg:#CBD5E1; --bg:#F8FAFC;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Calibri,sans-serif;}
+body{background:var(--bg);color:var(--dark);line-height:1.4;}
+
+header{background:linear-gradient(135deg,var(--dark) 0%,#0F172A 100%);color:white;padding:18px 30px;}
+header .crumbs{font-size:10px;letter-spacing:4px;color:#94A3B8;text-transform:uppercase;}
+header h1{font-size:24px;margin-top:4px;font-weight:700;}
+header h1 .num{color:#60A5FA;}
+header .sub{margin-top:4px;font-size:13px;color:#CBD5E1;font-style:italic;}
+
+main{display:grid;grid-template-columns:1fr 380px;gap:14px;padding:14px 18px;max-width:1500px;margin:0 auto;}
+
+.diagram-card{background:white;border-radius:10px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.diagram-card .phase-banner{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-radius:6px;background:#F1F5F9;margin-bottom:10px;font-size:13px;}
+.diagram-card .phase-banner .phase-name{font-weight:700;color:var(--blue);letter-spacing:1px;text-transform:uppercase;font-size:11px;}
+.diagram-card .phase-banner .phase-desc{color:var(--gray);font-style:italic;}
+.diagram-card .phase-banner.phase-fwd{background:#DBEAFE;}
+.diagram-card .phase-banner.phase-fwd .phase-name{color:var(--blue);}
+.diagram-card .phase-banner.phase-bwd{background:#FFEDD5;}
+.diagram-card .phase-banner.phase-bwd .phase-name{color:var(--amber);}
+.diagram-card .phase-banner.phase-upd{background:#DCFCE7;}
+.diagram-card .phase-banner.phase-upd .phase-name{color:var(--green);}
+
+svg.diagram{display:block;width:100%;height:520px;background:#FCFCFD;border-radius:6px;}
+
+.side-card{background:white;border-radius:10px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:14px;}
+.side-card h3{font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;font-weight:700;}
+.eq-display{background:var(--l-blue);border-left:4px solid var(--blue);padding:14px 16px;border-radius:0 6px 6px 0;}
+.eq-display.amber{background:var(--l-amber);border-left-color:var(--amber);}
+.eq-display.green{background:var(--l-green);border-left-color:var(--green);}
+.eq-display.violet{background:var(--l-violet);border-left-color:var(--violet);}
+.eq-display .eq-name{font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.eq-display.amber .eq-name{color:var(--amber);}
+.eq-display.green .eq-name{color:var(--green);}
+.eq-display.violet .eq-name{color:var(--violet);}
+.eq-display .eq-formula{font-family:Cambria,'Times New Roman',serif;font-size:17px;color:var(--dark);font-style:italic;margin-bottom:6px;line-height:1.4;}
+.eq-display .eq-sub{font-family:Consolas,Monaco,monospace;font-size:13px;color:var(--gray);}
+.eq-display .eq-result{font-family:Consolas,Monaco,monospace;font-size:14px;color:var(--blue);font-weight:700;margin-top:6px;}
+.eq-display.amber .eq-result{color:var(--amber);}
+
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px;padding:12px;background:#F8FAFC;border-radius:6px;}
+.control-group{display:flex;flex-direction:column;gap:4px;min-width:130px;}
+.control-group label{font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:1px;}
+.control-group input[type=range]{width:130px;accent-color:var(--blue);}
+.control-group .val{font-family:Consolas,Monaco,monospace;font-size:13px;color:var(--blue);font-weight:600;}
+
+.step-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:12px;background:#F1F5F9;border-radius:6px;margin-top:8px;}
+.step-bar .step-label{font-size:11px;text-transform:uppercase;font-weight:700;color:var(--gray);letter-spacing:1px;margin-right:6px;}
+button{padding:8px 12px;border:none;border-radius:5px;background:var(--blue);color:white;cursor:pointer;font-weight:600;font-size:12px;transition:all .12s;}
+button:hover{transform:translateY(-1px);box-shadow:0 2px 4px rgba(0,0,0,.1);}
+button.amber{background:var(--amber);}
+button.green{background:var(--green);}
+button.violet{background:var(--violet);}
+button.gray{background:#94A3B8;}
+button.red{background:var(--red);}
+button:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
+
+.values-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;}
+.values-grid .v-row{padding:6px 10px;background:#F8FAFC;border-radius:4px;}
+.values-grid .v-row .name{color:var(--gray);font-size:10px;text-transform:uppercase;letter-spacing:1px;}
+.values-grid .v-row .val{font-family:Consolas,Monaco,monospace;color:var(--dark);font-weight:600;}
+
+.loss-mini{height:80px;background:#F8FAFC;border-radius:6px;position:relative;border:1px solid #E2E8F0;}
+.loss-mini canvas{display:block;width:100%;height:100%;}
+.loss-mini .label{position:absolute;top:4px;left:6px;font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:1px;font-weight:700;}
+
+.legend{display:flex;flex-wrap:wrap;gap:8px;font-size:11px;align-items:center;margin-top:8px;}
+.legend .item{display:flex;align-items:center;gap:4px;}
+.legend .sq{width:12px;height:12px;border-radius:50%;}
+
+/* SVG animation classes */
+.neuron{transition:all .3s ease;}
+.neuron.highlight{filter:drop-shadow(0 0 8px currentColor);}
+.edge{transition:stroke .3s,stroke-width .3s;}
+.edge.flow-fwd{animation:flowFwd 1s ease forwards;}
+.edge.flow-bwd{animation:flowBwd 1s ease forwards;}
+@keyframes flowFwd{
+  0%{stroke:#1A56DB;stroke-width:1;}
+  50%{stroke:#60A5FA;stroke-width:3;}
+  100%{stroke:#1A56DB;stroke-width:1;}
+}
+@keyframes flowBwd{
+  0%{stroke:#B45309;stroke-width:1;}
+  50%{stroke:#F59E0B;stroke-width:3;}
+  100%{stroke:#B45309;stroke-width:1;}
+}
+.node-label{font-family:'Cambria Math',Cambria,serif;font-style:italic;}
+.delta-badge{font-family:Consolas,monospace;font-size:11px;font-weight:700;}
+
+footer{padding:14px 30px;font-size:11px;color:var(--lg);text-align:center;}
+</style>
+</head>
+<body>
+<header>
+  <div class="crumbs">NEUROCIÊNCIA COMPUTACIONAL · AULA 5 · SIMULAÇÃO DEDICADA</div>
+  <h1>Backpropagation — <span class="num">passo a passo, visualmente</span></h1>
+  <div class="sub">Rede 2-3-1 · Veja forward pass, propagação do δ e atualização de pesos em câmera lenta · <a href="../aula05.html" style="color:inherit">atividades da Aula 5</a></div>
+</header>
+
+<main>
+  <!-- LEFT: DIAGRAM -->
+  <div class="diagram-card">
+    <div class="phase-banner" id="phaseBanner">
+      <div>
+        <div class="phase-name" id="phaseName">PRONTO</div>
+        <div class="phase-desc" id="phaseDesc">Clique em ▶ Forward para começar.</div>
+      </div>
+      <div style="text-align:right;font-size:11px;color:var(--gray);">
+        Epoch <b id="ep">0</b> · Passo <b id="stCount">0</b>
+      </div>
+    </div>
+
+    <svg class="diagram" id="net" viewBox="0 0 900 520" preserveAspectRatio="xMidYMid meet">
+      <!-- generated dynamically -->
+    </svg>
+
+    <div class="step-bar">
+      <span class="step-label">Próximo passo:</span>
+      <button id="bFwd" class="">▶ Forward</button>
+      <button id="bLoss" class="amber" disabled>L (perda)</button>
+      <button id="bDeltaOut" class="amber" disabled>δ saída</button>
+      <button id="bDeltaHid" class="amber" disabled>δ ocultas</button>
+      <button id="bUpdate" class="green" disabled>Atualizar pesos</button>
+      <span style="flex:1"></span>
+      <button id="bAuto" class="violet">⟳ Auto (1s/passo)</button>
+      <button id="bReset" class="gray">↻ Reset rede</button>
+    </div>
+
+    <div class="controls">
+      <div class="control-group">
+        <label>Entrada x₁: <span class="val" id="x1Val">0.80</span></label>
+        <input type="range" id="x1" min="-1" max="1" step="0.05" value="0.80">
+      </div>
+      <div class="control-group">
+        <label>Entrada x₂: <span class="val" id="x2Val">0.20</span></label>
+        <input type="range" id="x2" min="-1" max="1" step="0.05" value="0.20">
+      </div>
+      <div class="control-group">
+        <label>Alvo d: <span class="val" id="dVal">1.00</span></label>
+        <input type="range" id="d" min="-1" max="1" step="0.05" value="1.00">
+      </div>
+      <div class="control-group">
+        <label>Taxa η: <span class="val" id="etaVal">0.50</span></label>
+        <input type="range" id="eta" min="0.05" max="2.0" step="0.05" value="0.50">
+      </div>
+      <div class="control-group">
+        <label>Ativação</label>
+        <select id="act" style="padding:5px;border:1px solid #CBD5E1;border-radius:4px;font-size:12px;">
+          <option value="tanh" selected>tanh</option>
+          <option value="sigmoid">sigmoid</option>
+          <option value="relu">ReLU</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="item"><span class="sq" style="background:var(--blue)"></span> entrada xᵢ</div>
+      <div class="item"><span class="sq" style="background:var(--violet)"></span> oculta hⱼ</div>
+      <div class="item"><span class="sq" style="background:var(--green)"></span> saída y</div>
+      <div class="item"><span class="sq" style="background:var(--amber)"></span> alvo d</div>
+      <div class="item"><span class="sq" style="background:#FCD34D"></span> δ ativo</div>
+    </div>
+  </div>
+
+  <!-- RIGHT: MATH PANEL -->
+  <div>
+    <div class="side-card">
+      <h3>Equação Atual</h3>
+      <div class="eq-display" id="eqBox">
+        <div class="eq-name">Aguardando início</div>
+        <div class="eq-formula" id="eqFormula">—</div>
+        <div class="eq-sub" id="eqSub">Pressione ▶ Forward para começar o ciclo completo.</div>
+        <div class="eq-result" id="eqResult"></div>
+      </div>
+    </div>
+
+    <div class="side-card">
+      <h3>Valores Atuais</h3>
+      <div class="values-grid" id="valuesGrid">
+        <!-- dynamic -->
+      </div>
+    </div>
+
+    <div class="side-card">
+      <h3>Histórico da Perda</h3>
+      <div class="loss-mini"><canvas id="lossCv" width="340" height="80"></canvas><div class="label">L(w)</div></div>
+      <div style="font-size:11px;color:var(--gray);margin-top:4px;">A cada update completo, a perda do exemplo atual é registrada.</div>
+    </div>
+
+    <div class="side-card" style="background:var(--l-violet);">
+      <h3 style="color:var(--violet)">Tutorial</h3>
+      <ol style="padding-left:20px;font-size:12px;color:var(--dark);line-height:1.6;">
+        <li>Ajuste <b>x₁, x₂, d</b> ou aceite os defaults.</li>
+        <li>Clique <b>▶ Forward</b> — vê a ativação se propagar.</li>
+        <li>Clique <b>L</b> para ver a perda calculada.</li>
+        <li>Clique <b>δ saída</b> — δₖ aparece na saída.</li>
+        <li>Clique <b>δ ocultas</b> — δⱼ aparece em cada oculta.</li>
+        <li>Clique <b>Atualizar pesos</b> — vê os pesos mudarem (verde=↑, vermelho=↓).</li>
+        <li>Repita ou use <b>⟳ Auto</b> para treinamento contínuo.</li>
+      </ol>
+    </div>
+  </div>
+</main>
+
+<footer>
+  Aula 5 · Aprendizado Supervisionado · Visualização gráfica do algoritmo de retropropagação · HTML5 + SVG · sem internet, sem servidor
+</footer>
+
+<script>
+'use strict';
+
+// ============================================================
+// NETWORK STATE (2-3-1)
+// ============================================================
+const NIN = 2, NHID = 3, NOUT = 1;
+let W1, b1, W2, b2;          // weights
+let x = [0.80, 0.20];        // input
+let d = 1.0;                 // target
+let eta = 0.5;
+let actKey = 'tanh';
+
+// computed
+let v1 = new Array(NHID).fill(0), h = new Array(NHID).fill(0);
+let v2 = 0, y = 0;
+let dDeltaOut = 0;             // δ at output
+let dDeltaHid = new Array(NHID).fill(0); // δ at hidden
+
+let epoch = 0;
+let stCount = 0;
+let lossHist = [];
+
+function initNet(){
+  // Pre-set deterministic-looking weights for didactic display
+  W1 = [
+    [0.50, -0.30],   // hidden 0
+    [0.20,  0.40],   // hidden 1
+    [-0.10, 0.60],   // hidden 2
+  ];
+  b1 = [0.10, -0.20, 0.05];
+  W2 = [0.60, -0.40, 0.30];   // hidden -> output
+  b2 = 0.10;
+  v1 = [0,0,0]; h = [0,0,0]; v2 = 0; y = 0;
+  dDeltaOut = 0; dDeltaHid = [0,0,0];
+  epoch = 0; stCount = 0;
+  lossHist = [];
+}
+
+function actFn(z){
+  if (actKey==='sigmoid') return 1/(1+Math.exp(-z));
+  if (actKey==='relu') return Math.max(0, z);
+  return Math.tanh(z);
+}
+function actDeriv(z, a){
+  if (actKey==='sigmoid') return a*(1-a);
+  if (actKey==='relu') return z>0 ? 1 : 0;
+  return 1 - a*a;
+}
+
+function computeForward(){
+  for (let j=0;j<NHID;j++){
+    v1[j] = W1[j][0]*x[0] + W1[j][1]*x[1] + b1[j];
+    h[j] = actFn(v1[j]);
+  }
+  v2 = b2;
+  for (let j=0;j<NHID;j++) v2 += W2[j]*h[j];
+  y = actFn(v2);
+}
+function currentLoss(){ return 0.5*(d-y)*(d-y); }
+
+// ============================================================
+// SVG NETWORK LAYOUT
+// ============================================================
+const svgEl = document.getElementById('net');
+const SVG_W = 900, SVG_H = 520;
+const inputX = 100, hiddenX = 430, outputX = 760;
+const inputYs = [180, 340];          // x1, x2 positions
+const hiddenYs = [120, 260, 400];    // h0, h1, h2
+const outputY = 260;
+const targetX = 850, targetY = 100;
+
+function fmt(v, dig=2){ if (Math.abs(v)<0.005 && v!==0) return v.toExponential(1); return v.toFixed(dig); }
+
+let phase = 'idle'; // states: idle, forward_h, forward_out, loss, delta_out, delta_hid, update, done
+let stepProgress = 0; // 0..1
+let hiddenAnimIdx = -1; // which hidden being animated
+
+function renderSVG(){
+  let svg = '';
+  // CONNECTIONS first (so they're behind)
+  // input -> hidden
+  for (let i=0;i<NIN;i++){
+    for (let j=0;j<NHID;j++){
+      const x1c = inputX + 30, y1c = inputYs[i];
+      const x2c = hiddenX - 30, y2c = hiddenYs[j];
+      const cls = edgeClass('w1', j, i);
+      const sw = Math.max(0.6, Math.min(3.5, Math.abs(W1[j][i])*2));
+      const stroke = edgeStroke('w1', j, i);
+      svg += `<line class="edge ${cls}" x1="${x1c}" y1="${y1c}" x2="${x2c}" y2="${y2c}" stroke="${stroke}" stroke-width="${sw}"/>`;
+      // weight label at midpoint
+      const mx = (x1c+x2c)/2 + (i==0?-6:6);
+      const my = (y1c+y2c)/2 - 4;
+      const wColor = (W1[j][i] > 0) ? '#1A56DB' : '#B45309';
+      svg += `<text x="${mx}" y="${my}" font-size="11" fill="${wColor}" text-anchor="middle" font-family="Consolas" font-weight="600">${fmt(W1[j][i])}</text>`;
+    }
+  }
+  // hidden -> output
+  for (let j=0;j<NHID;j++){
+    const x1c = hiddenX + 30, y1c = hiddenYs[j];
+    const x2c = outputX - 30, y2c = outputY;
+    const cls = edgeClass('w2', 0, j);
+    const sw = Math.max(0.6, Math.min(3.5, Math.abs(W2[j])*2));
+    const stroke = edgeStroke('w2', 0, j);
+    svg += `<line class="edge ${cls}" x1="${x1c}" y1="${y1c}" x2="${x2c}" y2="${y2c}" stroke="${stroke}" stroke-width="${sw}"/>`;
+    const mx = (x1c+x2c)/2;
+    const my = (y1c+y2c)/2 - 4;
+    const wColor = (W2[j] > 0) ? '#1A56DB' : '#B45309';
+    svg += `<text x="${mx}" y="${my}" font-size="11" fill="${wColor}" text-anchor="middle" font-family="Consolas" font-weight="600">${fmt(W2[j])}</text>`;
+  }
+
+  // NODES — INPUT
+  for (let i=0;i<NIN;i++){
+    const hi = (phase==='forward_h' && hiddenAnimIdx>=0);
+    svg += nodeCircle(inputX, inputYs[i], 28, '#1A56DB', '#fff', hi?'highlight':'');
+    svg += `<text x="${inputX}" y="${inputYs[i]+5}" font-size="16" fill="white" text-anchor="middle" font-weight="700" font-family="Cambria Math">${fmt(x[i])}</text>`;
+    svg += `<text x="${inputX-50}" y="${inputYs[i]+5}" font-size="14" fill="#1A56DB" text-anchor="middle" font-weight="700" font-family="Cambria Math" font-style="italic">x<tspan font-size="10" baseline-shift="-3">${i+1}</tspan></text>`;
+  }
+  // NODES — HIDDEN
+  for (let j=0;j<NHID;j++){
+    const hi = (phase==='forward_h' && hiddenAnimIdx===j) || (phase==='delta_hid' && hiddenAnimIdx===j);
+    const showFwd = phase!=='idle' && (phase!=='forward_h' || hiddenAnimIdx>=j);
+    svg += nodeCircle(hiddenX, hiddenYs[j], 30, '#6D28D9', '#fff', hi?'highlight':'');
+    if (showFwd){
+      svg += `<text x="${hiddenX}" y="${hiddenYs[j]+5}" font-size="14" fill="white" text-anchor="middle" font-weight="700" font-family="Cambria Math">${fmt(h[j])}</text>`;
+    } else {
+      svg += `<text x="${hiddenX}" y="${hiddenYs[j]+5}" font-size="22" fill="#A78BFA" text-anchor="middle" font-weight="700" font-family="Cambria Math">?</text>`;
+    }
+    // label
+    svg += `<text x="${hiddenX-50}" y="${hiddenYs[j]+5}" font-size="14" fill="#6D28D9" text-anchor="middle" font-weight="700" font-family="Cambria Math" font-style="italic">h<tspan font-size="10" baseline-shift="-3">${j+1}</tspan></text>`;
+    // v label above
+    if (showFwd){
+      svg += `<text x="${hiddenX}" y="${hiddenYs[j]-40}" font-size="11" fill="#6D28D9" text-anchor="middle" font-family="Consolas">v=${fmt(v1[j])}</text>`;
+    }
+    // delta badge below if backward phase
+    if ((phase==='delta_hid' || phase==='update' || phase==='done') && hiddenAnimIdx >= j){
+      const ddx = hiddenYs[j]+50;
+      svg += `<rect class="delta-badge" x="${hiddenX-26}" y="${ddx-13}" width="52" height="22" rx="11" fill="#FCD34D" stroke="#B45309"/>`;
+      svg += `<text class="delta-badge" x="${hiddenX}" y="${ddx+3}" font-size="11" fill="#1E293B" text-anchor="middle" font-weight="700">δ=${fmt(dDeltaHid[j])}</text>`;
+    }
+  }
+  // NODE — OUTPUT
+  const showOut = (phase!=='idle' && phase!=='forward_h');
+  const hiOut = (phase==='forward_out' || phase==='delta_out' || phase==='loss');
+  svg += nodeCircle(outputX, outputY, 32, '#15803D', '#fff', hiOut?'highlight':'');
+  if (showOut){
+    svg += `<text x="${outputX}" y="${outputY+5}" font-size="16" fill="white" text-anchor="middle" font-weight="700" font-family="Cambria Math">${fmt(y)}</text>`;
+  } else {
+    svg += `<text x="${outputX}" y="${outputY+5}" font-size="22" fill="#86EFAC" text-anchor="middle" font-weight="700" font-family="Cambria Math">?</text>`;
+  }
+  svg += `<text x="${outputX+55}" y="${outputY+5}" font-size="14" fill="#15803D" text-anchor="middle" font-weight="700" font-family="Cambria Math" font-style="italic">y</text>`;
+  if (showOut){
+    svg += `<text x="${outputX}" y="${outputY-42}" font-size="11" fill="#15803D" text-anchor="middle" font-family="Consolas">v=${fmt(v2)}</text>`;
+  }
+  // delta badge for output
+  if (phase==='delta_out' || phase==='delta_hid' || phase==='update' || phase==='done'){
+    const ddx = outputY+52;
+    svg += `<rect class="delta-badge" x="${outputX-26}" y="${ddx-13}" width="52" height="22" rx="11" fill="#FCD34D" stroke="#B45309"/>`;
+    svg += `<text class="delta-badge" x="${outputX}" y="${ddx+3}" font-size="11" fill="#1E293B" text-anchor="middle" font-weight="700">δ=${fmt(dDeltaOut)}</text>`;
+  }
+  // TARGET
+  svg += `<circle cx="${targetX}" cy="${targetY}" r="20" fill="#B45309" stroke="#fff" stroke-width="2"/>`;
+  svg += `<text x="${targetX}" y="${targetY+4}" font-size="14" fill="white" text-anchor="middle" font-weight="700" font-family="Cambria Math">${fmt(d)}</text>`;
+  svg += `<text x="${targetX}" y="${targetY-30}" font-size="13" fill="#B45309" text-anchor="middle" font-weight="700" font-family="Cambria Math" font-style="italic">d (alvo)</text>`;
+  // error connection (when in loss phase or beyond)
+  if (phase==='loss' || phase==='delta_out' || phase==='delta_hid' || phase==='update' || phase==='done'){
+    svg += `<line x1="${outputX+30}" y1="${outputY-18}" x2="${targetX-18}" y2="${targetY+10}" stroke="#DC2626" stroke-width="2" stroke-dasharray="4,3"/>`;
+    const mx = (outputX+30+targetX-18)/2, my = (outputY-18+targetY+10)/2;
+    svg += `<text x="${mx}" y="${my-6}" font-size="11" fill="#DC2626" text-anchor="middle" font-weight="700" font-family="Consolas">e=${fmt(d-y)}</text>`;
+  }
+  // Loss label at top
+  if (phase==='loss' || phase==='delta_out' || phase==='delta_hid' || phase==='update' || phase==='done'){
+    svg += `<rect x="${targetX-65}" y="40" width="130" height="34" rx="6" fill="#FFEDD5" stroke="#B45309"/>`;
+    svg += `<text x="${targetX}" y="55" font-size="10" fill="#B45309" text-anchor="middle" font-weight="700" letter-spacing="1">PERDA</text>`;
+    svg += `<text x="${targetX}" y="69" font-size="14" fill="#1E293B" text-anchor="middle" font-weight="700" font-family="Cambria Math">L = ${fmt(currentLoss(),4)}</text>`;
+  }
+  // bias indicators (small circles below each neuron with +1)
+  drawBias = (bx, by, b, color) => {
+    svg += `<circle cx="${bx}" cy="${by}" r="13" fill="white" stroke="${color}" stroke-width="1.5"/>`;
+    svg += `<text x="${bx}" y="${by+4}" font-size="10" fill="${color}" text-anchor="middle" font-weight="700" font-family="Consolas">b=${fmt(b)}</text>`;
+  };
+  for (let j=0;j<NHID;j++){
+    svg += `<circle cx="${hiddenX-55}" cy="${hiddenYs[j]+50}" r="14" fill="white" stroke="#6D28D9" stroke-width="1"/>`;
+    svg += `<text x="${hiddenX-55}" y="${hiddenYs[j]+54}" font-size="9" fill="#6D28D9" text-anchor="middle" font-family="Consolas">${fmt(b1[j])}</text>`;
+    svg += `<text x="${hiddenX-55}" y="${hiddenYs[j]+44}" font-size="8" fill="#94A3B8" text-anchor="middle" font-family="Consolas">b</text>`;
+  }
+  svg += `<circle cx="${outputX-55}" cy="${outputY+50}" r="14" fill="white" stroke="#15803D" stroke-width="1"/>`;
+  svg += `<text x="${outputX-55}" y="${outputY+54}" font-size="9" fill="#15803D" text-anchor="middle" font-family="Consolas">${fmt(b2)}</text>`;
+  svg += `<text x="${outputX-55}" y="${outputY+44}" font-size="8" fill="#94A3B8" text-anchor="middle" font-family="Consolas">b</text>`;
+
+  // PHASE FLOW arrows at top/bottom
+  if (phase==='forward_h' || phase==='forward_out' || phase==='loss'){
+    svg += `<path d="M50 25 L850 25" stroke="#1A56DB" stroke-width="2" marker-end="url(#aFwd)"/>`;
+    svg += `<text x="450" y="18" font-size="12" fill="#1A56DB" text-anchor="middle" font-weight="700">FORWARD PASS →</text>`;
+  } else if (phase==='delta_out' || phase==='delta_hid'){
+    svg += `<path d="M850 495 L50 495" stroke="#B45309" stroke-width="2" marker-end="url(#aBwd)"/>`;
+    svg += `<text x="450" y="510" font-size="12" fill="#B45309" text-anchor="middle" font-weight="700">← BACKWARD PASS (propagando δ)</text>`;
+  } else if (phase==='update'){
+    svg += `<text x="450" y="510" font-size="12" fill="#15803D" text-anchor="middle" font-weight="700">▼ ATUALIZANDO PESOS (w ← w − η·δ·entrada)</text>`;
+  }
+  // arrow markers
+  let defs = `<defs>
+    <marker id="aFwd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1A56DB"/></marker>
+    <marker id="aBwd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B45309"/></marker>
+  </defs>`;
+  svgEl.innerHTML = defs + svg;
+}
+let drawBias = null; // declared above (let scope issue workaround)
+
+function nodeCircle(cx, cy, r, fill, stroke, extraClass=''){
+  return `<circle class="neuron ${extraClass}" cx="${cx}" cy="${cy}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="3" color="${fill}"/>`;
+}
+
+function edgeClass(layer, j, i){
+  // Highlight edge if current phase animates it
+  if (phase==='forward_h' && layer==='w1' && hiddenAnimIdx===j) return 'flow-fwd';
+  if (phase==='forward_out' && layer==='w2') return 'flow-fwd';
+  if (phase==='delta_hid' && layer==='w2' && hiddenAnimIdx===j) return 'flow-bwd';
+  if (phase==='delta_hid' && layer==='w1' && hiddenAnimIdx===j) return 'flow-bwd';
+  return '';
+}
+
+function edgeStroke(layer, j, i){
+  // baseline color
+  if (phase==='update'){
+    let delta = 0;
+    if (layer==='w2') delta = -eta * dDeltaOut * h[j];
+    if (layer==='w1') delta = -eta * dDeltaHid[j] * x[i];
+    if (Math.abs(delta) < 1e-6) return '#94A3B8';
+    return delta > 0 ? '#15803D' : '#DC2626';  // green=increased, red=decreased
+  }
+  return '#94A3B8';
+}
+
+// ============================================================
+// PHASE STATE MACHINE
+// ============================================================
+function setPhase(p, name, desc){
+  phase = p;
+  document.getElementById('phaseName').textContent = name;
+  document.getElementById('phaseDesc').textContent = desc;
+  const banner = document.getElementById('phaseBanner');
+  banner.className = 'phase-banner';
+  if (p.startsWith('forward')) banner.classList.add('phase-fwd');
+  else if (p.startsWith('delta') || p==='loss') banner.classList.add('phase-bwd');
+  else if (p==='update') banner.classList.add('phase-upd');
+  document.getElementById('ep').textContent = epoch;
+  document.getElementById('stCount').textContent = stCount;
+  updateButtons();
+  renderSVG();
+  updateValuesPanel();
+}
+
+function updateButtons(){
+  document.getElementById('bFwd').disabled = (phase !== 'idle' && phase !== 'done');
+  document.getElementById('bLoss').disabled = (phase !== 'forward_out');
+  document.getElementById('bDeltaOut').disabled = (phase !== 'loss');
+  document.getElementById('bDeltaHid').disabled = (phase !== 'delta_out');
+  document.getElementById('bUpdate').disabled = (phase !== 'delta_hid');
+}
+
+function setEq(name, formula, sub, result, scheme='blue'){
+  const box = document.getElementById('eqBox');
+  box.className = 'eq-display ' + scheme;
+  box.querySelector('.eq-name').textContent = name;
+  document.getElementById('eqFormula').innerHTML = formula;
+  document.getElementById('eqSub').innerHTML = sub || '';
+  document.getElementById('eqResult').textContent = result || '';
+  box.querySelector('.eq-name').className = 'eq-name';
+}
+
+function updateValuesPanel(){
+  const grid = document.getElementById('valuesGrid');
+  let html = '';
+  // input
+  html += `<div class="v-row"><div class="name">x₁ / x₂</div><div class="val">${fmt(x[0])} / ${fmt(x[1])}</div></div>`;
+  html += `<div class="v-row"><div class="name">alvo d</div><div class="val">${fmt(d)}</div></div>`;
+  // hidden
+  for (let j=0;j<NHID;j++){
+    html += `<div class="v-row"><div class="name">h${j+1}: v / a</div><div class="val">${fmt(v1[j])} / ${fmt(h[j])}</div></div>`;
+  }
+  html += `<div class="v-row"><div class="name">y (saída)</div><div class="val">${fmt(y)}</div></div>`;
+  html += `<div class="v-row"><div class="name">L (perda)</div><div class="val" style="color:#DC2626">${fmt(currentLoss(),4)}</div></div>`;
+  html += `<div class="v-row"><div class="name">δ saída</div><div class="val" style="color:#B45309">${fmt(dDeltaOut,4)}</div></div>`;
+  for (let j=0;j<NHID;j++){
+    html += `<div class="v-row"><div class="name">δ h${j+1}</div><div class="val" style="color:#B45309">${fmt(dDeltaHid[j],4)}</div></div>`;
+  }
+  grid.innerHTML = html;
+}
+
+// ============================================================
+// STEP TRANSITIONS — animate each phase
+// ============================================================
+function startForward(){
+  // Recompute first
+  computeForward();
+  stCount++;
+  hiddenAnimIdx = -1;
+  setPhase('forward_h', 'FORWARD PASS — ocultas', 'Calculando ativação de cada neurônio oculto, um por um');
+  setEq('Camada oculta', 'v<sub>j</sub> = w<sub>j1</sub>·x₁ + w<sub>j2</sub>·x₂ + b<sub>j</sub><br>h<sub>j</sub> = g(v<sub>j</sub>)',
+        'Cada neurônio oculto soma suas entradas ponderadas e aplica a ativação.', '', 'blue');
+  animateHiddenForward(0);
+}
+
+function animateHiddenForward(j){
+  if (j >= NHID){
+    setPhase('forward_out', 'FORWARD PASS — saída', 'Combinando ativações ocultas e aplicando ativação final');
+    setEq('Camada de saída',
+          'v = Σ<sub>j</sub> w<sub>j</sub>·h<sub>j</sub> + b<br>y = g(v)',
+          `v = ${fmt(W2[0])}·${fmt(h[0])} + ${fmt(W2[1])}·${fmt(h[1])} + ${fmt(W2[2])}·${fmt(h[2])} + ${fmt(b2)} = ${fmt(v2)}`,
+          `y = g(${fmt(v2)}) = ${fmt(y)}`, 'blue');
+    return;
+  }
+  hiddenAnimIdx = j;
+  setEq(`Calculando h${j+1}`,
+        `v<sub>${j+1}</sub> = ${fmt(W1[j][0])}·x₁ + ${fmt(W1[j][1])}·x₂ + ${fmt(b1[j])}`,
+        `v<sub>${j+1}</sub> = ${fmt(W1[j][0])}·${fmt(x[0])} + ${fmt(W1[j][1])}·${fmt(x[1])} + ${fmt(b1[j])} = ${fmt(v1[j])}`,
+        `h<sub>${j+1}</sub> = g(${fmt(v1[j])}) = ${fmt(h[j])}`,
+        'blue');
+  renderSVG();
+  if (autoMode){
+    setTimeout(()=>animateHiddenForward(j+1), autoDelay/2);
+  } else {
+    setTimeout(()=>animateHiddenForward(j+1), 700);
+  }
+}
+
+function showLoss(){
+  stCount++;
+  setPhase('loss', 'PERDA', 'Comparando y com d para obter o erro e a perda');
+  const e = d - y;
+  const L = 0.5*e*e;
+  setEq('Perda quadrática',
+        'L = ½(d − y)²',
+        `e = d − y = ${fmt(d)} − ${fmt(y)} = ${fmt(e)}`,
+        `L = ½·${fmt(e)}² = ${fmt(L,4)}`,
+        'amber');
+}
+
+function showDeltaOut(){
+  stCount++;
+  const gPrime = actDeriv(v2, y);
+  dDeltaOut = (y - d) * gPrime;
+  hiddenAnimIdx = -1;
+  setPhase('delta_out', 'BACKWARD — δ na saída', 'O sinal de erro local da saída');
+  setEq('δ na saída',
+        'δ<sub>out</sub> = (y − d) · g\'(v)',
+        `g'(v) = ${fmt(gPrime,3)}<br>δ<sub>out</sub> = (${fmt(y)} − ${fmt(d)}) · ${fmt(gPrime,3)}`,
+        `δ<sub>out</sub> = ${fmt(dDeltaOut, 4)}`,
+        'amber');
+}
+
+function showDeltaHidden(){
+  stCount++;
+  setPhase('delta_hid', 'BACKWARD — δ nas ocultas', 'Propagando o δ da saída para cada neurônio oculto');
+  setEq('δ nas ocultas',
+        'δ<sub>j</sub> = g\'(v<sub>j</sub>) · w<sub>j</sub> · δ<sub>out</sub>',
+        'O δ de cada oculta vem do δ da saída, escalado pelo peso wⱼ e pela derivada da ativação.',
+        '',
+        'amber');
+  hiddenAnimIdx = -1;
+  animateDeltaHidden(0);
+}
+
+function animateDeltaHidden(j){
+  if (j >= NHID){
+    hiddenAnimIdx = NHID - 1; // keep all visible
+    setEq('δ nas ocultas — completo',
+          'δ<sub>j</sub> = g\'(v<sub>j</sub>) · w<sub>j</sub> · δ<sub>out</sub>',
+          `δ₁=${fmt(dDeltaHid[0],4)} &nbsp; δ₂=${fmt(dDeltaHid[1],4)} &nbsp; δ₃=${fmt(dDeltaHid[2],4)}`,
+          'Pronto para atualizar os pesos.',
+          'amber');
+    renderSVG();
+    updateValuesPanel();
+    return;
+  }
+  hiddenAnimIdx = j;
+  const gPrime = actDeriv(v1[j], h[j]);
+  dDeltaHid[j] = gPrime * W2[j] * dDeltaOut;
+  setEq(`δ na oculta h${j+1}`,
+        `δ<sub>${j+1}</sub> = g'(v<sub>${j+1}</sub>) · w<sub>${j+1}</sub> · δ<sub>out</sub>`,
+        `g'(v<sub>${j+1}</sub>) = ${fmt(gPrime,3)}<br>δ<sub>${j+1}</sub> = ${fmt(gPrime,3)} · ${fmt(W2[j])} · ${fmt(dDeltaOut,3)}`,
+        `δ<sub>${j+1}</sub> = ${fmt(dDeltaHid[j], 4)}`,
+        'amber');
+  renderSVG();
+  updateValuesPanel();
+  if (autoMode){
+    setTimeout(()=>animateDeltaHidden(j+1), autoDelay/2);
+  } else {
+    setTimeout(()=>animateDeltaHidden(j+1), 700);
+  }
+}
+
+function applyUpdate(){
+  stCount++;
+  setPhase('update', 'UPDATE — pesos ajustados', 'Cada peso é movido contra o gradiente. Verde = aumentou; Vermelho = diminuiu.');
+  setEq('Atualização',
+        'w ← w − η · δ · (entrada do neurônio)',
+        `η = ${fmt(eta)} · A cor de cada aresta no diagrama indica a direção da mudança.`,
+        '',
+        'green');
+  // update W2 and b2
+  for (let j=0;j<NHID;j++){
+    W2[j] -= eta * dDeltaOut * h[j];
+  }
+  b2 -= eta * dDeltaOut;
+  // update W1 and b1
+  for (let j=0;j<NHID;j++){
+    for (let i=0;i<NIN;i++){
+      W1[j][i] -= eta * dDeltaHid[j] * x[i];
+    }
+    b1[j] -= eta * dDeltaHid[j];
+  }
+  epoch++;
+  // record loss BEFORE recompute (which would use new weights)
+  lossHist.push(currentLoss());
+  if (lossHist.length > 100) lossHist.shift();
+  drawLossMini();
+  renderSVG();
+  // After 1.2s, recompute forward with new weights to show effect, but stay in idle
+  setTimeout(()=>{
+    computeForward();
+    dDeltaOut = 0; dDeltaHid = [0,0,0]; hiddenAnimIdx = -1;
+    setPhase('done', 'UPDATE COMPLETO', 'Pesos atualizados. Clique ▶ Forward para começar o próximo ciclo.');
+    setEq('Pronto para o próximo ciclo',
+      'Os pesos agora estão ajustados. Nova saída: y = ' + fmt(y),
+      `Perda anterior: ${lossHist.length>=2?fmt(lossHist[lossHist.length-2],4):'—'}, atual: ${fmt(currentLoss(),4)}`,
+      '', 'green');
+    updateValuesPanel();
+  }, 1200);
+}
+
+function reset(){
+  initNet();
+  computeForward();
+  setPhase('idle', 'PRONTO', 'Clique em ▶ Forward para começar.');
+  setEq('Aguardando início',
+    'Os pesos foram resetados para os valores iniciais.', 'Use os sliders para mudar entrada/alvo. Use Reset para resetar pesos.','','blue');
+  // clear values
+  dDeltaOut = 0; dDeltaHid = [0,0,0];
+  v1 = [0,0,0]; h = [0,0,0]; v2 = 0; y = 0;
+  drawLossMini();
+}
+
+// ============================================================
+// LOSS MINI CHART
+// ============================================================
+const lossCv = document.getElementById('lossCv');
+const lossCtx = lossCv.getContext('2d');
+function drawLossMini(){
+  const W = lossCv.width, H = lossCv.height;
+  lossCtx.clearRect(0,0,W,H);
+  if (lossHist.length < 2){
+    lossCtx.fillStyle = '#94A3B8';
+    lossCtx.font = '11px Calibri';
+    lossCtx.textAlign = 'center';
+    lossCtx.fillText('Aplique pelo menos 2 updates para ver a curva', W/2, H/2);
+    return;
+  }
+  const lmax = Math.max(...lossHist, 1e-6);
+  lossCtx.strokeStyle = '#1A56DB';
+  lossCtx.lineWidth = 2;
+  lossCtx.beginPath();
+  lossHist.forEach((L,i)=>{
+    const x = 4 + (i/(lossHist.length-1))*(W-8);
+    const y = H - 4 - (L/lmax)*(H-12);
+    if (i===0) lossCtx.moveTo(x,y); else lossCtx.lineTo(x,y);
+  });
+  lossCtx.stroke();
+  // markers
+  lossCtx.fillStyle = '#1A56DB';
+  lossHist.forEach((L,i)=>{
+    const x = 4 + (i/Math.max(1,lossHist.length-1))*(W-8);
+    const y = H - 4 - (L/lmax)*(H-12);
+    lossCtx.beginPath(); lossCtx.arc(x,y,2.5,0,2*Math.PI); lossCtx.fill();
+  });
+  // axis label
+  lossCtx.fillStyle = '#475569';
+  lossCtx.font = '10px Calibri';
+  lossCtx.textAlign = 'right';
+  lossCtx.fillText(lmax.toFixed(3), W-4, 12);
+  lossCtx.fillText('0', W-4, H-4);
+}
+
+// ============================================================
+// EVENTS
+// ============================================================
+document.getElementById('bFwd').addEventListener('click', startForward);
+document.getElementById('bLoss').addEventListener('click', showLoss);
+document.getElementById('bDeltaOut').addEventListener('click', showDeltaOut);
+document.getElementById('bDeltaHid').addEventListener('click', showDeltaHidden);
+document.getElementById('bUpdate').addEventListener('click', applyUpdate);
+document.getElementById('bReset').addEventListener('click', reset);
+
+let autoMode = false;
+let autoDelay = 900;
+document.getElementById('bAuto').addEventListener('click', ()=>{
+  autoMode = !autoMode;
+  const btn = document.getElementById('bAuto');
+  btn.textContent = autoMode ? '⏸ Parar auto' : '⟳ Auto (1s/passo)';
+  if (autoMode) autoStep();
+});
+function autoStep(){
+  if (!autoMode) return;
+  // determine current phase and trigger the next step
+  if (phase === 'idle' || phase === 'done') startForward();
+  else if (phase === 'forward_out') showLoss();
+  else if (phase === 'loss') showDeltaOut();
+  else if (phase === 'delta_out') showDeltaHidden();
+  else if (phase === 'delta_hid') applyUpdate();
+  setTimeout(autoStep, autoDelay);
+}
+
+document.getElementById('x1').addEventListener('input', e=>{
+  x[0] = parseFloat(e.target.value);
+  document.getElementById('x1Val').textContent = x[0].toFixed(2);
+  if (phase === 'idle' || phase === 'done'){ computeForward(); updateValuesPanel(); }
+});
+document.getElementById('x2').addEventListener('input', e=>{
+  x[1] = parseFloat(e.target.value);
+  document.getElementById('x2Val').textContent = x[1].toFixed(2);
+  if (phase === 'idle' || phase === 'done'){ computeForward(); updateValuesPanel(); }
+});
+document.getElementById('d').addEventListener('input', e=>{
+  d = parseFloat(e.target.value);
+  document.getElementById('dVal').textContent = d.toFixed(2);
+  updateValuesPanel();
+  renderSVG();
+});
+document.getElementById('eta').addEventListener('input', e=>{
+  eta = parseFloat(e.target.value);
+  document.getElementById('etaVal').textContent = eta.toFixed(2);
+});
+document.getElementById('act').addEventListener('change', e=>{
+  actKey = e.target.value;
+  computeForward();
+  if (phase === 'idle' || phase === 'done') updateValuesPanel();
+});
+
+// ============================================================
+// INIT
+// ============================================================
+initNet();
+computeForward();
+reset();
+</script>
+</body>
+</html>

@@ -1,0 +1,1691 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Simulações — Aula 6 — Redes profundas e o córtex visual</title>
+<style>
+  :root{
+    --teal:#0D7377; --blue:#1A56DB; --amber:#B45309; --violet:#6D28D9;
+    --green:#15803D; --dark:#1E293B; --red:#DC2626;
+    --l-blue:#EFF6FF; --l-amber:#FFFBEB; --l-violet:#F5F3FF;
+    --l-green:#E0F4EA; --l-teal:#E0F2F1;
+    --gray:#475569; --lg:#94A3B8; --xlg:#CBD5E1; --bg:#F8FAFC;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Calibri,sans-serif;background:var(--bg);color:var(--dark);line-height:1.5;}
+  body{padding:0 0 60px 0;}
+  header{background:linear-gradient(135deg,var(--dark) 0%,#0F172A 100%);color:white;padding:24px 40px 18px;}
+  header .crumbs{font-size:11px;letter-spacing:4px;color:#94A3B8;text-transform:uppercase;}
+  header h1{font-size:30px;margin-top:6px;font-weight:700;}
+  header h1 .num{color:#60A5FA;}
+  header .sub{margin-top:6px;font-size:14px;color:#CBD5E1;font-style:italic;}
+  header .author{margin-top:10px;font-size:12px;color:#94A3B8;}
+  .tabs{display:flex;gap:0;background:white;border-bottom:1px solid #E2E8F0;padding:0 30px;overflow-x:auto;}
+  .tab{padding:14px 22px;cursor:pointer;font-size:14px;font-weight:600;color:#64748B;border-bottom:3px solid transparent;transition:all .15s;white-space:nowrap;}
+  .tab:hover{color:var(--blue);background:#F1F5F9;}
+  .tab.active{color:var(--blue);border-bottom-color:var(--blue);}
+  .tab .badge{font-size:10px;background:var(--blue);color:white;padding:2px 7px;border-radius:10px;margin-left:8px;}
+  .panel{display:none;padding:24px 30px;max-width:1280px;margin:0 auto;}
+  .panel.active{display:block;}
+  .panel h2{font-size:24px;color:var(--blue);margin-bottom:6px;}
+  .panel .intro{font-size:14px;color:var(--gray);font-style:italic;margin-bottom:18px;}
+  .card{background:white;border-radius:10px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:14px;}
+  .grid{display:grid;gap:14px;}
+  .g-2{grid-template-columns:1fr 1fr;}
+  .g-3{grid-template-columns:1fr 1fr 1fr;}
+  .canvas-wrap{display:flex;justify-content:center;align-items:center;background:#FAFBFC;border-radius:8px;padding:8px;border:1px solid #E2E8F0;}
+  canvas{display:block;background:white;border-radius:4px;}
+  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px;padding:12px;background:#F8FAFC;border-radius:6px;}
+  .control-group{display:flex;flex-direction:column;gap:4px;min-width:140px;}
+  .control-group label{font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:1px;}
+  .control-group input[type=range]{width:170px;accent-color:var(--blue);}
+  .control-group select{padding:6px;border:1px solid #CBD5E1;border-radius:4px;background:white;font-size:13px;}
+  .control-group .val{font-family:Consolas,Monaco,monospace;font-size:13px;color:var(--blue);font-weight:600;}
+  button{padding:8px 16px;border:none;border-radius:5px;background:var(--blue);color:white;cursor:pointer;font-weight:600;font-size:13px;transition:background .12s;}
+  button:hover{background:#1E40AF;}
+  button.green{background:var(--green);} button.green:hover{background:#166534;}
+  button.amber{background:var(--amber);} button.amber:hover{background:#92400E;}
+  button.violet{background:var(--violet);} button.violet:hover{background:#5B21B6;}
+  button.gray{background:#94A3B8;} button.gray:hover{background:#64748B;}
+  button.red{background:var(--red);} button.red:hover{background:#991B1B;}
+  .meter{font-family:Consolas,Monaco,monospace;font-size:13px;background:white;padding:6px 10px;border:1px solid #E2E8F0;border-radius:4px;}
+  .meter b{color:var(--blue);}
+  .note{background:var(--l-blue);border-left:4px solid var(--blue);padding:12px 16px;margin-top:14px;border-radius:0 6px 6px 0;font-size:13px;}
+  .note.amber{background:var(--l-amber);border-left-color:var(--amber);}
+  .note.violet{background:var(--l-violet);border-left-color:var(--violet);}
+  .note.green{background:var(--l-green);border-left-color:var(--green);}
+  .note h4{font-size:11px;color:var(--blue);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;font-weight:700;}
+  .note.amber h4{color:var(--amber);} .note.violet h4{color:var(--violet);} .note.green h4{color:var(--green);}
+  .kernel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;max-width:200px;margin:8px auto;}
+  .kernel-grid input{width:100%;padding:8px;text-align:center;font-family:Consolas,monospace;border:1px solid #CBD5E1;border-radius:4px;font-weight:600;font-size:14px;}
+  .q{background:white;border-radius:8px;padding:18px;margin-bottom:14px;border-left:4px solid var(--violet);box-shadow:0 1px 3px rgba(0,0,0,.05);}
+  .q .num{font-size:11px;color:var(--violet);font-weight:700;text-transform:uppercase;letter-spacing:2px;}
+  .q .text{font-size:15px;color:var(--dark);margin:6px 0 12px;font-weight:600;}
+  .q .opts{display:grid;gap:8px;}
+  .q .opt{padding:10px 14px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:5px;cursor:pointer;font-size:14px;transition:all .12s;}
+  .q .opt:hover{background:#EFF6FF;border-color:var(--blue);}
+  .q .opt.correct{background:var(--l-green);border-color:var(--green);color:var(--green);font-weight:600;}
+  .q .opt.wrong{background:#FEE2E2;border-color:var(--red);color:var(--red);font-weight:600;}
+  .q .opt.disabled{cursor:not-allowed;opacity:.7;}
+  .q .explain{margin-top:10px;font-size:13px;color:var(--gray);background:#F1F5F9;padding:10px 14px;border-radius:4px;border-left:3px solid var(--violet);display:none;}
+  .q .explain.visible{display:block;}
+  .q .explain b{color:var(--violet);}
+  .quiz-progress{position:sticky;top:0;background:rgba(255,255,255,.95);padding:14px;border-radius:6px;margin-bottom:14px;box-shadow:0 2px 6px rgba(0,0,0,.06);font-size:14px;display:flex;justify-content:space-between;align-items:center;z-index:10;}
+  .quiz-progress button{padding:6px 14px;font-size:12px;}
+  .badge-correct{background:var(--green);color:white;padding:4px 10px;border-radius:4px;font-weight:600;}
+  .badge-wrong{background:var(--red);color:white;padding:4px 10px;border-radius:4px;font-weight:600;}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;align-items:center;}
+  .legend .sq{width:14px;height:14px;border-radius:3px;display:inline-block;margin-right:4px;vertical-align:middle;}
+  .pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600;}
+  .pill.blue{background:var(--l-blue);color:var(--blue);}
+  .pill.amber{background:var(--l-amber);color:var(--amber);}
+  .pill.green{background:var(--l-green);color:var(--green);}
+  .pill.violet{background:var(--l-violet);color:var(--violet);}
+  footer{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #E2E8F0;padding:8px 30px;font-size:11px;color:var(--lg);text-align:center;z-index:100;}
+  .orient-cell{display:inline-block;margin:2px;border:1px solid #CBD5E1;border-radius:4px;background:white;padding:2px;}
+  .orient-label{font-size:10px;text-align:center;color:var(--gray);font-family:Consolas,monospace;}
+</style>
+</head>
+<body>
+<header>
+  <div class="crumbs">NEUROCIÊNCIA COMPUTACIONAL · AULA 6</div>
+  <h1>Redes profundas e o córtex visual — <span class="num">4 simulações interativas</span></h1>
+  <div class="sub">De Hubel-Wiesel a CNNs, de RNNs a LSTMs, de overfitting a dropout — tudo a clique de mouse</div>
+  <div class="author">Daniel Y Takahashi · Instituto do Cérebro · UFRN · <a href="../aula06.html" style="color:inherit">atividades da Aula 6</a></div>
+</header>
+
+<nav class="tabs">
+  <div class="tab active" data-target="t1">Convolução 2D ao Vivo <span class="badge">CNN</span></div>
+  <div class="tab" data-target="t2">Hubel-Wiesel + Pooling</div>
+  <div class="tab" data-target="t3">RNN vs LSTM — Gradiente</div>
+  <div class="tab" data-target="t4">Overfitting & Regularização</div>
+  <div class="tab" data-target="t5">Quiz de Fixação</div>
+</nav>
+
+<!-- ============================================================ -->
+<!-- PANEL 1 — CONVOLUTION 2D                                     -->
+<!-- ============================================================ -->
+<section id="t1" class="panel active">
+  <h2>① Convolução 2D ao Vivo — o filtro deslizando pela imagem</h2>
+  <p class="intro">Escolha uma imagem de entrada e um filtro 3×3. Veja a operação de convolução acontecer passo a passo: o kernel desliza pela imagem, calcula o produto interno em cada posição e preenche o feature map. Conecta aos slides 6–9 (operação de convolução, campos receptivos, motivação Hubel-Wiesel).</p>
+
+  <div class="grid g-2" style="grid-template-columns:2fr 1fr;">
+    <div class="card">
+      <div class="grid g-3" style="grid-template-columns:1fr 1fr 1fr;">
+        <div>
+          <div class="orient-label" style="margin-bottom:4px;font-weight:700;color:var(--blue);">ENTRADA (16×16)</div>
+          <div class="canvas-wrap" style="padding:4px;">
+            <canvas id="cvIn" width="240" height="240"></canvas>
+          </div>
+        </div>
+        <div>
+          <div class="orient-label" style="margin-bottom:4px;font-weight:700;color:var(--violet);">KERNEL (3×3)</div>
+          <div class="canvas-wrap" style="padding:4px;height:240px;flex-direction:column;">
+            <canvas id="cvK" width="180" height="180"></canvas>
+            <div class="kernel-grid" id="kernelInputs"></div>
+          </div>
+        </div>
+        <div>
+          <div class="orient-label" style="margin-bottom:4px;font-weight:700;color:var(--green);">FEATURE MAP (saída)</div>
+          <div class="canvas-wrap" style="padding:4px;">
+            <canvas id="cvOut" width="240" height="240"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="control-group">
+          <label>Imagem de entrada</label>
+          <select id="img1">
+            <option value="cross" selected>Cruz</option>
+            <option value="diag">Diagonal</option>
+            <option value="circle">Círculo</option>
+            <option value="digit2">Dígito "2"</option>
+            <option value="digit5">Dígito "5"</option>
+            <option value="noise">Ruído</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label>Filtro pré-definido</label>
+          <select id="kern1">
+            <option value="sobelx" selected>Sobel-X (bordas verticais)</option>
+            <option value="sobely">Sobel-Y (bordas horizontais)</option>
+            <option value="lap">Laplaciano</option>
+            <option value="blur">Gaussiano (blur)</option>
+            <option value="sharp">Sharpen</option>
+            <option value="diag1">Diagonal ↗</option>
+            <option value="diag2">Diagonal ↘</option>
+            <option value="ident">Identidade</option>
+            <option value="custom">Personalizado…</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label>Velocidade: <span class="val" id="sp1Val">médio</span></label>
+          <input type="range" id="sp1" min="0" max="3" step="1" value="2">
+        </div>
+        <div style="flex:1"></div>
+        <button id="play1" class="green">▶ Convoluir</button>
+        <button id="step1">Step</button>
+        <button id="reset1" class="gray">↺ Reset</button>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:14px;flex-wrap:wrap;">
+        <div class="meter">Posição: <b id="m1pos">—</b></div>
+        <div class="meter">s[i,j]: <b id="m1val">—</b></div>
+        <div class="meter">Cobertura: <b id="m1cov">0%</b></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h4 style="font-size:11px;color:var(--blue);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;">A operação</h4>
+        <div style="font-family:Cambria,serif;font-size:15px;text-align:center;background:var(--l-blue);padding:12px;border-radius:6px;">
+          s[i,j] = Σ<sub>m,n</sub> x[i+m, j+n] · w[m,n]
+        </div>
+        <p style="font-size:12px;color:var(--gray);margin-top:8px;">Cada saída é um produto interno do kernel com a janela da entrada centrada em (i,j). O mesmo kernel é usado em <b>todas</b> as posições — compartilhamento de pesos.</p>
+      </div>
+      <div class="note">
+        <h4>O que observar</h4>
+        Com <b>Sobel-X</b>, bordas verticais (cruz, dígitos) acendem. Com <b>Gaussiano</b>, a imagem fica borrada (média local). Com <b>Identidade</b>, a saída é igual à entrada.
+      </div>
+      <div class="note amber">
+        <h4>Experimente</h4>
+        Selecione "Personalizado" e edite o kernel direto. Tente: <b>[0,−1,0; −1,5,−1; 0,−1,0]</b> (sharpen) ou <b>[1,1,1; 0,0,0; −1,−1,−1]</b> (borda horizontal). Os pesos podem ser positivos ou negativos.
+      </div>
+      <div class="note violet">
+        <h4>Por que isto importa?</h4>
+        Em vez de aprender pesos para cada pixel separadamente (rede densa), a CNN aprende apenas o kernel — 9 parâmetros para uma camada 3×3, independente do tamanho da imagem. É o princípio que permitiu o salto da AlexNet (2012) em diante.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PANEL 2 — HUBEL-WIESEL + POOLING                             -->
+<!-- ============================================================ -->
+<section id="t2" class="panel">
+  <h2>② Hubel-Wiesel ao vivo — Células Simples + Complexas + Pooling</h2>
+  <p class="intro">Arraste a barra de luz sobre o campo visual. Veja oito células simples (cada uma sintonizada para uma orientação) respondendo em tempo real. Em seguida, o max-pooling agrega as respostas em células complexas — invariantes à posição exata. Conecta aos slides 5 (Hubel-Wiesel) e 10 (pooling cria invariância).</p>
+
+  <div class="grid g-2" style="grid-template-columns:1.4fr 1fr;">
+    <div class="card">
+      <div class="grid g-2" style="grid-template-columns:1fr 1fr;">
+        <div>
+          <div class="orient-label" style="margin-bottom:4px;font-weight:700;color:var(--blue);">CAMPO VISUAL — arraste a barra</div>
+          <div class="canvas-wrap" style="padding:4px;">
+            <canvas id="cvHV" width="320" height="320"></canvas>
+          </div>
+        </div>
+        <div>
+          <div class="orient-label" style="margin-bottom:4px;font-weight:700;color:var(--violet);">CÉLULAS SIMPLES (V1)</div>
+          <div id="simpleCells" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:#FAFBFC;border:1px solid #E2E8F0;border-radius:8px;padding:8px;"></div>
+          <div class="orient-label" style="margin-top:10px;font-weight:700;color:var(--green);">CÉLULAS COMPLEXAS (max-pool)</div>
+          <div id="complexCells" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:var(--l-green);border:1px solid #BBE5CA;border-radius:8px;padding:8px;margin-top:4px;"></div>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="control-group">
+          <label>Orientação da barra: <span class="val" id="hvAngVal">45°</span></label>
+          <input type="range" id="hvAng" min="0" max="180" step="5" value="45">
+        </div>
+        <div class="control-group">
+          <label>Comprimento: <span class="val" id="hvLenVal">120</span></label>
+          <input type="range" id="hvLen" min="40" max="200" step="10" value="120">
+        </div>
+        <div class="control-group">
+          <label>Espessura: <span class="val" id="hvWidVal">14</span></label>
+          <input type="range" id="hvWid" min="4" max="40" step="2" value="14">
+        </div>
+        <div style="flex:1"></div>
+        <button id="hvSweep" class="violet">⤳ Varredura</button>
+        <button id="hvReset" class="gray">↺ Centro</button>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h4 style="font-size:11px;color:var(--violet);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;">Como funciona</h4>
+        <p style="font-size:13px;color:var(--dark);">
+          Cada <b>célula simples</b> é um filtro Gabor sintonizado para uma orientação preferida. Sua ativação cai rapidamente quando a barra muda de orientação OU de posição.
+          As <b>células complexas</b> tomam o máximo sobre uma vizinhança de células simples com a mesma orientação: respondem à orientação independentemente da posição exata — invariância translacional.
+        </p>
+      </div>
+      <div class="note">
+        <h4>O que observar</h4>
+        Mude a <b>orientação</b> da barra — a célula simples preferida muda. Arraste a barra <b>mantendo a orientação</b> — a célula simples responde apenas em sua "janela", mas a célula complexa <b>continua acesa</b>.
+      </div>
+      <div class="note amber">
+        <h4>Convolução + Pooling = Hubel-Wiesel</h4>
+        Conv = "células simples em paralelo, uma para cada posição". Pool = "células complexas que tomam máximo sobre vizinhança". A CNN não copia o cérebro — mas a homologia funcional é notável (Yamins & DiCarlo, 2016).
+      </div>
+      <div class="note violet">
+        <h4>Varredura automática</h4>
+        Clique em "Varredura" para mover a barra horizontalmente. Observe que as células simples acendem e apagam (rápido), mas as células complexas mantêm a ativação estável — a marca registrada da invariância translacional.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PANEL 3 — RNN vs LSTM                                        -->
+<!-- ============================================================ -->
+<section id="t3" class="panel">
+  <h2>③ Gradiente que Desvanece — RNN simples vs LSTM</h2>
+  <p class="intro">Veja o gradiente fluindo de volta no tempo através de T=30 passos. Em uma RNN simples (tanh), o gradiente é multiplicado a cada passo por algo &lt; 1 e desvanece exponencialmente. No LSTM, a célula de memória usa <b>adição</b>: o gradiente "atravessa" a cadeia sem decair. Conecta aos slides 12–14 (vanishing gradient, LSTM, gates).</p>
+
+  <div class="grid g-2" style="grid-template-columns:1.6fr 1fr;">
+    <div class="card">
+      <div class="orient-label" style="margin-bottom:4px;font-weight:700;color:var(--blue);">FLUXO DE GRADIENTE AO LONGO DO TEMPO (∂L/∂h<sub>t</sub>)</div>
+      <div class="canvas-wrap">
+        <canvas id="cvRnn" width="640" height="380"></canvas>
+      </div>
+      <div class="controls">
+        <div class="control-group">
+          <label>Comprimento T: <span class="val" id="t3T">30</span></label>
+          <input type="range" id="rnnT" min="5" max="60" step="1" value="30">
+        </div>
+        <div class="control-group">
+          <label>Peso recorrente |W<sub>h</sub>|: <span class="val" id="t3W">0.80</span></label>
+          <input type="range" id="rnnW" min="0.30" max="1.30" step="0.05" value="0.80">
+        </div>
+        <div class="control-group">
+          <label>Portão de esquecimento f̄ (LSTM): <span class="val" id="t3F">0.95</span></label>
+          <input type="range" id="rnnF" min="0.20" max="1.00" step="0.05" value="0.95">
+        </div>
+        <div style="flex:1"></div>
+        <button id="rnnRun" class="green">▶ Calcular gradientes</button>
+        <button id="rnnReset" class="gray">↺ Reset</button>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:14px;flex-wrap:wrap;">
+        <div class="meter">‖∇L/∇h<sub>1</sub>‖ RNN: <b id="m3rnn">—</b></div>
+        <div class="meter">‖∇L/∇c<sub>1</sub>‖ LSTM: <b id="m3lstm">—</b></div>
+        <div class="meter">Razão LSTM/RNN: <b id="m3ratio">—</b></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h4 style="font-size:11px;color:var(--blue);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;">A matemática</h4>
+        <p style="font-size:13px;color:var(--dark);margin-bottom:8px;"><b>RNN:</b> h<sub>t</sub> = tanh(W<sub>h</sub>·h<sub>t-1</sub> + ...). O gradiente que volta no tempo é:</p>
+        <div style="font-family:Cambria,serif;text-align:center;background:var(--l-blue);padding:8px;border-radius:6px;font-size:13px;">
+          ∂L/∂h<sub>1</sub> ∝ ∏<sub>t=2..T</sub> W<sub>h</sub> · tanh'(·)
+        </div>
+        <p style="font-size:12px;color:var(--gray);margin-top:6px;">Produto de T−1 termos &lt; 1 → decai exponencialmente.</p>
+        <p style="font-size:13px;color:var(--dark);margin:10px 0 8px;"><b>LSTM:</b> c<sub>t</sub> = f<sub>t</sub>·c<sub>t-1</sub> + i<sub>t</sub>·c̃<sub>t</sub>. O gradiente é:</p>
+        <div style="font-family:Cambria,serif;text-align:center;background:var(--l-violet);padding:8px;border-radius:6px;font-size:13px;">
+          ∂c<sub>T</sub>/∂c<sub>1</sub> ∝ ∏<sub>t=2..T</sub> f<sub>t</sub>
+        </div>
+        <p style="font-size:12px;color:var(--gray);margin-top:6px;">Se f<sub>t</sub> ≈ 1, o gradiente se preserva — "autoestrada de gradiente".</p>
+      </div>
+      <div class="note">
+        <h4>O que observar</h4>
+        Para |W<sub>h</sub>| &lt; 1, a curva RNN decai exponencialmente — em T=30 o gradiente já é &lt; 10<sup>−5</sup>. A curva LSTM se mantém alta enquanto f̄ ≈ 1.
+      </div>
+      <div class="note amber">
+        <h4>Por que f̄ não pode ser exatamente 1?</h4>
+        Se f sempre vale 1, o LSTM nunca esquece nada. O treinamento aprende quando esquecer (f→0) e quando lembrar (f→1) com base nos dados.
+      </div>
+      <div class="note violet">
+        <h4>O outro lado — gradiente que EXPLODE</h4>
+        Coloque |W<sub>h</sub>| = 1.30 e veja a RNN crescer descontroladamente. Em prática, isto é resolvido com <b>gradient clipping</b> (limitar a norma do gradiente). O LSTM com f̄ &lt; 1 não tem esse problema.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PANEL 4 — OVERFITTING & REGULARIZATION                       -->
+<!-- ============================================================ -->
+<section id="t4" class="panel">
+  <h2>④ Overfitting em ação — e como Dropout, L2 e Early Stopping defendem</h2>
+  <p class="intro">Treine uma rede MLP pequena para regressão 1D com poucos dados ruidosos. Compare quatro condições: <b>sem regularização</b> (overfit clássico), <b>L2 (weight decay)</b>, <b>Dropout</b>, <b>Early Stopping</b>. Veja as curvas de treino e validação separarem-se — ou não. Conecta aos slides 15–18 (overfitting, dropout, L2, early stopping).</p>
+
+  <div class="grid g-2" style="grid-template-columns:1.4fr 1fr;">
+    <div class="card">
+      <div class="grid g-2" style="grid-template-columns:1fr 1fr;">
+        <div>
+          <div class="orient-label" style="margin-bottom:4px;font-weight:700;color:var(--blue);">DADOS + AJUSTE DA REDE</div>
+          <div class="canvas-wrap" style="padding:4px;">
+            <canvas id="cvFit" width="340" height="320"></canvas>
+          </div>
+        </div>
+        <div>
+          <div class="orient-label" style="margin-bottom:4px;font-weight:700;color:var(--violet);">CURVAS DE APRENDIZADO</div>
+          <div class="canvas-wrap" style="padding:4px;">
+            <canvas id="cvCurves" width="340" height="320"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="control-group">
+          <label>Estratégia</label>
+          <select id="reg4">
+            <option value="none" selected>Sem regularização</option>
+            <option value="l2">L2 (weight decay)</option>
+            <option value="dropout">Dropout</option>
+            <option value="early">Early Stopping</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label>Intensidade: <span class="val" id="t4int">média</span></label>
+          <input type="range" id="reg4Amt" min="0" max="3" step="1" value="2">
+        </div>
+        <div class="control-group">
+          <label>Ruído nos dados: <span class="val" id="t4noiseVal">0.20</span></label>
+          <input type="range" id="t4noise" min="0.05" max="0.50" step="0.05" value="0.20">
+        </div>
+        <div class="control-group">
+          <label>Épocas máx: <span class="val" id="t4epVal">2000</span></label>
+          <input type="range" id="t4ep" min="200" max="5000" step="200" value="2000">
+        </div>
+        <div style="flex:1"></div>
+        <button id="run4" class="green">▶ Treinar</button>
+        <button id="reset4" class="gray">↺ Reset</button>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:14px;flex-wrap:wrap;">
+        <div class="meter">Época: <b id="m4ep">0</b></div>
+        <div class="meter">L<sub>treino</sub>: <b id="m4tr">—</b></div>
+        <div class="meter">L<sub>val</sub>: <b id="m4val">—</b></div>
+        <div class="meter">Gap: <b id="m4gap">—</b></div>
+        <div class="meter">‖w‖²: <b id="m4wn">—</b></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h4 style="font-size:11px;color:var(--blue);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;">A receita</h4>
+        <p style="font-size:13px;color:var(--dark);">Função verdadeira: <b>f(x) = sin(2πx) + 0.3x</b>. Treino: 15 pontos ruidosos. Validação: 100 pontos limpos. Modelo: MLP com 1→32→32→1, ativação tanh.</p>
+      </div>
+      <div class="note">
+        <h4>O que observar — Sem regularização</h4>
+        Curva azul (treino) cai sempre. Curva vermelha (validação) cai, atinge mínimo, e <b>sobe</b>. A rede começa a memorizar o ruído. O ajuste serpenteia entre os pontos de treino.
+      </div>
+      <div class="note amber">
+        <h4>L2 (weight decay)</h4>
+        Adiciona termo λ‖w‖² à perda. Pesos grandes ficam caros — a rede prefere soluções suaves. A curva de validação sobe muito menos. Aumente a intensidade para ver o efeito.
+      </div>
+      <div class="note violet">
+        <h4>Dropout</h4>
+        Desliga aleatoriamente uma fração p dos neurônios a cada passo. Força a rede a não depender de neurônios específicos — representações redundantes. Como treinar um ensemble de 2<sup>N</sup> sub-redes.
+      </div>
+      <div class="note green">
+        <h4>Early Stopping</h4>
+        Não muda a perda, só para o treino antes do overfit. Detecta automaticamente o mínimo da curva de validação. Implícito em toda boa prática.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PANEL 5 — QUIZ                                               -->
+<!-- ============================================================ -->
+<section id="t5" class="panel">
+  <h2>⑤ Quiz de Fixação — Aula 6</h2>
+  <p class="intro">12 perguntas cobrindo CNNs, RNNs, LSTMs, overfitting e regularização. Clique na sua resposta para ver o feedback.</p>
+
+  <div class="quiz-progress">
+    <div>Acertos: <span class="badge-correct" id="qOK">0</span> &nbsp; Erros: <span class="badge-wrong" id="qErr">0</span> &nbsp; <span style="color:var(--gray)">de <b id="qN">0</b> respondidas</span></div>
+    <button id="qReset" class="violet">↺ Reembaralhar</button>
+  </div>
+  <div id="quizContainer"></div>
+</section>
+
+<footer>Simulações da Aula 6 — Redes Neurais Profundas · Daniel Y Takahashi · Instituto do Cérebro · UFRN</footer>
+
+<script>
+/* ============================================================
+ * TAB SWITCHING
+ * ============================================================ */
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.target).classList.add('active');
+  });
+});
+
+/* ============================================================
+ * UTILITIES
+ * ============================================================ */
+function clamp(x, a, b){ return Math.max(a, Math.min(b, x)); }
+function fmt(x, d=3){ if (!isFinite(x)) return '—'; const a = Math.abs(x); if (a > 0 && (a < 1e-3 || a > 1e3)) return x.toExponential(d); return x.toFixed(d); }
+
+/* Colormap viridis */
+function viridis(t){
+  t = clamp(t, 0, 1);
+  const stops = [[68,1,84],[59,82,139],[33,144,141],[94,201,98],[253,231,37]];
+  const f = t * (stops.length - 1);
+  const i = Math.max(0, Math.min(stops.length-2, Math.floor(f)));
+  const u = f - i;
+  const a = stops[i], b = stops[i+1];
+  return `rgb(${Math.round(a[0]+(b[0]-a[0])*u)},${Math.round(a[1]+(b[1]-a[1])*u)},${Math.round(a[2]+(b[2]-a[2])*u)})`;
+}
+
+/* Bipolar map: -1 (blue) to 0 (white) to +1 (red) */
+function bipolar(t){
+  const k = clamp(t, -1, 1);
+  if (k >= 0){
+    const u = k;
+    const r = 255, g = Math.round(255*(1-u)), b = Math.round(255*(1-u));
+    return `rgb(${r},${g},${b})`;
+  } else {
+    const u = -k;
+    const r = Math.round(255*(1-u)), g = Math.round(255*(1-u)), b = 255;
+    return `rgb(${r},${g},${b})`;
+  }
+}
+
+/* ============================================================
+ * SIM 1 — CONVOLUTION 2D
+ * ============================================================ */
+(function(){
+  const N = 16; // input size
+  const K = 3;  // kernel size
+  const M = N - K + 1; // output size (no padding)
+  const cvIn = document.getElementById('cvIn');
+  const cvK  = document.getElementById('cvK');
+  const cvOut= document.getElementById('cvOut');
+  const ctxIn = cvIn.getContext('2d');
+  const ctxK  = cvK.getContext('2d');
+  const ctxOut= cvOut.getContext('2d');
+
+  const IMGS = {
+    cross: ()=>{ const x = Array.from({length:N},()=>Array(N).fill(0));
+      for (let i=0;i<N;i++){ x[i][Math.floor(N/2)] = 1; x[Math.floor(N/2)][i] = 1; }
+      return x; },
+    diag: ()=>{ const x = Array.from({length:N},()=>Array(N).fill(0));
+      for (let i=0;i<N;i++){ if(i+2<N) x[i][i+2]=1; if(i+1<N) x[i][i+1]=1; if(i<N) x[i][i]=1; }
+      return x; },
+    circle: ()=>{ const x = Array.from({length:N},()=>Array(N).fill(0));
+      const c = (N-1)/2, r = 5.5;
+      for (let i=0;i<N;i++) for (let j=0;j<N;j++){ const d=Math.hypot(i-c,j-c); if (d>r-1 && d<r+1) x[i][j]=1; }
+      return x; },
+    digit2: ()=>{
+      const p = [
+        "0001111100000000",
+        "0011000110000000",
+        "0010000110000000",
+        "0000000110000000",
+        "0000001100000000",
+        "0000011000000000",
+        "0000110000000000",
+        "0001100000000000",
+        "0011000000000000",
+        "0010000000000000",
+        "0011111111000000",
+        "0011111111000000",
+        "0000000000000000",
+        "0000000000000000",
+        "0000000000000000",
+        "0000000000000000",
+      ];
+      return p.map(r=>r.split('').map(Number));
+    },
+    digit5: ()=>{
+      const p = [
+        "0011111100000000",
+        "0011111100000000",
+        "0011000000000000",
+        "0011000000000000",
+        "0011110000000000",
+        "0011111100000000",
+        "0000000110000000",
+        "0000000011000000",
+        "0000000011000000",
+        "0011000011000000",
+        "0001111110000000",
+        "0000111100000000",
+        "0000000000000000",
+        "0000000000000000",
+        "0000000000000000",
+        "0000000000000000",
+      ];
+      return p.map(r=>r.split('').map(Number));
+    },
+    noise: ()=>{ const x = Array.from({length:N},()=>Array(N).fill(0));
+      for (let i=0;i<N;i++) for (let j=0;j<N;j++) x[i][j] = Math.random();
+      return x; },
+  };
+
+  const KERNELS = {
+    sobelx: [[-1,0,1],[-2,0,2],[-1,0,1]],
+    sobely: [[-1,-2,-1],[0,0,0],[1,2,1]],
+    lap:    [[0,1,0],[1,-4,1],[0,1,0]],
+    blur:   [[1/16,2/16,1/16],[2/16,4/16,2/16],[1/16,2/16,1/16]],
+    sharp:  [[0,-1,0],[-1,5,-1],[0,-1,0]],
+    diag1:  [[2,1,0],[1,0,-1],[0,-1,-2]],
+    diag2:  [[0,1,2],[-1,0,1],[-2,-1,0]],
+    ident:  [[0,0,0],[0,1,0],[0,0,0]],
+    custom: [[0,0,0],[0,1,0],[0,0,0]],
+  };
+
+  let imgKey = 'cross';
+  let kernKey = 'sobelx';
+  let x = IMGS[imgKey]();
+  let w = KERNELS[kernKey].map(r=>r.slice());
+  let outMap = Array.from({length:M},()=>Array(M).fill(0));
+  let stepI = 0, stepJ = 0, totalSteps = M*M;
+  let animPlaying = false;
+  let animTimer = null;
+
+  function buildKernelInputs(){
+    const c = document.getElementById('kernelInputs');
+    c.innerHTML = '';
+    for (let i=0;i<K;i++) for (let j=0;j<K;j++){
+      const inp = document.createElement('input');
+      inp.type = 'text';
+      inp.value = w[i][j].toString();
+      inp.dataset.i = i; inp.dataset.j = j;
+      inp.addEventListener('change', (e)=>{
+        const v = parseFloat(e.target.value);
+        if (!isNaN(v)){
+          w[parseInt(e.target.dataset.i)][parseInt(e.target.dataset.j)] = v;
+          drawKernel();
+          recompute();
+          // also switch dropdown to custom
+          document.getElementById('kern1').value = 'custom';
+          kernKey = 'custom';
+          KERNELS.custom = w.map(r=>r.slice());
+        }
+      });
+      c.appendChild(inp);
+    }
+  }
+
+  function refreshKernelInputs(){
+    const inputs = document.querySelectorAll('#kernelInputs input');
+    inputs.forEach(inp=>{
+      const i = parseInt(inp.dataset.i), j = parseInt(inp.dataset.j);
+      inp.value = (w[i][j]).toFixed(3).replace(/\.?0+$/,'') || '0';
+    });
+  }
+
+  function drawInput(highlightI=-1, highlightJ=-1){
+    const cell = cvIn.width / N;
+    ctxIn.clearRect(0,0,cvIn.width,cvIn.height);
+    for (let i=0;i<N;i++) for (let j=0;j<N;j++){
+      const v = clamp(x[i][j], 0, 1);
+      const c = Math.round(255*(1-v));
+      ctxIn.fillStyle = `rgb(${c},${c},${c})`;
+      ctxIn.fillRect(j*cell, i*cell, cell, cell);
+    }
+    // grid
+    ctxIn.strokeStyle = '#E2E8F0';
+    ctxIn.lineWidth = 0.5;
+    for (let i=0;i<=N;i++){ ctxIn.beginPath(); ctxIn.moveTo(0,i*cell); ctxIn.lineTo(cvIn.width,i*cell); ctxIn.stroke(); ctxIn.beginPath(); ctxIn.moveTo(i*cell,0); ctxIn.lineTo(i*cell,cvIn.height); ctxIn.stroke(); }
+    // highlight kernel window
+    if (highlightI >= 0){
+      ctxIn.strokeStyle = '#6D28D9';
+      ctxIn.lineWidth = 3;
+      ctxIn.strokeRect(highlightJ*cell, highlightI*cell, K*cell, K*cell);
+    }
+  }
+
+  function drawKernel(){
+    const cell = cvK.width / K;
+    ctxK.clearRect(0,0,cvK.width,cvK.height);
+    // find max abs
+    let mx = 0;
+    for (let i=0;i<K;i++) for (let j=0;j<K;j++) mx = Math.max(mx, Math.abs(w[i][j]));
+    if (mx < 1e-9) mx = 1;
+    for (let i=0;i<K;i++) for (let j=0;j<K;j++){
+      const t = w[i][j] / mx;
+      ctxK.fillStyle = bipolar(t);
+      ctxK.fillRect(j*cell, i*cell, cell, cell);
+      ctxK.strokeStyle = '#6D28D9'; ctxK.lineWidth = 1;
+      ctxK.strokeRect(j*cell, i*cell, cell, cell);
+      ctxK.fillStyle = '#1E293B';
+      ctxK.font = 'bold 14px Consolas, monospace';
+      ctxK.textAlign = 'center'; ctxK.textBaseline = 'middle';
+      const txt = (Math.abs(w[i][j])<0.01 && w[i][j]!==0) ? w[i][j].toExponential(1) : (Math.round(w[i][j]*100)/100).toString();
+      ctxK.fillText(txt, j*cell+cell/2, i*cell+cell/2);
+    }
+  }
+
+  function drawOutput(progressMax){
+    const cell = cvOut.width / M;
+    ctxOut.clearRect(0,0,cvOut.width,cvOut.height);
+    let mx = 0;
+    for (let i=0;i<M;i++) for (let j=0;j<M;j++) mx = Math.max(mx, Math.abs(outMap[i][j]));
+    if (mx < 1e-9) mx = 1;
+    const total = M*M;
+    let count = 0;
+    for (let i=0;i<M;i++) for (let j=0;j<M;j++){
+      const idx = i*M + j;
+      if (idx < progressMax){
+        const t = outMap[i][j] / mx;
+        ctxOut.fillStyle = bipolar(t);
+        ctxOut.fillRect(j*cell, i*cell, cell, cell);
+        count++;
+      } else {
+        ctxOut.fillStyle = '#F1F5F9';
+        ctxOut.fillRect(j*cell, i*cell, cell, cell);
+      }
+      ctxOut.strokeStyle = '#E2E8F0'; ctxOut.lineWidth = 0.5;
+      ctxOut.strokeRect(j*cell, i*cell, cell, cell);
+    }
+    document.getElementById('m1cov').textContent = Math.round(100*count/total) + '%';
+  }
+
+  function computeAt(i, j){
+    let s = 0;
+    for (let m=0;m<K;m++) for (let n=0;n<K;n++){
+      s += x[i+m][j+n] * w[m][n];
+    }
+    return s;
+  }
+
+  function recompute(){
+    for (let i=0;i<M;i++) for (let j=0;j<M;j++) outMap[i][j] = computeAt(i,j);
+    drawOutput(M*M);
+    drawInput();
+    document.getElementById('m1pos').textContent = '—';
+    document.getElementById('m1val').textContent = '—';
+  }
+
+  function stepOnce(){
+    if (stepI*M + stepJ >= totalSteps){
+      stepI = 0; stepJ = 0;
+      for (let i=0;i<M;i++) for (let j=0;j<M;j++) outMap[i][j] = 0;
+    }
+    outMap[stepI][stepJ] = computeAt(stepI, stepJ);
+    drawInput(stepI, stepJ);
+    drawOutput(stepI*M + stepJ + 1);
+    document.getElementById('m1pos').textContent = `(${stepI},${stepJ})`;
+    document.getElementById('m1val').textContent = fmt(outMap[stepI][stepJ]);
+    stepJ++;
+    if (stepJ >= M){ stepJ = 0; stepI++; }
+  }
+
+  function play(){
+    animPlaying = !animPlaying;
+    document.getElementById('play1').textContent = animPlaying ? '⏸ Pausar' : '▶ Convoluir';
+    if (animPlaying){
+      const speeds = [400, 200, 80, 20];
+      const delay = speeds[parseInt(document.getElementById('sp1').value)];
+      const tick = ()=>{
+        if (!animPlaying) return;
+        stepOnce();
+        if (stepI*M + stepJ >= totalSteps){
+          animPlaying = false;
+          document.getElementById('play1').textContent = '▶ Convoluir';
+          return;
+        }
+        animTimer = setTimeout(tick, delay);
+      };
+      tick();
+    } else if (animTimer){ clearTimeout(animTimer); }
+  }
+
+  function reset(){
+    stepI = 0; stepJ = 0;
+    for (let i=0;i<M;i++) for (let j=0;j<M;j++) outMap[i][j] = 0;
+    drawInput(); drawOutput(0);
+    animPlaying = false;
+    document.getElementById('play1').textContent = '▶ Convoluir';
+    if (animTimer) clearTimeout(animTimer);
+  }
+
+  document.getElementById('img1').addEventListener('change', e=>{
+    imgKey = e.target.value; x = IMGS[imgKey](); reset(); recompute();
+  });
+  document.getElementById('kern1').addEventListener('change', e=>{
+    kernKey = e.target.value;
+    w = KERNELS[kernKey].map(r=>r.slice());
+    drawKernel();
+    refreshKernelInputs();
+    reset(); recompute();
+  });
+  document.getElementById('sp1').addEventListener('input', e=>{
+    const labels = ['lento','médio','rápido','turbo'];
+    document.getElementById('sp1Val').textContent = labels[parseInt(e.target.value)];
+  });
+  document.getElementById('play1').addEventListener('click', play);
+  document.getElementById('step1').addEventListener('click', ()=>{ if (animPlaying){ play(); } stepOnce(); });
+  document.getElementById('reset1').addEventListener('click', reset);
+
+  buildKernelInputs();
+  drawKernel();
+  recompute();
+})();
+
+/* ============================================================
+ * SIM 2 — HUBEL-WIESEL + POOLING
+ * ============================================================ */
+(function(){
+  const N_ORIENT = 8;
+  const cvHV = document.getElementById('cvHV');
+  const ctxHV = cvHV.getContext('2d');
+  const W = cvHV.width, H = cvHV.height;
+
+  let barX = W/2, barY = H/2;
+  let barAng = 45; // degrees
+  let barLen = 120;
+  let barWid = 14;
+  let dragging = false;
+  let sweepActive = false;
+
+  // simple cells: 8 orientations, organized in a 2x4 grid on the right
+  // each simple cell has a "preferred angle" and "preferred position" (the whole grid is at 4 positions x 8 orientations conceptually)
+  // we'll show 8 simple cell responses for the FULL image at center, and 4 positional samples for one orientation
+  // Actually simpler: show 8 simple cells (one per orientation) computed at the bar's center → highly position-sensitive
+  // And show 8 complex cells = max over a 4x4 grid of simple cells (positional pool) → invariant
+
+  // Compute response: dot product of bar profile with Gabor at orientation theta and position (px,py)
+  // Approximation: response = exp(-((x_bar - px)^2 + (y_bar - py)^2)/sig_pos^2) * cos(2*(angle_diff))^2 weighting
+  function gaborResponse(orient, px, py){
+    // Center distance & projection
+    const dx = barX - px, dy = barY - py;
+    const dist = Math.hypot(dx, dy);
+    const sigPos = 50;
+    // Posn weight
+    const posW = Math.exp(-dist*dist/(2*sigPos*sigPos));
+    // Orientation weight: prefer orient ~ barAng (mod 180)
+    let dA = (barAng - orient);
+    while (dA > 90) dA -= 180; while (dA < -90) dA += 180;
+    const sigA = 18; // tuning width degrees
+    const orientW = Math.exp(-dA*dA/(2*sigA*sigA));
+    return posW * orientW;
+  }
+
+  function drawField(){
+    ctxHV.clearRect(0,0,W,H);
+    // background grid
+    ctxHV.fillStyle = '#FAFBFC'; ctxHV.fillRect(0,0,W,H);
+    ctxHV.strokeStyle = '#E2E8F0'; ctxHV.lineWidth = 0.5;
+    for (let i=0;i<=8;i++){ ctxHV.beginPath(); ctxHV.moveTo(0,i*W/8); ctxHV.lineTo(W,i*W/8); ctxHV.stroke(); ctxHV.beginPath(); ctxHV.moveTo(i*W/8,0); ctxHV.lineTo(i*W/8,H); ctxHV.stroke(); }
+    // receptive field sampling grid (4x4)
+    ctxHV.fillStyle = 'rgba(109,40,217,0.06)';
+    ctxHV.strokeStyle = 'rgba(109,40,217,0.3)';
+    ctxHV.lineWidth = 1;
+    const samp = [[W*0.25,H*0.25],[W*0.5,H*0.25],[W*0.75,H*0.25],
+                  [W*0.25,H*0.5],[W*0.5,H*0.5],[W*0.75,H*0.5],
+                  [W*0.25,H*0.75],[W*0.5,H*0.75],[W*0.75,H*0.75]];
+    samp.forEach(p=>{
+      ctxHV.beginPath(); ctxHV.arc(p[0],p[1],4,0,Math.PI*2); ctxHV.fill(); ctxHV.stroke();
+    });
+    // bar (rotated rectangle)
+    const ang = barAng * Math.PI/180;
+    ctxHV.save();
+    ctxHV.translate(barX, barY);
+    ctxHV.rotate(ang);
+    // glow
+    const grad = ctxHV.createLinearGradient(-barLen/2, 0, barLen/2, 0);
+    grad.addColorStop(0, 'rgba(255,221,0,0)');
+    grad.addColorStop(0.5, 'rgba(255,221,0,1)');
+    grad.addColorStop(1, 'rgba(255,221,0,0)');
+    ctxHV.fillStyle = grad;
+    ctxHV.fillRect(-barLen/2, -barWid/2, barLen, barWid);
+    ctxHV.strokeStyle = '#B45309'; ctxHV.lineWidth = 1.5;
+    ctxHV.strokeRect(-barLen/2, -barWid/2, barLen, barWid);
+    ctxHV.restore();
+    // crosshair at bar center
+    ctxHV.fillStyle = '#DC2626';
+    ctxHV.beginPath(); ctxHV.arc(barX, barY, 4, 0, Math.PI*2); ctxHV.fill();
+    // angle indicator
+    ctxHV.fillStyle = 'rgba(30,41,59,0.7)';
+    ctxHV.font = 'bold 12px Consolas, monospace';
+    ctxHV.fillText(`(${Math.round(barX)},${Math.round(barY)})  ang=${barAng}°`, 10, 18);
+  }
+
+  // Build the simple cells DOM (8 mini-canvases, one per orientation)
+  const simpleDOM = document.getElementById('simpleCells');
+  const complexDOM = document.getElementById('complexCells');
+  const simpleCanvases = [];
+  const complexCanvases = [];
+  for (let k=0;k<N_ORIENT;k++){
+    const wrap = document.createElement('div');
+    wrap.className = 'orient-cell';
+    const c = document.createElement('canvas'); c.width = 60; c.height = 60;
+    const lab = document.createElement('div'); lab.className = 'orient-label';
+    const angDeg = Math.round(k * 180 / N_ORIENT);
+    lab.textContent = `${angDeg}°`;
+    wrap.appendChild(c); wrap.appendChild(lab);
+    simpleDOM.appendChild(wrap);
+    simpleCanvases.push({c, ctx:c.getContext('2d'), ang:angDeg});
+
+    const wrap2 = document.createElement('div');
+    wrap2.className = 'orient-cell';
+    const c2 = document.createElement('canvas'); c2.width = 60; c2.height = 60;
+    const lab2 = document.createElement('div'); lab2.className = 'orient-label';
+    lab2.textContent = `${angDeg}°`;
+    wrap2.appendChild(c2); wrap2.appendChild(lab2);
+    complexDOM.appendChild(wrap2);
+    complexCanvases.push({c:c2, ctx:c2.getContext('2d'), ang:angDeg});
+  }
+
+  function drawCell(ctx, activation, gaborAng, color){
+    const w = 60, h = 60;
+    ctx.clearRect(0,0,w,h);
+    // background by activation
+    const t = clamp(activation, 0, 1);
+    const r = Math.round(255 - 200*t), g = Math.round(255 - 100*t), b = Math.round(255 - 50*t);
+    ctx.fillStyle = `rgb(${r},${g},${b})`;
+    ctx.fillRect(0,0,w,h);
+    // border by activation strength
+    ctx.strokeStyle = t > 0.5 ? '#15803D' : (t > 0.2 ? '#B45309' : '#CBD5E1');
+    ctx.lineWidth = 2;
+    ctx.strokeRect(1,1,w-2,h-2);
+    // tiny Gabor pattern (stripes at angle)
+    ctx.save();
+    ctx.translate(w/2, h/2);
+    ctx.rotate(gaborAng * Math.PI/180);
+    ctx.strokeStyle = 'rgba(30,41,59,0.6)'; ctx.lineWidth = 2;
+    for (let dx=-25; dx<=25; dx+=8){
+      ctx.beginPath(); ctx.moveTo(dx, -16); ctx.lineTo(dx, 16); ctx.stroke();
+    }
+    ctx.restore();
+    // activation number
+    ctx.fillStyle = '#1E293B';
+    ctx.font = 'bold 11px Consolas, monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText(t.toFixed(2), w-3, 12);
+  }
+
+  function updateCells(){
+    // For each orientation, compute the simple cell response AT a single canonical position (image center)
+    // Complex cell response = max over a 3x3 grid of positions (pooling)
+    const samp = [[W*0.25,H*0.25],[W*0.5,H*0.25],[W*0.75,H*0.25],
+                  [W*0.25,H*0.5],[W*0.5,H*0.5],[W*0.75,H*0.5],
+                  [W*0.25,H*0.75],[W*0.5,H*0.75],[W*0.75,H*0.75]];
+    simpleCanvases.forEach((sc, k)=>{
+      // simple cell sampled at center
+      const a = gaborResponse(sc.ang, W/2, H/2);
+      drawCell(sc.ctx, a, sc.ang, 'violet');
+    });
+    complexCanvases.forEach((cc, k)=>{
+      // complex cell = max over all positional samples for this orientation
+      let mx = 0;
+      samp.forEach(p=>{ mx = Math.max(mx, gaborResponse(cc.ang, p[0], p[1])); });
+      drawCell(cc.ctx, mx, cc.ang, 'green');
+    });
+  }
+
+  function redraw(){ drawField(); updateCells(); }
+
+  cvHV.addEventListener('mousedown', (e)=>{
+    const r = cvHV.getBoundingClientRect();
+    barX = (e.clientX - r.left) * cvHV.width / r.width;
+    barY = (e.clientY - r.top) * cvHV.height / r.height;
+    dragging = true; sweepActive = false; redraw();
+  });
+  cvHV.addEventListener('mousemove', (e)=>{
+    if (!dragging) return;
+    const r = cvHV.getBoundingClientRect();
+    barX = (e.clientX - r.left) * cvHV.width / r.width;
+    barY = (e.clientY - r.top) * cvHV.height / r.height;
+    redraw();
+  });
+  cvHV.addEventListener('mouseup', ()=>{ dragging = false; });
+  cvHV.addEventListener('mouseleave', ()=>{ dragging = false; });
+
+  document.getElementById('hvAng').addEventListener('input', e=>{
+    barAng = parseInt(e.target.value);
+    document.getElementById('hvAngVal').textContent = barAng + '°';
+    redraw();
+  });
+  document.getElementById('hvLen').addEventListener('input', e=>{
+    barLen = parseInt(e.target.value);
+    document.getElementById('hvLenVal').textContent = barLen;
+    redraw();
+  });
+  document.getElementById('hvWid').addEventListener('input', e=>{
+    barWid = parseInt(e.target.value);
+    document.getElementById('hvWidVal').textContent = barWid;
+    redraw();
+  });
+  document.getElementById('hvReset').addEventListener('click', ()=>{
+    barX = W/2; barY = H/2; redraw();
+  });
+  document.getElementById('hvSweep').addEventListener('click', ()=>{
+    sweepActive = true;
+    let t = 0;
+    const dur = 60; // frames
+    const step = ()=>{
+      if (!sweepActive) return;
+      t++;
+      const u = t / dur;
+      barX = W*0.15 + (W*0.7)*u;
+      barY = H/2 + 30*Math.sin(u*Math.PI*2);
+      redraw();
+      if (u < 1) requestAnimationFrame(step);
+      else sweepActive = false;
+    };
+    requestAnimationFrame(step);
+  });
+
+  redraw();
+})();
+
+/* ============================================================
+ * SIM 3 — RNN VS LSTM GRADIENT FLOW
+ * ============================================================ */
+(function(){
+  const cv = document.getElementById('cvRnn');
+  const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  const PAD = {l:60, r:30, t:30, b:50};
+
+  let T = 30;
+  let Wh = 0.80;
+  let fbar = 0.95;
+
+  function compute(){
+    // RNN gradient magnitude at time step t (going back from T to t): |∇L/∇h_t| ∝ |Wh * tanh'(0)|^(T-t)
+    // approximated with tanh' bounded by ~0.5 average
+    // For simplicity: |grad_rnn(t)| = |Wh|^(T-t) * (0.8)^(T-t) — but typical effective product is just |Wh|^(T-t) given tanh'<=1
+    // We use |Wh|^(T-t) for cleanest pedagogy
+    // LSTM: |∇c_T/∇c_t| ∝ ∏ f ≈ f^(T-t)
+    const rnn = [], lstm = [];
+    for (let t=1;t<=T;t++){
+      const dist = T - t; // distance back in time
+      rnn.push(Math.pow(Wh, dist));
+      lstm.push(Math.pow(fbar, dist));
+    }
+    return {rnn, lstm};
+  }
+
+  function drawAxes(yMin, yMax){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0,0,W,H);
+    // grid
+    ctx.strokeStyle = '#E2E8F0'; ctx.lineWidth = 0.5;
+    // y axis log scale: 10^k
+    const log10 = Math.log(10);
+    const yMinL = Math.log(Math.max(yMin, 1e-12))/log10;
+    const yMaxL = Math.log(yMax)/log10;
+    const range = yMaxL - yMinL;
+    for (let k = Math.ceil(yMinL); k <= Math.floor(yMaxL); k++){
+      const y = PAD.t + (yMaxL - k)/range * (H - PAD.t - PAD.b);
+      ctx.beginPath(); ctx.moveTo(PAD.l, y); ctx.lineTo(W-PAD.r, y); ctx.stroke();
+      ctx.fillStyle = '#64748B';
+      ctx.font = '11px Consolas, monospace';
+      ctx.textAlign = 'right';
+      ctx.fillText(`10${supScript(k)}`, PAD.l-6, y+4);
+    }
+    // x ticks every 5
+    for (let t=0; t<=T; t+=Math.max(1, Math.floor(T/10))){
+      const x = PAD.l + t/T * (W - PAD.l - PAD.r);
+      ctx.beginPath(); ctx.moveTo(x, PAD.t); ctx.lineTo(x, H-PAD.b); ctx.stroke();
+      ctx.fillStyle = '#64748B';
+      ctx.textAlign = 'center';
+      ctx.font = '11px Consolas, monospace';
+      ctx.fillText(t, x, H-PAD.b+14);
+    }
+    // axis lines
+    ctx.strokeStyle = '#1E293B'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(PAD.l, PAD.t); ctx.lineTo(PAD.l, H-PAD.b); ctx.lineTo(W-PAD.r, H-PAD.b); ctx.stroke();
+    // labels
+    ctx.fillStyle = '#1E293B';
+    ctx.font = 'bold 12px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('passo de tempo t (1 = mais antigo, T = presente)', (PAD.l+W-PAD.r)/2, H-12);
+    ctx.save(); ctx.translate(16, (H-PAD.b+PAD.t)/2); ctx.rotate(-Math.PI/2);
+    ctx.fillText('‖gradiente que volta‖  (escala log)', 0, 0); ctx.restore();
+  }
+
+  function supScript(n){
+    const map = {'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
+    return n.toString().split('').map(c=>map[c]||c).join('');
+  }
+
+  function plotCurve(data, color, label, dashed){
+    if (data.length < 2) return;
+    const log10 = Math.log(10);
+    const yMinL = -12, yMaxL = 1;
+    const range = yMaxL - yMinL;
+    ctx.strokeStyle = color; ctx.lineWidth = 2.5;
+    if (dashed) ctx.setLineDash([6,3]); else ctx.setLineDash([]);
+    ctx.beginPath();
+    for (let i=0;i<data.length;i++){
+      const v = data[i];
+      const x = PAD.l + i/(T-1) * (W - PAD.l - PAD.r);
+      let vL = Math.log(Math.max(v, 1e-12))/log10;
+      vL = clamp(vL, yMinL, yMaxL);
+      const y = PAD.t + (yMaxL - vL)/range * (H - PAD.t - PAD.b);
+      if (i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // dots
+    ctx.fillStyle = color;
+    for (let i=0;i<data.length;i+=Math.max(1,Math.floor(T/15))){
+      const v = data[i];
+      const x = PAD.l + i/(T-1) * (W - PAD.l - PAD.r);
+      let vL = Math.log(Math.max(v, 1e-12))/log10;
+      vL = clamp(vL, yMinL, yMaxL);
+      const y = PAD.t + (yMaxL - vL)/range * (H - PAD.t - PAD.b);
+      ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fill();
+    }
+  }
+
+  function drawLegend(){
+    const x0 = W - 200, y0 = PAD.t + 10;
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    ctx.fillRect(x0-4, y0-4, 195, 50);
+    ctx.strokeStyle = '#CBD5E1'; ctx.lineWidth = 1;
+    ctx.strokeRect(x0-4, y0-4, 195, 50);
+    ctx.fillStyle = '#DC2626'; ctx.fillRect(x0, y0, 16, 4);
+    ctx.fillStyle = '#1E293B'; ctx.font = '12px Arial'; ctx.textAlign = 'left';
+    ctx.fillText('RNN simples (Wh)', x0+22, y0+5);
+    ctx.fillStyle = '#15803D'; ctx.fillRect(x0, y0+20, 16, 4);
+    ctx.fillStyle = '#1E293B';
+    ctx.fillText('LSTM (∏ft)', x0+22, y0+25);
+  }
+
+  function draw(){
+    drawAxes(1e-12, 10);
+    const r = compute();
+    plotCurve(r.rnn, '#DC2626', 'RNN');
+    plotCurve(r.lstm, '#15803D', 'LSTM');
+    drawLegend();
+    // update meters
+    document.getElementById('m3rnn').textContent = fmt(r.rnn[0], 3);
+    document.getElementById('m3lstm').textContent = fmt(r.lstm[0], 3);
+    document.getElementById('m3ratio').textContent = fmt(r.lstm[0]/Math.max(r.rnn[0], 1e-15), 2);
+  }
+
+  document.getElementById('rnnT').addEventListener('input', e=>{
+    T = parseInt(e.target.value);
+    document.getElementById('t3T').textContent = T;
+    draw();
+  });
+  document.getElementById('rnnW').addEventListener('input', e=>{
+    Wh = parseFloat(e.target.value);
+    document.getElementById('t3W').textContent = Wh.toFixed(2);
+    draw();
+  });
+  document.getElementById('rnnF').addEventListener('input', e=>{
+    fbar = parseFloat(e.target.value);
+    document.getElementById('t3F').textContent = fbar.toFixed(2);
+    draw();
+  });
+  document.getElementById('rnnRun').addEventListener('click', draw);
+  document.getElementById('rnnReset').addEventListener('click', ()=>{
+    T = 30; Wh = 0.80; fbar = 0.95;
+    document.getElementById('rnnT').value = T; document.getElementById('t3T').textContent = T;
+    document.getElementById('rnnW').value = Wh; document.getElementById('t3W').textContent = Wh.toFixed(2);
+    document.getElementById('rnnF').value = fbar; document.getElementById('t3F').textContent = fbar.toFixed(2);
+    draw();
+  });
+
+  draw();
+})();
+
+/* ============================================================
+ * SIM 4 — OVERFITTING & REGULARIZATION
+ * ============================================================ */
+(function(){
+  const cvF = document.getElementById('cvFit');
+  const cvC = document.getElementById('cvCurves');
+  const ctxF = cvF.getContext('2d');
+  const ctxC = cvC.getContext('2d');
+
+  const N_TRAIN = 15;
+  const N_VAL = 100;
+  const H1 = 32, H2 = 32;
+  const dataTrain = []; // {x, y}
+  const dataVal = [];
+  let trainHist = [], valHist = [];
+
+  function trueFn(x){ return Math.sin(2*Math.PI*x) + 0.3*x; }
+
+  function genData(noise){
+    dataTrain.length = 0; dataVal.length = 0;
+    for (let i=0;i<N_TRAIN;i++){
+      const x = i/(N_TRAIN-1)*1.0;
+      const y = trueFn(x) + (Math.random()-0.5)*2*noise;
+      dataTrain.push({x, y});
+    }
+    for (let i=0;i<N_VAL;i++){
+      const x = i/(N_VAL-1)*1.0;
+      const y = trueFn(x);
+      dataVal.push({x, y});
+    }
+  }
+
+  // Simple MLP: 1 → H1 → H2 → 1, tanh activations
+  function makeNet(){
+    function randn(s){ return (Math.random()-0.5)*2*s; }
+    return {
+      W1: Array.from({length:H1}, ()=>[randn(0.6)]),
+      b1: Array(H1).fill(0).map(()=>randn(0.1)),
+      W2: Array.from({length:H2}, ()=>Array(H1).fill(0).map(()=>randn(0.6/Math.sqrt(H1)))),
+      b2: Array(H2).fill(0).map(()=>randn(0.1)),
+      W3: Array(1).fill(0).map(()=>Array(H2).fill(0).map(()=>randn(0.6/Math.sqrt(H2)))),
+      b3: [0],
+    };
+  }
+
+  function forward(net, x, dropoutMask){
+    // h1 = tanh(W1*x + b1)
+    const a1 = net.W1.map((row,i)=> Math.tanh(row[0]*x + net.b1[i]));
+    let h1 = a1.slice();
+    if (dropoutMask && dropoutMask.m1){
+      for (let i=0;i<h1.length;i++) h1[i] *= dropoutMask.m1[i];
+    }
+    const a2 = net.W2.map((row,i)=>{
+      let s = net.b2[i];
+      for (let j=0;j<row.length;j++) s += row[j]*h1[j];
+      return Math.tanh(s);
+    });
+    let h2 = a2.slice();
+    if (dropoutMask && dropoutMask.m2){
+      for (let i=0;i<h2.length;i++) h2[i] *= dropoutMask.m2[i];
+    }
+    let y = net.b3[0];
+    for (let i=0;i<h2.length;i++) y += net.W3[0][i]*h2[i];
+    return {y, a1, h1, a2, h2};
+  }
+
+  function backward(net, x, t, fw, lr, l2lambda){
+    // output linear: dy = (y-t)
+    const dy = (fw.y - t);
+    // grads for W3, b3
+    const gW3 = fw.h2.map(h=>dy*h);
+    const gb3 = dy;
+    // back into h2: dh2 = dy * W3
+    const dh2 = net.W3[0].map(w=>dy*w);
+    // back through tanh: da2 = dh2 * (1 - a2^2)
+    const da2 = dh2.map((d,i)=>d*(1 - fw.a2[i]*fw.a2[i]));
+    // grads for W2, b2
+    const gW2 = da2.map((d,i)=> fw.h1.map(h=> d*h));
+    const gb2 = da2.slice();
+    // back into h1: dh1[j] = sum_i da2[i]*W2[i][j]
+    const dh1 = new Array(H1).fill(0);
+    for (let i=0;i<H2;i++) for (let j=0;j<H1;j++) dh1[j] += da2[i]*net.W2[i][j];
+    // through tanh
+    const da1 = dh1.map((d,i)=>d*(1 - fw.a1[i]*fw.a1[i]));
+    const gW1 = da1.map(d=>[d*x]);
+    const gb1 = da1.slice();
+    // Apply updates (with L2)
+    for (let i=0;i<H1;i++){
+      net.W1[i][0] -= lr*(gW1[i][0] + l2lambda*net.W1[i][0]);
+      net.b1[i]    -= lr*gb1[i];
+    }
+    for (let i=0;i<H2;i++){
+      for (let j=0;j<H1;j++) net.W2[i][j] -= lr*(gW2[i][j] + l2lambda*net.W2[i][j]);
+      net.b2[i] -= lr*gb2[i];
+    }
+    for (let i=0;i<H2;i++) net.W3[0][i] -= lr*(gW3[i] + l2lambda*net.W3[0][i]);
+    net.b3[0] -= lr*gb3;
+  }
+
+  function computeLoss(net, data){
+    let s = 0;
+    for (const d of data){
+      const fw = forward(net, d.x, null);
+      s += (fw.y - d.y)*(fw.y - d.y);
+    }
+    return s/data.length;
+  }
+
+  function weightNorm(net){
+    let s = 0;
+    for (const row of net.W1) s += row[0]*row[0];
+    for (const row of net.W2) for (const v of row) s += v*v;
+    for (const v of net.W3[0]) s += v*v;
+    return s;
+  }
+
+  function trainStep(net, lr, l2lambda, dropoutP){
+    // SGD over training set (one full pass)
+    for (const d of dataTrain){
+      let mask = null;
+      if (dropoutP > 0){
+        const m1 = Array(H1).fill(0).map(()=> Math.random() > dropoutP ? 1/(1-dropoutP) : 0);
+        const m2 = Array(H2).fill(0).map(()=> Math.random() > dropoutP ? 1/(1-dropoutP) : 0);
+        mask = {m1, m2};
+      }
+      const fw = forward(net, d.x, mask);
+      backward(net, d.x, d.y, fw, lr, l2lambda);
+    }
+  }
+
+  function drawFit(net, noise){
+    const W = cvF.width, H = cvF.height;
+    const P = {l:40, r:10, t:14, b:30};
+    ctxF.clearRect(0,0,W,H);
+    ctxF.fillStyle = '#FFFFFF'; ctxF.fillRect(0,0,W,H);
+    // axes
+    ctxF.strokeStyle = '#E2E8F0'; ctxF.lineWidth = 0.5;
+    for (let i=0;i<=5;i++){
+      const y = P.t + i*(H-P.t-P.b)/5;
+      ctxF.beginPath(); ctxF.moveTo(P.l, y); ctxF.lineTo(W-P.r, y); ctxF.stroke();
+      const x = P.l + i*(W-P.l-P.r)/5;
+      ctxF.beginPath(); ctxF.moveTo(x, P.t); ctxF.lineTo(x, H-P.b); ctxF.stroke();
+    }
+    ctxF.strokeStyle = '#1E293B'; ctxF.lineWidth = 1;
+    ctxF.strokeRect(P.l, P.t, W-P.l-P.r, H-P.t-P.b);
+    const yMin = -1.5, yMax = 1.6;
+    const sx = x => P.l + x*(W-P.l-P.r);
+    const sy = y => P.t + (yMax - y)/(yMax-yMin)*(H-P.t-P.b);
+    // axis labels
+    ctxF.fillStyle = '#64748B'; ctxF.font = '11px Consolas, monospace'; ctxF.textAlign = 'center';
+    for (let i=0;i<=5;i++){
+      const xv = i/5; ctxF.fillText(xv.toFixed(1), sx(xv), H-P.b+12);
+    }
+    ctxF.textAlign = 'right';
+    for (let i=0;i<=5;i++){
+      const yv = yMin + i*(yMax-yMin)/5; ctxF.fillText(yv.toFixed(1), P.l-4, sy(yv)+4);
+    }
+    // true function
+    ctxF.strokeStyle = 'rgba(100,116,139,0.7)'; ctxF.lineWidth = 1.5; ctxF.setLineDash([5,3]);
+    ctxF.beginPath();
+    for (let i=0;i<=200;i++){
+      const x = i/200; const y = trueFn(x);
+      if (i===0) ctxF.moveTo(sx(x), sy(y)); else ctxF.lineTo(sx(x), sy(y));
+    }
+    ctxF.stroke(); ctxF.setLineDash([]);
+    // network prediction
+    if (net){
+      ctxF.strokeStyle = '#1A56DB'; ctxF.lineWidth = 2.5;
+      ctxF.beginPath();
+      for (let i=0;i<=200;i++){
+        const x = i/200;
+        const fw = forward(net, x, null);
+        if (i===0) ctxF.moveTo(sx(x), sy(fw.y)); else ctxF.lineTo(sx(x), sy(fw.y));
+      }
+      ctxF.stroke();
+    }
+    // training points
+    ctxF.fillStyle = '#DC2626';
+    for (const d of dataTrain){
+      ctxF.beginPath(); ctxF.arc(sx(d.x), sy(d.y), 4, 0, Math.PI*2); ctxF.fill();
+      ctxF.strokeStyle = '#7F1D1D'; ctxF.lineWidth = 1;
+      ctxF.beginPath(); ctxF.arc(sx(d.x), sy(d.y), 4, 0, Math.PI*2); ctxF.stroke();
+    }
+    // legend
+    ctxF.fillStyle = 'rgba(255,255,255,0.9)';
+    ctxF.fillRect(W-130, P.t+2, 125, 48);
+    ctxF.strokeStyle = '#CBD5E1'; ctxF.strokeRect(W-130, P.t+2, 125, 48);
+    ctxF.fillStyle = '#64748B'; ctxF.font = '11px Arial';
+    ctxF.textAlign = 'left';
+    ctxF.fillText('--- f(x) verdadeira', W-126, P.t+16);
+    ctxF.fillStyle = '#1A56DB'; ctxF.fillText('— rede', W-126, P.t+30);
+    ctxF.fillStyle = '#DC2626'; ctxF.fillText('● treino', W-126, P.t+44);
+  }
+
+  function drawCurves(){
+    const W = cvC.width, H = cvC.height;
+    const P = {l:48, r:12, t:14, b:30};
+    ctxC.clearRect(0,0,W,H);
+    ctxC.fillStyle = '#FFFFFF'; ctxC.fillRect(0,0,W,H);
+    ctxC.strokeStyle = '#E2E8F0'; ctxC.lineWidth = 0.5;
+    const log10 = Math.log(10);
+    const yMinL = -3, yMaxL = 1;
+    const sy = vL => P.t + (yMaxL - vL)/(yMaxL-yMinL)*(H-P.t-P.b);
+    for (let k = yMinL; k <= yMaxL; k++){
+      const y = sy(k);
+      ctxC.beginPath(); ctxC.moveTo(P.l, y); ctxC.lineTo(W-P.r, y); ctxC.stroke();
+      ctxC.fillStyle = '#64748B'; ctxC.font = '10px Consolas, monospace'; ctxC.textAlign = 'right';
+      ctxC.fillText(`10${k}`, P.l-3, y+4);
+    }
+    ctxC.strokeStyle = '#1E293B'; ctxC.lineWidth = 1; ctxC.strokeRect(P.l, P.t, W-P.l-P.r, H-P.t-P.b);
+    const n = Math.max(trainHist.length, 1);
+    const sx = i => P.l + i/Math.max(n-1,1)*(W-P.l-P.r);
+    function plot(arr, color){
+      if (arr.length < 2) return;
+      ctxC.strokeStyle = color; ctxC.lineWidth = 2;
+      ctxC.beginPath();
+      for (let i=0;i<arr.length;i++){
+        const v = Math.max(arr[i], 1e-6);
+        const vL = clamp(Math.log(v)/log10, yMinL, yMaxL);
+        const x = sx(i), y = sy(vL);
+        if (i===0) ctxC.moveTo(x,y); else ctxC.lineTo(x,y);
+      }
+      ctxC.stroke();
+    }
+    plot(trainHist, '#1A56DB');
+    plot(valHist, '#DC2626');
+    // legend
+    ctxC.fillStyle = 'rgba(255,255,255,0.9)';
+    ctxC.fillRect(W-110, P.t+2, 105, 36);
+    ctxC.strokeStyle = '#CBD5E1'; ctxC.strokeRect(W-110, P.t+2, 105, 36);
+    ctxC.fillStyle = '#1A56DB'; ctxC.fillRect(W-106, P.t+10, 14, 3);
+    ctxC.fillStyle = '#1E293B'; ctxC.font = '11px Arial'; ctxC.textAlign = 'left';
+    ctxC.fillText('treino', W-88, P.t+14);
+    ctxC.fillStyle = '#DC2626'; ctxC.fillRect(W-106, P.t+26, 14, 3);
+    ctxC.fillStyle = '#1E293B'; ctxC.fillText('validação', W-88, P.t+30);
+    // x label
+    ctxC.fillStyle = '#64748B'; ctxC.textAlign = 'center'; ctxC.font = '11px Arial';
+    ctxC.fillText('épocas', (P.l+W-P.r)/2, H-8);
+  }
+
+  let runID = 0;
+  let runActive = false;
+  let bestVal = Infinity, bestEpoch = 0, bestNet = null;
+
+  function snapshotNet(net){
+    return {
+      W1: net.W1.map(r=>r.slice()),
+      b1: net.b1.slice(),
+      W2: net.W2.map(r=>r.slice()),
+      b2: net.b2.slice(),
+      W3: net.W3.map(r=>r.slice()),
+      b3: net.b3.slice(),
+    };
+  }
+
+  function run(){
+    runID++;
+    runActive = true;
+    const myID = runID;
+    document.getElementById('run4').textContent = '⏸ Parar';
+    const reg = document.getElementById('reg4').value;
+    const amt = parseInt(document.getElementById('reg4Amt').value);
+    const noise = parseFloat(document.getElementById('t4noise').value);
+    const epMax = parseInt(document.getElementById('t4ep').value);
+
+    let l2 = 0, dropP = 0, useEarly = false;
+    if (reg === 'l2'){
+      l2 = [0.00, 0.003, 0.01, 0.03][amt];
+    } else if (reg === 'dropout'){
+      dropP = [0, 0.2, 0.35, 0.55][amt];
+    } else if (reg === 'early'){
+      useEarly = true;
+    }
+    const lr = 0.04;
+
+    genData(noise);
+    let net = makeNet();
+    bestVal = Infinity; bestEpoch = 0; bestNet = null;
+    trainHist.length = 0; valHist.length = 0;
+
+    let ep = 0;
+    const epochsPerFrame = 10;
+    const tick = ()=>{
+      if (myID !== runID || !runActive) return;
+      for (let k=0;k<epochsPerFrame;k++){
+        if (ep >= epMax) break;
+        trainStep(net, lr, l2, dropP);
+        ep++;
+        if (ep % 5 === 0 || ep === 1){
+          const lt = computeLoss(net, dataTrain);
+          const lv = computeLoss(net, dataVal);
+          trainHist.push(lt);
+          valHist.push(lv);
+          if (lv < bestVal){ bestVal = lv; bestEpoch = ep; bestNet = snapshotNet(net); }
+        }
+      }
+      document.getElementById('m4ep').textContent = ep;
+      const lastT = trainHist[trainHist.length-1] ?? '—';
+      const lastV = valHist[valHist.length-1] ?? '—';
+      document.getElementById('m4tr').textContent = typeof lastT === 'number' ? fmt(lastT,3) : '—';
+      document.getElementById('m4val').textContent = typeof lastV === 'number' ? fmt(lastV,3) : '—';
+      document.getElementById('m4gap').textContent = (typeof lastT === 'number' && typeof lastV === 'number') ? fmt(lastV-lastT,3) : '—';
+      document.getElementById('m4wn').textContent = fmt(weightNorm(net), 2);
+      // for early stopping, display best net
+      const displayNet = useEarly && bestNet ? bestNet : net;
+      drawFit(displayNet, noise);
+      drawCurves();
+      if (ep < epMax){
+        requestAnimationFrame(tick);
+      } else {
+        runActive = false;
+        document.getElementById('run4').textContent = '▶ Treinar';
+        if (useEarly && bestNet){
+          drawFit(bestNet, noise);
+          document.getElementById('m4ep').textContent = ep + ` (best=${bestEpoch})`;
+        }
+      }
+    };
+    requestAnimationFrame(tick);
+  }
+
+  function stop(){
+    runActive = false;
+    document.getElementById('run4').textContent = '▶ Treinar';
+  }
+
+  function reset(){
+    runActive = false;
+    runID++;
+    document.getElementById('run4').textContent = '▶ Treinar';
+    trainHist.length = 0; valHist.length = 0;
+    genData(parseFloat(document.getElementById('t4noise').value));
+    drawFit(null, 0);
+    drawCurves();
+    document.getElementById('m4ep').textContent = '0';
+    document.getElementById('m4tr').textContent = '—';
+    document.getElementById('m4val').textContent = '—';
+    document.getElementById('m4gap').textContent = '—';
+    document.getElementById('m4wn').textContent = '—';
+  }
+
+  document.getElementById('run4').addEventListener('click', ()=>{
+    if (runActive) stop(); else run();
+  });
+  document.getElementById('reset4').addEventListener('click', reset);
+  document.getElementById('reg4').addEventListener('change', ()=>{
+    const labels = {none:['—','—','—','—'], l2:['fraca','média','forte','muito forte'], dropout:['p=0','p=0.2','p=0.35','p=0.55'], early:['—','—','—','—']};
+    const reg = document.getElementById('reg4').value;
+    document.getElementById('t4int').textContent = labels[reg][parseInt(document.getElementById('reg4Amt').value)] || 'média';
+  });
+  document.getElementById('reg4Amt').addEventListener('input', ()=>{
+    const labels = {none:['—','—','—','—'], l2:['fraca','média','forte','muito forte'], dropout:['p=0','p=0.2','p=0.35','p=0.55'], early:['—','—','—','—']};
+    const reg = document.getElementById('reg4').value;
+    document.getElementById('t4int').textContent = labels[reg][parseInt(document.getElementById('reg4Amt').value)] || 'média';
+  });
+  document.getElementById('t4noise').addEventListener('input', e=>{
+    document.getElementById('t4noiseVal').textContent = parseFloat(e.target.value).toFixed(2);
+  });
+  document.getElementById('t4ep').addEventListener('input', e=>{
+    document.getElementById('t4epVal').textContent = e.target.value;
+  });
+
+  reset();
+})();
+
+/* ============================================================
+ * SIM 5 — QUIZ
+ * ============================================================ */
+(function(){
+  const QUESTIONS = [
+    {
+      text: 'Por que CNNs precisam de menos parâmetros do que MLPs equivalentes para imagens?',
+      opts: [
+        'Porque usam funções de ativação mais simples',
+        'Porque compartilham os mesmos pesos do kernel em todas as posições espaciais',
+        'Porque sempre usam menos camadas',
+        'Porque substituem multiplicações por somas',
+      ],
+      correct: 1,
+      explain: 'O <b>compartilhamento de pesos</b> (weight sharing) é a chave: um filtro 3×3 tem apenas 9 parâmetros, mas é aplicado em todas as posições da imagem. Uma camada densa equivalente teria H×W×N parâmetros — milhares de vezes mais.',
+    },
+    {
+      text: 'A descoberta de Hubel e Wiesel de "células simples" e "células complexas" em V1 inspirou qual par de operações em CNNs?',
+      opts: [
+        'Sigmoide e ReLU',
+        'Convolução e Pooling',
+        'Backpropagation e SGD',
+        'Dropout e BatchNorm',
+      ],
+      correct: 1,
+      explain: 'Células <b>simples</b> respondem a orientações específicas em posições específicas (= convolução com filtro orientado). Células <b>complexas</b> são invariantes à posição exata dentro de uma vizinhança (= max-pooling sobre células simples vizinhas).',
+    },
+    {
+      text: 'O que é o "campo receptivo" de um neurônio em uma camada profunda de uma CNN?',
+      opts: [
+        'Quantos neurônios da camada anterior se conectam a ele diretamente (k×k)',
+        'A região da imagem de ENTRADA que influencia sua ativação — cresce com a profundidade',
+        'O número total de pesos do filtro',
+        'A área de pooling aplicada após sua camada',
+      ],
+      correct: 1,
+      explain: 'O campo receptivo se acumula com a profundidade: filtros 3×3 em camadas sucessivas têm campos receptivos efetivos de 3, 5, 7, … pixels na imagem original. Isso permite que camadas profundas "vejam" estruturas globais.',
+    },
+    {
+      text: 'Por que RNNs simples têm dificuldade com sequências longas?',
+      opts: [
+        'Porque o produto de muitos termos < 1 no gradiente que volta no tempo decai exponencialmente (vanishing gradient)',
+        'Porque consomem muita memória',
+        'Porque seus pesos são aleatórios',
+        'Porque sua função de ativação satura',
+      ],
+      correct: 0,
+      explain: 'Em retropropagação no tempo (BPTT), o gradiente é multiplicado por Wh·tanh\'(·) a cada passo. Se essa quantidade é menor que 1 (caso típico), o produto sobre T passos decai exponencialmente. Bengio, Simard & Frasconi (1994) formalizaram isto.',
+    },
+    {
+      text: 'Como o LSTM resolve o problema do gradiente que desvanece?',
+      opts: [
+        'Aumentando a taxa de aprendizado adaptativamente',
+        'Usando a célula de memória c_t = f_t·c_{t-1} + i_t·c̃_t, cuja derivada em relação a c_{t-1} é o portão f_t (próximo de 1 quando relevante)',
+        'Substituindo tanh por ReLU',
+        'Eliminando recorrência completamente',
+      ],
+      correct: 1,
+      explain: 'A célula de memória é atualizada por <b>adição</b> em vez de produto matricial. O gradiente ∂c_t/∂c_{t-1} é o portão de esquecimento f_t — quando f≈1, o gradiente flui através de muitos passos sem decair. É a "autoestrada de gradiente".',
+    },
+    {
+      text: 'Qual é a função do portão de esquecimento f_t no LSTM?',
+      opts: [
+        'Determinar quanto da memória de longo prazo anterior preservar (1=lembrar, 0=esquecer)',
+        'Calcular a saída final da célula',
+        'Aplicar dropout aos pesos',
+        'Normalizar a entrada',
+      ],
+      correct: 0,
+      explain: 'f_t = σ(W_f·[h_{t-1}, x_t] + b_f) é uma sigmoide ∈ (0,1) aplicada elemento a elemento ao estado de célula anterior. Decide o que apagar.',
+    },
+    {
+      text: 'Qual padrão nas curvas de aprendizado é a assinatura clássica de overfitting?',
+      opts: [
+        'Ambas as curvas se estabilizam no mesmo nível',
+        'Ambas oscilam aleatoriamente',
+        'A curva de treino continua descendo, mas a de validação para de descer ou começa a SUBIR',
+        'A curva de treino sobe e a de validação desce',
+      ],
+      correct: 2,
+      explain: 'A divergência entre treino e validação é a marca registrada do overfitting: o modelo memoriza padrões idiossincrásicos do treino que não generalizam. Soluções: dropout, L2, mais dados, early stopping.',
+    },
+    {
+      text: 'Como o dropout regulariza uma rede neural?',
+      opts: [
+        'Adicionando uma penalidade aos pesos grandes',
+        'Reduzindo a taxa de aprendizado dinamicamente',
+        'Desativando aleatoriamente uma fração dos neurônios a cada forward pass, forçando representações redundantes',
+        'Aumentando a profundidade da rede',
+      ],
+      correct: 2,
+      explain: 'Cada forward pass amostra uma sub-rede diferente do conjunto de 2^N sub-redes possíveis. Equivale a treinar implicitamente um ensemble gigante. No teste, dropout é desativado e as saídas são escalonadas.',
+    },
+    {
+      text: 'Qual é a interpretação geométrica da regularização L2 (weight decay) na função de perda?',
+      opts: [
+        'Encurta o gradiente em cada passo',
+        'Adiciona uma "tigela quadrática" centrada em zero — empurra os pesos para perto da origem, preferindo soluções com pesos pequenos',
+        'Substitui o produto interno por correlação',
+        'Faz a perda virar não-convexa',
+      ],
+      correct: 1,
+      explain: 'L = L_dados + λ·‖w‖². O gradiente extra −2λ·w empurra cada peso em direção a zero a cada passo. Pesos grandes ficam caros, soluções mais suaves são preferidas.',
+    },
+    {
+      text: 'Por que VGG-16 usa filtros 3×3 empilhados em vez de filtros grandes como 7×7?',
+      opts: [
+        'Filtros pequenos são mais fáceis de implementar',
+        'Dois filtros 3×3 têm o mesmo campo receptivo que um 5×5, mas com menos parâmetros e mais não-linearidades intermediárias',
+        'É uma convenção arbitrária',
+        'Filtros 7×7 não funcionam em GPUs',
+      ],
+      correct: 1,
+      explain: 'Empilhar k filtros 3×3 produz campo receptivo (2k+1) com (2k+1)²−9k²+k não-linearidades. Mais profundidade, mais não-linearidades, menos parâmetros — VGG mostrou que isto é a receita certa.',
+    },
+    {
+      text: 'O que a ResNet introduziu que permitiu treinar redes com 100+ camadas?',
+      opts: [
+        'Skip connections (conexões residuais) que permitem ao gradiente "pular" blocos de camadas',
+        'Substituiu ReLU por tanh',
+        'Eliminou as camadas convolucionais',
+        'Aumentou drasticamente o tamanho do batch',
+      ],
+      correct: 0,
+      explain: 'A conexão residual y = F(x) + x cria um "atalho" para o gradiente. He et al. (2016) mostraram que ResNet-152 (152 camadas) treina melhor do que VGG-19. Skip connections suavizam a paisagem de perda.',
+    },
+    {
+      text: 'Yamins e DiCarlo (2016) demonstraram que CNNs profundas podem ser usadas como modelos do córtex visual. Qual foi a descoberta central?',
+      opts: [
+        'Toda CNN é idêntica ao córtex visual',
+        'O córtex pode ser substituído por CNNs',
+        'Camadas iniciais de CNNs predizem respostas em V1/V2; camadas finais predizem IT — espelhando a hierarquia ventral',
+        'CNNs e o córtex são completamente diferentes',
+      ],
+      correct: 2,
+      explain: 'A correspondência entre profundidade na CNN e profundidade hierárquica no córtex visual ventral (V1→V2→V4→IT) transformou CNNs em ferramentas científicas — não apenas de engenharia.',
+    },
+  ];
+
+  const container = document.getElementById('quizContainer');
+  let order = QUESTIONS.map((_,i)=>i);
+  let answered = new Array(QUESTIONS.length).fill(null);
+
+  function shuffle(){
+    for (let i=order.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [order[i],order[j]]=[order[j],order[i]];
+    }
+    answered = new Array(QUESTIONS.length).fill(null);
+    render();
+  }
+
+  function render(){
+    container.innerHTML = '';
+    order.forEach((qIdx, pos)=>{
+      const q = QUESTIONS[qIdx];
+      const div = document.createElement('div');
+      div.className = 'q';
+      const ans = answered[qIdx];
+      const optsOrder = [0,1,2,3];
+      div.innerHTML = `
+        <div class="num">Pergunta ${pos+1} de ${order.length}</div>
+        <div class="text">${q.text}</div>
+        <div class="opts">
+          ${optsOrder.map(oi=>{
+            let cls = 'opt';
+            if (ans !== null){
+              cls += ' disabled';
+              if (oi === q.correct) cls += ' correct';
+              if (oi === ans && ans !== q.correct) cls += ' wrong';
+            }
+            return `<div class="${cls}" data-q="${qIdx}" data-o="${oi}">${String.fromCharCode(65+oi)}. ${q.opts[oi]}</div>`;
+          }).join('')}
+        </div>
+        <div class="explain ${ans!==null ? 'visible':''}">
+          <b>${ans === q.correct ? '✓ Correto.' : (ans!==null ? '✗ A resposta correta é ' + String.fromCharCode(65+q.correct) + '.' : '')}</b><br>
+          ${q.explain}
+        </div>
+      `;
+      container.appendChild(div);
+    });
+    container.querySelectorAll('.opt').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        const qIdx = parseInt(el.dataset.q);
+        const oi = parseInt(el.dataset.o);
+        if (answered[qIdx] !== null) return;
+        answered[qIdx] = oi;
+        render();
+        updateProgress();
+      });
+    });
+    updateProgress();
+  }
+
+  function updateProgress(){
+    let ok=0, err=0, n=0;
+    answered.forEach((a,i)=>{
+      if (a !== null){
+        n++;
+        if (a === QUESTIONS[i].correct) ok++; else err++;
+      }
+    });
+    document.getElementById('qOK').textContent = ok;
+    document.getElementById('qErr').textContent = err;
+    document.getElementById('qN').textContent = n;
+  }
+
+  document.getElementById('qReset').addEventListener('click', shuffle);
+  shuffle();
+})();
+</script>
+</body>
+</html>

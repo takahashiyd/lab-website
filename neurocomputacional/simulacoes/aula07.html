@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Simulações — Aula 7 · Aprender a estrutura do mundo sem rótulos</title>
+<style>
+  /* Paleta do curso */
+  :root {
+    --teal:   #0D7377;
+    --blue:   #1A56DB;
+    --amber:  #B45309;
+    --l-amber:#F59E0B;
+    --xl-amber:#FEF3C7;
+    --violet: #6D28D9;
+    --green:  #15803D;
+    --dark:   #1E293B;
+    --dark2:  #0F172A;
+    --gray:   #64748B;
+    --l-gray: #94A3B8;
+    --xl-gray:#E2E8F0;
+    --bg:     #F8FAFC;
+    --white:  #FFFFFF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', 'Calibri', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--dark);
+    min-height: 100vh;
+  }
+  header {
+    background: linear-gradient(135deg, var(--amber), var(--l-amber));
+    color: var(--white);
+    padding: 16px 28px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+  header .top {
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  header .course {
+    font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+    opacity: 0.85;
+  }
+  header .author {
+    font-size: 11px; opacity: 0.85; letter-spacing: 2px;
+  }
+  header h1 {
+    font-size: 24px; font-weight: 700; margin-top: 6px;
+  }
+  header .subtitle {
+    font-size: 13px; opacity: 0.9; margin-top: 2px; font-style: italic;
+  }
+  .tabs {
+    background: var(--dark);
+    padding: 0 16px;
+    display: flex;
+    gap: 4px;
+    border-bottom: 4px solid var(--amber);
+  }
+  .tab {
+    padding: 14px 20px;
+    background: transparent;
+    color: var(--l-gray);
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 8px 8px 0 0;
+    transition: background 0.2s, color 0.2s;
+    letter-spacing: 1px;
+  }
+  .tab:hover { background: rgba(255,255,255,0.06); color: var(--white); }
+  .tab.active {
+    background: var(--bg);
+    color: var(--amber);
+  }
+  .panel {
+    display: none;
+    padding: 28px;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+  .panel.active { display: block; }
+  .panel h2 {
+    color: var(--dark);
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+  .panel .lead {
+    color: var(--gray);
+    font-size: 14px;
+    margin-bottom: 18px;
+    font-style: italic;
+    line-height: 1.45;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 22px;
+  }
+  .layout.one-col { grid-template-columns: 1fr; }
+  canvas {
+    background: var(--white);
+    border: 2px solid var(--xl-gray);
+    border-radius: 10px;
+    width: 100%;
+    height: auto;
+    display: block;
+    cursor: crosshair;
+  }
+  .side {
+    background: var(--white);
+    border: 1px solid var(--xl-gray);
+    border-radius: 10px;
+    padding: 18px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .side h3 {
+    color: var(--amber);
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .controls { display: flex; flex-direction: column; gap: 12px; }
+  .row { display: flex; align-items: center; gap: 10px; }
+  .row label {
+    font-size: 13px;
+    color: var(--dark);
+    flex: 1;
+  }
+  .row .value {
+    font-weight: 700;
+    color: var(--amber);
+    min-width: 36px;
+    text-align: right;
+    font-family: 'Consolas', monospace;
+    font-size: 13px;
+  }
+  input[type=range] {
+    width: 100%;
+    accent-color: var(--amber);
+  }
+  button.btn {
+    background: var(--amber);
+    color: var(--white);
+    border: none;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    transition: background 0.15s;
+  }
+  button.btn:hover { background: var(--l-amber); }
+  button.btn.secondary { background: var(--gray); }
+  button.btn.secondary:hover { background: var(--l-gray); }
+  button.btn.blue { background: var(--blue); }
+  button.btn.blue:hover { background: #2563eb; }
+  button.btn.green { background: var(--green); }
+  button.btn.violet { background: var(--violet); }
+  .btns { display: flex; gap: 8px; flex-wrap: wrap; }
+  .stat {
+    font-size: 12px;
+    color: var(--gray);
+    padding: 8px 10px;
+    background: var(--bg);
+    border-radius: 6px;
+    border-left: 3px solid var(--amber);
+    font-family: 'Consolas', monospace;
+  }
+  .lesson {
+    background: var(--xl-amber);
+    border-left: 4px solid var(--amber);
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--dark);
+    margin-top: 14px;
+  }
+  .lesson strong { color: var(--amber); }
+  /* Quiz */
+  .quiz-q {
+    background: var(--white);
+    border: 1px solid var(--xl-gray);
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 14px;
+  }
+  .quiz-q .qnum {
+    color: var(--amber);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+  }
+  .quiz-q .qtxt {
+    margin: 8px 0 14px 0;
+    font-size: 15px;
+    color: var(--dark);
+    line-height: 1.45;
+  }
+  .quiz-opts { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-opt {
+    background: var(--bg);
+    border: 1.5px solid var(--xl-gray);
+    border-radius: 6px;
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 13.5px;
+    color: var(--dark);
+    transition: all 0.15s;
+    text-align: left;
+  }
+  .quiz-opt:hover {
+    border-color: var(--amber);
+    background: var(--xl-amber);
+  }
+  .quiz-opt.correct {
+    background: #DCFCE7;
+    border-color: var(--green);
+    color: var(--green);
+    font-weight: 600;
+  }
+  .quiz-opt.wrong {
+    background: #FEE2E2;
+    border-color: #DC2626;
+    color: #991B1B;
+  }
+  .quiz-fb {
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: var(--bg);
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--dark);
+    border-left: 3px solid var(--blue);
+    display: none;
+    line-height: 1.5;
+  }
+  .quiz-fb.show { display: block; }
+  .score {
+    background: var(--dark);
+    color: var(--white);
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .score .num { font-size: 22px; font-weight: 700; color: var(--l-amber); }
+  /* Sparse coding */
+  .sparse-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 18px;
+  }
+  .sparse-block {
+    background: var(--white);
+    border: 1px solid var(--xl-gray);
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .sparse-block h4 {
+    color: var(--amber);
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  .gabor-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+  .gabor-cell {
+    aspect-ratio: 1;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    border: 2px solid transparent;
+  }
+  .gabor-cell:hover { transform: scale(1.06); box-shadow: 0 2px 6px rgba(0,0,0,0.18); }
+  .gabor-cell.active { border-color: var(--amber); transform: scale(1.06); }
+  .coef-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 6px;
+  }
+  .coef-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-family: 'Consolas', monospace;
+  }
+  .coef-row .lbl { width: 26px; color: var(--gray); }
+  .coef-row .bar {
+    flex: 1;
+    height: 14px;
+    background: var(--xl-gray);
+    border-radius: 3px;
+    position: relative;
+    overflow: hidden;
+  }
+  .coef-row .bar-fill {
+    position: absolute;
+    top: 0; bottom: 0;
+    background: var(--amber);
+    border-radius: 3px;
+    transition: width 0.2s;
+  }
+  .coef-row .val { width: 38px; text-align: right; color: var(--dark); }
+  footer {
+    background: var(--dark);
+    color: var(--l-gray);
+    text-align: center;
+    padding: 14px;
+    font-size: 11px;
+    margin-top: 32px;
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="top">
+    <span class="course">Neurociência Computacional · Aula 7</span>
+    <span class="author">Daniel Y Takahashi · UFRN</span>
+  </div>
+  <h1>Aprender a estrutura do mundo sem rótulos — Simulações Interativas</h1>
+  <div class="subtitle">PCA · k-means · Codificação Esparsa · Quiz · <a href="../aula07.html" style="color:inherit">atividades da Aula 7</a></div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" data-tab="kmeans">1. K-means animado</button>
+  <button class="tab" data-tab="pca">2. PCA interativo</button>
+  <button class="tab" data-tab="sparse">3. Codificação esparsa</button>
+  <button class="tab" data-tab="quiz">4. Quiz dos algoritmos</button>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 1: K-MEANS                                                -->
+<!-- ============================================================ -->
+<section class="panel active" id="tab-kmeans">
+  <h2>K-means de Lloyd: atribuição ⇄ atualização</h2>
+  <div class="lead">Clique no painel para adicionar pontos. Escolha k, posicione centroides aleatoriamente e veja o algoritmo de Lloyd convergir passo a passo. Observe como a inicialização afeta o resultado final.</div>
+  <div class="layout">
+    <canvas id="canvasKmeans" width="800" height="520"></canvas>
+    <div class="side">
+      <h3>Controles</h3>
+      <div class="controls">
+        <div class="row">
+          <label>Número de clusters (k)</label>
+          <span class="value" id="kValue">3</span>
+        </div>
+        <input type="range" id="kSlider" min="2" max="6" value="3">
+
+        <div class="row">
+          <label>Velocidade da animação</label>
+          <span class="value" id="speedValue">500 ms</span>
+        </div>
+        <input type="range" id="speedSlider" min="100" max="1500" value="500" step="100">
+
+        <div class="btns">
+          <button class="btn" id="btnPreset">Carregar exemplo</button>
+          <button class="btn secondary" id="btnClearKmeans">Limpar</button>
+        </div>
+        <div class="btns">
+          <button class="btn blue" id="btnInit">Inicializar centroides</button>
+          <button class="btn green" id="btnStep">Próximo passo</button>
+        </div>
+        <div class="btns">
+          <button class="btn violet" id="btnRun">Auto-rodar</button>
+          <button class="btn secondary" id="btnStop">Parar</button>
+        </div>
+
+        <div class="stat" id="kmeansStats">Pontos: 0 · Iteração: — · J: —</div>
+      </div>
+      <div class="lesson">
+        <strong>O que observar:</strong> a função objetivo <em>J</em> (soma das distâncias quadráticas aos centroides) só decresce. Quando ela para de mudar, o algoritmo convergiu — mas para um <strong>mínimo local</strong>. Tente diferentes inicializações no mesmo conjunto de pontos.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- TAB 2: PCA                                                   -->
+<!-- ============================================================ -->
+<section class="panel" id="tab-pca">
+  <h2>PCA: encontre as direções de máxima variância</h2>
+  <div class="lead">Clique para adicionar pontos, ou arraste-os. Os eixos principais (PC1 em ambar, PC2 em violeta) são recalculados em tempo real a partir da covariância dos dados. A projeção em PC1 aparece embaixo.</div>
+  <div class="layout">
+    <canvas id="canvasPca" width="800" height="520"></canvas>
+    <div class="side">
+      <h3>Controles</h3>
+      <div class="controls">
+        <div class="btns">
+          <button class="btn" id="pcaPreset1">Nuvem correlacionada</button>
+          <button class="btn" id="pcaPreset2">Duas direções</button>
+        </div>
+        <div class="btns">
+          <button class="btn secondary" id="btnClearPca">Limpar</button>
+        </div>
+        <div class="stat" id="pcaStats">Pontos: 0 · λ₁: — · λ₂: —</div>
+        <div class="stat" id="pcaVar">Variância explicada por PC1: —</div>
+      </div>
+      <div class="lesson">
+        <strong>Tente isto:</strong> distribua pontos em uma linha quase horizontal — PC1 deve ficar horizontal e λ₁ &gt;&gt; λ₂. Depois, espalhe em círculo — os dois autovalores ficarão próximos e PC1 perde significado. Esse é exatamente o critério do "cotovelo".
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- TAB 3: SPARSE CODING                                          -->
+<!-- ============================================================ -->
+<section class="panel" id="tab-sparse">
+  <h2>Codificação esparsa: representar com poucos átomos</h2>
+  <div class="lead">Clique nas bases do dicionário (filtros tipo Gabor) para ativá-las e reconstruir um patch de imagem. Ajuste os coeficientes nos sliders e veja a reconstrução em tempo real. Esparsidade = poucas bases ativas.</div>
+  <div class="sparse-layout">
+    <div class="sparse-block">
+      <h4>Dicionário Φ (16 bases Gabor)</h4>
+      <div class="gabor-grid" id="gaborGrid"></div>
+      <div style="font-size:11px;color:var(--gray);text-align:center;margin-top:6px;font-style:italic;">
+        Clique para ativar/desativar
+      </div>
+    </div>
+    <div class="sparse-block">
+      <h4>Coeficientes (a)</h4>
+      <div class="coef-bar" id="coefBar"></div>
+    </div>
+    <div class="sparse-block">
+      <h4>Reconstrução (Φa)</h4>
+      <canvas id="canvasRecon" width="200" height="200" style="aspect-ratio:1;width:100%;max-width:200px;margin:0 auto;display:block;cursor:default;"></canvas>
+      <div class="stat" id="sparseStats" style="margin-top:10px;">Ativas: 0 / 16 · Esparsidade: 100%</div>
+      <div class="btns" style="margin-top:8px;">
+        <button class="btn secondary" id="btnClearSparse">Zerar</button>
+        <button class="btn" id="btnAllOn">Tudo</button>
+      </div>
+    </div>
+  </div>
+  <div class="lesson" style="margin-top:18px;">
+    <strong>A lição de Olshausen & Field (1996):</strong> quando se força o código <em>a</em> a ser esparso, as bases ótimas para imagens naturais convergem para filtros tipo Gabor — exatamente os campos receptivos dos neurônios simples de V1 (Hubel &amp; Wiesel, 1962). Aqui, o dicionário já é dado; observe como ativar poucas bases certas reconstrói o patch.
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- TAB 4: QUIZ                                                   -->
+<!-- ============================================================ -->
+<section class="panel" id="tab-quiz">
+  <h2>Quiz — Identifique o algoritmo</h2>
+  <div class="lead">Dez perguntas para fixar os seis algoritmos da aula. Clique na resposta; o feedback aparece logo abaixo.</div>
+  <div id="quizContainer"></div>
+  <div class="score" id="quizScore">
+    <span>Pontuação parcial:</span>
+    <span><span class="num" id="quizScoreNum">0</span> / 10</span>
+  </div>
+</section>
+
+<footer>
+  Neurociência Computacional · Aula 7 · Simulações Interativas · Daniel Y Takahashi · Instituto do Cérebro · UFRN
+</footer>
+
+<script>
+// ============================================================
+// TAB NAVIGATION
+// ============================================================
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('tab-' + t.dataset.tab).classList.add('active');
+  });
+});
+
+// Palette
+const C = {
+  teal: '#0D7377', blue: '#1A56DB', amber: '#B45309',
+  lAmber: '#F59E0B', violet: '#6D28D9', green: '#15803D',
+  dark: '#1E293B', gray: '#64748B', lGray: '#94A3B8',
+  xlGray: '#E2E8F0', white: '#FFFFFF'
+};
+const clusterColors = [C.blue, C.amber, C.green, C.violet, C.teal, '#DC2626'];
+
+// ============================================================
+// SIM 1: K-MEANS
+// ============================================================
+const kCanvas = document.getElementById('canvasKmeans');
+const kCtx = kCanvas.getContext('2d');
+let kPoints = [];
+let kCentroids = [];
+let kAssignments = [];
+let kIter = 0;
+let kJ = null;
+let kAnimTimer = null;
+let kCurrentK = 3;
+let kSpeed = 500;
+
+document.getElementById('kSlider').addEventListener('input', e => {
+  kCurrentK = parseInt(e.target.value);
+  document.getElementById('kValue').textContent = kCurrentK;
+});
+document.getElementById('speedSlider').addEventListener('input', e => {
+  kSpeed = parseInt(e.target.value);
+  document.getElementById('speedValue').textContent = kSpeed + ' ms';
+});
+
+kCanvas.addEventListener('click', e => {
+  const r = kCanvas.getBoundingClientRect();
+  const x = (e.clientX - r.left) * (kCanvas.width / r.width);
+  const y = (e.clientY - r.top) * (kCanvas.height / r.height);
+  kPoints.push({x, y});
+  kAssignments.push(-1);
+  drawKmeans();
+});
+
+function drawKmeans() {
+  kCtx.fillStyle = C.white;
+  kCtx.fillRect(0, 0, kCanvas.width, kCanvas.height);
+  // grid
+  kCtx.strokeStyle = '#F1F5F9';
+  kCtx.lineWidth = 1;
+  for (let i = 0; i <= kCanvas.width; i += 40) {
+    kCtx.beginPath(); kCtx.moveTo(i, 0); kCtx.lineTo(i, kCanvas.height); kCtx.stroke();
+  }
+  for (let i = 0; i <= kCanvas.height; i += 40) {
+    kCtx.beginPath(); kCtx.moveTo(0, i); kCtx.lineTo(kCanvas.width, i); kCtx.stroke();
+  }
+  // points
+  for (let i = 0; i < kPoints.length; i++) {
+    const p = kPoints[i];
+    const a = kAssignments[i];
+    kCtx.fillStyle = (a >= 0) ? clusterColors[a] : C.lGray;
+    kCtx.beginPath();
+    kCtx.arc(p.x, p.y, 5, 0, Math.PI*2);
+    kCtx.fill();
+    kCtx.strokeStyle = C.white;
+    kCtx.lineWidth = 1.2;
+    kCtx.stroke();
+  }
+  // centroids
+  for (let i = 0; i < kCentroids.length; i++) {
+    const c = kCentroids[i];
+    kCtx.fillStyle = clusterColors[i];
+    kCtx.strokeStyle = C.dark;
+    kCtx.lineWidth = 3;
+    kCtx.beginPath();
+    drawX(kCtx, c.x, c.y, 14);
+    kCtx.stroke();
+  }
+  // stats
+  const stats = document.getElementById('kmeansStats');
+  stats.textContent = `Pontos: ${kPoints.length} · Iteração: ${kIter} · J: ${kJ === null ? '—' : kJ.toFixed(1)}`;
+}
+function drawX(ctx, x, y, sz) {
+  ctx.beginPath();
+  ctx.moveTo(x - sz/2, y - sz/2); ctx.lineTo(x + sz/2, y + sz/2);
+  ctx.moveTo(x + sz/2, y - sz/2); ctx.lineTo(x - sz/2, y + sz/2);
+  ctx.lineWidth = 4;
+}
+function kmeansInit() {
+  if (kPoints.length === 0) return;
+  kCentroids = [];
+  for (let i = 0; i < kCurrentK; i++) {
+    kCentroids.push({
+      x: Math.random() * kCanvas.width * 0.8 + kCanvas.width * 0.1,
+      y: Math.random() * kCanvas.height * 0.8 + kCanvas.height * 0.1
+    });
+  }
+  kIter = 0;
+  kJ = null;
+  kAssignments = kPoints.map(() => -1);
+  drawKmeans();
+}
+function kmeansStep() {
+  if (kCentroids.length === 0 || kPoints.length === 0) return false;
+  // E-step: assign
+  let newAssign = [];
+  let totalJ = 0;
+  for (let p of kPoints) {
+    let bestD = Infinity, bestI = 0;
+    for (let i = 0; i < kCentroids.length; i++) {
+      const dx = p.x - kCentroids[i].x;
+      const dy = p.y - kCentroids[i].y;
+      const d = dx*dx + dy*dy;
+      if (d < bestD) { bestD = d; bestI = i; }
+    }
+    newAssign.push(bestI);
+    totalJ += bestD;
+  }
+  // Check converged
+  let changed = false;
+  for (let i = 0; i < newAssign.length; i++) {
+    if (newAssign[i] !== kAssignments[i]) { changed = true; break; }
+  }
+  kAssignments = newAssign;
+  kJ = totalJ;
+  // M-step: update
+  for (let i = 0; i < kCentroids.length; i++) {
+    let sx = 0, sy = 0, n = 0;
+    for (let j = 0; j < kPoints.length; j++) {
+      if (kAssignments[j] === i) { sx += kPoints[j].x; sy += kPoints[j].y; n++; }
+    }
+    if (n > 0) { kCentroids[i].x = sx/n; kCentroids[i].y = sy/n; }
+  }
+  kIter++;
+  drawKmeans();
+  return changed;
+}
+document.getElementById('btnInit').addEventListener('click', () => { stopAuto(); kmeansInit(); });
+document.getElementById('btnStep').addEventListener('click', () => { stopAuto(); kmeansStep(); });
+document.getElementById('btnClearKmeans').addEventListener('click', () => {
+  stopAuto();
+  kPoints = []; kCentroids = []; kAssignments = []; kIter = 0; kJ = null;
+  drawKmeans();
+});
+function stopAuto() {
+  if (kAnimTimer) { clearInterval(kAnimTimer); kAnimTimer = null; }
+}
+document.getElementById('btnRun').addEventListener('click', () => {
+  stopAuto();
+  if (kCentroids.length === 0) kmeansInit();
+  kAnimTimer = setInterval(() => {
+    const changed = kmeansStep();
+    if (!changed) stopAuto();
+  }, kSpeed);
+});
+document.getElementById('btnStop').addEventListener('click', stopAuto);
+document.getElementById('btnPreset').addEventListener('click', () => {
+  stopAuto();
+  kPoints = [];
+  // three blobs
+  const blobs = [
+    {cx: 220, cy: 140, n: 35, r: 45},
+    {cx: 580, cy: 180, n: 35, r: 50},
+    {cx: 400, cy: 400, n: 35, r: 55},
+  ];
+  for (let b of blobs) {
+    for (let i = 0; i < b.n; i++) {
+      const ang = Math.random() * Math.PI * 2;
+      const rd = Math.random() * b.r;
+      kPoints.push({x: b.cx + Math.cos(ang)*rd, y: b.cy + Math.sin(ang)*rd});
+    }
+  }
+  kAssignments = kPoints.map(() => -1);
+  kCentroids = []; kIter = 0; kJ = null;
+  drawKmeans();
+});
+drawKmeans();
+
+// ============================================================
+// SIM 2: PCA
+// ============================================================
+const pCanvas = document.getElementById('canvasPca');
+const pCtx = pCanvas.getContext('2d');
+let pPoints = [];
+let pDragIdx = -1;
+
+pCanvas.addEventListener('mousedown', e => {
+  const r = pCanvas.getBoundingClientRect();
+  const x = (e.clientX - r.left) * (pCanvas.width / r.width);
+  const y = (e.clientY - r.top) * (pCanvas.height / r.height);
+  // see if near existing point
+  for (let i = 0; i < pPoints.length; i++) {
+    const dx = x - pPoints[i].x, dy = y - pPoints[i].y;
+    if (dx*dx + dy*dy < 100) { pDragIdx = i; return; }
+  }
+  // add new
+  pPoints.push({x, y});
+  drawPca();
+});
+pCanvas.addEventListener('mousemove', e => {
+  if (pDragIdx < 0) return;
+  const r = pCanvas.getBoundingClientRect();
+  const x = (e.clientX - r.left) * (pCanvas.width / r.width);
+  const y = (e.clientY - r.top) * (pCanvas.height / r.height);
+  pPoints[pDragIdx] = {x, y};
+  drawPca();
+});
+pCanvas.addEventListener('mouseup', () => pDragIdx = -1);
+pCanvas.addEventListener('mouseleave', () => pDragIdx = -1);
+
+function pcaCompute() {
+  if (pPoints.length < 2) return null;
+  const n = pPoints.length;
+  let mx = 0, my = 0;
+  for (const p of pPoints) { mx += p.x; my += p.y; }
+  mx /= n; my /= n;
+  let cxx = 0, cyy = 0, cxy = 0;
+  for (const p of pPoints) {
+    cxx += (p.x - mx)**2;
+    cyy += (p.y - my)**2;
+    cxy += (p.x - mx)*(p.y - my);
+  }
+  cxx /= n; cyy /= n; cxy /= n;
+  // eigenvalues of [[cxx, cxy],[cxy, cyy]]
+  const tr = cxx + cyy;
+  const det = cxx*cyy - cxy*cxy;
+  const disc = Math.sqrt(Math.max(0, tr*tr/4 - det));
+  const l1 = tr/2 + disc;
+  const l2 = tr/2 - disc;
+  // eigenvectors
+  let v1, v2;
+  if (Math.abs(cxy) > 1e-6) {
+    v1 = {x: l1 - cyy, y: cxy};
+    v2 = {x: l2 - cyy, y: cxy};
+  } else {
+    if (cxx >= cyy) { v1 = {x:1, y:0}; v2 = {x:0, y:1}; }
+    else { v1 = {x:0, y:1}; v2 = {x:1, y:0}; }
+  }
+  // normalize
+  const n1 = Math.sqrt(v1.x*v1.x + v1.y*v1.y) || 1;
+  const n2 = Math.sqrt(v2.x*v2.x + v2.y*v2.y) || 1;
+  v1.x /= n1; v1.y /= n1;
+  v2.x /= n2; v2.y /= n2;
+  return {mx, my, l1, l2, v1, v2};
+}
+function drawPca() {
+  pCtx.fillStyle = C.white;
+  pCtx.fillRect(0, 0, pCanvas.width, pCanvas.height);
+  // grid
+  pCtx.strokeStyle = '#F1F5F9';
+  pCtx.lineWidth = 1;
+  for (let i = 0; i <= pCanvas.width; i += 40) {
+    pCtx.beginPath(); pCtx.moveTo(i, 0); pCtx.lineTo(i, pCanvas.height); pCtx.stroke();
+  }
+  for (let i = 0; i <= pCanvas.height; i += 40) {
+    pCtx.beginPath(); pCtx.moveTo(0, i); pCtx.lineTo(pCanvas.width, i); pCtx.stroke();
+  }
+  const pca = pcaCompute();
+  // projection band (only if PCA exists)
+  if (pca) {
+    // draw projections on PC1 axis as bottom strip
+    pCtx.fillStyle = '#FEF3C7';
+    pCtx.fillRect(0, pCanvas.height - 50, pCanvas.width, 50);
+    pCtx.fillStyle = C.amber;
+    pCtx.font = 'bold 10px Segoe UI';
+    pCtx.fillText('Projeção em PC1 (1D)', 8, pCanvas.height - 36);
+    // projections
+    const cx = pCanvas.width / 2;
+    const py = pCanvas.height - 25;
+    for (const p of pPoints) {
+      const dx = p.x - pca.mx;
+      const dy = p.y - pca.my;
+      const proj = dx * pca.v1.x + dy * pca.v1.y;
+      pCtx.fillStyle = C.amber;
+      pCtx.beginPath();
+      pCtx.arc(cx + proj, py, 4, 0, Math.PI*2);
+      pCtx.fill();
+    }
+    pCtx.strokeStyle = C.amber;
+    pCtx.lineWidth = 1.5;
+    pCtx.beginPath();
+    pCtx.moveTo(0, py); pCtx.lineTo(pCanvas.width, py);
+    pCtx.stroke();
+  }
+  // points
+  for (const p of pPoints) {
+    pCtx.fillStyle = C.blue;
+    pCtx.strokeStyle = C.white;
+    pCtx.lineWidth = 1.2;
+    pCtx.beginPath();
+    pCtx.arc(p.x, p.y, 6, 0, Math.PI*2);
+    pCtx.fill(); pCtx.stroke();
+  }
+  // mean and PC arrows
+  if (pca) {
+    // mean
+    pCtx.fillStyle = C.dark;
+    pCtx.beginPath();
+    pCtx.arc(pca.mx, pca.my, 4, 0, Math.PI*2);
+    pCtx.fill();
+    // PC1
+    const s1 = Math.sqrt(Math.max(0, pca.l1)) * 2.5;
+    const s2 = Math.sqrt(Math.max(0, pca.l2)) * 2.5;
+    arrow(pCtx, pca.mx, pca.my,
+          pca.mx + pca.v1.x * s1, pca.my + pca.v1.y * s1,
+          C.amber, 4);
+    arrow(pCtx, pca.mx, pca.my,
+          pca.mx - pca.v1.x * s1, pca.my - pca.v1.y * s1,
+          C.amber, 4);
+    // PC2
+    arrow(pCtx, pca.mx, pca.my,
+          pca.mx + pca.v2.x * s2, pca.my + pca.v2.y * s2,
+          C.violet, 3);
+    arrow(pCtx, pca.mx, pca.my,
+          pca.mx - pca.v2.x * s2, pca.my - pca.v2.y * s2,
+          C.violet, 3);
+    // labels
+    pCtx.fillStyle = C.amber;
+    pCtx.font = 'bold 13px Segoe UI';
+    pCtx.fillText('PC1', pca.mx + pca.v1.x * s1 + 6, pca.my + pca.v1.y * s1 + 4);
+    pCtx.fillStyle = C.violet;
+    pCtx.fillText('PC2', pca.mx + pca.v2.x * s2 + 6, pca.my + pca.v2.y * s2 + 4);
+    // stats
+    document.getElementById('pcaStats').textContent =
+      `Pontos: ${pPoints.length} · λ₁: ${pca.l1.toFixed(0)} · λ₂: ${pca.l2.toFixed(0)}`;
+    const v1pct = pca.l1 / (pca.l1 + pca.l2) * 100;
+    document.getElementById('pcaVar').textContent =
+      `Variância explicada por PC1: ${v1pct.toFixed(1)}%`;
+  } else {
+    document.getElementById('pcaStats').textContent = `Pontos: ${pPoints.length} · λ₁: — · λ₂: —`;
+    document.getElementById('pcaVar').textContent = `Variância explicada por PC1: —`;
+  }
+}
+function arrow(ctx, x0, y0, x1, y1, color, w) {
+  ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = w;
+  ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+  // head
+  const ang = Math.atan2(y1 - y0, x1 - x0);
+  const hs = 10;
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x1 - hs*Math.cos(ang - 0.4), y1 - hs*Math.sin(ang - 0.4));
+  ctx.lineTo(x1 - hs*Math.cos(ang + 0.4), y1 - hs*Math.sin(ang + 0.4));
+  ctx.closePath(); ctx.fill();
+}
+document.getElementById('btnClearPca').addEventListener('click', () => {
+  pPoints = []; drawPca();
+});
+document.getElementById('pcaPreset1').addEventListener('click', () => {
+  pPoints = [];
+  const cx = pCanvas.width/2, cy = pCanvas.height/2 - 30;
+  const ang = Math.PI / 6; // 30 deg
+  for (let i = 0; i < 80; i++) {
+    const u = (Math.random()*2 - 1) * 180;
+    const v = (Math.random()*2 - 1) * 50;
+    pPoints.push({
+      x: cx + u*Math.cos(ang) - v*Math.sin(ang),
+      y: cy + u*Math.sin(ang) + v*Math.cos(ang),
+    });
+  }
+  drawPca();
+});
+document.getElementById('pcaPreset2').addEventListener('click', () => {
+  pPoints = [];
+  const cx = pCanvas.width/2, cy = pCanvas.height/2 - 30;
+  for (let i = 0; i < 100; i++) {
+    pPoints.push({
+      x: cx + (Math.random()*2 - 1) * 160,
+      y: cy + (Math.random()*2 - 1) * 120,
+    });
+  }
+  drawPca();
+});
+drawPca();
+
+// ============================================================
+// SIM 3: SPARSE CODING
+// ============================================================
+const SZ = 16;            // patch size in px
+const N_BASES = 16;
+const bases = [];         // 2D array each: 16x16 = 256 values
+const coefs = new Array(N_BASES).fill(0);
+
+function makeGabor(theta, freq, phase, sigma=4.0) {
+  const arr = [];
+  for (let y = 0; y < SZ; y++) {
+    const row = [];
+    for (let x = 0; x < SZ; x++) {
+      const xc = x - SZ/2, yc = y - SZ/2;
+      const xt = xc*Math.cos(theta) + yc*Math.sin(theta);
+      const yt = -xc*Math.sin(theta) + yc*Math.cos(theta);
+      const v = Math.exp(-(xt*xt + yt*yt)/(2*sigma*sigma)) *
+                Math.cos(2*Math.PI*freq*xt + phase);
+      row.push(v);
+    }
+    arr.push(row);
+  }
+  // normalize so max abs = 1
+  let m = 0;
+  for (const r of arr) for (const v of r) if (Math.abs(v) > m) m = Math.abs(v);
+  if (m > 0) for (let y = 0; y < SZ; y++) for (let x = 0; x < SZ; x++) arr[y][x] /= m;
+  return arr;
+}
+// generate 16 bases — 4 orientations x 2 freqs x 2 phases
+const ths = [0, Math.PI/4, Math.PI/2, 3*Math.PI/4];
+const fs = [0.10, 0.18];
+const phs = [0, Math.PI/2];
+let idx = 0;
+for (const th of ths) for (const f of fs) for (const ph of phs) {
+  if (idx < N_BASES) bases.push(makeGabor(th, f, ph));
+  idx++;
+}
+
+function patchToImageData(patch, ctx, scale=1) {
+  const SZP = SZ * scale;
+  const imgData = ctx.createImageData(SZP, SZP);
+  for (let y = 0; y < SZ; y++) {
+    for (let x = 0; x < SZ; x++) {
+      const v = patch[y][x];
+      const gray = Math.round((v + 1) / 2 * 255);
+      for (let dy = 0; dy < scale; dy++) {
+        for (let dx = 0; dx < scale; dx++) {
+          const px = x*scale + dx, py = y*scale + dy;
+          const i = (py * SZP + px) * 4;
+          imgData.data[i] = gray;
+          imgData.data[i+1] = gray;
+          imgData.data[i+2] = gray;
+          imgData.data[i+3] = 255;
+        }
+      }
+    }
+  }
+  return imgData;
+}
+
+// build gabor grid
+const gaborGrid = document.getElementById('gaborGrid');
+const cellCanvases = [];
+for (let i = 0; i < N_BASES; i++) {
+  const c = document.createElement('canvas');
+  c.width = SZ * 4; c.height = SZ * 4;
+  c.className = 'gabor-cell';
+  c.dataset.idx = i;
+  c.addEventListener('click', () => toggleBase(i));
+  gaborGrid.appendChild(c);
+  cellCanvases.push(c);
+  const ctx = c.getContext('2d');
+  const imgData = patchToImageData(bases[i], ctx, 4);
+  ctx.putImageData(imgData, 0, 0);
+}
+
+// coefficient bars
+const coefBar = document.getElementById('coefBar');
+const coefRows = [];
+for (let i = 0; i < N_BASES; i++) {
+  const row = document.createElement('div');
+  row.className = 'coef-row';
+  row.innerHTML = `<span class="lbl">φ${i+1}</span><div class="bar"><div class="bar-fill" id="cf${i}" style="width:0"></div></div><span class="val" id="cv${i}">0.0</span>`;
+  coefBar.appendChild(row);
+  coefRows.push(row);
+}
+
+function toggleBase(i) {
+  if (Math.abs(coefs[i]) > 0.01) coefs[i] = 0;
+  else coefs[i] = (Math.random() > 0.5 ? 1 : -1) * (0.5 + Math.random()*0.5);
+  updateSparse();
+}
+function updateSparse() {
+  // build reconstruction
+  const recon = [];
+  for (let y = 0; y < SZ; y++) {
+    const row = [];
+    for (let x = 0; x < SZ; x++) row.push(0);
+    recon.push(row);
+  }
+  for (let k = 0; k < N_BASES; k++) {
+    if (Math.abs(coefs[k]) < 0.001) continue;
+    for (let y = 0; y < SZ; y++)
+      for (let x = 0; x < SZ; x++)
+        recon[y][x] += coefs[k] * bases[k][y][x];
+  }
+  // clip and draw
+  let mx = 0;
+  for (const r of recon) for (const v of r) if (Math.abs(v) > mx) mx = Math.abs(v);
+  if (mx > 1) for (let y = 0; y < SZ; y++) for (let x = 0; x < SZ; x++) recon[y][x] /= mx;
+  const reconCanvas = document.getElementById('canvasRecon');
+  const rctx = reconCanvas.getContext('2d');
+  rctx.imageSmoothingEnabled = false;
+  const imgData = patchToImageData(recon, rctx, 12);
+  rctx.putImageData(imgData, 0, 0);
+  // update bars
+  let active = 0;
+  for (let i = 0; i < N_BASES; i++) {
+    const v = coefs[i];
+    if (Math.abs(v) > 0.001) active++;
+    document.getElementById('cf' + i).style.width = Math.min(100, Math.abs(v) * 80) + '%';
+    document.getElementById('cf' + i).style.background = v >= 0 ? C.amber : C.violet;
+    document.getElementById('cv' + i).textContent = v.toFixed(2);
+    cellCanvases[i].classList.toggle('active', Math.abs(v) > 0.001);
+  }
+  const sparsity = ((N_BASES - active) / N_BASES * 100).toFixed(0);
+  document.getElementById('sparseStats').textContent =
+    `Ativas: ${active} / ${N_BASES} · Esparsidade: ${sparsity}%`;
+}
+document.getElementById('btnClearSparse').addEventListener('click', () => {
+  for (let i = 0; i < N_BASES; i++) coefs[i] = 0;
+  updateSparse();
+});
+document.getElementById('btnAllOn').addEventListener('click', () => {
+  for (let i = 0; i < N_BASES; i++) coefs[i] = (Math.random() > 0.5 ? 1 : -1) * (0.3 + Math.random()*0.5);
+  updateSparse();
+});
+updateSparse();
+
+// ============================================================
+// SIM 4: QUIZ
+// ============================================================
+const quizData = [
+  {
+    q: 'Qual algoritmo encontra os eixos ortogonais de maior variância dos dados?',
+    opts: ['k-means', 'PCA', 'ICA', 'VAE'],
+    correct: 1,
+    fb: 'PCA encontra os autovetores da matriz de covariância — ortogonais e ordenados por variância decrescente.'
+  },
+  {
+    q: 'O algoritmo de Lloyd para k-means alterna entre quais duas etapas?',
+    opts: [
+      'Forward pass e backward pass',
+      'Encoder e decoder',
+      'Atribuição (E-step) e atualização (M-step)',
+      'Amostragem do prior e cálculo da KL'
+    ],
+    correct: 2,
+    fb: 'K-means alterna E-step (atribuir cada ponto ao centroide mais próximo) e M-step (recalcular centroides como médias dos clusters).'
+  },
+  {
+    q: 'Olshausen & Field (1996) mostraram que forçar esparsidade em imagens naturais produz bases que se parecem com:',
+    opts: [
+      'Filtros centro-surround',
+      'Funções de Gabor',
+      'Wavelets de Haar',
+      'Componentes principais'
+    ],
+    correct: 1,
+    fb: 'As bases aprendidas convergem para filtros tipo Gabor — localizadas, orientadas e em frequência espacial específica, como os neurônios simples de V1.'
+  },
+  {
+    q: 'Um autoencoder LINEAR (sem ativações não-lineares) aprende o mesmo subespaço que:',
+    opts: ['ICA', 'k-means', 'PCA', 'Codificação esparsa'],
+    correct: 2,
+    fb: 'Baldi & Hornik (1989) provaram que o autoencoder linear com gargalo de dimensão k aprende exatamente o subespaço dos k primeiros componentes principais (PCA).'
+  },
+  {
+    q: 'O "problema do coquetel" é a aplicação clássica de qual algoritmo?',
+    opts: ['ICA', 'PCA', 'k-means', 'Agrupamento hierárquico'],
+    correct: 0,
+    fb: 'ICA recupera fontes independentes a partir de misturas lineares — exatamente o problema de várias vozes captadas por vários microfones em um coquetel.'
+  },
+  {
+    q: 'A função de perda do VAE (a ELBO) tem dois termos. Quais?',
+    opts: [
+      'Erro absoluto e erro quadrático',
+      'Erro de treino e erro de teste',
+      'Reconstrução e divergência KL com o prior',
+      'Entropia e energia livre'
+    ],
+    correct: 2,
+    fb: 'A ELBO = E[log p(x|z)] − KL(q(z|x) || p(z)). O primeiro termo é a reconstrução; o segundo regulariza, aproximando o encoder do prior N(0,I).'
+  },
+  {
+    q: 'A regra de Oja (1982) é a generalização da regra hebbiana que converge para:',
+    opts: [
+      'A solução do problema XOR',
+      'O primeiro autovetor da matriz de covariância',
+      'O centroide de k-means',
+      'A função de ativação ReLU'
+    ],
+    correct: 1,
+    fb: 'Oja provou que Δw = η(yx − y²w) converge ao primeiro componente principal — fazendo PCA biologicamente plausível com plasticidade local.'
+  },
+  {
+    q: 'Qual a principal diferença entre PCA e ICA?',
+    opts: [
+      'PCA é supervisionada; ICA é não-supervisionada',
+      'PCA produz componentes ortogonais; ICA produz componentes independentes',
+      'PCA exige rótulos; ICA não',
+      'PCA usa gradiente descendente; ICA não'
+    ],
+    correct: 1,
+    fb: 'PCA decorrelaciona (independência de 2ª ordem, ortogonal); ICA busca independência estatística em todas as ordens (não exige ortogonalidade).'
+  },
+  {
+    q: 'O princípio de eficiência de codificação foi formulado por:',
+    opts: ['Hebb (1949)', 'Barlow (1961)', 'Hubel & Wiesel (1962)', 'Hopfield (1982)'],
+    correct: 1,
+    fb: 'Horace Barlow, em 1961, propôs que o sistema sensorial reduz redundância — princípio unificador de PCA, ICA, codificação esparsa e modelos generativos.'
+  },
+  {
+    q: 'O agrupamento hierárquico tem uma grande vantagem sobre k-means:',
+    opts: [
+      'É mais rápido',
+      'Sempre encontra o mínimo global',
+      'Não exige escolher k a priori — escolhe-se cortando o dendrograma',
+      'Funciona apenas com gaussianas'
+    ],
+    correct: 2,
+    fb: 'O dendrograma codifica toda a hierarquia de fusões. Para escolher k clusters, basta cortar a árvore em alguma altura.'
+  },
+];
+
+const quizContainer = document.getElementById('quizContainer');
+let quizAnswered = new Array(quizData.length).fill(false);
+let quizScore = 0;
+
+quizData.forEach((q, qi) => {
+  const div = document.createElement('div');
+  div.className = 'quiz-q';
+  let html = `<div class="qnum">QUESTÃO ${qi+1}</div><div class="qtxt">${q.q}</div><div class="quiz-opts">`;
+  q.opts.forEach((opt, oi) => {
+    html += `<button class="quiz-opt" data-q="${qi}" data-o="${oi}">${opt}</button>`;
+  });
+  html += `</div><div class="quiz-fb" id="fb${qi}">${q.fb}</div>`;
+  div.innerHTML = html;
+  quizContainer.appendChild(div);
+});
+quizContainer.querySelectorAll('.quiz-opt').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const qi = parseInt(btn.dataset.q);
+    const oi = parseInt(btn.dataset.o);
+    if (quizAnswered[qi]) return;
+    quizAnswered[qi] = true;
+    const correct = quizData[qi].correct;
+    const parent = btn.parentElement;
+    parent.querySelectorAll('.quiz-opt').forEach((b, idx) => {
+      b.disabled = true;
+      if (idx === correct) b.classList.add('correct');
+      else if (idx === oi) b.classList.add('wrong');
+    });
+    document.getElementById('fb' + qi).classList.add('show');
+    if (oi === correct) quizScore++;
+    document.getElementById('quizScoreNum').textContent = quizScore;
+  });
+});
+
+</script>
+</body>
+</html>

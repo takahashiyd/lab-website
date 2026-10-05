@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neurociência Computacional · Aula 4 — Atividades</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#142033; --muted:#5b6879; --line:#d8dee6;
+  --accent:#0d7377; --accent-ink:#ffffff; --you:#b45309; --soft:#e2f0f0; --warn:#a33a2a; --ok:#15803d; --okbg:#e3f3e8; --nobg:#fbe9e6;
+  --display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --ok:#5fd08a; --okbg:#173a28; --nobg:#3d2020; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --ok:#5fd08a; --okbg:#173a28; --nobg:#3d2020; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:17px/1.5 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:grid;gap:22px}
+header{display:grid;gap:8px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(32px,8vw,50px)/1.02 var(--display);font-stretch:115%;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font:750 23px/1.15 var(--display);font-stretch:108%;margin:0;text-wrap:balance}
+p{margin:0;max-width:65ch}
+.lead{color:var(--muted)}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{font:600 14px/1 var(--body);color:var(--fg);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:9px 12px;background:var(--surface)}
+nav a.done{border-color:var(--ok);color:var(--ok)}
+a{color:var(--accent)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,nav a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.exp>*{min-width:0}
+section.exp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 18px;display:grid;gap:16px;min-width:0;scroll-margin-top:12px}
+.num{font:600 13px/1 var(--mono);color:var(--you);letter-spacing:.06em;text-transform:uppercase}
+.meta{font:500 13px/1.3 var(--mono);color:var(--muted)}
+.q{display:grid;gap:8px;border-top:1px dashed var(--line);padding-top:14px}
+.q>.qt{font-weight:600}
+.q .qt i{font-family:var(--mono);font-style:normal;color:var(--you);margin-right:6px}
+.opts{display:grid;gap:8px}
+@media (min-width:560px){.opts.two{grid-template-columns:1fr 1fr}}
+.opt{display:flex;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;cursor:pointer;min-height:48px;background:var(--bg)}
+.opt input{width:20px;height:20px;accent-color:var(--accent);flex:none}
+.opt:has(input:checked){border-color:var(--accent);background:var(--soft)}
+.opt.right{border-color:var(--ok);background:var(--okbg)}
+.opt.wrong{border-color:var(--warn);background:var(--nobg)}
+textarea,input[type=number],input[type=text]{width:100%;font:500 17px/1.4 var(--body);color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;min-height:48px}
+textarea{min-height:90px;resize:vertical}
+.inline{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.inline label{display:grid;gap:4px;font-size:14px;font-weight:600;flex:1 1 140px;min-width:0}
+select{font:500 17px var(--body);color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px;min-height:48px;width:100%}
+button{font:700 16px/1 var(--display);border:0;border-radius:10px;padding:14px 18px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px;touch-action:manipulation}
+button.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+button:disabled{opacity:.45;cursor:default}
+.send{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.sent{font:600 14px/1.3 var(--mono);color:var(--ok)}
+.sent.pend{color:var(--you)}
+.fb{background:var(--soft);border-radius:10px;padding:14px 16px;display:grid;gap:8px;font-size:16px}
+.fb h3{margin:0;font:700 17px/1.2 var(--display)}
+.fb .score{font:700 22px/1 var(--display);color:var(--you)}
+.fb ul{margin:0;padding-left:20px;display:grid;gap:6px}
+.mark{font-weight:700}
+.mark.ok{color:var(--ok)} .mark.no{color:var(--warn)}
+figure{margin:0;display:grid;gap:6px}
+figure img{width:100%;height:auto;border-radius:8px;background:#fff;border:1px solid var(--line)}
+figcaption{font-size:13px;color:var(--muted)}
+.tablewrap{overflow-x:auto}
+table.dec{border-collapse:collapse;width:100%;font:500 15px/1.2 var(--mono);text-align:center}
+table.dec th,table.dec td{border:1px solid var(--line);padding:8px 3px}
+table.dec th{background:var(--soft);font:600 13px/1.2 var(--body)}
+table.dec td.test{background:color-mix(in srgb,var(--you) 18%,transparent);font-weight:700}
+table.dec td.hi{font-weight:700;color:var(--accent)}
+.dots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.dots label{display:grid;gap:4px;font:600 13px/1.2 var(--body);text-align:center;min-width:0}
+.dots input{min-width:0;font-size:15px;padding:10px 2px;text-align:center}
+.opts.five{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+.opts.five .opt{padding:10px 6px;gap:6px;justify-content:center}
+.dots input{text-align:center;padding:10px 4px;font-family:var(--mono)}
+.dots input.right{border-color:var(--ok);background:var(--okbg)}
+.dots input.wrong{border-color:var(--warn);background:var(--nobg)}
+.marr{display:grid;gap:10px}
+.marr .st{display:grid;gap:8px;border:1px solid var(--line);border-radius:10px;padding:12px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.seg label{border:1.5px solid var(--line);border-radius:8px;text-align:center;padding:10px 4px;font:700 14px/1.1 var(--display);cursor:pointer;min-height:44px;display:grid;place-items:center;background:var(--bg)}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){border-color:var(--accent);background:var(--soft);color:var(--accent)}
+.seg label.right{border-color:var(--ok)!important;background:var(--okbg)!important;color:var(--ok)!important}
+.seg label.wrong{border-color:var(--warn)!important;background:var(--nobg)!important;color:var(--warn)!important}
+.seg label:focus-within{outline:3px solid var(--accent);outline-offset:1px}
+.xor{display:grid;gap:12px}
+.xor table{border-collapse:collapse;font:500 16px/1 var(--mono);text-align:center;width:100%;max-width:420px}
+.xor th,.xor td{border:1px solid var(--line);padding:9px}
+.xor th{background:var(--soft);font:600 13px var(--body)}
+.xor td.ok{color:var(--ok);font-weight:700} .xor td.no{color:var(--warn);font-weight:700}
+.xor .ctl{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.xor .ctl label{display:grid;gap:4px;font:600 13px/1.2 var(--mono)}
+.xor input[type=range]{width:100%;accent-color:var(--accent)}
+.badge{font:700 14px/1.2 var(--mono)}
+footer{font-size:13px;color:var(--muted);display:grid;gap:6px}
+/* cartão de identificação (registro.js) */
+.nc-id{background:var(--surface);border:2px solid var(--accent);border-radius:14px;padding:18px;display:grid;gap:12px}
+.nc-id.nc-in{border:0;padding:0;background:none}
+.nc-id h2{margin:0 0 4px}
+.nc-lead{color:var(--muted);margin:0 0 12px!important}
+.nc-row{display:grid;gap:10px;grid-template-columns:1fr}
+@media (min-width:560px){.nc-row{grid-template-columns:1fr 1.6fr}}
+.nc-id label{display:grid;gap:4px;font:600 14px/1.2 var(--body)}
+.nc-id input{font:17px var(--body);padding:12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);min-height:48px;width:100%}
+.nc-err{color:var(--warn);font-size:14px;min-height:1em;margin:6px 0!important}
+.nc-priv{font-size:13px;color:var(--muted);margin-top:10px!important}
+.nc-who{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:15px;background:var(--soft);border-radius:10px;padding:10px 14px}
+.nc-link{background:none!important;border:0!important;color:var(--accent)!important;font:600 14px var(--body)!important;padding:4px 0!important;min-height:0!important;text-decoration:underline;cursor:pointer}
+.nc-fila{font:500 13px var(--mono);color:var(--muted)}
+.nc-flash{animation:ncflash 1.2s 2}
+@keyframes ncflash{50%{box-shadow:0 0 0 6px var(--you)}}
+@media (prefers-reduced-motion:reduce){.nc-flash{animation:none}}
+canvas.plot{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;touch-action:none}
+.ctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.ctl label{display:grid;gap:4px;font:600 13px/1.2 var(--mono)}
+.ctl input[type=range]{width:100%;accent-color:var(--accent)}
+.readout{font:600 15px/1.4 var(--mono);color:var(--accent)}
+.mp{display:grid;gap:10px}
+.mp .row{display:grid;gap:8px;border:1px solid var(--line);border-radius:10px;padding:12px}
+.mp .ins{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.mp .ins label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center;min-width:0}
+.mp .ins input{text-align:center;padding:9px 2px;font-family:var(--mono);min-width:0}
+.tt{display:flex;flex-wrap:wrap;gap:6px;font:500 13px/1 var(--mono)}
+.tt span{border:1px solid var(--line);border-radius:6px;padding:6px 7px}
+.tt span.ok{border-color:var(--ok);color:var(--ok);background:var(--okbg)}
+.tt span.no{border-color:var(--warn);color:var(--warn);background:var(--nobg)}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btns button{padding:11px 14px;min-height:44px;font-size:15px}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.trio label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center;min-width:0}
+.trio input{text-align:center;padding:9px 2px;font-family:var(--mono);min-width:0}
+.trio input.right,.inline input.right{border-color:var(--ok);background:var(--okbg)}
+.trio input.wrong,.inline input.wrong{border-color:var(--warn);background:var(--nobg)}
+table.log{border-collapse:collapse;width:100%;font:500 13px/1.2 var(--mono);text-align:center}
+table.log th,table.log td{border:1px solid var(--line);padding:5px 2px}
+table.log th{background:var(--soft);font:600 12px var(--body)}
+table.log tr.err td{color:var(--warn)}
+.match{display:grid;gap:8px}
+.match .m{display:grid;grid-template-columns:1fr minmax(0,1.3fr);gap:8px;align-items:center}
+.match .m span{font-weight:600}
+@media (max-width:420px){.match .m{grid-template-columns:1fr}}
+.grid64{display:grid;grid-template-columns:auto repeat(4,minmax(0,1fr));gap:5px;align-items:center;max-width:420px}
+.grid64 span{font:600 12px/1 var(--mono);color:var(--muted);text-align:center}
+.grid64 input{text-align:center;padding:8px 2px;min-height:40px;font-family:var(--mono);min-width:0}
+.grid64 input.right{border-color:var(--ok);background:var(--okbg)}
+.grid64 input.wrong{border-color:var(--warn);background:var(--nobg)}
+.quad{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;max-width:420px}
+.quad label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center;min-width:0}
+.quad input{text-align:center;padding:9px 2px;font-family:var(--mono);min-width:0}
+.quad input.right{border-color:var(--ok);background:var(--okbg)}
+.quad input.wrong{border-color:var(--warn);background:var(--nobg)}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;max-width:300px}
+.pair label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center}
+.pair input{text-align:center;font-family:var(--mono)}
+.pair input.right{border-color:var(--ok);background:var(--okbg)}
+.pair input.wrong{border-color:var(--warn);background:var(--nobg)}
+table.cases{border-collapse:collapse;width:100%;font-size:15px}
+table.cases td,table.cases th{border-bottom:1px solid var(--line);padding:8px 4px;vertical-align:middle;text-align:left}
+table.cases th{font:600 13px var(--body);color:var(--muted)}
+table.cases select{min-height:44px;padding:6px;font-size:15px}
+select.right{border-color:var(--ok);background:var(--okbg)}
+select.wrong{border-color:var(--warn);background:var(--nobg)}
+.tb{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1fr);gap:6px;align-items:center}
+.tb b{font-size:13px;color:var(--muted)}
+.tb select{font-size:14px;padding:8px 4px}
+/* --- Aula 4 --- */
+.rowcard{display:grid;gap:8px;border:1px solid var(--line);border-radius:10px;padding:12px}
+.rowcard .inline label{flex:1 1 150px}
+.bandit{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bandit button{min-height:64px;font-size:17px}
+.bandit button.hit{outline:3px solid var(--ok)} .bandit button.miss{outline:3px solid var(--warn)}
+.kpi{display:flex;flex-wrap:wrap;gap:8px 16px;font:600 15px/1.4 var(--mono);color:var(--accent)}
+</style>
+
+<div class="wrap" id="student">
+<header>
+  <span class="eyebrow">Neurociência Computacional · Aula 4 · UFRN</span>
+  <h1>Três maneiras de aprender</h1>
+  <p class="lead">Aprendizado supervisionado, não supervisionado e por reforço — no cérebro e nas máquinas. Identifique-se abaixo, faça cada atividade quando o professor pedir e toque em <b>Enviar</b> — sua resposta fica registrada e o gabarito aparece em seguida.</p>
+</header>
+
+<nav aria-label="Atividades">
+  <a href="#a1">1 · Tipos</a><a href="#a2">2 · Sobreajuste</a><a href="#a3">3 · k-means</a><a href="#a4">4 · Rescorla–Wagner</a><a href="#a5">5 · Dopamina</a><a href="#a6">6 · Bandido</a><a href="#a7">7 · Marr</a>
+</nav>
+
+<!-- ============ ATIVIDADE 1 ============ -->
+<section class="exp" id="a1" data-titulo="Que tipo de aprendizado é este?">
+  <div><p class="num">Atividade 1 · 6 min · em duplas</p><h2>Que tipo de aprendizado é este?</h2></div>
+  <p>Para cada situação, diga o <b>sinal de ensino</b>: supervisionado (um alvo para cada saída), não supervisionado (nenhum sinal externo) ou por reforço (um número que diz se foi bom). Nas três primeiras, diga também <b>onde</b> no cérebro.</p>
+  <div class="mp" id="scBody"></div>
+  <div class="send"><button data-send="a1">Enviar</button><span class="sent" data-status="a1"></span></div>
+  <div class="fb" data-fb="a1" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 2 ============ -->
+<section class="exp" id="a2" data-titulo="Decorar não é aprender">
+  <div><p class="num">Atividade 2 · 6 min · individual</p><h2>Decorar não é aprender</h2></div>
+  <div class="q"><p class="qt"><i>a</i>Um modelo prevê (2, 4, 6) para valores reais (3, 4, 8). Qual é o erro quadrático médio, <span class="badge">EQM = média de (ŷ − y)²</span>?</p>
+    <div class="inline"><label>EQM<input type="text" inputmode="decimal" name="a2a"></label></div></div>
+  <p>Pontos pretos: treino (10). Quadrados azuis: validação (9). Mude o grau do polinômio ajustado aos pontos de treino.</p>
+  <canvas class="plot" id="pfC" width="600" height="340" aria-label="Pontos de treino e validação com o polinômio ajustado"></canvas>
+  <div class="ctl"><label>grau do polinômio = <span id="pfDv">1</span><input type="range" id="pfD" min="0" max="9" step="1" value="1"></label></div>
+  <p class="readout" id="pfR"></p>
+  <div class="q"><p class="qt"><i>b</i>Qual grau dá o <b>menor erro de validação</b>?</p>
+    <div class="inline"><label>grau<input type="text" inputmode="numeric" name="a2b"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Como se chama o que acontece com cada grau?</p>
+    <div class="match"><div class="m"><span>grau 9 (treino ≈ 0, validação alta)</span><select name="a2c9"><option value="">—</option><option>subajuste</option><option>sobreajuste</option><option>bom ajuste</option></select></div>
+    <div class="m"><span>grau 1 (treino e validação altos)</span><select name="a2c1"><option value="">—</option><option>subajuste</option><option>sobreajuste</option><option>bom ajuste</option></select></div></div></div>
+  <div class="q"><p class="qt"><i>d</i>Quando o grau aumenta, o erro de <b>treino</b>…</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a2d" value="só diminui">só diminui (ou fica igual)</label><label class="opt"><input type="radio" name="a2d" value="diminui e depois aumenta">diminui e depois aumenta</label><label class="opt"><input type="radio" name="a2d" value="aumenta">aumenta</label></div></div>
+  <div class="send"><button data-send="a2">Enviar</button><span class="sent" data-status="a2"></span></div>
+  <div class="fb" data-fb="a2" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 3 ============ -->
+<section class="exp" id="a3" data-titulo="k-means à mão">
+  <div><p class="num">Atividade 3 · 6 min · em duplas, no papel</p><h2>k-means à mão</h2></div>
+  <p>Seis pontos numa reta: <b>1, 2, 4, 7, 9, 10</b>. K = 2. Centros iniciais <b>c₁ = 2</b> e <b>c₂ = 4</b>. Repita: (1) cada ponto vai para o centro mais próximo; (2) cada centro vira a média dos seus pontos.</p>
+  <div class="q"><p class="qt"><i>a</i>Primeira atribuição: quantos pontos ficam com c₁? Quais os novos centros?</p>
+    <div class="trio"><label>nº com c₁<input type="text" inputmode="numeric" name="a3n"></label><label>novo c₁<input type="text" inputmode="decimal" name="a3c1"></label><label>novo c₂<input type="text" inputmode="decimal" name="a3c2"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Segunda atribuição: para onde vai o ponto 4? Quais os novos centros?</p>
+    <div class="opts two"><label class="opt"><input type="radio" name="a3p4" value="c1">para c₁</label><label class="opt"><input type="radio" name="a3p4" value="c2">fica com c₂</label></div>
+    <div class="pair"><label>novo c₁<input type="text" inputmode="decimal" name="a3d1"></label><label>novo c₂<input type="text" inputmode="decimal" name="a3d2"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Uma terceira iteração muda alguma atribuição? Qual a soma dos quadrados das distâncias de cada ponto ao seu centro, no final?</p>
+    <div class="opts two"><label class="opt"><input type="radio" name="a3conv" value="não muda">não muda: convergiu</label><label class="opt"><input type="radio" name="a3conv" value="muda">muda de novo</label></div>
+    <div class="inline"><label>soma dos quadrados<input type="text" inputmode="decimal" name="a3ss"></label></div></div>
+  <div class="q"><p class="qt"><i>d</i>Qual partição tem a menor soma dos quadrados?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a3part" value="kmeans">{1, 2, 4} e {7, 9, 10}</label><label class="opt"><input type="radio" name="a3part" value="outra">{1, 2} e {4, 7, 9, 10}</label></div></div>
+  <p class="meta">Explore depois: k-means em 2D</p>
+  <canvas class="plot" id="kmC" width="440" height="380" style="max-width:420px" aria-label="Pontos em duas dimensões coloridos pelo grupo e os centros do k-means"></canvas>
+  <div class="ctl"><label>K = <span id="kmKv">3</span><input type="range" id="kmK" min="2" max="5" step="1" value="3"></label></div>
+  <div class="btns"><button type="button" class="ghost" id="kmA">1 · Atribuir</button><button type="button" class="ghost" id="kmU">2 · Atualizar</button><button type="button" class="ghost" id="kmN">Novos dados</button></div>
+  <p class="readout" id="kmR"></p>
+  <div class="send"><button data-send="a3">Enviar</button><span class="sent" data-status="a3"></span></div>
+  <div class="fb" data-fb="a3" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 4 ============ -->
+<section class="exp" id="a4" data-titulo="Rescorla–Wagner à mão">
+  <div><p class="num">Atividade 4 · 7 min · individual, com calculadora</p><h2>Rescorla–Wagner à mão</h2></div>
+  <p><span class="badge">V ← V + α·(λ − V)</span>, com α = 0,5. Com vários estímulos, o erro usa a <b>soma</b> dos V dos estímulos presentes, e cada um muda α × erro.</p>
+  <div class="q"><p class="qt"><i>a</i>Aquisição (λ = 1), começando de V = 0: calcule V depois dos ensaios 1, 2 e 3.</p>
+    <div class="trio"><label>ensaio 1<input type="text" inputmode="decimal" name="a4a1"></label><label>ensaio 2<input type="text" inputmode="decimal" name="a4a2"></label><label>ensaio 3<input type="text" inputmode="decimal" name="a4a3"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Partindo de V = 0,875, um ensaio de extinção (λ = 0). Quanto fica V?</p>
+    <div class="inline"><label>V<input type="text" inputmode="decimal" name="a4b"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Bloqueio: na fase 1, A + comida até V_A = 1. Na fase 2, AB + comida. Quanto vale V_B depois do 1º ensaio AB?</p>
+    <div class="inline"><label>V_B<input type="text" inputmode="decimal" name="a4c"></label></div></div>
+  <div class="q"><p class="qt"><i>d</i>Controle: só AB + comida desde o início (V_A = V_B = 0). Quanto vale V_B depois do 1º ensaio?</p>
+    <div class="inline"><label>V_B<input type="text" inputmode="decimal" name="a4d"></label></div></div>
+  <p class="meta">Simulador</p>
+  <canvas class="plot" id="rwC" width="600" height="300" aria-label="Valor previsto V ao longo dos ensaios"></canvas>
+  <div class="inline"><label style="flex:1 1 100%">protocolo<select id="rwP"><option value="acq">aquisição (1–10) e extinção (11–20)</option><option value="blk">bloqueio: A+ (1–10), AB+ (11–20)</option><option value="ctl">controle: AB+ (1–20)</option></select></label></div>
+  <div class="ctl"><label>α = <span id="rwAv">0,5</span><input type="range" id="rwA" min="0.05" max="1" step="0.05" value="0.5"></label></div>
+  <p class="readout" id="rwR"></p>
+  <div class="send"><button data-send="a4">Enviar</button><span class="sent" data-status="a4"></span></div>
+  <div class="fb" data-fb="a4" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 5 ============ -->
+<section class="exp" id="a5" data-titulo="Erro de predição e dopamina">
+  <div><p class="num">Atividade 5 · 6 min · individual</p><h2>Erro de predição e dopamina</h2></div>
+  <p>Cadeia: <b>luz (s₀) → espera (s₁) → suco, r = 1</b>. <span class="badge">δ = r + γ·V(s′) − V(s)</span> e <span class="badge">V(s) ← V(s) + α·δ</span>, com γ = 1, α = 0,5 e V(s₀) = V(s₁) = 0 no início. A luz chega sem aviso: o valor antes dela é 0. Depois do suco, o valor é 0.</p>
+  <div class="q"><p class="qt"><i>a</i>Ensaio 1: δ na chegada do suco e o novo V(s₁).</p>
+    <div class="pair"><label>δ (suco)<input type="text" inputmode="decimal" name="a5a1"></label><label>V(s₁)<input type="text" inputmode="decimal" name="a5a2"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Ensaio 2: δ na passagem s₀ → s₁ e δ na chegada do suco.</p>
+    <div class="pair"><label>δ (s₀ → s₁)<input type="text" inputmode="decimal" name="a5b1"></label><label>δ (suco)<input type="text" inputmode="decimal" name="a5b2"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Depois de muitos ensaios, V(s₀) = V(s₁) = 1. Calcule δ quando a luz aparece, quando o suco chega e quando o suco falta.</p>
+    <div class="trio"><label>luz<input type="text" inputmode="decimal" name="a5c1"></label><label>suco<input type="text" inputmode="decimal" name="a5c2"></label><label>sem suco<input type="text" inputmode="decimal" name="a5c3"></label></div></div>
+  <div class="q"><p class="qt"><i>d</i>O que faz o neurônio de dopamina em cada momento (depois do aprendizado)?</p>
+    <div class="match" id="daMatch"></div></div>
+  <p class="meta">Simulação: o erro δ ao longo de um ensaio (pista no passo 3, suco no passo 9, α = 0,3)</p>
+  <canvas class="plot" id="tdC" width="600" height="280" aria-label="Erro de predição em cada instante do ensaio escolhido"></canvas>
+  <div class="ctl"><label>ensaio nº <span id="tdNv">1</span><input type="range" id="tdN" min="1" max="60" step="1" value="1"></label>
+    <label style="display:flex;gap:8px;align-items:center;font:600 14px var(--body)"><input type="checkbox" id="tdO" style="width:22px;height:22px;accent-color:var(--accent)">sem suco neste ensaio</label></div>
+  <div class="send"><button data-send="a5">Enviar</button><span class="sent" data-status="a5"></span></div>
+  <div class="fb" data-fb="a5" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 6 ============ -->
+<section class="exp" id="a6" data-titulo="O dilema do bandido">
+  <div><p class="num">Atividade 6 · 5 min · individual · opcional</p><h2>O dilema do bandido</h2></div>
+  <p>Antes das contas, jogue: cada máquina paga 1 ponto com uma probabilidade fixa que você não conhece. Você tem 20 jogadas.</p>
+  <div class="bandit"><button type="button" class="ghost" id="bL">Máquina esquerda</button><button type="button" class="ghost" id="bR">Máquina direita</button></div>
+  <p class="kpi" id="bK"></p>
+  <div class="btns"><button type="button" class="ghost" id="bReset">Jogar de novo</button></div>
+  <p>Agora as contas: a máquina <b>A</b> paga 1 com probabilidade <b>0,8</b>; a <b>B</b>, com <b>0,4</b>.</p>
+  <div class="q"><p class="qt"><i>a</i>Escolhendo sempre ao acaso, qual a recompensa média por jogada?</p>
+    <div class="inline"><label>recompensa média<input type="text" inputmode="decimal" name="a6a"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Um agente ε-guloso com ε = 0,1 já sabe que A é melhor (ao explorar, escolhe A ou B com chance igual). Qual a recompensa média?</p>
+    <div class="inline"><label>recompensa média<input type="text" inputmode="decimal" name="a6b"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Na primeira jogada em cada máquina, A deu 0 e B deu 1. O guloso puro (ε = 0) estima o valor de cada uma pela média do que recebeu. O que ele faz daí em diante, e quanto ganha por jogada?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a6c" value="B para sempre">fica em B para sempre</label><label class="opt"><input type="radio" name="a6c" value="volta para A">logo volta para A</label><label class="opt"><input type="radio" name="a6c" value="alterna">alterna entre as duas</label></div>
+    <div class="inline"><label>ganho por jogada<input type="text" inputmode="decimal" name="a6c2"></label></div></div>
+  <div class="q"><p class="qt"><i>d</i>Com Q_B = 1 depois de 1 jogada, a 2ª jogada em B dá 0. Pela média incremental <span class="badge">Q ← Q + (1/n)·(r − Q)</span>, quanto fica Q_B?</p>
+    <div class="inline"><label>Q_B<input type="text" inputmode="decimal" name="a6d"></label></div></div>
+  <p class="meta">Agente ε-guloso: 300 jogadas, média de 200 repetições</p>
+  <canvas class="plot" id="egC" width="600" height="260" aria-label="Recompensa média do agente ao longo das jogadas"></canvas>
+  <div class="ctl"><label>ε = <span id="egEv">0,1</span><input type="range" id="egE" min="0" max="1" step="0.05" value="0.1"></label></div>
+  <div class="btns"><button type="button" class="ghost" id="egRun">Rodar o agente</button></div>
+  <p class="readout" id="egR"></p>
+  <div class="send"><button data-send="a6">Enviar</button><span class="sent" data-status="a6"></span></div>
+  <div class="fb" data-fb="a6" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 7 ============ -->
+<section class="exp" id="a7" data-titulo="Níveis de Marr e sinais de ensino">
+  <div><p class="num">Atividade 7 · 4 min · individual · opcional</p><h2>Níveis de Marr e sinais de ensino</h2></div>
+  <p class="lead"><b>C</b> = computacional (o quê e por quê) · <b>A</b> = algorítmico (como) · <b>I</b> = implementação (com quê)</p>
+  <div class="marr" id="marrList"></div>
+  <div class="q"><p class="qt"><i>b</i>Que sinal de ensino cada sistema recebe?</p>
+    <div class="match" id="sigMatch"></div></div>
+  <div class="send"><button data-send="a7">Enviar</button><span class="sent" data-status="a7"></span></div>
+  <div class="fb" data-fb="a7" hidden></div>
+</section>
+
+<footer>
+  <p>Materiais: <a href="simulacoes/aula04.html">simulações interativas da Aula 4</a> · <a href="index.html">todas as aulas</a></p>
+  <p>Prof. Daniel Y. Takahashi · Instituto do Cérebro, UFRN</p>
+</footer>
+</div>
+
+<script>
+(() => {
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const val = (n) => { const el = $(`[name="${n}"]:checked`) || $(`[name="${n}"]:not([type=radio]):not([type=checkbox])`); return el ? String(el.value).trim() : ''; };
+const num = (n) => { let t = String(val(n)).replace(/\s/g, ''); if (/^-?(\d{1,3}(\.\d{3}){2,}|[1-9]\d{1,2}\.\d{3})$/.test(t)) t = t.replace(/\./g, ''); t = t.replace(',', '.').replace('−', '-'); const v = parseFloat(t); return isNaN(v) ? null : v; };
+const tag = (ok) => `<span class="mark ${ok ? 'ok' : 'no'}">${ok ? '✓' : '✗'}</span>`;
+function markRadio(name, correct) { $$(`[name="${name}"]`).forEach(i => { const l = i.closest('label'); l.classList.remove('right', 'wrong'); if (i.value === correct) l.classList.add('right'); else if (i.checked) l.classList.add('wrong'); }); }
+function markEl(el, ok) { el.classList.toggle('right', ok); el.classList.toggle('wrong', !ok); }
+const markInput = (name, ok) => markEl($(`[name="${name}"]`), ok);
+const near = (v, x, tol) => v !== null && Math.abs(v - x) <= tol;
+const okNum = (name, x, tol) => { const r = near(num(name), x, tol); markInput(name, r); return r; };
+function setupCanvas(c) { const r = window.devicePixelRatio || 1; const w = c.width, h = c.height; c.width = w * r; c.height = h * r; const g = c.getContext('2d'); g.scale(r, r); return { g, w, h }; }
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const f2 = (v, d = 2) => v.toFixed(d).replace('.', ',').replace('-', '−');
+const selHTML = (name, opts) => `<select name="${name}"><option value="">—</option>${opts.map(o => `<option>${o}</option>`).join('')}</select>`;
+
+/* ---------- Atividade 1 ---------- */
+const SIG = ['supervisionado', 'não supervisionado', 'reforço'];
+const WHERE = ['cerebelo', 'neocórtex', 'gânglios da base'];
+const SC = [
+  ['Com óculos de prisma você erra o alvo ao arremessar; em alguns dias volta a acertar.', 'supervisionado', 'cerebelo', 'cada arremesso dá um erro com direção, levado pela fibra trepadeira (pacientes cerebelares não se adaptam: Martin et al., 1996)'],
+  ['Gatos criados vendo só listras verticais: seus neurônios de V1 passam a preferir verticais.', 'não supervisionado', 'neocórtex', 'ninguém diz o que é vertical: a estatística das imagens molda V1 (Blakemore & Cooper, 1970)'],
+  ['Um macaco aprende que uma luz prevê suco; a dopamina passa a disparar na luz.', 'reforço', 'gânglios da base', 'só "melhor ou pior que o esperado": o erro de predição (Schultz)'],
+  ['Um filtro de spam treinado com 50 mil e-mails marcados por pessoas.', 'supervisionado', null, 'cada e-mail vem com a resposta certa'],
+  ['Um aplicativo agrupa músicas parecidas sem que ninguém informe os gêneros.', 'não supervisionado', null, 'só as músicas, sem rótulos: agrupamento'],
+  ['Um programa aprende Go jogando contra si mesmo; só sabe, no fim, quem ganhou.', 'reforço', null, 'um número no fim da partida; nenhuma jogada certa é informada'],
+];
+$('#scBody').innerHTML = SC.map(([t, , w], k) => `<div class="rowcard"><span><b>${k + 1}.</b> ${t}</span>
+  <div class="inline"><label>Sinal${selHTML('s' + k, SIG)}</label>${w ? `<label>Onde${selHTML('w' + k, WHERE)}</label>` : ''}</div></div>`).join('');
+
+/* ---------- Atividade 2: polinômio ---------- */
+const XT = Array.from({ length: 10 }, (_, k) => k / 9), YT = [0.51, 0.0, 1.09, 0.72, 0.23, -0.4, -1.37, -1.04, -0.86, 0.83];
+const XV = Array.from({ length: 9 }, (_, k) => (k + 0.5) / 9), YV = [0.4, 0.78, 0.91, 0.48, -0.26, -0.74, -0.86, -0.93, -0.1];
+function polyfit(d) { // mínimos quadrados por QR (Householder) em u = 2x − 1
+  const m = XT.length, n = d + 1, A = XT.map(x => Array.from({ length: n }, (_, j) => Math.pow(2 * x - 1, j))), b = YT.slice();
+  for (let k = 0; k < n; k++) {
+    let s = 0; for (let i = k; i < m; i++) s += A[i][k] * A[i][k]; s = Math.sqrt(s); if (A[k][k] > 0) s = -s;
+    const v = []; for (let i = 0; i < m; i++) v[i] = i < k ? 0 : A[i][k]; v[k] -= s;
+    let vv = 0; for (let i = k; i < m; i++) vv += v[i] * v[i]; if (vv === 0) continue;
+    for (let j = k; j < n; j++) { let t = 0; for (let i = k; i < m; i++) t += v[i] * A[i][j]; t = 2 * t / vv; for (let i = k; i < m; i++) A[i][j] -= t * v[i]; }
+    let t = 0; for (let i = k; i < m; i++) t += v[i] * b[i]; t = 2 * t / vv; for (let i = k; i < m; i++) b[i] -= t * v[i];
+  }
+  const c = Array(n).fill(0); for (let k = n - 1; k >= 0; k--) { let t = b[k]; for (let j = k + 1; j < n; j++) t -= A[k][j] * c[j]; c[k] = t / A[k][k]; }
+  return c;
+}
+const pval = (c, x) => c.reduce((s, cj, j) => s + cj * Math.pow(2 * x - 1, j), 0);
+const pmse = (c, X, Y) => X.reduce((s, x, i) => s + (pval(c, x) - Y[i]) ** 2, 0) / X.length;
+const PF = setupCanvas($('#pfC'));
+function pfDraw() {
+  const d = +$('#pfD').value; $('#pfDv').textContent = d; const c = polyfit(d);
+  const { g, w, h } = PF; g.clearRect(0, 0, w, h);
+  const X = (x) => 24 + (w - 40) * x, Y = (y) => h / 2 - y * (h * 0.4) / 1.6;
+  g.strokeStyle = css('--line'); g.lineWidth = 1; g.beginPath(); g.moveTo(24, Y(0)); g.lineTo(w - 16, Y(0)); g.stroke();
+  g.save(); g.beginPath(); g.rect(0, 0, w, h); g.clip();
+  g.strokeStyle = d >= 8 ? '#dc2626' : (d <= 1 ? '#b45309' : '#15803d'); g.lineWidth = 2.5; g.beginPath();
+  for (let k = 0; k <= 300; k++) { const x = k / 300, y = Math.max(-3, Math.min(3, pval(c, x))); k ? g.lineTo(X(x), Y(y)) : g.moveTo(X(x), Y(y)); } g.stroke(); g.restore();
+  g.fillStyle = css('--fg'); XT.forEach((x, i) => { g.beginPath(); g.arc(X(x), Y(YT[i]), 5, 0, 7); g.fill(); });
+  g.strokeStyle = '#1a56db'; g.lineWidth = 2; XV.forEach((x, i) => g.strokeRect(X(x) - 5, Y(YV[i]) - 5, 10, 10));
+  $('#pfR').textContent = `grau ${d} · EQM treino = ${f2(pmse(c, XT, YT), 3)} · EQM validação = ${f2(pmse(c, XV, YV), 3)}`;
+}
+$('#pfD').addEventListener('input', pfDraw); pfDraw();
+
+/* ---------- Atividade 3: k-means 2D ---------- */
+const KM = setupCanvas($('#kmC'));
+const KC = ['#1a56db', '#b45309', '#6d28d9', '#0d9488', '#dc2626'];
+let km = null;
+function gauss() { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+function kmNew() {
+  const C = [[-1.6, -1.2], [1.6, -0.8], [0, 1.6], [-1.8, 1.4]].slice(0, 3 + Math.round(Math.random()));
+  const pts = []; C.forEach(([a, b]) => { for (let i = 0; i < 35; i++) pts.push([a + 0.5 * gauss(), b + 0.5 * gauss()]); });
+  km = { pts, lab: pts.map(() => -1) }; kmInit();
+}
+function kmInit() { const K = +$('#kmK').value; $('#kmKv').textContent = K; km.cen = Array.from({ length: K }, () => km.pts[Math.floor(Math.random() * km.pts.length)].slice()); km.lab = km.pts.map(() => -1); km.step = 0; kmDraw(); }
+const kmSS = () => km.pts.reduce((s, p, i) => km.lab[i] < 0 ? s : s + (p[0] - km.cen[km.lab[i]][0]) ** 2 + (p[1] - km.cen[km.lab[i]][1]) ** 2, 0);
+function kmAssign() { km.lab = km.pts.map(p => { let b = 0, bd = 1e9; km.cen.forEach((c, k) => { const d = (p[0] - c[0]) ** 2 + (p[1] - c[1]) ** 2; if (d < bd) { bd = d; b = k; } }); return b; }); km.step++; kmDraw(); }
+function kmUpdate() { if (km.lab[0] < 0) return kmAssign(); km.cen = km.cen.map((c, k) => { const m = km.pts.filter((_, i) => km.lab[i] === k); return m.length ? [m.reduce((s, p) => s + p[0], 0) / m.length, m.reduce((s, p) => s + p[1], 0) / m.length] : c; }); kmDraw(); }
+function kmDraw() {
+  const { g, w, h } = KM; g.clearRect(0, 0, w, h); const S = w / 7.5, X = (x) => w / 2 + x * S, Y = (y) => h / 2 - y * S;
+  km.pts.forEach((p, i) => { g.fillStyle = km.lab[i] < 0 ? css('--muted') : KC[km.lab[i]]; g.globalAlpha = 0.75; g.beginPath(); g.arc(X(p[0]), Y(p[1]), 3.5, 0, 7); g.fill(); });
+  g.globalAlpha = 1; km.cen.forEach((c, k) => { g.fillStyle = KC[k]; g.strokeStyle = css('--fg'); g.lineWidth = 2; g.beginPath(); g.arc(X(c[0]), Y(c[1]), 9, 0, 7); g.fill(); g.stroke(); });
+  $('#kmR').textContent = km.lab[0] < 0 ? 'Centros sorteados. Toque em Atribuir.' : `soma dos quadrados = ${f2(kmSS(), 1)}`;
+}
+$('#kmA').addEventListener('click', kmAssign); $('#kmU').addEventListener('click', kmUpdate);
+$('#kmN').addEventListener('click', kmNew); $('#kmK').addEventListener('input', kmInit); kmNew();
+
+/* ---------- Atividade 4: Rescorla–Wagner ---------- */
+const RW = setupCanvas($('#rwC'));
+function rwDraw() {
+  const P = $('#rwP').value, a = +$('#rwA').value; $('#rwAv').textContent = f2(a, 2).replace(/0$/, '');
+  let vA = 0, vB = 0; const A = [0], B = [0];
+  for (let t = 1; t <= 20; t++) {
+    if (P === 'acq') { const lam = t <= 10 ? 1 : 0; vA += a * (lam - vA); }
+    else if (P === 'blk') { if (t <= 10) vA += a * (1 - vA); else { const d = 1 - (vA + vB); vA += a * d; vB += a * d; } }
+    else { const d = 1 - (vA + vB); vA += a * d; vB += a * d; }
+    A.push(vA); B.push(vB);
+  }
+  const { g, w, h } = RW; g.clearRect(0, 0, w, h); const X = (t) => 40 + (w - 60) * t / 20, Y = (v) => h - 30 - v * (h - 60);
+  g.strokeStyle = css('--line'); g.lineWidth = 1; [0, 0.5, 1].forEach(v => { g.beginPath(); g.moveTo(40, Y(v)); g.lineTo(w - 20, Y(v)); g.stroke(); });
+  g.fillStyle = css('--muted'); g.font = '19px ui-monospace,monospace'; g.fillText('1', 20, Y(1) + 6); g.fillText('0,5', 2, Y(0.5) + 6); g.fillText('0', 20, Y(0) + 6); g.fillText('ensaio', w - 80, h - 6);
+  g.beginPath(); g.moveTo(X(10), 10); g.lineTo(X(10), h - 30); g.stroke();
+  const line = (V, col) => { g.strokeStyle = col; g.fillStyle = col; g.lineWidth = 2.5; g.beginPath(); V.forEach((v, t) => t ? g.lineTo(X(t), Y(v)) : g.moveTo(X(t), Y(v))); g.stroke(); V.forEach((v, t) => { g.beginPath(); g.arc(X(t), Y(v), 3, 0, 7); g.fill(); }); };
+  line(A, '#6d28d9'); if (P !== 'acq') line(B, '#b45309');
+  g.font = '22px ui-monospace,monospace'; g.fillStyle = '#6d28d9'; g.fillText(P === 'acq' ? 'V' : 'V_A', X(1), 22); if (P !== 'acq') { g.fillStyle = '#b45309'; g.fillText('V_B', X(1) + 80, 22); }
+  $('#rwR').textContent = P === 'acq' ? `V após os ensaios 1, 2, 3: ${f2(A[1], 3)}; ${f2(A[2], 3)}; ${f2(A[3], 3)} · 1º ensaio de extinção (partindo de V ≈ 1): ${f2(A[11], 3)}` :
+    `no fim: V_A = ${f2(vA)} · V_B = ${f2(vB)}`;
+}
+$('#rwP').addEventListener('change', rwDraw); $('#rwA').addEventListener('input', rwDraw); rwDraw();
+
+/* ---------- Atividade 5: TD ---------- */
+const DA = ['surto de disparo', 'nada muda', 'pausa abaixo da linha de base'];
+const DAQ = [['quando a luz aparece', 'surto de disparo'], ['quando o suco chega', 'nada muda'], ['quando o suco falta', 'pausa abaixo da linha de base']];
+$('#daMatch').innerHTML = DAQ.map(([t], k) => `<div class="m"><span>${t}</span>${selHTML('da' + k, DA)}</div>`).join('');
+const TD = setupCanvas($('#tdC'));
+function tdTrial(n, omit) {
+  const T = 12, cs = 3, rw = 9, al = 0.3; const V = Array(T + 1).fill(0); let d = [];
+  for (let k = 1; k <= n; k++) {
+    d = Array(T).fill(0);
+    for (let t = 0; t < T - 1; t++) {
+      const r = (t + 1 === rw && !(omit && k === n)) ? 1 : 0;
+      const vn = t >= cs ? V[t] : 0, vx = (t + 1 >= cs && t + 1 <= rw - 1) ? V[t + 1] : 0;
+      d[t + 1] = r + vx - vn; if (t >= cs) V[t] += al * d[t + 1];
+    }
+  }
+  return d;
+}
+function tdDraw() {
+  const n = +$('#tdN').value; $('#tdNv').textContent = n; const d = tdTrial(n, $('#tdO').checked);
+  const { g, w, h } = TD; g.clearRect(0, 0, w, h); const X = (t) => 30 + (w - 50) * (t + 0.5) / 12, Y = (v) => h / 2 - v * (h * 0.36);
+  g.strokeStyle = css('--line'); g.lineWidth = 1; g.beginPath(); g.moveTo(24, Y(0)); g.lineTo(w - 16, Y(0)); g.stroke();
+  [[3, 'pista', '#0d9488'], [9, 'suco', '#b45309']].forEach(([t, l, c]) => { g.strokeStyle = c; g.setLineDash([4, 4]); g.beginPath(); g.moveTo(X(t), 16); g.lineTo(X(t), h - 10); g.stroke(); g.setLineDash([]); g.fillStyle = c; g.font = '20px ui-monospace,monospace'; g.fillText(l, X(t) + 4, 16); });
+  d.forEach((v, t) => { g.fillStyle = v >= 0 ? '#1a56db' : '#dc2626'; const y0 = Y(0), y1 = Y(v); g.fillRect(X(t) - 12, Math.min(y0, y1), 24, Math.abs(y1 - y0)); });
+  g.fillStyle = css('--muted'); g.font = '19px ui-monospace,monospace'; g.fillText('+1', 2, Y(1) + 6); g.fillText('−1', 2, Y(-1) + 6); g.fillText('tempo →', w - 100, h - 6);
+}
+$('#tdN').addEventListener('input', tdDraw); $('#tdO').addEventListener('change', tdDraw); tdDraw();
+
+/* ---------- Atividade 6: bandido ---------- */
+let band = null;
+function bReset() { const pa = Math.random() < 0.5; band = { p: pa ? [0.8, 0.4] : [0.4, 0.8], n: 0, tot: 0, cnt: [0, 0], win: [0, 0] }; ['#bL', '#bR'].forEach(s => $(s).classList.remove('hit', 'miss')); bShow(); }
+function bShow() { $('#bK').innerHTML = `<span>jogadas: ${band.n}/20</span><span>pontos: ${band.tot}</span><span>esq.: ${band.win[0]}/${band.cnt[0]}</span><span>dir.: ${band.win[1]}/${band.cnt[1]}</span>` + (band.n >= 20 ? `<span>a melhor era a ${band.p[0] > band.p[1] ? 'esquerda' : 'direita'}</span>` : ''); }
+function bPlay(k) { if (band.n >= 20) return; const r = Math.random() < band.p[k] ? 1 : 0; band.n++; band.tot += r; band.cnt[k]++; band.win[k] += r; const b = $(k ? '#bR' : '#bL'); ['#bL', '#bR'].forEach(s => $(s).classList.remove('hit', 'miss')); b.classList.add(r ? 'hit' : 'miss'); bShow(); }
+$('#bL').addEventListener('click', () => bPlay(0)); $('#bR').addEventListener('click', () => bPlay(1)); $('#bReset').addEventListener('click', bReset); bReset();
+const EG = setupCanvas($('#egC'));
+function egRun() {
+  const eps = +$('#egE').value, N = 300, R = 200, p = [0.8, 0.4], avg = Array(N).fill(0); let stuck = 0;
+  for (let r = 0; r < R; r++) { const Q = [0, 0], n = [0, 0]; let lastA = 0;
+    for (let t = 0; t < N; t++) { let a; if (Math.random() < eps) a = Math.random() < 0.5 ? 0 : 1; else a = Q[0] === Q[1] ? (Math.random() < 0.5 ? 0 : 1) : (Q[0] > Q[1] ? 0 : 1);
+      const rw = Math.random() < p[a] ? 1 : 0; n[a]++; Q[a] += (rw - Q[a]) / n[a]; avg[t] += rw / R; if (t >= N - 50) lastA += a; }
+    if (lastA > 40) stuck++; }
+  const { g, w, h } = EG; g.clearRect(0, 0, w, h); const X = (t) => 50 + (w - 70) * t / N, Y = (v) => h - 24 - (v - 0.3) / 0.6 * (h - 44);
+  g.strokeStyle = css('--line'); g.lineWidth = 1; g.fillStyle = css('--muted'); g.font = '19px ui-monospace,monospace';
+  [0.4, 0.6, 0.8].forEach(v => { g.beginPath(); g.moveTo(50, Y(v)); g.lineTo(w - 20, Y(v)); g.stroke(); g.fillText(f2(v, 1), 4, Y(v) + 6); });
+  g.fillText('jogada', w - 80, h - 4);
+  const sm = avg.map((_, t) => { const a = Math.max(0, t - 9); let s = 0; for (let k = a; k <= t; k++) s += avg[k]; return s / (t - a + 1); });
+  g.strokeStyle = css('--accent'); g.lineWidth = 2.5; g.beginPath(); sm.forEach((v, t) => t ? g.lineTo(X(t), Y(v)) : g.moveTo(X(t), Y(v))); g.stroke();
+  const last = avg.slice(-50).reduce((s, v) => s + v, 0) / 50;
+  $('#egR').textContent = `ε = ${f2(eps)} · recompensa média nas últimas 50 jogadas = ${f2(last)} · presos no braço pior: ${Math.round(100 * stuck / R)}% das repetições`;
+}
+$('#egE').addEventListener('input', () => { $('#egEv').textContent = f2(+$('#egE').value).replace(/0$/, ''); });
+$('#egRun').addEventListener('click', egRun); egRun();
+
+/* ---------- Atividade 7 ---------- */
+const MARR = [
+  ['O cerebelo precisa reduzir a diferença entre o movimento desejado e o realizado.', 'C', 'o objetivo'],
+  ['δw = k·(r − v)·x.', 'A', 'a regra de atualização (Rescorla–Wagner)'],
+  ['Neurônios da substância negra compacta e da área tegmentar ventral liberam dopamina no estriado.', 'I', 'neuroanatomia'],
+  ['Um animal precisa prever a soma das recompensas futuras.', 'C', 'o problema'],
+  ['O k-means alterna atribuir pontos ao centro mais próximo e recalcular os centros.', 'A', 'o procedimento'],
+  ['Interneurônios GABAérgicos fazem a competição entre as piramidais.', 'I', 'o circuito'],
+];
+$('#marrList').innerHTML = MARR.map(([t], k) => `<div class="st"><span>${k + 1}. ${t}</span><div class="seg" role="radiogroup" aria-label="Nível da afirmação ${k + 1}">
+  ${['C', 'A', 'I'].map(l => `<label><input type="radio" name="m${k}" value="${l}">${l}</label>`).join('')}</div></div>`).join('');
+const SIGS = ['erro para cada neurônio', 'nenhum sinal externo', 'um escalar difundido'];
+const SIGQ = [['cerebelo', 'erro para cada neurônio'], ['neocórtex', 'nenhum sinal externo'], ['gânglios da base', 'um escalar difundido']];
+$('#sigMatch').innerHTML = SIGQ.map(([t], k) => `<div class="m"><span>${t}</span>${selHTML('sg' + k, SIGS)}</div>`).join('');
+
+/* ---------- correção ---------- */
+const ACT = {
+  a1() {
+    let s = 0, n = 0; const parts = [];
+    SC.forEach(([, sg, wh], k) => {
+      const e = $(`[name="s${k}"]`); const ok = e.value === sg; markEl(e, ok); s += ok; n++; let p = `${k + 1}:${e.value || '—'}`;
+      if (wh) { const f = $(`[name="w${k}"]`); const ok2 = f.value === wh; markEl(f, ok2); s += ok2; n++; p += `/${f.value || '—'}`; }
+      parts.push(p);
+    });
+    return { score: `${s}/${n}`, resp: parts.join(' '),
+      fb: `<p class="score">${s} de ${n}</p><ul>${SC.map(([, sg, wh, why], k) => `<li>${tag($(`[name="s${k}"]`).value === sg && (!wh || $(`[name="w${k}"]`).value === wh))} <b>${k + 1}.</b> <b>${sg}</b>${wh ? ` · <b>${wh}</b>` : ''} — ${why}.</li>`).join('')}</ul>
+      <p>Pegadinha para discutir: o piscar condicionado (tom + sopro no olho) é condicionamento clássico, mas depende do cerebelo — o sopro chega pelas fibras trepadeiras como um professor.</p>
+      <figure><img src="img/aula04/g1_signals.png" alt="Três redes: supervisionada, com um alvo para cada neurônio de saída; não supervisionada, com inibição lateral e nenhum sinal externo; por reforço, com um único sinal r difundido para todos os neurônios." loading="lazy"><figcaption>O que separa os tipos é o sinal de ensino.</figcaption></figure>` };
+  },
+  a2() {
+    const oa = okNum('a2a', 5 / 3, 0.03), ob = okNum('a2b', 3, 0);
+    const c9 = $('[name=a2c9]'), c1 = $('[name=a2c1]'); const o9 = c9.value === 'sobreajuste', o1 = c1.value === 'subajuste'; markEl(c9, o9); markEl(c1, o1);
+    const d = val('a2d'); markRadio('a2d', 'só diminui'); const od = d === 'só diminui';
+    const s = oa + ob + o9 + o1 + od;
+    return { score: `${s}/5`, resp: `EQM=${num('a2a') ?? '—'} | grau=${num('a2b') ?? '—'} | g9:${c9.value || '—'} g1:${c1.value || '—'} | treino: ${d || '—'}`,
+      fb: `<p class="score">${s} de 5</p><ul>
+      <li>${tag(oa)} Erros −1, 0, −2 → quadrados 1, 0, 4 → EQM = 5/3 ≈ <b>1,67</b>.</li>
+      <li>${tag(ob)} Menor validação no <b>grau 3</b> (0,021); no grau 9, 0,435.</li>
+      <li>${tag(o9 && o1)} Grau 9: <b>sobreajuste</b> (decorou o ruído, variância alta). Grau 1: <b>subajuste</b> (simples demais, viés alto).</li>
+      <li>${tag(od)} O erro de treino <b>só diminui</b>: um polinômio maior contém os menores. Por isso não serve para escolher o modelo.</li></ul>
+      <figure><img src="img/aula04/g3_overfit.png" alt="Ajustes de grau 1, 3 e 9 aos mesmos pontos e as curvas de erro de treino e de validação em função do grau." loading="lazy"><figcaption>Dados ilustrativos (seno com ruído).</figcaption></figure>` };
+  },
+  a3() {
+    const on = okNum('a3n', 2, 0), oc = okNum('a3c1', 1.5, 0.01) & okNum('a3c2', 7.5, 0.01);
+    const p4 = val('a3p4'); markRadio('a3p4', 'c1'); const od = okNum('a3d1', 7 / 3, 0.02) & okNum('a3d2', 26 / 3, 0.02);
+    const cv = val('a3conv'); markRadio('a3conv', 'não muda'); const oss = okNum('a3ss', 28 / 3, 0.05);
+    const pt = val('a3part'); markRadio('a3part', 'kmeans');
+    const s = on + !!oc + (p4 === 'c1') + !!od + (cv === 'não muda') + oss + (pt === 'kmeans');
+    return { score: `${s}/7`, resp: `n=${num('a3n') ?? '—'} c=(${num('a3c1') ?? '—'}; ${num('a3c2') ?? '—'}) | 4→${p4 || '—'} c=(${num('a3d1') ?? '—'}; ${num('a3d2') ?? '—'}) | ${cv || '—'} SS=${num('a3ss') ?? '—'} | ${pt || '—'}`,
+      fb: `<p class="score">${s} de 7</p><figure><img src="img/aula04/g5_kmeans1d.png" alt="Três iterações do k-means nos pontos 1, 2, 4, 7, 9 e 10: o ponto 4 começa no grupo da direita e passa para o da esquerda." loading="lazy"></figure><ul>
+      <li>${tag(on && oc)} {1, 2} com c₁ e {4, 7, 9, 10} com c₂ → <b>2 pontos</b>; c₁ = <b>1,5</b>, c₂ = <b>7,5</b>.</li>
+      <li>${tag(p4 === 'c1' && od)} O ponto 4 está a 2,5 de c₁ e a 3,5 de c₂: <b>vai para c₁</b>. c₁ = 7/3 ≈ <b>2,33</b>, c₂ = 26/3 ≈ <b>8,67</b>.</li>
+      <li>${tag(cv === 'não muda' && oss)} <b>Convergiu</b>. Soma = 4,67 + 4,67 ≈ <b>9,33</b>.</li>
+      <li>${tag(pt === 'kmeans')} A partição {1, 2}/{4, 7, 9, 10} tem soma 0,5 + 21 = 21,5: o k-means trocou o 4 de grupo para diminuir a soma.</li></ul>
+      <p>A rede competitiva da Aula 3 faz o mesmo, um ponto por vez: o vencedor é o centro mais próximo, e Δw = α(x − w) o puxa para o ponto.</p>` };
+  },
+  a4() {
+    const oa = okNum('a4a1', 0.5, 0.005) & okNum('a4a2', 0.75, 0.005) & okNum('a4a3', 0.875, 0.006);
+    const ob = okNum('a4b', 0.4375, 0.01), oc = okNum('a4c', 0, 0.001), od = okNum('a4d', 0.5, 0.005);
+    const s = !!oa + ob + oc + od;
+    return { score: `${s}/4`, resp: `V1-3=${['a4a1', 'a4a2', 'a4a3'].map(n => num(n) ?? '—').join(', ')} | ext=${num('a4b') ?? '—'} | bloq V_B=${num('a4c') ?? '—'} | ctrl V_B=${num('a4d') ?? '—'}`,
+      fb: `<p class="score">${s} de 4</p><ul>
+      <li>${tag(oa)} <b>0,5 → 0,75 → 0,875</b>: erros 1; 0,5; 0,25 — cada ensaio fecha metade da distância até λ.</li>
+      <li>${tag(ob)} 0,875 + 0,5 × (0 − 0,875) = <b>0,4375 ≈ 0,44</b>.</li>
+      <li>${tag(oc)} Erro = 1 − (V_A + V_B) = 1 − 1 = 0 → <b>V_B = 0</b>: bloqueio.</li>
+      <li>${tag(od)} Erro = 1 − 0 = 1 → <b>V_B = 0,5</b> (e V_A = 0,5): A e B dividem o valor.</li></ul>
+      <figure><img src="img/aula04/g7_rw.png" alt="Curva de aquisição e extinção do valor previsto, e barras mostrando V_B igual a zero no bloqueio e 0,5 no controle." loading="lazy"></figure>
+      <p>Waelti, Dickinson & Schultz (2001): neurônios de dopamina também mostram bloqueio.</p>` };
+  },
+  a5() {
+    const oa = okNum('a5a1', 1, 0.01) & okNum('a5a2', 0.5, 0.01), ob = okNum('a5b1', 0.5, 0.01) & okNum('a5b2', 0.5, 0.01);
+    const oc = okNum('a5c1', 1, 0.01) & okNum('a5c2', 0, 0.01) & okNum('a5c3', -1, 0.01);
+    let odn = 0; DAQ.forEach(([, c], k) => { const e = $(`[name="da${k}"]`); const ok = e.value === c; markEl(e, ok); odn += ok; });
+    const s = !!oa + !!ob + !!oc + (odn === 3);
+    return { score: `${s}/4`, resp: `e1: δ=${num('a5a1') ?? '—'} V1=${num('a5a2') ?? '—'} | e2: ${num('a5b1') ?? '—'}, ${num('a5b2') ?? '—'} | final: ${['a5c1', 'a5c2', 'a5c3'].map(n => num(n) ?? '—').join(', ')} | DA: ${DAQ.map((_, k) => $(`[name="da${k}"]`).value || '—').join(' / ')}`,
+      fb: `<p class="score">${s} de 4</p><ul>
+      <li>${tag(oa)} Ensaio 1: δ = 1 + 0 − 0 = <b>1</b>; V(s₁) = 0 + 0,5 × 1 = <b>0,5</b>.</li>
+      <li>${tag(ob)} Ensaio 2: s₀ → s₁: δ = 0 + 0,5 − 0 = <b>0,5</b>; suco: δ = 1 − 0,5 = <b>0,5</b>. O valor passa para trás, um passo por ensaio.</li>
+      <li>${tag(oc)} Depois do aprendizado: luz <b>+1</b> (= V(s₀) − 0); suco <b>0</b> (1 + 0 − 1); sem suco <b>−1</b> (0 + 0 − 1).</li>
+      <li>${tag(odn === 3)} <b>Surto</b> na luz · <b>nada</b> no suco previsto · <b>pausa</b> quando o suco falta — o que Schultz registrou.</li></ul>
+      <figure><img src="img/aula04/f16_10_rpe.png" alt="Rasters e histogramas de um neurônio de dopamina: disparo na recompensa inesperada, disparo na pista quando a recompensa é prevista, e pausa quando a recompensa prevista não vem." loading="lazy" style="max-width:320px"><figcaption>Rolls (2023, Fig. 16.10), orig. Schultz (1998).</figcaption></figure>` };
+  },
+  a6() {
+    const oa = okNum('a6a', 0.6, 0.01), ob = okNum('a6b', 0.78, 0.01);
+    const c = val('a6c'); markRadio('a6c', 'B para sempre'); const oc2 = okNum('a6c2', 0.4, 0.01); const od = okNum('a6d', 0.5, 0.01);
+    const s = oa + ob + (c === 'B para sempre') + oc2 + od;
+    return { score: `${s}/5`, resp: `acaso=${num('a6a') ?? '—'} | ε0,1=${num('a6b') ?? '—'} | guloso: ${c || '—'}, ${num('a6c2') ?? '—'} | Q_B=${num('a6d') ?? '—'} | jogo: ${band.tot}/${band.n}`,
+      fb: `<p class="score">${s} de 5</p><ul>
+      <li>${tag(oa)} Ao acaso: (0,8 + 0,4)/2 = <b>0,6</b>.</li>
+      <li>${tag(ob)} P(A) = 0,9 + 0,05 = 0,95 → 0,95 × 0,8 + 0,05 × 0,4 = <b>0,78</b>.</li>
+      <li>${tag(c === 'B para sempre' && oc2)} <b>Fica em B para sempre</b> e ganha <b>0,4</b>: Q_B (a média de B, que inclui aquele 1) nunca chega a 0 = Q_A, e A nunca mais é testada.</li>
+      <li>${tag(od)} Q_B = 1 + ½ × (0 − 1) = <b>0,5</b> — a média de 1 e 0.</li></ul>
+      <figure><img src="img/aula04/g9_bandit.png" alt="Recompensa média e porcentagem de escolhas do braço melhor para epsilon 0, 0,1 e 0,5: o guloso puro fica preso no braço pior em cerca de um terço das vezes." loading="lazy"></figure>` };
+  },
+  a7() {
+    let s = 0;
+    MARR.forEach(([, c], k) => { if (val('m' + k) === c) s++;
+      $$(`[name="m${k}"]`).forEach(i => { const l = i.closest('label'); l.classList.remove('right', 'wrong'); if (i.value === c) l.classList.add('right'); else if (i.checked) l.classList.add('wrong'); }); });
+    SIGQ.forEach(([, c], k) => { const e = $(`[name="sg${k}"]`); const ok = e.value === c; markEl(e, ok); s += ok; });
+    return { score: `${s}/9`, resp: MARR.map((_, k) => `${k + 1}:${val('m' + k) || '—'}`).join(' ') + ' | ' + SIGQ.map(([t], k) => `${t}: ${$(`[name="sg${k}"]`).value || '—'}`).join('; '),
+      fb: `<p class="score">${s} de 9</p><ul>${MARR.map(([, c, why], k) => `<li>${tag(val('m' + k) === c)} ${k + 1}. <b>${c}</b> — ${why}</li>`).join('')}
+      <li>${tag(SIGQ.every(([, c], k) => $(`[name="sg${k}"]`).value === c))} Cerebelo: <b>erro para cada neurônio</b> (uma fibra trepadeira por Purkinje); neocórtex: <b>nenhum sinal externo</b>; gânglios da base: <b>um escalar difundido</b> (dopamina).</li></ul>` };
+  },
+};
+
+/* ---------- envio ---------- */
+$$('[data-send]').forEach(btn => btn.addEventListener('click', () => {
+  const id = btn.dataset.send, sec = document.getElementById(id);
+  if (!window.Registro || !Registro.identificado()) { window.Registro && Registro.pedeId(); return; }
+  const r = ACT[id]();
+  const ok = Registro.atividade(id, sec.dataset.titulo, r.score, r.resp);
+  const fb = $(`[data-fb="${id}"]`); fb.innerHTML = '<h3>Gabarito</h3>' + r.fb; fb.hidden = false;
+  const st = $(`[data-status="${id}"]`);
+  const first = Registro.aluno().n.split(' ')[0];
+  st.textContent = ok ? `✓ Resposta registrada para ${first}. Você pode corrigir e reenviar.` : 'Identifique-se no topo da página.';
+  btn.textContent = 'Reenviar';
+  const a = $(`nav a[href="#${id}"]`); if (a) a.classList.add('done');
+  fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}));
+})();
+</script>
+<script src="config.js?v=2"></script>
+<script src="registro.js?v=2" data-aula="4"></script>

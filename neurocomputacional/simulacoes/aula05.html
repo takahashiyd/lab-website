@@ -1,0 +1,1302 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Simulações — Aula 5: Aprendizado supervisionado, do gradiente à retropropagação</title>
+<style>
+  :root{
+    --teal:#0D7377; --blue:#1A56DB; --amber:#B45309; --violet:#6D28D9;
+    --green:#15803D; --dark:#1E293B; --red:#DC2626;
+    --l-blue:#EFF6FF; --l-amber:#FFFBEB; --l-violet:#F5F3FF;
+    --l-green:#E0F4EA; --l-teal:#E0F2F1;
+    --gray:#475569; --lg:#94A3B8; --xlg:#CBD5E1; --bg:#F8FAFC;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Calibri,sans-serif;background:var(--bg);color:var(--dark);line-height:1.5;}
+  body{padding:0 0 60px 0;}
+  /* HEADER */
+  header{background:linear-gradient(135deg,var(--dark) 0%,#0F172A 100%);color:white;padding:24px 40px 18px;}
+  header .crumbs{font-size:11px;letter-spacing:4px;color:#94A3B8;text-transform:uppercase;}
+  header h1{font-size:30px;margin-top:6px;font-weight:700;}
+  header h1 .num{color:#60A5FA;}
+  header .sub{margin-top:6px;font-size:14px;color:#CBD5E1;font-style:italic;}
+  header .author{margin-top:10px;font-size:12px;color:#94A3B8;}
+  /* TABS */
+  .tabs{display:flex;gap:0;background:white;border-bottom:1px solid #E2E8F0;padding:0 30px;overflow-x:auto;}
+  .tab{padding:14px 22px;cursor:pointer;font-size:14px;font-weight:600;color:#64748B;border-bottom:3px solid transparent;transition:all .15s;white-space:nowrap;}
+  .tab:hover{color:var(--blue);background:#F1F5F9;}
+  .tab.active{color:var(--blue);border-bottom-color:var(--blue);}
+  .tab .badge{font-size:10px;background:var(--blue);color:white;padding:2px 7px;border-radius:10px;margin-left:8px;}
+  /* SLIDES */
+  .panel{display:none;padding:24px 30px;max-width:1280px;margin:0 auto;}
+  .panel.active{display:block;}
+  .panel h2{font-size:24px;color:var(--blue);margin-bottom:6px;}
+  .panel .intro{font-size:14px;color:var(--gray);font-style:italic;margin-bottom:18px;}
+  .card{background:white;border-radius:10px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:14px;}
+  .grid{display:grid;gap:14px;}
+  .g-2{grid-template-columns:1fr 1fr;}
+  .g-3{grid-template-columns:1fr 1fr 1fr;}
+  .canvas-wrap{display:flex;justify-content:center;align-items:center;background:#FAFBFC;border-radius:8px;padding:8px;border:1px solid #E2E8F0;}
+  canvas{display:block;background:white;border-radius:4px;}
+  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px;padding:12px;background:#F8FAFC;border-radius:6px;}
+  .control-group{display:flex;flex-direction:column;gap:4px;min-width:140px;}
+  .control-group label{font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:1px;}
+  .control-group input[type=range]{width:170px;accent-color:var(--blue);}
+  .control-group select{padding:6px;border:1px solid #CBD5E1;border-radius:4px;background:white;font-size:13px;}
+  .control-group .val{font-family:Consolas,Monaco,monospace;font-size:13px;color:var(--blue);font-weight:600;}
+  button{padding:8px 16px;border:none;border-radius:5px;background:var(--blue);color:white;cursor:pointer;font-weight:600;font-size:13px;transition:background .12s;}
+  button:hover{background:#1E40AF;}
+  button.green{background:var(--green);} button.green:hover{background:#166534;}
+  button.amber{background:var(--amber);} button.amber:hover{background:#92400E;}
+  button.violet{background:var(--violet);} button.violet:hover{background:#5B21B6;}
+  button.gray{background:#94A3B8;} button.gray:hover{background:#64748B;}
+  button.red{background:var(--red);} button.red:hover{background:#991B1B;}
+  .meter{font-family:Consolas,Monaco,monospace;font-size:13px;background:white;padding:6px 10px;border:1px solid #E2E8F0;border-radius:4px;}
+  .meter b{color:var(--blue);}
+  .note{background:var(--l-blue);border-left:4px solid var(--blue);padding:12px 16px;margin-top:14px;border-radius:0 6px 6px 0;font-size:13px;}
+  .note.amber{background:var(--l-amber);border-left-color:var(--amber);}
+  .note.violet{background:var(--l-violet);border-left-color:var(--violet);}
+  .note.green{background:var(--l-green);border-left-color:var(--green);}
+  .note h4{font-size:11px;color:var(--blue);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;font-weight:700;}
+  .note.amber h4{color:var(--amber);} .note.violet h4{color:var(--violet);} .note.green h4{color:var(--green);}
+  /* QUIZ */
+  .q{background:white;border-radius:8px;padding:18px;margin-bottom:14px;border-left:4px solid var(--violet);box-shadow:0 1px 3px rgba(0,0,0,.05);}
+  .q .num{font-size:11px;color:var(--violet);font-weight:700;text-transform:uppercase;letter-spacing:2px;}
+  .q .text{font-size:15px;color:var(--dark);margin:6px 0 12px;font-weight:600;}
+  .q .opts{display:grid;gap:8px;}
+  .q .opt{padding:10px 14px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:5px;cursor:pointer;font-size:14px;transition:all .12s;}
+  .q .opt:hover{background:#EFF6FF;border-color:var(--blue);}
+  .q .opt.correct{background:var(--l-green);border-color:var(--green);color:var(--green);font-weight:600;}
+  .q .opt.wrong{background:#FEE2E2;border-color:var(--red);color:var(--red);font-weight:600;}
+  .q .opt.disabled{cursor:not-allowed;opacity:.7;}
+  .q .explain{margin-top:10px;font-size:13px;color:var(--gray);background:#F1F5F9;padding:10px 14px;border-radius:4px;border-left:3px solid var(--violet);display:none;}
+  .q .explain.visible{display:block;}
+  .q .explain b{color:var(--violet);}
+  .quiz-progress{position:sticky;top:0;background:rgba(255,255,255,.95);padding:14px;border-radius:6px;margin-bottom:14px;box-shadow:0 2px 6px rgba(0,0,0,.06);font-size:14px;display:flex;justify-content:space-between;align-items:center;}
+  .quiz-progress button{padding:6px 14px;font-size:12px;}
+  .badge-correct{background:var(--green);color:white;padding:4px 10px;border-radius:4px;font-weight:600;}
+  .badge-wrong{background:var(--red);color:white;padding:4px 10px;border-radius:4px;font-weight:600;}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;align-items:center;}
+  .legend .sq{width:14px;height:14px;border-radius:3px;display:inline-block;margin-right:4px;vertical-align:middle;}
+  table.params{width:100%;font-size:13px;border-collapse:collapse;}
+  table.params td{padding:4px 8px;font-family:Consolas,Monaco,monospace;}
+  table.params td:first-child{color:var(--gray);}
+  table.params td:last-child{color:var(--blue);font-weight:600;text-align:right;}
+  .pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600;}
+  .pill.blue{background:var(--l-blue);color:var(--blue);}
+  .pill.amber{background:var(--l-amber);color:var(--amber);}
+  .pill.green{background:var(--l-green);color:var(--green);}
+  .pill.violet{background:var(--l-violet);color:var(--violet);}
+  /* footer */
+  footer{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #E2E8F0;padding:8px 30px;font-size:11px;color:var(--lg);text-align:center;z-index:100;}
+</style>
+</head>
+<body>
+<header>
+  <div class="crumbs">NEUROCIÊNCIA COMPUTACIONAL · AULA 5</div>
+  <h1>Aula 5 — Aprendizado supervisionado: do gradiente à retropropagação</h1>
+  <div class="sub">Da regra delta de 1960 à retropropagação de 1986 · <a href="../aula05.html" style="color:inherit">atividades da Aula 5</a></div>
+  <div class="author">Daniel Y Takahashi · Instituto do Cérebro · UFRN</div>
+</header>
+
+<nav class="tabs">
+  <div class="tab active" data-target="t1">Descida do gradiente</div>
+  <div class="tab" data-target="t2">Regra delta ao vivo</div>
+  <div class="tab" data-target="t3">MLP resolve o XOR</div>
+  <div class="tab" data-target="t4">Quiz de fixação</div>
+</nav>
+
+<!-- ============================================================ -->
+<!-- PANEL 1 — GRADIENT DESCENT EXPLORER                         -->
+<!-- ============================================================ -->
+<section id="t1" class="panel active">
+  <h2>Explorador de Descida de Gradiente</h2>
+  <p class="intro">Clique em qualquer ponto da superfície para colocar o "ponto inicial" do gradiente descendente. Ajuste a taxa de aprendizado η e veja como o algoritmo navega. Conecta ao slide 8 (gradient descent) e ao slide 9 (efeito de η).</p>
+
+  <div class="grid g-2" style="grid-template-columns:1.6fr 1fr;">
+    <div class="card">
+      <div class="canvas-wrap">
+        <canvas id="cv1" width="640" height="500"></canvas>
+      </div>
+      <div class="controls">
+        <div class="control-group">
+          <label>Superfície L(w)</label>
+          <select id="surface1">
+            <option value="convex">Convexa (1 mínimo)</option>
+            <option value="elongated">Vale alongado (anisotrópico)</option>
+            <option value="multi" selected>Não-convexa (mín. local + global)</option>
+            <option value="saddle">Ponto de sela</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label>Taxa de aprendizado η: <span class="val" id="eta1Val">0.10</span></label>
+          <input type="range" id="eta1" min="0.005" max="0.50" step="0.005" value="0.10">
+        </div>
+        <div class="control-group">
+          <label>Otimizador</label>
+          <select id="opt1">
+            <option value="sgd" selected>SGD puro</option>
+            <option value="momentum">Momentum (β=0.9)</option>
+            <option value="adam">Adam</option>
+          </select>
+        </div>
+        <div style="flex:1"></div>
+        <button id="play1" class="green">▶ Play</button>
+        <button id="step1">Step</button>
+        <button id="reset1" class="gray">↺ Reset</button>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:14px;flex-wrap:wrap;">
+        <div class="meter">Passo: <b id="m1step">0</b></div>
+        <div class="meter">L(w): <b id="m1loss">—</b></div>
+        <div class="meter">‖∇L‖: <b id="m1grad">—</b></div>
+        <div class="meter">w: <b id="m1w">—</b></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h4 style="font-size:11px;color:var(--blue);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;">Como usar</h4>
+        <ol style="padding-left:18px;font-size:13px;color:var(--dark);line-height:1.6;">
+          <li><b>Clique</b> em qualquer ponto da superfície para escolher o w inicial.</li>
+          <li>Ajuste η com o slider — observe a trajetória mudar.</li>
+          <li>Troque a superfície para sentir convexa vs. não-convexa.</li>
+          <li>Tente diferentes otimizadores na mesma superfície.</li>
+        </ol>
+      </div>
+      <div class="note">
+        <h4>O que observar</h4>
+        η <b>muito pequeno</b> → trajetória lenta, mas suave. η <b>bom</b> → poucos passos até o mínimo. η <b>grande demais</b> → o ponto oscila e diverge (perda cresce).
+      </div>
+      <div class="note amber">
+        <h4>Surpresa pedagógica</h4>
+        Na superfície "Não-convexa", coloque o ponto inicial em <b>diferentes regiões</b>. Você vai cair em mínimos diferentes — o gradiente descendente é míope: só vê a inclinação local.
+      </div>
+      <div class="note violet">
+        <h4>Por que Adam encurta o caminho?</h4>
+        No "Vale alongado", o SGD oscila no eixo estreito. Adam adapta o passo por dimensão — passos pequenos onde o gradiente é grande, grandes onde é pequeno.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PANEL 2 — PERCEPTRON / DELTA RULE                            -->
+<!-- ============================================================ -->
+<section id="t2" class="panel">
+  <h2>Perceptron treinando com Regra Delta — em tempo real</h2>
+  <p class="intro">Adicione pontos de duas classes e veja a regra delta de Widrow-Hoff (1960) ajustar a reta de decisão exemplo a exemplo. Conecta aos slides 10-12 (neurônio, derivação, regra em ação).</p>
+
+  <div class="grid g-2" style="grid-template-columns:1.6fr 1fr;">
+    <div class="card">
+      <div class="canvas-wrap">
+        <canvas id="cv2" width="640" height="500"></canvas>
+      </div>
+      <div class="controls">
+        <div class="control-group">
+          <label>Modo de clique</label>
+          <select id="mode2">
+            <option value="blue" selected>Adicionar classe AZUL (d=+1)</option>
+            <option value="amber">Adicionar classe LARANJA (d=-1)</option>
+            <option value="remove">Remover ponto</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label>Taxa η: <span class="val" id="eta2Val">0.10</span></label>
+          <input type="range" id="eta2" min="0.001" max="0.30" step="0.001" value="0.10">
+        </div>
+        <div style="flex:1"></div>
+        <button id="step2">1 passo</button>
+        <button id="step10_2" class="green">10 passos</button>
+        <button id="auto2" class="violet">▶ Auto</button>
+        <button id="data2" class="amber">Dados exemplo</button>
+        <button id="reset2" class="gray">↺ Reset</button>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:14px;flex-wrap:wrap;">
+        <div class="meter">Pontos: <b id="m2n">0</b></div>
+        <div class="meter">Erros: <b id="m2err">—</b></div>
+        <div class="meter">w: <b id="m2w">—</b></div>
+        <div class="meter">b: <b id="m2b">—</b></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h4 style="font-size:11px;color:var(--blue);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;">Regra Delta</h4>
+        <div style="font-family:Cambria,serif;font-size:18px;text-align:center;background:var(--l-blue);padding:14px;border-radius:6px;color:var(--dark);">
+          w ← w + η · (d − y) · x
+        </div>
+        <p style="font-size:12px;color:var(--gray);margin-top:8px;font-style:italic;">
+          A regra é aplicada exemplo a exemplo (SGD puro). y é a saída tanh(w·x+b), d é o alvo (+1 ou −1).
+        </p>
+      </div>
+      <div class="note">
+        <h4>Tutorial 60 segundos</h4>
+        1. Clique no painel para adicionar pontos AZUIS.<br>
+        2. Mude para LARANJA e adicione mais.<br>
+        3. Clique <b>"Dados exemplo"</b> para um dataset pré-pronto.<br>
+        4. Clique <b>"1 passo"</b> para ver UM exemplo ajustar a reta.<br>
+        5. Clique <b>"▶ Auto"</b> para ver o treinamento completo.
+      </div>
+      <div class="note amber">
+        <h4>Tente quebrar</h4>
+        Adicione pontos em configuração XOR (azuis em diagonal, laranjas em outra). A reta NUNCA vai convergir — o perceptron de uma camada não resolve XOR. Para isso, ↓ próxima sim.
+      </div>
+      <div class="note green">
+        <h4>Observação histórica</h4>
+        Esta é, essencialmente, a demonstração que Rosenblatt deu em 1958. A diferença: usamos tanh em vez de threshold para suavizar o aprendizado.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PANEL 3 — XOR / MLP TRAINER                                  -->
+<!-- ============================================================ -->
+<section id="t3" class="panel">
+  <h2>MLP resolve o XOR — treinamento ao vivo com Backprop</h2>
+  <p class="intro">A demonstração que ressuscitou a IA em 1986. Treine um MLP 2-2-1 (ou ajuste o tamanho) para resolver o XOR. Veja a fronteira de decisão evoluir e a perda descer. Conecta aos slides 13-14 (XOR e sua solução) e 17-21 (backprop).</p>
+
+  <div class="grid g-2" style="grid-template-columns:1.5fr 1fr;">
+    <div class="card">
+      <div class="canvas-wrap" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;background:transparent;border:none;padding:0;">
+        <div style="background:white;border:1px solid #E2E8F0;border-radius:6px;padding:6px;">
+          <div style="font-size:11px;font-weight:700;color:var(--blue);text-align:center;margin-bottom:4px;">FRONTEIRA NO ESPAÇO x</div>
+          <canvas id="cv3a" width="380" height="340"></canvas>
+        </div>
+        <div style="background:white;border:1px solid #E2E8F0;border-radius:6px;padding:6px;">
+          <div style="font-size:11px;font-weight:700;color:var(--blue);text-align:center;margin-bottom:4px;">CURVA DE PERDA</div>
+          <canvas id="cv3b" width="380" height="340"></canvas>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="control-group">
+          <label>Problema</label>
+          <select id="prob3">
+            <option value="xor" selected>XOR</option>
+            <option value="and">AND (linearmente separável)</option>
+            <option value="circle">Círculo (decisão circular)</option>
+            <option value="moons">Duas luas</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label>Neurônios ocultos: <span class="val" id="hVal">4</span></label>
+          <input type="range" id="hidden3" min="1" max="16" step="1" value="4">
+        </div>
+        <div class="control-group">
+          <label>Ativação</label>
+          <select id="act3">
+            <option value="tanh" selected>tanh</option>
+            <option value="sigmoid">sigmoid</option>
+            <option value="relu">ReLU</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label>η: <span class="val" id="eta3Val">0.30</span></label>
+          <input type="range" id="eta3" min="0.01" max="1.5" step="0.01" value="0.30">
+        </div>
+        <div style="flex:1"></div>
+        <button id="run3" class="green">▶ Treinar</button>
+        <button id="pause3" class="amber">⏸ Pausar</button>
+        <button id="reset3" class="gray">↺ Reset</button>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:14px;flex-wrap:wrap;">
+        <div class="meter">Epoch: <b id="m3ep">0</b></div>
+        <div class="meter">Perda: <b id="m3loss">—</b></div>
+        <div class="meter">Acertos: <b id="m3acc">—</b></div>
+        <div class="meter">Arquitetura: <b id="m3arch">2-4-1</b></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h4 style="font-size:11px;color:var(--blue);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;">O experimento</h4>
+        <p style="font-size:13px;color:var(--dark);line-height:1.6;">
+          Treine o MLP no XOR. Em ~50 epochs com tanh e η=0.3, a perda cai abaixo de 0.05 e a fronteira de decisão fica curva — exatamente como deve ser. Agora reduza para <b>1 neurônio oculto</b> e tente: NÃO converge. Apenas 2+ neurônios ocultos têm capacidade para o XOR.
+        </p>
+      </div>
+      <div class="note">
+        <h4>Esquema visual</h4>
+        <span class="pill blue">Azul</span> → classe d=+1<br>
+        <span class="pill amber">Laranja</span> → classe d=−1<br>
+        Tons intermediários mostram a confiança da rede.
+      </div>
+      <div class="note amber">
+        <h4>Experimentos sugeridos</h4>
+        1. XOR com h=1: nunca converge<br>
+        2. XOR com h=2: converge mas devagar<br>
+        3. XOR com h=8: converge rápido<br>
+        4. Compare tanh vs ReLU<br>
+        5. η=1.5: trajetória instável<br>
+        6. Mude para "Duas luas" — exemplo do livro do Haykin.
+      </div>
+      <div class="note violet">
+        <h4>O que está acontecendo internamente</h4>
+        A cada exemplo: forward pass calcula y; backward pass calcula δ na saída e propaga para cada oculta via δⱼ = φ'(vⱼ)·Σwₖⱼδₖ; os pesos são atualizados com w ← w − η·δ·entrada. Tudo em JavaScript no seu navegador, sem servidor.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PANEL 4 — QUIZ                                               -->
+<!-- ============================================================ -->
+<section id="t4" class="panel">
+  <h2>Quiz — fixe os conceitos da Aula 5</h2>
+  <p class="intro">12 perguntas embaralhadas cobrindo formulação supervisionada, regra delta, MLPs, backprop, otimização e plausibilidade biológica. Clique em uma alternativa para ver a explicação.</p>
+  <div class="quiz-progress">
+    <div>Acertos: <span class="badge-correct" id="qOK">0</span> &nbsp; Erros: <span class="badge-wrong" id="qErr">0</span> &nbsp; Respondidas: <b id="qN">0</b>/12</div>
+    <button id="qReset" class="gray">↺ Embaralhar</button>
+  </div>
+  <div id="quizContainer"></div>
+</section>
+
+<footer>
+  Aula 5 · Aprendizado Supervisionado · Simulações interativas · HTML5 autocontido · sem internet, sem servidor
+</footer>
+
+<script>
+// =========================================================================
+// PALETTE
+// =========================================================================
+const C = {
+  teal:'#0D7377', blue:'#1A56DB', amber:'#B45309', violet:'#6D28D9',
+  green:'#15803D', dark:'#1E293B', red:'#DC2626',
+  lblue:'#EFF6FF', lamber:'#FFFBEB', lviolet:'#F5F3FF', lgreen:'#E0F4EA',
+  gray:'#475569', lg:'#94A3B8', xlg:'#CBD5E1',
+};
+
+// =========================================================================
+// TAB SWITCHING
+// =========================================================================
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.target).classList.add('active');
+  });
+});
+
+// =========================================================================
+// SIM 1 — GRADIENT DESCENT
+// =========================================================================
+(() => {
+  const cv = document.getElementById('cv1');
+  const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  // Loss surface w-space
+  const X0=-3, X1=3, Y0=-2.2, Y1=2.2;
+  let surfKey = 'multi';
+  let eta = 0.1;
+  let optKey = 'sgd';
+  let w = null;           // [x,y]
+  let traj = [];          // history of points
+  let mt = [0,0]; let vt = [0,0]; let tStep = 0;  // momentum/adam state
+  let playing = false;
+  let lossField = null;  // cached pixel field
+  let isoColors = null;
+
+  // surfaces
+  const Surfaces = {
+    convex: w => 0.5*(w[0]*w[0] + 6*w[1]*w[1]),
+    elongated: w => 0.5*(w[0]*w[0] + 30*w[1]*w[1]),
+    multi: w => Math.pow(w[0]*w[0]-1,2) + 1.5*Math.pow(w[1]*w[1]-1,2) + 0.3*w[0]*w[1] - 0.8*Math.exp(-((w[0]-0.8)*(w[0]-0.8)+(w[1]-0.8)*(w[1]-0.8))*3),
+    saddle: w => w[0]*w[0] - w[1]*w[1] + 0.05*(w[0]*w[0]+w[1]*w[1]),
+  };
+  const Gradients = {
+    convex: w => [w[0], 6*w[1]],
+    elongated: w => [w[0], 30*w[1]],
+    multi: w => {
+      const dx = 4*w[0]*(w[0]*w[0]-1) + 0.3*w[1] - 0.8*Math.exp(-((w[0]-0.8)**2+(w[1]-0.8)**2)*3)*(-2*3*(w[0]-0.8));
+      const dy = 6*w[1]*(w[1]*w[1]-1) + 0.3*w[0] - 0.8*Math.exp(-((w[0]-0.8)**2+(w[1]-0.8)**2)*3)*(-2*3*(w[1]-0.8));
+      return [dx, dy];
+    },
+    saddle: w => [2*w[0] + 0.1*w[0], -2*w[1] + 0.1*w[1]],
+  };
+
+  function w2px(p){ return [(p[0]-X0)/(X1-X0)*W, H - (p[1]-Y0)/(Y1-Y0)*H]; }
+  function px2w(px){ return [X0 + px[0]/W*(X1-X0), Y0 + (H-px[1])/H*(Y1-Y0)]; }
+
+  function buildField(){
+    const img = ctx.createImageData(W,H);
+    // sample minmax
+    let lmin=Infinity, lmax=-Infinity;
+    for (let py=0;py<H;py+=4){
+      for (let px=0;px<W;px+=4){
+        const ww = px2w([px,py]);
+        const v = Surfaces[surfKey](ww);
+        if (v<lmin) lmin=v; if (v>lmax) lmax=v;
+      }
+    }
+    // colormap (viridis-ish)
+    const STOPS = [[68,1,84],[59,82,139],[33,144,141],[94,201,98],[253,231,37]];
+    function cmap(t){
+      if (!isFinite(t) || t < 0) t = 0;
+      else if (t > 1) t = 1;
+      const f = t * (STOPS.length - 1);
+      const i = Math.max(0, Math.min(STOPS.length - 2, Math.floor(f)));
+      const u = f - i;
+      const a = STOPS[i], b = STOPS[i + 1];
+      return [a[0]+(b[0]-a[0])*u, a[1]+(b[1]-a[1])*u, a[2]+(b[2]-a[2])*u];
+    }
+    for (let py=0;py<H;py++){
+      for (let px=0;px<W;px++){
+        const ww = px2w([px,py]);
+        const v = Surfaces[surfKey](ww);
+        let t = (v-lmin)/(lmax-lmin+1e-12);
+        if (!isFinite(t)) t = 0;
+        if (t < 0) t = 0; else if (t > 1) t = 1;
+        const c = cmap(Math.sqrt(t));
+        const idx = (py*W+px)*4;
+        img.data[idx] = c[0]; img.data[idx+1] = c[1]; img.data[idx+2] = c[2]; img.data[idx+3] = 200;
+      }
+    }
+    lossField = img;
+  }
+
+  function drawContours(){
+    // Marching-square-ish: contour lines via threshold
+    const lvls = 12;
+    let lmin=Infinity, lmax=-Infinity;
+    for (let py=0;py<H;py+=8){
+      for (let px=0;px<W;px+=8){
+        const v = Surfaces[surfKey](px2w([px,py]));
+        if (v<lmin) lmin=v; if (v>lmax) lmax=v;
+      }
+    }
+    ctx.strokeStyle = 'rgba(255,255,255,.35)';
+    ctx.lineWidth = 0.8;
+    for (let k=0;k<lvls;k++){
+      const lvl = lmin + (lmax-lmin)*(k+1)/(lvls+1);
+      ctx.beginPath();
+      const step = 6;
+      for (let py=0;py<H-step;py+=step){
+        for (let px=0;px<W-step;px+=step){
+          const v00 = Surfaces[surfKey](px2w([px,py]))     > lvl;
+          const v10 = Surfaces[surfKey](px2w([px+step,py])) > lvl;
+          const v01 = Surfaces[surfKey](px2w([px,py+step]))   > lvl;
+          if (v00!==v10){ ctx.moveTo(px+step/2,py); ctx.lineTo(px+step/2,py+step/2); }
+          if (v00!==v01){ ctx.moveTo(px,py+step/2); ctx.lineTo(px+step/2,py+step/2); }
+        }
+      }
+      ctx.stroke();
+    }
+  }
+
+  function draw(){
+    if (!lossField) buildField();
+    ctx.putImageData(lossField, 0, 0);
+    drawContours();
+    // trajectory
+    if (traj.length>1){
+      ctx.strokeStyle = '#FCD34D'; ctx.lineWidth = 2;
+      ctx.beginPath();
+      const p0 = w2px(traj[0]); ctx.moveTo(p0[0], p0[1]);
+      for (let i=1;i<traj.length;i++){
+        const p = w2px(traj[i]); ctx.lineTo(p[0], p[1]);
+      }
+      ctx.stroke();
+      // points
+      for (let i=0;i<traj.length;i++){
+        const p = w2px(traj[i]);
+        ctx.fillStyle = i===traj.length-1 ? '#EF4444' : (i===0 ? '#000' : '#FCD34D');
+        ctx.beginPath(); ctx.arc(p[0], p[1], i===traj.length-1?7:3, 0, 2*Math.PI); ctx.fill();
+        if (i===0){
+          ctx.strokeStyle = 'white'; ctx.lineWidth=2;
+          ctx.beginPath(); ctx.arc(p[0],p[1], 6, 0, 2*Math.PI); ctx.stroke();
+        }
+      }
+    }
+    // hint text
+    if (!w){
+      ctx.fillStyle = 'white';
+      ctx.font = 'bold 16px Calibri';
+      ctx.textAlign = 'center';
+      ctx.fillText('Clique para escolher um ponto inicial', W/2, H-18);
+    }
+  }
+
+  function step(){
+    if (!w) return;
+    const g = Gradients[surfKey](w);
+    tStep += 1;
+    if (optKey === 'sgd'){
+      w = [w[0] - eta*g[0], w[1] - eta*g[1]];
+    } else if (optKey === 'momentum'){
+      mt = [0.9*mt[0] + eta*g[0], 0.9*mt[1] + eta*g[1]];
+      w = [w[0] - mt[0], w[1] - mt[1]];
+    } else if (optKey === 'adam'){
+      const b1=0.9, b2=0.999, eps=1e-8;
+      mt = [b1*mt[0]+(1-b1)*g[0], b1*mt[1]+(1-b1)*g[1]];
+      vt = [b2*vt[0]+(1-b2)*g[0]*g[0], b2*vt[1]+(1-b2)*g[1]*g[1]];
+      const mh = [mt[0]/(1-Math.pow(b1,tStep)), mt[1]/(1-Math.pow(b1,tStep))];
+      const vh = [vt[0]/(1-Math.pow(b2,tStep)), vt[1]/(1-Math.pow(b2,tStep))];
+      w = [w[0] - eta*mh[0]/(Math.sqrt(vh[0])+eps), w[1] - eta*mh[1]/(Math.sqrt(vh[1])+eps)];
+    }
+    // clip
+    w[0] = Math.max(X0-1, Math.min(X1+1, w[0]));
+    w[1] = Math.max(Y0-1, Math.min(Y1+1, w[1]));
+    traj.push([w[0], w[1]]);
+    if (traj.length > 200) traj.shift();
+    updateMeters();
+    draw();
+  }
+
+  function updateMeters(){
+    if (!w){
+      document.getElementById('m1step').textContent = '0';
+      document.getElementById('m1loss').textContent = '—';
+      document.getElementById('m1grad').textContent = '—';
+      document.getElementById('m1w').textContent = '—';
+      return;
+    }
+    document.getElementById('m1step').textContent = tStep;
+    document.getElementById('m1loss').textContent = Surfaces[surfKey](w).toFixed(4);
+    const g = Gradients[surfKey](w);
+    const gn = Math.sqrt(g[0]*g[0]+g[1]*g[1]);
+    document.getElementById('m1grad').textContent = gn.toFixed(4);
+    document.getElementById('m1w').textContent = `(${w[0].toFixed(2)}, ${w[1].toFixed(2)})`;
+  }
+
+  cv.addEventListener('click', e=>{
+    const r = cv.getBoundingClientRect();
+    const px = (e.clientX - r.left) * (W/r.width);
+    const py = (e.clientY - r.top) * (H/r.height);
+    w = px2w([px,py]);
+    traj = [[w[0], w[1]]];
+    mt = [0,0]; vt = [0,0]; tStep = 0;
+    updateMeters();
+    draw();
+  });
+
+  document.getElementById('eta1').addEventListener('input', e=>{
+    eta = parseFloat(e.target.value);
+    document.getElementById('eta1Val').textContent = eta.toFixed(3);
+  });
+  document.getElementById('opt1').addEventListener('change', e=>{
+    optKey = e.target.value;
+    mt = [0,0]; vt = [0,0]; tStep = 0;
+  });
+  document.getElementById('surface1').addEventListener('change', e=>{
+    surfKey = e.target.value;
+    w = null; traj = []; lossField = null;
+    mt = [0,0]; vt = [0,0]; tStep = 0;
+    updateMeters();
+    draw();
+  });
+  document.getElementById('step1').addEventListener('click', step);
+  document.getElementById('reset1').addEventListener('click', ()=>{
+    w = null; traj = []; mt = [0,0]; vt = [0,0]; tStep = 0;
+    updateMeters(); draw();
+  });
+  const playBtn = document.getElementById('play1');
+  playBtn.addEventListener('click', ()=>{
+    playing = !playing;
+    playBtn.textContent = playing ? '⏸ Pause' : '▶ Play';
+    playBtn.classList.toggle('amber', playing);
+    playBtn.classList.toggle('green', !playing);
+    if (playing) loop();
+  });
+  function loop(){
+    if (!playing) return;
+    step();
+    setTimeout(()=>requestAnimationFrame(loop), 80);
+  }
+  draw();
+})();
+
+// =========================================================================
+// SIM 2 — PERCEPTRON / DELTA RULE
+// =========================================================================
+(() => {
+  const cv = document.getElementById('cv2');
+  const ctx = cv.getContext('2d');
+  const W=cv.width, H=cv.height;
+  const X0=-5, X1=5, Y0=-5, Y1=5;
+  let pts = [];        // {x,y,d}
+  let w = [0.1, 0.1];  // weights
+  let b = 0;           // bias
+  let eta = 0.10;
+  let mode = 'blue';
+  let curIdx = 0;
+  let auto = false;
+  let highlightedIdx = -1;
+
+  function w2px(p){ return [(p[0]-X0)/(X1-X0)*W, H - (p[1]-Y0)/(Y1-Y0)*H]; }
+  function px2w(px){ return [X0 + px[0]/W*(X1-X0), Y0 + (H-px[1])/H*(Y1-Y0)]; }
+
+  function tanh(x){ return Math.tanh(x); }
+  function tanhDeriv(y){ return 1 - y*y; }
+  function predict(p){ return tanh(w[0]*p.x + w[1]*p.y + b); }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // decision region shading
+    const cell = 6;
+    for (let py=0;py<H;py+=cell){
+      for (let px=0;px<W;px+=cell){
+        const xy = px2w([px+cell/2,py+cell/2]);
+        const y = tanh(w[0]*xy[0]+w[1]*xy[1]+b);
+        // blue if y>0, amber if y<0; intensity = |y|
+        const a = Math.min(0.35, Math.abs(y)*0.35);
+        if (y>=0) ctx.fillStyle = `rgba(26,86,219,${a})`;
+        else ctx.fillStyle = `rgba(180,83,9,${a})`;
+        ctx.fillRect(px,py,cell,cell);
+      }
+    }
+    // axes
+    ctx.strokeStyle = '#CBD5E1'; ctx.lineWidth = 1;
+    const cx = w2px([0,0])[0], cy = w2px([0,0])[1];
+    ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(W,cy);
+    ctx.moveTo(cx,0); ctx.lineTo(cx,H); ctx.stroke();
+    // gridlines
+    ctx.strokeStyle = '#E2E8F0';
+    for (let g=Math.ceil(X0);g<=X1;g++){
+      if (g===0) continue;
+      const p1 = w2px([g, Y0]); const p2 = w2px([g, Y1]);
+      ctx.beginPath(); ctx.moveTo(p1[0],p1[1]); ctx.lineTo(p2[0],p2[1]); ctx.stroke();
+    }
+    for (let g=Math.ceil(Y0);g<=Y1;g++){
+      if (g===0) continue;
+      const p1 = w2px([X0, g]); const p2 = w2px([X1, g]);
+      ctx.beginPath(); ctx.moveTo(p1[0],p1[1]); ctx.lineTo(p2[0],p2[1]); ctx.stroke();
+    }
+    // decision boundary: w·x + b = 0 → y = -(w[0]*x + b)/w[1]
+    ctx.strokeStyle = C.green; ctx.lineWidth = 3;
+    ctx.beginPath();
+    if (Math.abs(w[1]) > 1e-3){
+      const yL = -(w[0]*X0 + b)/w[1];
+      const yR = -(w[0]*X1 + b)/w[1];
+      const p1 = w2px([X0, yL]); const p2 = w2px([X1, yR]);
+      ctx.moveTo(p1[0],p1[1]); ctx.lineTo(p2[0],p2[1]);
+    } else {
+      const xV = -b/w[0];
+      const p1 = w2px([xV, Y0]); const p2 = w2px([xV, Y1]);
+      ctx.moveTo(p1[0],p1[1]); ctx.lineTo(p2[0],p2[1]);
+    }
+    ctx.stroke();
+    // w vector arrow at origin
+    const Lvec = Math.sqrt(w[0]*w[0]+w[1]*w[1]);
+    if (Lvec > 0.01){
+      const tipLen = Math.min(1.5, Lvec);
+      const tip = [w[0]/Lvec*tipLen, w[1]/Lvec*tipLen];
+      const origin = w2px([0,0]); const tipP = w2px(tip);
+      ctx.strokeStyle = C.violet; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(origin[0],origin[1]); ctx.lineTo(tipP[0], tipP[1]); ctx.stroke();
+      // arrowhead
+      const angle = Math.atan2(tipP[1]-origin[1], tipP[0]-origin[0]);
+      ctx.fillStyle = C.violet;
+      ctx.beginPath();
+      ctx.moveTo(tipP[0], tipP[1]);
+      ctx.lineTo(tipP[0]-10*Math.cos(angle-0.4), tipP[1]-10*Math.sin(angle-0.4));
+      ctx.lineTo(tipP[0]-10*Math.cos(angle+0.4), tipP[1]-10*Math.sin(angle+0.4));
+      ctx.fill();
+      ctx.fillStyle = C.violet; ctx.font = 'bold 14px Calibri';
+      ctx.fillText('w', tipP[0]+6, tipP[1]-6);
+    }
+    // points
+    pts.forEach((p,i)=>{
+      const px = w2px([p.x, p.y]);
+      const isHi = (i===highlightedIdx);
+      ctx.beginPath();
+      ctx.arc(px[0], px[1], isHi?12:8, 0, 2*Math.PI);
+      ctx.fillStyle = p.d>0 ? C.blue : C.amber;
+      ctx.fill();
+      ctx.strokeStyle = isHi ? 'red' : 'white';
+      ctx.lineWidth = isHi ? 3 : 2;
+      ctx.stroke();
+    });
+    // legend
+    ctx.fillStyle = 'white'; ctx.fillRect(8, 8, 170, 56);
+    ctx.strokeStyle = '#E2E8F0'; ctx.strokeRect(8,8,170,56);
+    ctx.fillStyle = C.blue; ctx.beginPath(); ctx.arc(22, 22, 7, 0, 2*Math.PI); ctx.fill();
+    ctx.fillStyle = C.dark; ctx.font='12px Calibri'; ctx.fillText('classe AZUL  (d=+1)', 36, 26);
+    ctx.fillStyle = C.amber; ctx.beginPath(); ctx.arc(22, 46, 7, 0, 2*Math.PI); ctx.fill();
+    ctx.fillStyle = C.dark; ctx.fillText('classe LARANJA (d=-1)', 36, 50);
+  }
+
+  function countErrors(){
+    let e = 0;
+    pts.forEach(p=>{
+      const y = predict(p);
+      if (Math.sign(y) !== Math.sign(p.d) && Math.abs(y) > 0.05) e++;
+    });
+    return e;
+  }
+
+  function step(){
+    if (pts.length === 0) return;
+    // pick next point
+    const p = pts[curIdx % pts.length];
+    highlightedIdx = curIdx % pts.length;
+    const y = predict(p);
+    const err = p.d - y;
+    const grad = err * tanhDeriv(y);
+    w[0] += eta * grad * p.x;
+    w[1] += eta * grad * p.y;
+    b += eta * grad;
+    curIdx++;
+    updateMeters();
+    draw();
+  }
+
+  function updateMeters(){
+    document.getElementById('m2n').textContent = pts.length;
+    document.getElementById('m2err').textContent = pts.length ? `${countErrors()}/${pts.length}` : '—';
+    document.getElementById('m2w').textContent = `(${w[0].toFixed(2)}, ${w[1].toFixed(2)})`;
+    document.getElementById('m2b').textContent = b.toFixed(2);
+  }
+
+  cv.addEventListener('click', e=>{
+    const r = cv.getBoundingClientRect();
+    const px = (e.clientX - r.left) * (W/r.width);
+    const py = (e.clientY - r.top) * (H/r.height);
+    const wxy = px2w([px,py]);
+    if (mode==='remove'){
+      // remove nearest
+      let best=-1, bd=1e9;
+      pts.forEach((p,i)=>{
+        const d = (p.x-wxy[0])*(p.x-wxy[0]) + (p.y-wxy[1])*(p.y-wxy[1]);
+        if (d<bd){ bd=d; best=i; }
+      });
+      if (best>=0 && bd<0.5) pts.splice(best,1);
+    } else {
+      pts.push({x:wxy[0], y:wxy[1], d: mode==='blue' ? +1 : -1});
+    }
+    highlightedIdx = -1;
+    updateMeters(); draw();
+  });
+
+  document.getElementById('mode2').addEventListener('change', e=> mode = e.target.value);
+  document.getElementById('eta2').addEventListener('input', e=>{
+    eta = parseFloat(e.target.value);
+    document.getElementById('eta2Val').textContent = eta.toFixed(3);
+  });
+  document.getElementById('step2').addEventListener('click', step);
+  document.getElementById('step10_2').addEventListener('click', ()=>{
+    for (let i=0;i<10;i++) step();
+  });
+  document.getElementById('auto2').addEventListener('click', ()=>{
+    auto = !auto;
+    const btn = document.getElementById('auto2');
+    btn.textContent = auto ? '⏸ Pause' : '▶ Auto';
+    if (auto) autoLoop();
+  });
+  function autoLoop(){
+    if (!auto) return;
+    step();
+    setTimeout(autoLoop, 30);
+  }
+  document.getElementById('reset2').addEventListener('click', ()=>{
+    w = [0.1, 0.1]; b = 0; curIdx = 0; highlightedIdx=-1;
+    updateMeters(); draw();
+  });
+  document.getElementById('data2').addEventListener('click', ()=>{
+    pts = [];
+    // two well-separated clusters
+    for (let i=0;i<15;i++) pts.push({x: -2 + Math.random()*1.5, y: 2 + Math.random()*1.5, d:+1});
+    for (let i=0;i<15;i++) pts.push({x: 1 + Math.random()*1.5, y: -2 + Math.random()*1.5, d:-1});
+    w = [Math.random()*0.4-0.2, Math.random()*0.4-0.2]; b = 0; curIdx = 0;
+    updateMeters(); draw();
+  });
+  updateMeters(); draw();
+})();
+
+// =========================================================================
+// SIM 3 — XOR / MLP
+// =========================================================================
+(() => {
+  const cvA = document.getElementById('cv3a');
+  const ctxA = cvA.getContext('2d');
+  const cvB = document.getElementById('cv3b');
+  const ctxB = cvB.getContext('2d');
+  const WA = cvA.width, HA = cvA.height;
+  const WB = cvB.width, HB = cvB.height;
+  let problem = 'xor';
+  let hidden = 4;
+  let activation = 'tanh';
+  let eta = 0.30;
+  let running = false;
+  let epoch = 0;
+  let lossHist = [];
+  let data = [];     // {x:[], d:scalar}
+  // Network params
+  let W1, b1, W2, b2;
+
+  // Activation
+  function act(x){
+    if (activation==='sigmoid') return 1/(1+Math.exp(-x));
+    if (activation==='relu') return Math.max(0, x);
+    return Math.tanh(x);
+  }
+  function actDeriv(a, x){
+    if (activation==='sigmoid') return a*(1-a);
+    if (activation==='relu') return x>0 ? 1 : 0;
+    return 1 - a*a;
+  }
+
+  function initNet(){
+    const scale = 0.8;
+    W1 = []; b1 = new Array(hidden).fill(0);
+    for (let j=0;j<hidden;j++){
+      W1.push([(Math.random()-0.5)*scale, (Math.random()-0.5)*scale]);
+    }
+    W2 = []; b2 = 0;
+    for (let j=0;j<hidden;j++) W2.push((Math.random()-0.5)*scale);
+  }
+
+  function forward(x){
+    const v1 = new Array(hidden), h = new Array(hidden);
+    for (let j=0;j<hidden;j++){
+      v1[j] = W1[j][0]*x[0] + W1[j][1]*x[1] + b1[j];
+      h[j] = act(v1[j]);
+    }
+    let v2 = b2; for (let j=0;j<hidden;j++) v2 += W2[j]*h[j];
+    const y = Math.tanh(v2); // output uses tanh always for [-1,1]
+    return {y, h, v1, v2};
+  }
+
+  function backprop(x, target, fwd){
+    const {y, h, v1, v2} = fwd;
+    const dy = (y - target) * (1 - y*y); // derivative of tanh output
+    // update W2, b2
+    const newW2 = W2.map((wj, j) => wj - eta * dy * h[j]);
+    const newb2 = b2 - eta * dy;
+    // delta hidden
+    for (let j=0;j<hidden;j++){
+      const dh = dy * W2[j] * actDeriv(h[j], v1[j]);
+      W1[j][0] -= eta * dh * x[0];
+      W1[j][1] -= eta * dh * x[1];
+      b1[j] -= eta * dh;
+    }
+    W2 = newW2;
+    b2 = newb2;
+  }
+
+  function totalLoss(){
+    let L = 0;
+    data.forEach(d=>{
+      const fw = forward(d.x);
+      L += 0.5*(d.d - fw.y)*(d.d - fw.y);
+    });
+    return L / data.length;
+  }
+
+  function accuracy(){
+    let ok = 0;
+    data.forEach(d=>{
+      const fw = forward(d.x);
+      if (Math.sign(fw.y) === Math.sign(d.d) || (d.d===0 && Math.abs(fw.y)<0.3)) ok++;
+    });
+    return ok / data.length;
+  }
+
+  function buildData(){
+    data = [];
+    if (problem==='xor'){
+      data = [
+        {x:[0,0], d:-1}, {x:[0,1], d:+1}, {x:[1,0], d:+1}, {x:[1,1], d:-1},
+      ];
+      // add a few extra samples around each corner
+      for (let i=0;i<8;i++){
+        for (let k=0;k<4;k++){
+          const base = [[0,0],[0,1],[1,0],[1,1]][k];
+          const lab = [-1,+1,+1,-1][k];
+          data.push({x:[base[0]+ (Math.random()-0.5)*0.2, base[1]+(Math.random()-0.5)*0.2], d:lab});
+        }
+      }
+    } else if (problem==='and'){
+      data = [
+        {x:[0,0], d:-1}, {x:[0,1], d:-1}, {x:[1,0], d:-1}, {x:[1,1], d:+1},
+      ];
+      for (let i=0;i<8;i++){
+        for (let k=0;k<4;k++){
+          const base = [[0,0],[0,1],[1,0],[1,1]][k];
+          const lab = [-1,-1,-1,+1][k];
+          data.push({x:[base[0]+ (Math.random()-0.5)*0.2, base[1]+(Math.random()-0.5)*0.2], d:lab});
+        }
+      }
+    } else if (problem==='circle'){
+      for (let i=0;i<60;i++){
+        const x = Math.random()*2-1, y = Math.random()*2-1;
+        const d = (x*x + y*y < 0.45) ? +1 : -1;
+        data.push({x:[x,y], d});
+      }
+    } else if (problem==='moons'){
+      for (let i=0;i<60;i++){
+        const t = Math.random()*Math.PI;
+        if (Math.random()<0.5){
+          data.push({x:[Math.cos(t)*0.7 + (Math.random()-0.5)*0.2, Math.sin(t)*0.7 + (Math.random()-0.5)*0.2], d:+1});
+        } else {
+          data.push({x:[1 - Math.cos(t)*0.7 + (Math.random()-0.5)*0.2, -Math.sin(t)*0.7 + 0.5 + (Math.random()-0.5)*0.2], d:-1});
+        }
+      }
+    }
+  }
+
+  function dataBounds(){
+    let xMin=Infinity,xMax=-Infinity,yMin=Infinity,yMax=-Infinity;
+    data.forEach(p=>{
+      if (p.x[0]<xMin) xMin=p.x[0];
+      if (p.x[0]>xMax) xMax=p.x[0];
+      if (p.x[1]<yMin) yMin=p.x[1];
+      if (p.x[1]>yMax) yMax=p.x[1];
+    });
+    const pad = 0.3;
+    return {xMin: xMin-pad, xMax: xMax+pad, yMin: yMin-pad, yMax: yMax+pad};
+  }
+
+  function drawDecision(){
+    ctxA.clearRect(0,0,WA,HA);
+    const {xMin,xMax,yMin,yMax} = dataBounds();
+    const cell = 6;
+    for (let py=0;py<HA;py+=cell){
+      for (let px=0;px<WA;px+=cell){
+        const xw = xMin + (px+cell/2)/WA*(xMax-xMin);
+        const yw = yMax - (py+cell/2)/HA*(yMax-yMin);
+        const y = forward([xw, yw]).y;
+        const a = Math.min(0.55, Math.abs(y)*0.55);
+        if (y>=0) ctxA.fillStyle = `rgba(26,86,219,${a})`;
+        else ctxA.fillStyle = `rgba(180,83,9,${a})`;
+        ctxA.fillRect(px,py,cell,cell);
+      }
+    }
+    // contour at y=0
+    ctxA.strokeStyle = C.green; ctxA.lineWidth = 2;
+    const step = 4;
+    for (let py=0;py<HA-step;py+=step){
+      for (let px=0;px<WA-step;px+=step){
+        const xw1 = xMin + px/WA*(xMax-xMin);
+        const yw1 = yMax - py/HA*(yMax-yMin);
+        const xw2 = xMin + (px+step)/WA*(xMax-xMin);
+        const yw2 = yMax - (py+step)/HA*(yMax-yMin);
+        const a = forward([xw1,yw1]).y;
+        const b_ = forward([xw2,yw1]).y;
+        const c = forward([xw1,yw2]).y;
+        if ((a>0)!==(b_>0)){ ctxA.beginPath(); ctxA.moveTo(px+step/2,py); ctxA.lineTo(px+step/2,py+step/2); ctxA.stroke(); }
+        if ((a>0)!==(c>0)){ ctxA.beginPath(); ctxA.moveTo(px,py+step/2); ctxA.lineTo(px+step/2,py+step/2); ctxA.stroke(); }
+      }
+    }
+    // points
+    data.forEach(p=>{
+      const px = (p.x[0]-xMin)/(xMax-xMin)*WA;
+      const py = HA - (p.x[1]-yMin)/(yMax-yMin)*HA;
+      ctxA.fillStyle = p.d>0 ? C.blue : C.amber;
+      ctxA.beginPath(); ctxA.arc(px, py, 5, 0, 2*Math.PI); ctxA.fill();
+      ctxA.strokeStyle = 'white'; ctxA.lineWidth=1.5; ctxA.stroke();
+    });
+  }
+
+  function drawLoss(){
+    ctxB.clearRect(0,0,WB,HB);
+    // axes
+    ctxB.strokeStyle = '#CBD5E1';
+    ctxB.lineWidth = 1;
+    const pad = 35;
+    ctxB.beginPath();
+    ctxB.moveTo(pad, 10); ctxB.lineTo(pad, HB-pad);
+    ctxB.lineTo(WB-10, HB-pad);
+    ctxB.stroke();
+    if (lossHist.length<2) return;
+    const lmax = Math.max(...lossHist, 0.1);
+    const lmin = 0;
+    ctxB.strokeStyle = C.blue;
+    ctxB.lineWidth = 2;
+    ctxB.beginPath();
+    lossHist.forEach((L, i)=>{
+      const x = pad + (i/(lossHist.length-1))*(WB-pad-10);
+      const y = HB - pad - (L-lmin)/(lmax-lmin+1e-12) * (HB-pad-10);
+      if (i===0) ctxB.moveTo(x,y); else ctxB.lineTo(x,y);
+    });
+    ctxB.stroke();
+    // labels
+    ctxB.fillStyle = '#475569';
+    ctxB.font = '11px Calibri';
+    ctxB.textAlign = 'right';
+    ctxB.fillText(lmax.toFixed(3), pad-4, 14);
+    ctxB.fillText('0', pad-4, HB-pad);
+    ctxB.textAlign = 'center';
+    ctxB.fillText(`epoch ${epoch}`, WB/2, HB-10);
+    ctxB.save();
+    ctxB.translate(10, HB/2);
+    ctxB.rotate(-Math.PI/2);
+    ctxB.textAlign = 'center';
+    ctxB.fillText('Perda L', 0, 0);
+    ctxB.restore();
+  }
+
+  function update(){
+    drawDecision();
+    drawLoss();
+    document.getElementById('m3ep').textContent = epoch;
+    document.getElementById('m3loss').textContent = totalLoss().toFixed(4);
+    document.getElementById('m3acc').textContent = `${(accuracy()*100).toFixed(0)}%`;
+    document.getElementById('m3arch').textContent = `2-${hidden}-1`;
+  }
+
+  function epochStep(){
+    // shuffle once per epoch
+    const order = [];
+    for (let i=0;i<data.length;i++) order.push(i);
+    for (let i=order.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [order[i],order[j]]=[order[j],order[i]];
+    }
+    order.forEach(idx=>{
+      const d = data[idx];
+      const fw = forward(d.x);
+      backprop(d.x, d.d, fw);
+    });
+    epoch++;
+    lossHist.push(totalLoss());
+    if (lossHist.length > 500) lossHist.shift();
+  }
+
+  function runLoop(){
+    if (!running) return;
+    for (let k=0;k<3;k++) epochStep();
+    update();
+    requestAnimationFrame(runLoop);
+  }
+
+  function reset(){
+    initNet();
+    epoch = 0; lossHist = [];
+    buildData();
+    update();
+  }
+
+  document.getElementById('prob3').addEventListener('change', e=>{ problem = e.target.value; reset(); });
+  document.getElementById('hidden3').addEventListener('input', e=>{
+    hidden = parseInt(e.target.value);
+    document.getElementById('hVal').textContent = hidden;
+    reset();
+  });
+  document.getElementById('act3').addEventListener('change', e=>{ activation = e.target.value; reset(); });
+  document.getElementById('eta3').addEventListener('input', e=>{
+    eta = parseFloat(e.target.value);
+    document.getElementById('eta3Val').textContent = eta.toFixed(2);
+  });
+  document.getElementById('run3').addEventListener('click', ()=>{ running = true; runLoop(); });
+  document.getElementById('pause3').addEventListener('click', ()=>{ running = false; });
+  document.getElementById('reset3').addEventListener('click', reset);
+
+  reset();
+})();
+
+// =========================================================================
+// SIM 4 — QUIZ
+// =========================================================================
+(() => {
+  const QUESTIONS = [
+    {
+      text: 'A função de perda MSE é o estimador de máxima verossimilhança sob qual suposição estatística?',
+      opts: [
+        'Os erros são uniformemente distribuídos',
+        'Os erros são gaussianos i.i.d. de média zero',
+        'Os erros são exponenciais',
+        'Os erros são correlacionados temporalmente',
+      ],
+      correct: 1,
+      explain: 'Quando assumimos ruído gaussiano i.i.d. de média zero, minimizar a soma dos quadrados dos resíduos equivale a maximizar a verossimilhança. É o Teorema de Gauss-Markov aplicado à regressão.',
+    },
+    {
+      text: 'Por que a Cross-Entropy é preferível ao MSE para problemas de classificação com softmax?',
+      opts: [
+        'Cross-Entropy é mais fácil de derivar',
+        'MSE não funciona para classificação',
+        'O gradiente da Cross-Entropy é mais forte quando a rede está confiante e errada',
+        'Cross-Entropy permite valores negativos',
+      ],
+      correct: 2,
+      explain: 'A Cross-Entropy penaliza fortemente confiança errada: −log(p) explode quando p→0. Isso produz gradientes maiores que disciplinam o modelo a corrigir rapidamente. MSE, em contraste, satura.',
+    },
+    {
+      text: 'Na regra delta w ← w + η·(d−y)·g\'(v)·x, o que acontece se a entrada x for ZERO?',
+      opts: [
+        'O peso w aumenta',
+        'O peso w diminui',
+        'O peso w não muda',
+        'O peso w vai para infinito',
+      ],
+      correct: 2,
+      explain: 'Toda a atualização é proporcional a x. Se x=0, o produto inteiro é zero — o peso não muda. Insight importante: pesos só são ajustados onde houve atividade pré-sináptica.',
+    },
+    {
+      text: 'O problema XOR demonstra qual limitação do perceptron de uma camada?',
+      opts: [
+        'Não pode ter mais de 2 entradas',
+        'Não pode aprender funções não-linearmente separáveis',
+        'É muito lento para convergir',
+        'Não funciona com sigmoide',
+      ],
+      correct: 1,
+      explain: 'O perceptron de uma camada calcula y = g(Σwx+b), cuja fronteira é uma RETA (no plano) ou hiperplano. O XOR exige uma fronteira não-linear. Minsky e Papert (1969) formalizaram esta limitação.',
+    },
+    {
+      text: 'O que faz a camada oculta de um MLP, do ponto de vista geométrico?',
+      opts: [
+        'Apenas adiciona ruído ao sinal',
+        'Aprende uma representação do espaço de entrada onde a saída fica linearmente separável',
+        'Multiplica os dados por uma constante',
+        'Aleatoriza as conexões',
+      ],
+      correct: 1,
+      explain: 'A camada oculta APRENDE uma transformação não-linear que reorganiza o espaço. No exemplo do XOR, após a camada oculta os 4 pontos ficam linearmente separáveis. Esta é a essência do "deep learning".',
+    },
+    {
+      text: 'No algoritmo de backpropagation, em que ordem os passos ocorrem para UM exemplo de treino?',
+      opts: [
+        'Backward pass → forward pass → update',
+        'Forward pass → backward pass → update',
+        'Update → forward pass → backward pass',
+        'Forward pass → update → backward pass',
+      ],
+      correct: 1,
+      explain: 'Primeiro o forward pass calcula a saída y e armazena as ativações. Depois o backward pass calcula os δ propagando o erro da saída para a entrada. Por fim, os pesos são atualizados usando os δ.',
+    },
+    {
+      text: 'A equação mestre do δ para uma camada oculta é δⱼ = φ\'(vⱼ)·Σwₖⱼ·δₖ. Por que ela é considerada biologicamente implausível em sua forma exata?',
+      opts: [
+        'Porque tem muitos termos',
+        'Porque exige que os pesos wₖⱼ do forward sejam EXATAMENTE os mesmos do backward — o "weight transport problem"',
+        'Porque sinapses não suportam multiplicação',
+        'Porque requer corrente elétrica',
+      ],
+      correct: 1,
+      explain: 'A backprop clássica usa wₖⱼ do forward na propagação para trás. Sinapses biológicas são unidirecionais e não podem "transportar" pesos. Lillicrap et al. (2016) mostraram que pesos aleatórios B funcionam quase tão bem — feedback alignment.',
+    },
+    {
+      text: 'Por que o gradiente descendente em uma DNN profunda raramente fica preso em mínimos locais ruins?',
+      opts: [
+        'Porque DNNs são convexas',
+        'Em alta dimensão, pontos de sela são MUITO mais comuns que mínimos locais ruins (Dauphin et al., 2014)',
+        'Porque usamos números aleatórios',
+        'Porque GPUs são muito rápidas',
+      ],
+      correct: 1,
+      explain: 'Em alta dimensão, a probabilidade de TODAS as direções subirem em um ponto crítico é exponencialmente pequena. A maioria dos pontos críticos são selas — onde SGD eventualmente escapa.',
+    },
+    {
+      text: 'No otimizador Adam, qual é o papel do termo v̂ (média do gradiente AO QUADRADO)?',
+      opts: [
+        'Aumentar a taxa de aprendizado global',
+        'Adaptar o passo POR DIMENSÃO — dimensões com gradiente historicamente grande recebem passos relativos menores',
+        'Reduzir o ruído do gradiente',
+        'Calcular o momentum',
+      ],
+      correct: 1,
+      explain: 'v̂ estima a magnitude típica do gradiente em cada dimensão. Ao dividir por √v̂, dimensões com gradiente grande recebem passos relativamente menores — escala adaptativa.',
+    },
+    {
+      text: 'Qual é a assinatura clássica de overfitting em curvas de treino e validação?',
+      opts: [
+        'Ambas as curvas sobem juntas',
+        'A curva de treino para, e a de validação continua descendo',
+        'A curva de treino continua descendo, mas a de validação para de descer ou COMEÇA A SUBIR',
+        'Ambas oscilam aleatoriamente',
+      ],
+      correct: 2,
+      explain: 'A divergência entre treino e validação é a marca registrada do overfitting. O modelo decora padrões idiossincrásicos do treino que não generalizam. Defesas: early stopping, dropout, regularização, mais dados.',
+    },
+    {
+      text: 'Por que ReLU revolucionou DNNs por volta de 2011?',
+      opts: [
+        'É mais simples de implementar que sigmoide',
+        'Sua derivada é 0 ou 1 — não sofre de vanishing gradient em redes profundas',
+        'Produz saídas binárias',
+        'É a função de ativação biológica',
+      ],
+      correct: 1,
+      explain: 'Sigmoide e tanh saturam: sua derivada vai a zero nos extremos, fazendo o gradiente desvanecer em redes profundas (Hochreiter, 1991). ReLU tem derivada constante 1 na parte ativa — gradiente atravessa muitas camadas sem desvanecer.',
+    },
+    {
+      text: 'Sobre o feedback alignment (Lillicrap et al., 2016), qual afirmação é correta?',
+      opts: [
+        'Ele requer pesos backward iguais aos forward',
+        'Ele substitui os pesos backward por uma matriz ALEATÓRIA FIXA e mesmo assim funciona',
+        'Ele só funciona em redes lineares',
+        'Ele foi rejeitado pela comunidade',
+      ],
+      correct: 1,
+      explain: 'Em feedback alignment, a matriz B usada no backward é aleatória e fixa, NÃO relacionada aos pesos forward W. Surpreendentemente, a rede aprende — os pesos forward gradualmente se alinham para "usar" B. Isto sugere que algo como backprop pode ser biologicamente realizável.',
+    },
+  ];
+
+  const container = document.getElementById('quizContainer');
+  let order = QUESTIONS.map((_,i)=>i);
+  let answered = new Array(QUESTIONS.length).fill(null);
+
+  function shuffle(){
+    for (let i=order.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [order[i],order[j]]=[order[j],order[i]];
+    }
+    answered = new Array(QUESTIONS.length).fill(null);
+    render();
+  }
+
+  function render(){
+    container.innerHTML = '';
+    order.forEach((qIdx, pos)=>{
+      const q = QUESTIONS[qIdx];
+      const div = document.createElement('div');
+      div.className = 'q';
+      const ans = answered[qIdx];
+      // shuffle options once per question (use seed = qIdx)
+      const optsOrder = [0,1,2,3];
+      div.innerHTML = `
+        <div class="num">Pergunta ${pos+1} de ${order.length}</div>
+        <div class="text">${q.text}</div>
+        <div class="opts">
+          ${optsOrder.map(oi=>{
+            let cls = 'opt';
+            if (ans !== null){
+              cls += ' disabled';
+              if (oi === q.correct) cls += ' correct';
+              if (oi === ans && ans !== q.correct) cls += ' wrong';
+            }
+            return `<div class="${cls}" data-q="${qIdx}" data-o="${oi}">${String.fromCharCode(65+oi)}. ${q.opts[oi]}</div>`;
+          }).join('')}
+        </div>
+        <div class="explain ${ans!==null ? 'visible':''}">
+          <b>${ans === q.correct ? '✓ Correto.' : (ans!==null ? '✗ A resposta correta é ' + String.fromCharCode(65+q.correct) + '.' : '')}</b><br>
+          ${q.explain}
+        </div>
+      `;
+      container.appendChild(div);
+    });
+    // event listeners
+    container.querySelectorAll('.opt').forEach(el=>{
+      el.addEventListener('click', e=>{
+        const qIdx = parseInt(el.dataset.q);
+        const oi = parseInt(el.dataset.o);
+        if (answered[qIdx] !== null) return;
+        answered[qIdx] = oi;
+        render();
+        updateProgress();
+      });
+    });
+    updateProgress();
+  }
+
+  function updateProgress(){
+    let ok=0, err=0, n=0;
+    answered.forEach((a,i)=>{
+      if (a !== null){
+        n++;
+        if (a === QUESTIONS[i].correct) ok++; else err++;
+      }
+    });
+    document.getElementById('qOK').textContent = ok;
+    document.getElementById('qErr').textContent = err;
+    document.getElementById('qN').textContent = n;
+  }
+
+  document.getElementById('qReset').addEventListener('click', shuffle);
+  shuffle();
+})();
+</script>
+</body>
+</html>
