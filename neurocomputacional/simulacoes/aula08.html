@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Simulações — Aula 8 · Mapas auto-organizados: topografia no córtex e o algoritmo de Kohonen</title>
+<style>
+  :root {
+    --teal:#0D7377; --mint:#14B8A6; --xl-teal:#CCFBF1;
+    --blue:#1A56DB; --amber:#B45309; --l-amber:#F59E0B; --xl-amber:#FEF3C7;
+    --violet:#6D28D9; --green:#15803D; --dark:#1E293B; --dark2:#0F172A;
+    --gray:#64748B; --l-gray:#94A3B8; --xl-gray:#E2E8F0; --bg:#F8FAFC; --white:#FFFFFF;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; background:var(--bg); color:var(--dark); min-height:100vh; }
+  header { background:linear-gradient(135deg,var(--teal),var(--mint)); color:var(--white); padding:16px 28px; box-shadow:0 2px 12px rgba(0,0,0,0.15); }
+  header .top { display:flex; justify-content:space-between; align-items:baseline; }
+  header .course { font-size:12px; letter-spacing:3px; text-transform:uppercase; opacity:0.85; }
+  header .author { font-size:11px; opacity:0.85; letter-spacing:2px; }
+  header h1 { font-size:24px; font-weight:700; margin-top:6px; }
+  header .subtitle { font-size:13px; opacity:0.9; margin-top:2px; font-style:italic; }
+  .tabs { background:var(--dark); padding:0 16px; display:flex; gap:4px; border-bottom:4px solid var(--teal); flex-wrap:wrap; }
+  .tab { padding:14px 18px; background:transparent; color:var(--l-gray); border:none; cursor:pointer; font-size:13px; font-weight:600; border-radius:8px 8px 0 0; transition:background .2s,color .2s; letter-spacing:1px; }
+  .tab:hover { background:rgba(255,255,255,0.06); color:var(--white); }
+  .tab.active { background:var(--bg); color:var(--teal); }
+  .panel { display:none; padding:28px; max-width:1300px; margin:0 auto; }
+  .panel.active { display:block; }
+  .panel h2 { color:var(--dark); font-size:22px; margin-bottom:6px; }
+  .panel .lead { color:var(--gray); font-size:14px; margin-bottom:18px; font-style:italic; line-height:1.45; }
+  .layout { display:grid; grid-template-columns:1fr 360px; gap:22px; }
+  .layout.one-col { grid-template-columns:1fr; }
+  canvas { background:var(--white); border:2px solid var(--xl-gray); border-radius:10px; width:100%; height:auto; display:block; }
+  canvas.click { cursor:crosshair; }
+  .side { background:var(--white); border:1px solid var(--xl-gray); border-radius:10px; padding:18px; box-shadow:0 1px 4px rgba(0,0,0,0.04); }
+  .side h3 { color:var(--teal); font-size:12px; letter-spacing:3px; text-transform:uppercase; margin-bottom:14px; }
+  .controls { display:flex; flex-direction:column; gap:12px; }
+  .row { display:flex; align-items:center; gap:10px; }
+  .row label { font-size:13px; color:var(--dark); flex:1; }
+  .row .value { font-weight:700; color:var(--teal); min-width:54px; text-align:right; font-family:'Consolas',monospace; font-size:13px; }
+  input[type=range] { width:100%; accent-color:var(--teal); }
+  select { width:100%; padding:7px; border:1.5px solid var(--xl-gray); border-radius:6px; font-size:13px; color:var(--dark); background:var(--white); }
+  button.btn { background:var(--teal); color:var(--white); border:none; padding:10px 14px; border-radius:6px; font-weight:700; cursor:pointer; font-size:13px; letter-spacing:.5px; transition:background .15s; }
+  button.btn:hover { background:var(--mint); }
+  button.btn.secondary { background:var(--gray); }
+  button.btn.secondary:hover { background:var(--l-gray); }
+  button.btn.blue { background:var(--blue); }
+  button.btn.amber { background:var(--amber); }
+  button.btn.violet { background:var(--violet); }
+  button.btn.green { background:var(--green); }
+  .btns { display:flex; gap:8px; flex-wrap:wrap; }
+  .stat { font-size:12px; color:var(--gray); padding:8px 10px; background:var(--bg); border-radius:6px; border-left:3px solid var(--teal); font-family:'Consolas',monospace; line-height:1.6; }
+  .lesson { background:var(--xl-teal); border-left:4px solid var(--teal); padding:12px 16px; border-radius:0 8px 8px 0; font-size:12.5px; line-height:1.5; color:var(--dark); margin-top:14px; }
+  .lesson strong { color:var(--teal); }
+  /* Quiz */
+  .quiz-q { background:var(--white); border:1px solid var(--xl-gray); border-radius:10px; padding:18px; margin-bottom:14px; }
+  .quiz-q .qnum { color:var(--teal); font-size:12px; font-weight:700; letter-spacing:2px; }
+  .quiz-q .qtxt { margin:8px 0 14px 0; font-size:15px; color:var(--dark); line-height:1.45; }
+  .quiz-opts { display:flex; flex-direction:column; gap:8px; }
+  .quiz-opt { background:var(--bg); border:1.5px solid var(--xl-gray); border-radius:6px; padding:10px 14px; cursor:pointer; font-size:13.5px; color:var(--dark); transition:all .15s; text-align:left; }
+  .quiz-opt:hover { border-color:var(--teal); background:var(--xl-teal); }
+  .quiz-opt.correct { background:#DCFCE7; border-color:var(--green); color:var(--green); font-weight:600; }
+  .quiz-opt.wrong { background:#FEE2E2; border-color:#DC2626; color:#991B1B; }
+  .quiz-fb { margin-top:12px; padding:10px 12px; background:var(--bg); border-radius:6px; font-size:13px; color:var(--dark); border-left:3px solid var(--blue); display:none; line-height:1.5; }
+  .quiz-fb.show { display:block; }
+  .score { background:var(--dark); color:var(--white); padding:14px 18px; border-radius:8px; font-size:14px; margin-top:12px; display:flex; justify-content:space-between; align-items:center; }
+  .score .num { font-size:22px; font-weight:700; color:var(--mint); }
+  footer { background:var(--dark); color:var(--l-gray); text-align:center; padding:14px; font-size:11px; margin-top:32px; letter-spacing:1px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="top">
+    <span class="course">Neurociência Computacional · Aula 8</span>
+    <span class="author">Daniel Y Takahashi · UFRN</span>
+  </div>
+  <h1>Mapas auto-organizados — Simulações Interativas</h1>
+  <div class="subtitle">SOM ao vivo · Mapa de cores · BMU &amp; vizinhança · Quiz · <a href="../aula08.html" style="color:inherit">atividades da Aula 8</a></div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" data-tab="som">1. SOM ao vivo</button>
+  <button class="tab" data-tab="cores">2. Mapa de cores</button>
+  <button class="tab" data-tab="bmu">3. BMU &amp; vizinhança</button>
+  <button class="tab" data-tab="quiz">4. Quiz do SOM</button>
+</div>
+
+<!-- ============================ TAB 1: SOM ao vivo ============================ -->
+<section class="panel active" id="tab-som">
+  <h2>SOM ao vivo: a grade se desdobra sobre os dados</h2>
+  <div class="lead">Treine um mapa de Kohonen em tempo real. Escolha a distribuição dos dados e o tamanho da grade, ajuste η₀ e σ₀, e observe a grade emaranhada se organizar até cobrir o espaço preservando a vizinhança. Clique no painel para adicionar seus próprios pontos.</div>
+  <div class="layout">
+    <canvas id="cSom" class="click" width="760" height="540"></canvas>
+    <div class="side">
+      <h3>Controles</h3>
+      <div class="controls">
+        <div class="row"><label>Distribuição dos dados</label></div>
+        <select id="somDist">
+          <option value="square">Quadrado uniforme</option>
+          <option value="ring">Anel (círculo)</option>
+          <option value="blobs">Dois aglomerados</option>
+          <option value="triangle">Triângulo</option>
+          <option value="lshape">Forma em L</option>
+        </select>
+        <div class="row"><label>Lado da grade (N×N)</label><span class="value" id="somGridV">10</span></div>
+        <input type="range" id="somGrid" min="5" max="18" value="10">
+        <div class="row"><label>η₀ (taxa inicial)</label><span class="value" id="somEtaV">0.40</span></div>
+        <input type="range" id="somEta" min="5" max="80" value="40">
+        <div class="row"><label>σ₀ (vizinhança inicial)</label><span class="value" id="somSigV">6.0</span></div>
+        <input type="range" id="somSig" min="10" max="120" value="60">
+        <div class="row"><label>Velocidade</label><span class="value" id="somSpeedV">30</span></div>
+        <input type="range" id="somSpeed" min="1" max="120" value="30">
+        <div class="btns">
+          <button class="btn" id="somPlay">▶ Treinar</button>
+          <button class="btn secondary" id="somPause">❚❚ Pausar</button>
+          <button class="btn amber" id="somReset">↺ Reiniciar</button>
+        </div>
+        <div class="stat" id="somStat">t = 0 / 6000 · η = 0.400 · σ = 6.00<br>pontos = 0</div>
+      </div>
+      <div class="lesson">
+        <strong>O que observar:</strong> com <strong>σ grande</strong> (início) a grade se organiza globalmente; à medida que <strong>σ e η decaem</strong>, os ajustes ficam locais e finos. No fim, neurônios vizinhos na grade representam regiões vizinhas dos dados — isso é a <strong>preservação de topologia</strong>. Tente o "Anel": veja a grade dobrar para cobri-lo.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ TAB 2: Mapa de cores ============================ -->
+<section class="panel" id="tab-cores">
+  <h2>Organizar cores: 3D (RGB) → grade 2D</h2>
+  <div class="lead">Cada cor é um ponto em ℝ³ (vermelho, verde, azul). O SOM organiza uma grade de modo que cores parecidas fiquem vizinhas. Começa como ruído colorido e termina como um gradiente suave — preservação de topologia que você enxerga a olho nu.</div>
+  <div class="layout">
+    <canvas id="cCor" width="540" height="540"></canvas>
+    <div class="side">
+      <h3>Controles</h3>
+      <div class="controls">
+        <div class="row"><label>Lado da grade (N×N)</label><span class="value" id="corGridV">24</span></div>
+        <input type="range" id="corGrid" min="8" max="48" value="24">
+        <div class="row"><label>Nº de cores de treino</label><span class="value" id="corNV">1500</span></div>
+        <input type="range" id="corN" min="200" max="4000" value="1500" step="100">
+        <div class="row"><label>Velocidade</label><span class="value" id="corSpeedV">40</span></div>
+        <input type="range" id="corSpeed" min="1" max="150" value="40">
+        <div class="row"><label>Paleta de treino</label></div>
+        <select id="corPal">
+          <option value="full">Cores aleatórias (RGB)</option>
+          <option value="warmcool">Quentes vs. frias</option>
+          <option value="primary">3 primárias</option>
+        </select>
+        <div class="btns">
+          <button class="btn" id="corPlay">▶ Treinar</button>
+          <button class="btn secondary" id="corPause">❚❚ Pausar</button>
+          <button class="btn amber" id="corReset">↺ Reiniciar</button>
+        </div>
+        <div class="stat" id="corStat">t = 0 / 8000 · η = 0.500 · σ = 12.0</div>
+      </div>
+      <div class="lesson">
+        <strong>O que observar:</strong> é o mesmo algoritmo da aba 1, mas agora cada neurônio guarda uma cor (vetor de 3 dimensões). A célula mostrada é exatamente o vetor de pesos w<sub>j</sub>. Como cores próximas em ℝ³ acabam vizinhas na grade, formam-se <strong>regiões contínuas</strong> de cor — um "mapa cortical" de cor.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ TAB 3: BMU & vizinhança ============================ -->
+<section class="panel" id="tab-bmu">
+  <h2>BMU &amp; vizinhança: o que acontece em UMA atualização</h2>
+  <div class="lead">Mova o mouse (ou clique) sobre o painel para definir a entrada <b>x</b>. O algoritmo encontra o neurônio vencedor (BMU) e mostra a função de vizinhança gaussiana: o brilho de cada neurônio indica quanto ele será puxado em direção a x. Ajuste σ e aplique a atualização para ver a grade se mover.</div>
+  <div class="layout">
+    <canvas id="cBmu" class="click" width="700" height="540"></canvas>
+    <div class="side">
+      <h3>Controles</h3>
+      <div class="controls">
+        <div class="row"><label>σ (largura da vizinhança)</label><span class="value" id="bmuSigV">2.0</span></div>
+        <input type="range" id="bmuSig" min="3" max="80" value="20">
+        <div class="row"><label>η (taxa de aprendizado)</label><span class="value" id="bmuEtaV">0.30</span></div>
+        <input type="range" id="bmuEta" min="5" max="100" value="30">
+        <div class="btns">
+          <button class="btn green" id="bmuApply">Aplicar 1 atualização</button>
+          <button class="btn" id="bmuApply10">Aplicar ×10</button>
+        </div>
+        <div class="btns">
+          <button class="btn amber" id="bmuReset">↺ Grade ordenada</button>
+          <button class="btn secondary" id="bmuRand">Grade aleatória</button>
+        </div>
+        <div class="stat" id="bmuStat">BMU: — · entrada: passe o mouse no painel</div>
+      </div>
+      <div class="lesson">
+        <strong>O que observar:</strong> só o BMU recebe peso de vizinhança 1; seus vizinhos recebem h = exp(−d²/2σ²), decrescente com a <strong>distância na grade</strong>. Com <strong>σ grande</strong> quase toda a grade se move junto (fase de ordenação); com <strong>σ pequeno</strong> só o vencedor e seus vizinhos imediatos se movem (fase de convergência).
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ TAB 4: Quiz ============================ -->
+<section class="panel" id="tab-quiz">
+  <h2>Quiz: conceitos do SOM de Kohonen</h2>
+  <div class="lead">Dez perguntas para fixar os conceitos centrais da aula. Clique na alternativa que considera correta — o retorno explica o porquê.</div>
+  <div id="quizContainer"></div>
+  <div class="score">
+    <span>Acertos</span>
+    <span><span class="num" id="quizScoreNum">0</span> / 10</span>
+  </div>
+</section>
+
+<footer>
+  Neurociência Computacional · Instituto do Cérebro · UFRN · Daniel Y Takahashi · 2026
+</footer>
+
+<script>
+// ============================ TAB NAVIGATION ============================
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('tab-' + t.dataset.tab).classList.add('active');
+  });
+});
+
+const C = { teal:'#0D7377', mint:'#14B8A6', blue:'#1A56DB', amber:'#B45309',
+  violet:'#6D28D9', green:'#15803D', dark:'#1E293B', gray:'#64748B',
+  lGray:'#94A3B8', xlGray:'#E2E8F0', white:'#FFFFFF' };
+
+// ============================================================
+// SIM 1 — SOM ao vivo (dados 2D)
+// ============================================================
+(function(){
+  const cv = document.getElementById('cSom'), ctx = cv.getContext('2d');
+  const PAD = 40, W = cv.width, H = cv.height;
+  const T_MAX = 6000;
+  let G = 10, eta0 = 0.40, sig0 = 6.0, speed = 30;
+  let weights = [], data = [], userPts = [], t = 0, raf = null, running = false;
+
+  function nx(u){ return PAD + u*(W-2*PAD); }
+  function ny(u){ return PAD + (1-u)*(H-2*PAD); }
+
+  function genData(){
+    const kind = document.getElementById('somDist').value;
+    const N = 1400; const d = [];
+    function rnd(a,b){ return a+Math.random()*(b-a); }
+    if(kind==='square'){ for(let i=0;i<N;i++) d.push([rnd(0.05,0.95),rnd(0.05,0.95)]); }
+    else if(kind==='ring'){ for(let i=0;i<N;i++){ const a=Math.random()*2*Math.PI, r=rnd(0.28,0.40); d.push([0.5+r*Math.cos(a),0.5+r*Math.sin(a)]); } }
+    else if(kind==='blobs'){ for(let i=0;i<N;i++){ const c=Math.random()<0.5?[0.30,0.35]:[0.72,0.68]; d.push([c[0]+(Math.random()+Math.random()+Math.random()-1.5)*0.10, c[1]+(Math.random()+Math.random()+Math.random()-1.5)*0.10]); } }
+    else if(kind==='triangle'){ for(let i=0;i<N;i++){ let u=Math.random(),v=Math.random(); if(u+v>1){u=1-u;v=1-v;} const A=[0.5,0.92],B=[0.08,0.10],Cc=[0.92,0.10]; d.push([A[0]+u*(B[0]-A[0])+v*(Cc[0]-A[0]), A[1]+u*(B[1]-A[1])+v*(Cc[1]-A[1])]); } }
+    else if(kind==='lshape'){ for(let i=0;i<N;i++){ if(Math.random()<0.5) d.push([rnd(0.1,0.45),rnd(0.1,0.9)]); else d.push([rnd(0.1,0.9),rnd(0.1,0.45)]); } }
+    return d;
+  }
+
+  function initWeights(){
+    weights = [];
+    for(let i=0;i<G;i++){ const row=[]; for(let j=0;j<G;j++){
+      row.push([0.5+(Math.random()-0.5)*0.12, 0.5+(Math.random()-0.5)*0.12]); } weights.push(row); }
+  }
+
+  function reset(){
+    cancelAnimationFrame(raf); running=false;
+    data = genData(); userPts = []; t = 0; initWeights(); draw(); updateStat();
+  }
+
+  function bmu(x){
+    let bi=0,bj=0,bd=Infinity;
+    for(let i=0;i<G;i++)for(let j=0;j<G;j++){
+      const w=weights[i][j], dx=w[0]-x[0], dy=w[1]-x[1], dd=dx*dx+dy*dy;
+      if(dd<bd){bd=dd;bi=i;bj=j;}
+    } return [bi,bj];
+  }
+
+  function stepOnce(){
+    const all = userPts.length>0 ? data.concat(userPts) : data;
+    const x = all[(Math.random()*all.length)|0];
+    const eta = eta0*Math.exp(-t/(T_MAX*0.45));
+    const sig = Math.max(sig0*Math.exp(-t/(T_MAX*0.28)), 0.55);
+    const [bi,bj] = bmu(x); const s2 = 2*sig*sig;
+    for(let i=0;i<G;i++)for(let j=0;j<G;j++){
+      const dg=(i-bi)*(i-bi)+(j-bj)*(j-bj);
+      if(dg> (9*sig*sig)) continue;
+      const h=Math.exp(-dg/s2)*eta, w=weights[i][j];
+      w[0]+=h*(x[0]-w[0]); w[1]+=h*(x[1]-w[1]);
+    }
+    t++;
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // data
+    ctx.fillStyle = 'rgba(148,163,184,0.45)';
+    for(const p of data){ ctx.beginPath(); ctx.arc(nx(p[0]),ny(p[1]),1.6,0,7); ctx.fill(); }
+    ctx.fillStyle = C.amber;
+    for(const p of userPts){ ctx.beginPath(); ctx.arc(nx(p[0]),ny(p[1]),3.2,0,7); ctx.fill(); }
+    // grid edges
+    ctx.strokeStyle = C.teal; ctx.lineWidth = 1.3;
+    for(let i=0;i<G;i++)for(let j=0;j<G;j++){
+      const w=weights[i][j];
+      if(j<G-1){ const w2=weights[i][j+1]; ctx.beginPath(); ctx.moveTo(nx(w[0]),ny(w[1])); ctx.lineTo(nx(w2[0]),ny(w2[1])); ctx.stroke(); }
+      if(i<G-1){ const w2=weights[i+1][j]; ctx.beginPath(); ctx.moveTo(nx(w[0]),ny(w[1])); ctx.lineTo(nx(w2[0]),ny(w2[1])); ctx.stroke(); }
+    }
+    // nodes
+    ctx.fillStyle = C.dark;
+    for(let i=0;i<G;i++)for(let j=0;j<G;j++){ const w=weights[i][j]; ctx.beginPath(); ctx.arc(nx(w[0]),ny(w[1]),2.6,0,7); ctx.fill(); }
+  }
+
+  function updateStat(){
+    const eta = eta0*Math.exp(-t/(T_MAX*0.45));
+    const sig = Math.max(sig0*Math.exp(-t/(T_MAX*0.28)), 0.55);
+    document.getElementById('somStat').innerHTML =
+      `t = ${t} / ${T_MAX} · η = ${eta.toFixed(3)} · σ = ${sig.toFixed(2)}<br>pontos do usuário = ${userPts.length}`;
+  }
+
+  function loop(){
+    if(!running) return;
+    for(let k=0;k<speed;k++){ if(t>=T_MAX){ running=false; break; } stepOnce(); }
+    draw(); updateStat();
+    if(running) raf = requestAnimationFrame(loop);
+  }
+
+  document.getElementById('somGrid').addEventListener('input',e=>{ G=+e.target.value; document.getElementById('somGridV').textContent=G; reset(); });
+  document.getElementById('somEta').addEventListener('input',e=>{ eta0=e.target.value/100; document.getElementById('somEtaV').textContent=eta0.toFixed(2); });
+  document.getElementById('somSig').addEventListener('input',e=>{ sig0=e.target.value/10; document.getElementById('somSigV').textContent=sig0.toFixed(1); });
+  document.getElementById('somSpeed').addEventListener('input',e=>{ speed=+e.target.value; document.getElementById('somSpeedV').textContent=speed; });
+  document.getElementById('somDist').addEventListener('change',reset);
+  document.getElementById('somPlay').addEventListener('click',()=>{ if(running)return; if(t>=T_MAX)t=0; running=true; loop(); });
+  document.getElementById('somPause').addEventListener('click',()=>{ running=false; });
+  document.getElementById('somReset').addEventListener('click',reset);
+  cv.addEventListener('click',e=>{
+    const r=cv.getBoundingClientRect();
+    const u=((e.clientX-r.left)*(W/r.width)-PAD)/(W-2*PAD);
+    const v=1-((e.clientY-r.top)*(H/r.height)-PAD)/(H-2*PAD);
+    if(u>=0&&u<=1&&v>=0&&v<=1){ userPts.push([u,v]); draw(); updateStat(); }
+  });
+  reset();
+})();
+
+// ============================================================
+// SIM 2 — Mapa de cores (dados 3D RGB)
+// ============================================================
+(function(){
+  const cv = document.getElementById('cCor'), ctx = cv.getContext('2d');
+  const SZ = cv.width, T_MAX = 8000;
+  let G = 24, nCol = 1500, speed = 40;
+  let W = [], cols = [], t = 0, raf = null, running = false;
+  const eta0 = 0.5;
+
+  function genCols(){
+    const pal = document.getElementById('corPal').value; const a=[];
+    for(let i=0;i<nCol;i++){
+      if(pal==='full'){ a.push([Math.random(),Math.random(),Math.random()]); }
+      else if(pal==='warmcool'){ if(Math.random()<0.5) a.push([0.6+0.4*Math.random(),0.2*Math.random(),0.2*Math.random()]); else a.push([0.1*Math.random(),0.3+0.3*Math.random(),0.6+0.4*Math.random()]); }
+      else { const k=(Math.random()*3)|0; a.push([k===0?0.9:0.1, k===1?0.9:0.1, k===2?0.9:0.1].map(v=>v+0.08*(Math.random()-0.5))); }
+    } return a;
+  }
+  function initW(){ W=[]; for(let i=0;i<G;i++){ const r=[]; for(let j=0;j<G;j++) r.push([Math.random(),Math.random(),Math.random()]); W.push(r);} }
+  function reset(){ cancelAnimationFrame(raf); running=false; cols=genCols(); t=0; initW(); draw(); updateStat(); }
+  function bmu(x){ let bi=0,bj=0,bd=Infinity; for(let i=0;i<G;i++)for(let j=0;j<G;j++){ const w=W[i][j]; const dd=(w[0]-x[0])**2+(w[1]-x[1])**2+(w[2]-x[2])**2; if(dd<bd){bd=dd;bi=i;bj=j;} } return [bi,bj]; }
+  function sigOf(){ return Math.max((G/2)*Math.exp(-t/(T_MAX*0.30)), 0.6); }
+  function stepOnce(){
+    const x=cols[(Math.random()*cols.length)|0];
+    const eta=eta0*Math.exp(-t/(T_MAX*0.45)); const sig=sigOf(); const s2=2*sig*sig;
+    const [bi,bj]=bmu(x);
+    for(let i=0;i<G;i++)for(let j=0;j<G;j++){ const dg=(i-bi)**2+(j-bj)**2; if(dg>9*sig*sig)continue; const h=Math.exp(-dg/s2)*eta, w=W[i][j];
+      w[0]+=h*(x[0]-w[0]); w[1]+=h*(x[1]-w[1]); w[2]+=h*(x[2]-w[2]); }
+    t++;
+  }
+  function draw(){
+    const cs=SZ/G;
+    for(let i=0;i<G;i++)for(let j=0;j<G;j++){ const w=W[i][j];
+      ctx.fillStyle=`rgb(${(w[0]*255)|0},${(w[1]*255)|0},${(w[2]*255)|0})`;
+      ctx.fillRect(j*cs,i*cs,Math.ceil(cs),Math.ceil(cs)); }
+  }
+  function updateStat(){ const eta=eta0*Math.exp(-t/(T_MAX*0.45)); document.getElementById('corStat').innerHTML=`t = ${t} / ${T_MAX} · η = ${eta.toFixed(3)} · σ = ${sigOf().toFixed(1)}`; }
+  function loop(){ if(!running)return; for(let k=0;k<speed;k++){ if(t>=T_MAX){running=false;break;} stepOnce(); } draw(); updateStat(); if(running) raf=requestAnimationFrame(loop); }
+  document.getElementById('corGrid').addEventListener('input',e=>{ G=+e.target.value; document.getElementById('corGridV').textContent=G; reset(); });
+  document.getElementById('corN').addEventListener('input',e=>{ nCol=+e.target.value; document.getElementById('corNV').textContent=nCol; reset(); });
+  document.getElementById('corSpeed').addEventListener('input',e=>{ speed=+e.target.value; document.getElementById('corSpeedV').textContent=speed; });
+  document.getElementById('corPal').addEventListener('change',reset);
+  document.getElementById('corPlay').addEventListener('click',()=>{ if(running)return; if(t>=T_MAX)t=0; running=true; loop(); });
+  document.getElementById('corPause').addEventListener('click',()=>{ running=false; });
+  document.getElementById('corReset').addEventListener('click',reset);
+  reset();
+})();
+
+// ============================================================
+// SIM 3 — BMU & vizinhança (uma atualização)
+// ============================================================
+(function(){
+  const cv = document.getElementById('cBmu'), ctx = cv.getContext('2d');
+  const PAD=46, W=cv.width, H=cv.height, G=9;
+  let weights=[], sig=2.0, eta=0.30, mouse=null, bmuIdx=null;
+  function nx(u){ return PAD+u*(W-2*PAD); }
+  function ny(u){ return PAD+(1-u)*(H-2*PAD); }
+  function ordered(){ weights=[]; for(let i=0;i<G;i++){ const r=[]; for(let j=0;j<G;j++) r.push([0.12+0.76*j/(G-1), 0.12+0.76*i/(G-1)]); weights.push(r);} }
+  function randomized(){ weights=[]; for(let i=0;i<G;i++){ const r=[]; for(let j=0;j<G;j++) r.push([0.5+(Math.random()-0.5)*0.5,0.5+(Math.random()-0.5)*0.5]); weights.push(r);} }
+  function bmu(x){ let bi=0,bj=0,bd=Infinity; for(let i=0;i<G;i++)for(let j=0;j<G;j++){ const w=weights[i][j],dd=(w[0]-x[0])**2+(w[1]-x[1])**2; if(dd<bd){bd=dd;bi=i;bj=j;} } return [bi,bj]; }
+  function apply(){ if(!mouse||!bmuIdx)return; const [bi,bj]=bmuIdx,s2=2*sig*sig;
+    for(let i=0;i<G;i++)for(let j=0;j<G;j++){ const dg=(i-bi)**2+(j-bj)**2; const h=Math.exp(-dg/s2)*eta,w=weights[i][j]; w[0]+=h*(mouse[0]-w[0]); w[1]+=h*(mouse[1]-w[1]); } draw(); }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // compute h field if mouse set
+    let s2=2*sig*sig;
+    if(mouse) bmuIdx=bmu(mouse);
+    // edges
+    ctx.strokeStyle='rgba(13,115,119,0.5)'; ctx.lineWidth=1.2;
+    for(let i=0;i<G;i++)for(let j=0;j<G;j++){ const w=weights[i][j];
+      if(j<G-1){const w2=weights[i][j+1];ctx.beginPath();ctx.moveTo(nx(w[0]),ny(w[1]));ctx.lineTo(nx(w2[0]),ny(w2[1]));ctx.stroke();}
+      if(i<G-1){const w2=weights[i+1][j];ctx.beginPath();ctx.moveTo(nx(w[0]),ny(w[1]));ctx.lineTo(nx(w2[0]),ny(w2[1]));ctx.stroke();} }
+    // nodes colored by neighborhood h
+    for(let i=0;i<G;i++)for(let j=0;j<G;j++){ const w=weights[i][j]; let h=0;
+      if(bmuIdx){ const dg=(i-bmuIdx[0])**2+(j-bmuIdx[1])**2; h=Math.exp(-dg/s2); }
+      const R=Math.round(13+(245-13)*h*0.0+ (h>0? (h)*0:0));
+      // interpolate teal(13,115,119) -> amber(245,158,11) by h
+      const cr=Math.round(30+(245-30)*h), cg=Math.round(41+(158-41)*h), cb=Math.round(59+(11-59)*h);
+      ctx.fillStyle=`rgb(${cr},${cg},${cb})`;
+      ctx.beginPath(); ctx.arc(nx(w[0]),ny(w[1]),5+6*h,0,7); ctx.fill();
+      if(bmuIdx&&i===bmuIdx[0]&&j===bmuIdx[1]){ ctx.strokeStyle=C.dark; ctx.lineWidth=2.5; ctx.stroke(); }
+    }
+    // input x
+    if(mouse){ ctx.fillStyle=C.violet; ctx.beginPath(); ctx.arc(nx(mouse[0]),ny(mouse[1]),7,0,7); ctx.fill();
+      ctx.strokeStyle=C.white; ctx.lineWidth=2; ctx.stroke();
+      ctx.fillStyle=C.violet; ctx.font='bold 13px Segoe UI'; ctx.fillText('x',nx(mouse[0])+10,ny(mouse[1])-8); }
+    // stat
+    const st=document.getElementById('bmuStat');
+    if(bmuIdx) st.innerHTML=`BMU = nó (${bmuIdx[0]},${bmuIdx[1]}) · σ = ${sig.toFixed(1)} · η = ${eta.toFixed(2)}`;
+  }
+  function setMouse(e){ const r=cv.getBoundingClientRect();
+    const u=((e.clientX-r.left)*(W/r.width)-PAD)/(W-2*PAD);
+    const v=1-((e.clientY-r.top)*(H/r.height)-PAD)/(H-2*PAD);
+    mouse=[Math.max(0,Math.min(1,u)),Math.max(0,Math.min(1,v))]; draw(); }
+  cv.addEventListener('mousemove',setMouse);
+  cv.addEventListener('click',setMouse);
+  document.getElementById('bmuSig').addEventListener('input',e=>{ sig=e.target.value/10; document.getElementById('bmuSigV').textContent=sig.toFixed(1); draw(); });
+  document.getElementById('bmuEta').addEventListener('input',e=>{ eta=e.target.value/100; document.getElementById('bmuEtaV').textContent=eta.toFixed(2); });
+  document.getElementById('bmuApply').addEventListener('click',apply);
+  document.getElementById('bmuApply10').addEventListener('click',()=>{ for(let k=0;k<10;k++)apply(); });
+  document.getElementById('bmuReset').addEventListener('click',()=>{ ordered(); draw(); });
+  document.getElementById('bmuRand').addEventListener('click',()=>{ randomized(); draw(); });
+  ordered(); mouse=[0.7,0.7]; draw();
+})();
+
+// ============================================================
+// SIM 4 — Quiz
+// ============================================================
+const quizData = [
+  { q:'O que distingue o SOM do aprendizado competitivo puro (winner-take-all)?',
+    opts:['O SOM usa rótulos','No SOM, o vencedor E seus vizinhos na grade são atualizados','O SOM não tem protótipos','O SOM minimiza uma função de energia'],
+    correct:1, fb:'A inovação de Kohonen é a função de vizinhança: além do vencedor (BMU), os neurônios vizinhos na grade também se ajustam — é isso que cria a preservação de topologia.' },
+  { q:'Como o BMU (Best Matching Unit) é definido para uma entrada x?',
+    opts:['O neurônio com maior peso','O neurônio cujo protótipo w_j é mais próximo de x','Um neurônio escolhido ao acaso','O neurônio no centro da grade'],
+    correct:1, fb:'BMU: i*(x) = argmin_j ‖x − w_j‖. É a fase de competição, idêntica ao competitivo puro.' },
+  { q:'A distância usada na função de vizinhança h é medida em qual espaço?',
+    opts:['No espaço de entrada (entre x e w_j)','Na grade (entre as posições r dos neurônios)','No tempo','No espaço de cores'],
+    correct:1, fb:'Crucial: h = exp(−‖r_{i*} − r_j‖² / 2σ²) usa a distância entre POSIÇÕES NA GRADE, não entre os pesos. É isso que liga vizinhos topológicos.' },
+  { q:'Por que tanto η quanto σ devem decair ao longo do treino?',
+    opts:['Para economizar memória','Primeiro ordenar globalmente (σ grande), depois refinar localmente (σ pequeno)','Para evitar overfitting de rótulos','Porque a GPU exige isso'],
+    correct:1, fb:'Fase de ordenação (σ grande, η alto) cria a estrutura global; fase de convergência (σ e η pequenos) faz o ajuste fino. O decaimento satisfaz as condições de Robbins-Monro.' },
+  { q:'O que significa "preservação de topologia"?',
+    opts:['Os pesos nunca mudam','Entradas próximas no espaço de dados têm BMUs próximos na grade','A grade tem sempre forma quadrada','O número de neurônios é preservado'],
+    correct:1, fb:'É a propriedade central do SOM: a vizinhança nos dados é refletida na vizinhança na grade. Por isso o mapa é "contínuo".' },
+  { q:'O fator de magnificação do SOM diz que regiões de alta densidade de dados recebem…',
+    opts:['Menos neurônios','Mais neurônios (M ∝ p^{2/3})','Exatamente o mesmo número','Nenhum neurônio'],
+    correct:1, fb:'Regiões mais frequentes ganham mais protótipos — análogo ao homúnculo de Penfield, em que mãos e lábios (muitos receptores) ocupam mais córtex.' },
+  { q:'Qual exemplo biológico o SOM modela diretamente?',
+    opts:['O potencial de ação','A formação de mapas corticais (tonotópico, retinotópico, somatossensorial)','A síntese de neurotransmissores','A barreira hematoencefálica'],
+    correct:1, fb:'Kohonen (1982) propôs o SOM como modelo da auto-organização de mapas topográficos do córtex, que dependem da experiência.' },
+  { q:'Em relação ao k-means, o SOM acrescenta principalmente:',
+    opts:['Rótulos de classe','Uma grade com relação de vizinhança entre os protótipos','Uma função de custo global garantida','Camadas profundas'],
+    correct:1, fb:'k-means dá protótipos independentes; o SOM organiza os protótipos numa grade, impondo topologia. (Aliás, o SOM NÃO tem uma função de custo global simples.)' },
+  { q:'Uma limitação teórica importante do SOM é:',
+    opts:['Não converge nunca','Não possui uma função de custo global que decresça monotonicamente','Só funciona em 1 dimensão','Exige dados rotulados'],
+    correct:1, fb:'Diferente de k-means (distorção) e PCA (variância), a regra do SOM online não é o gradiente de um custo global simples — dificulta comparar configurações.' },
+  { q:'O que é a U-Matrix?',
+    opts:['A matriz de pesos inicial','Uma visualização da distância média entre neurônios vizinhos, que revela fronteiras de clusters','A matriz de covariância dos dados','A função de ativação do SOM'],
+    correct:1, fb:'U-Matrix (Ultsch & Siemon, 1990): cada célula mostra a distância média aos vizinhos; cristas escuras marcam fronteiras entre clusters no mapa treinado.' },
+];
+const quizContainer = document.getElementById('quizContainer');
+let quizAnswered = new Array(quizData.length).fill(false);
+let quizScore = 0;
+quizData.forEach((q,qi)=>{
+  const div=document.createElement('div'); div.className='quiz-q';
+  let html=`<div class="qnum">QUESTÃO ${qi+1}</div><div class="qtxt">${q.q}</div><div class="quiz-opts">`;
+  q.opts.forEach((opt,oi)=>{ html+=`<button class="quiz-opt" data-q="${qi}" data-o="${oi}">${opt}</button>`; });
+  html+=`</div><div class="quiz-fb" id="fb${qi}">${q.fb}</div>`;
+  div.innerHTML=html; quizContainer.appendChild(div);
+});
+quizContainer.querySelectorAll('.quiz-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const qi=+btn.dataset.q, oi=+btn.dataset.o;
+    if(quizAnswered[qi])return; quizAnswered[qi]=true;
+    const correct=quizData[qi].correct, parent=btn.parentElement;
+    parent.querySelectorAll('.quiz-opt').forEach((b,idx)=>{ b.disabled=true;
+      if(idx===correct)b.classList.add('correct'); else if(idx===oi)b.classList.add('wrong'); });
+    document.getElementById('fb'+qi).classList.add('show');
+    if(oi===correct)quizScore++;
+    document.getElementById('quizScoreNum').textContent=quizScore;
+  });
+});
+</script>
+</body>
+</html>

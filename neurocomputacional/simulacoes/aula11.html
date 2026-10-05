@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulações — Aula 11 · Aprendizado por reforço II: TD(λ), SARSA, Q-learning e ator–crítico</title>
+<style>
+  :root {
+    --dark: #1E293B;
+    --dark2: #0F172A;
+    --gray: #64748B;
+    --lgray: #94A3B8;
+    --xlgray: #CBD5E1;
+    --bg: #F8FAFC;
+    --white: #FFFFFF;
+    --blue: #1A56DB;
+    --lblue: #60A5FA;
+    --amber: #B45309;
+    --lamber: #F59E0B;
+    --green: #15803D;
+    --lgreen: #4ADE80;
+    --violet: #6D28D9;
+    --lviolet: #A78BFA;
+    --teal: #0D7377;
+    --mint: #14B8A6;
+    --red: #B91C1C;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--dark);
+    line-height: 1.5;
+  }
+  header {
+    background: var(--dark);
+    color: var(--white);
+    padding: 18px 28px;
+    border-bottom: 4px solid var(--green);
+  }
+  header .tag {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--lgreen);
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-top: 4px;
+  }
+  header .sub {
+    font-size: 13px;
+    color: var(--xlgray);
+    margin-top: 2px;
+    font-style: italic;
+  }
+  header .author {
+    font-size: 11px;
+    color: var(--lgray);
+    margin-top: 6px;
+  }
+
+  /* Tab navigation */
+  .tabs {
+    display: flex;
+    background: var(--white);
+    border-bottom: 1px solid var(--xlgray);
+    padding: 0 20px;
+  }
+  .tab {
+    padding: 14px 22px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray);
+    border-bottom: 3px solid transparent;
+    transition: all .15s;
+    user-select: none;
+  }
+  .tab:hover { background: var(--bg); color: var(--dark); }
+  .tab.active { color: var(--dark); }
+  .tab.active.sv { border-color: var(--blue); }
+  .tab.active.ns { border-color: var(--amber); }
+  .tab.active.rl { border-color: var(--green); }
+
+  /* Panel containers */
+  .panel { display: none; padding: 24px 28px; }
+  .panel.active { display: block; }
+  .panel h2 { font-size: 22px; margin-bottom: 6px; }
+  .panel h2.sv { color: var(--blue); }
+  .panel h2.ns { color: var(--amber); }
+  .panel h2.rl { color: var(--green); }
+  .panel .desc {
+    font-size: 14px;
+    color: var(--gray);
+    margin-bottom: 18px;
+    max-width: 900px;
+    line-height: 1.6;
+  }
+
+  /* Two-column layout */
+  .lab {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 22px;
+    max-width: 1180px;
+  }
+  .canvas-wrap {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+  canvas {
+    display: block;
+    border-radius: 8px;
+    width: 100%;
+    height: auto;
+    background: var(--bg);
+    cursor: crosshair;
+  }
+  .controls {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    align-self: start;
+  }
+  .controls h3 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--gray);
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--xlgray);
+    padding-bottom: 8px;
+  }
+  .group { margin-bottom: 16px; }
+  .group label {
+    display: block;
+    font-size: 12px;
+    color: var(--gray);
+    margin-bottom: 4px;
+  }
+  .group input[type=range] {
+    width: 100%;
+    accent-color: var(--green);
+  }
+  .group .val {
+    font-size: 12px;
+    color: var(--dark);
+    font-weight: 600;
+    font-family: 'Consolas', monospace;
+  }
+  button {
+    width: 100%;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s;
+    margin-bottom: 8px;
+    font-family: inherit;
+  }
+  button.primary { background: var(--violet); color: var(--white); }
+  button.primary:hover { background: var(--lviolet); }
+  button.primary.sv { background: var(--blue); }
+  button.primary.sv:hover { background: var(--lblue); }
+  button.primary.ns { background: var(--amber); }
+  button.primary.ns:hover { background: var(--lamber); }
+  button.primary.rl { background: var(--green); }
+  button.primary.rl:hover { background: var(--lgreen); }
+  button.secondary { background: var(--bg); color: var(--dark); border: 1px solid var(--xlgray); }
+  button.secondary:hover { background: var(--xlgray); }
+  button.ghost { background: transparent; color: var(--gray); border: 1px solid var(--xlgray); }
+  button.ghost:hover { color: var(--dark); }
+  button:disabled { opacity: .4; cursor: not-allowed; }
+
+  .legend { font-size: 11px; color: var(--gray); margin-top: 8px; line-height: 1.5; }
+  .legend .swatch {
+    display: inline-block; width: 10px; height: 10px;
+    border-radius: 50%; vertical-align: middle; margin-right: 4px;
+  }
+
+  .stats {
+    background: var(--bg);
+    padding: 10px 12px;
+    border-radius: 6px;
+    margin-top: 10px;
+    font-family: 'Consolas', monospace;
+    font-size: 12px;
+    color: var(--dark);
+  }
+  .stats .row { display: flex; justify-content: space-between; margin: 2px 0; }
+  .stats .row .k { color: var(--gray); }
+
+  .ped {
+    background: #F5F3FF;
+    border-left: 4px solid var(--violet);
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-top: 18px;
+    font-size: 13px;
+    color: var(--dark);
+    max-width: 1180px;
+    line-height: 1.6;
+  }
+  .ped.sv { background: #EFF6FF; border-color: var(--blue); }
+  .ped.ns { background: #FFFBEB; border-color: var(--amber); }
+  .ped.rl { background: #F0FDF4; border-color: var(--green); }
+  .ped strong { font-weight: 700; }
+
+  .mode-toggle {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .mode-toggle button {
+    flex: 1;
+    padding: 6px 8px;
+    font-size: 11px;
+    margin: 0;
+    background: var(--bg);
+    color: var(--gray);
+    border: 1px solid var(--xlgray);
+  }
+  .mode-toggle button.on {
+    background: var(--dark);
+    color: var(--white);
+    border-color: var(--dark);
+  }
+
+  footer {
+    padding: 20px 28px;
+    color: var(--lgray);
+    font-size: 11px;
+    text-align: center;
+    border-top: 1px solid var(--xlgray);
+    background: var(--white);
+  }
+
+  .tab.active.td { border-color: var(--blue); }
+  .tab.active.ac { border-color: var(--amber); }
+  .panel h2.td { color: var(--blue); } .panel h2.ac { color: var(--amber); }
+  .canvas-wrap canvas + canvas { margin-top: 12px; }
+  @media (max-width: 860px) { .lab { grid-template-columns: 1fr; } .tabs { flex-wrap: wrap; } .panel { padding: 18px 14px; } header { padding: 16px; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="tag">Neurociência Computacional · UFRN</div>
+  <h1>Simulações — Aula 11 · Aprendizado por reforço II: TD(λ), SARSA, Q-learning e ator–crítico</h1>
+  <div class="sub">O penhasco, os rastros de elegibilidade e um ator–crítico · <a href="../aula11.html" style="color:inherit">atividades da Aula 11</a></div>
+  <div class="author">Daniel Y Takahashi — Instituto do Cérebro · 2026</div>
+</header>
+
+<nav class="tabs">
+  <div class="tab rl active" data-tab="cw">1 · Cliff walking: SARSA × Q-learning</div>
+  <div class="tab td" data-tab="td">2 · TD(λ) e rastros de elegibilidade</div>
+  <div class="tab ac" data-tab="ac">3 · Ator–crítico</div>
+</nav>
+
+<!-- ============================================================ -->
+<!-- TAB 1 — CLIFF WALKING -->
+<!-- ============================================================ -->
+<section class="panel active" id="panel-cw">
+  <h2 class="rl">1 · Cliff walking: on-policy × off-policy</h2>
+  <p class="desc">
+    Dois agentes aprendem ao mesmo tempo no mesmo penhasco (grade 4 × 12; −1 por passo; −100 e volta ao início se cair),
+    com a mesma exploração ε-gulosa. O <strong>SARSA</strong> (azul) usa no alvo a ação que de fato vai tomar; o
+    <strong>Q-learning</strong> (verde) usa a melhor ação. Treine e compare os caminhos gulosos e a soma das recompensas
+    por episódio durante o treino.
+  </p>
+  <div class="lab">
+    <div class="canvas-wrap">
+      <canvas id="cw-grid" width="720" height="260"></canvas>
+      <canvas id="cw-curve" width="720" height="240"></canvas>
+      <div class="legend">
+        <span class="swatch" style="background:#1A56DB"></span> SARSA &nbsp;·&nbsp;
+        <span class="swatch" style="background:#15803D"></span> Q-learning &nbsp;·&nbsp;
+        Em cima: caminhos gulosos atuais (o tracejado mostra o último episódio animado). Embaixo: soma das recompensas por episódio (média móvel de 10).
+      </div>
+    </div>
+    <div class="controls">
+      <h3>Controles</h3>
+      <div class="group">
+        <label>Exploração ε <span class="val" id="cw-eps-val">0,10</span></label>
+        <input type="range" id="cw-eps" min="0" max="0.4" step="0.01" value="0.1">
+      </div>
+      <div class="group">
+        <label>Taxa de aprendizado α <span class="val" id="cw-alpha-val">0,50</span></label>
+        <input type="range" id="cw-alpha" min="0.05" max="1" step="0.05" value="0.5">
+      </div>
+      <div class="group">
+        <label><input type="checkbox" id="cw-decay"> ε decai até zero (multiplica por 0,99 a cada episódio)</label>
+      </div>
+      <button class="primary rl" id="cw-50">Treinar 50 episódios</button>
+      <button class="secondary" id="cw-500">Treinar 500 episódios</button>
+      <button class="secondary" id="cw-anim-s">Animar 1 episódio do SARSA</button>
+      <button class="secondary" id="cw-anim-q">Animar 1 episódio do Q-learning</button>
+      <button class="ghost" id="cw-reset">Resetar</button>
+      <div class="stats">
+        <div class="row"><span class="k">Episódios</span><span id="cw-n">0</span></div>
+        <div class="row"><span class="k">ε atual</span><span id="cw-epsnow">0,10</span></div>
+        <div class="row"><span class="k">SARSA: soma (últ. 50)</span><span id="cw-rs">—</span></div>
+        <div class="row"><span class="k">Q-learning: soma (últ. 50)</span><span id="cw-rq">—</span></div>
+        <div class="row"><span class="k">SARSA: quedas (últ. 50)</span><span id="cw-fs">—</span></div>
+        <div class="row"><span class="k">Q-learning: quedas (últ. 50)</span><span id="cw-fq">—</span></div>
+        <div class="row"><span class="k">Caminhos gulosos (passos)</span><span id="cw-len">—</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="ped rl">
+    <strong>O que esta simulação ensina:</strong> com ε fixo, o Q-learning aprende o caminho ótimo, rente ao penhasco
+    (13 passos), mas durante o treino cai mais e ganha menos por episódio; o SARSA aprende um caminho mais longo e seguro,
+    porque o valor que ele estima inclui o risco da própria exploração. Marque "ε decai até zero" e treine de novo: sem
+    exploração, os dois acabam no caminho da borda. Experimente também ε = 0 desde o início — o agente pode ficar preso
+    numa política ruim, como o guloso puro do bandido da Aula 4.
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- TAB 2 — TD(λ) -->
+<!-- ============================================================ -->
+<section class="panel" id="panel-td">
+  <h2 class="td">2 · TD(λ) num passeio aleatório: os rastros espalham o crédito</h2>
+  <p class="desc">
+    Passeio aleatório de 19 estados: o agente começa no meio e vai para a esquerda ou para a direita com probabilidade ½;
+    sair pela esquerda dá −1, pela direita +1. Os pontos são os valores estimados V(s); a linha cinza, os verdadeiros.
+    As barras verdes são os <strong>rastros de elegibilidade</strong> e(s) durante o episódio. Avance passo a passo e veja
+    um único erro δ atualizar todos os estados com rastro.
+  </p>
+  <div class="lab">
+    <div class="canvas-wrap">
+      <canvas id="td-v" width="720" height="300"></canvas>
+      <canvas id="td-err" width="720" height="200"></canvas>
+      <div class="legend">
+        <span class="swatch" style="background:#1A56DB"></span> V(s) estimado &nbsp;·&nbsp;
+        <span class="swatch" style="background:#94A3B8"></span> V(s) verdadeiro &nbsp;·&nbsp;
+        <span class="swatch" style="background:#15803D"></span> rastro e(s) &nbsp;·&nbsp;
+        <span class="swatch" style="background:#B45309"></span> posição do agente. Embaixo: erro RMS por episódio.
+      </div>
+    </div>
+    <div class="controls">
+      <h3>Controles</h3>
+      <div class="group">
+        <label>λ <span class="val" id="td-lam-val">0,80</span></label>
+        <input type="range" id="td-lam" min="0" max="1" step="0.05" value="0.8">
+      </div>
+      <div class="group">
+        <label>Taxa de aprendizado α <span class="val" id="td-alpha-val">0,20</span></label>
+        <input type="range" id="td-alpha" min="0.02" max="0.6" step="0.02" value="0.2">
+      </div>
+      <div class="group">
+        <label><input type="checkbox" id="td-rep"> rastro substituto (e ← 1) em vez de acumulativo</label>
+      </div>
+      <button class="primary sv" id="td-step">Passo</button>
+      <button class="secondary" id="td-ep">Terminar o episódio</button>
+      <button class="secondary" id="td-10">10 episódios</button>
+      <button class="ghost" id="td-reset">Resetar (V = 0)</button>
+      <div class="stats">
+        <div class="row"><span class="k">Episódios</span><span id="td-n">0</span></div>
+        <div class="row"><span class="k">Último δ</span><span id="td-d">—</span></div>
+        <div class="row"><span class="k">Estados com rastro &gt; 0,01</span><span id="td-k">0</span></div>
+        <div class="row"><span class="k">Erro RMS</span><span id="td-rms">—</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="ped sv">
+    <strong>O que esta simulação ensina:</strong> com λ = 0 (TD(0)), cada δ corrige só o estado anterior, e a notícia das
+    pontas leva muitos episódios para chegar ao meio. Com λ alto, o rastro deixa uma "cauda" atrás do agente e um único δ
+    atualiza toda a trajetória recente — como a dopamina que encontra uma etiqueta química nas sinapses que acabaram de
+    estar ativas. Compare o erro depois de 10 episódios para λ = 0, 0,8 e 1: um meio-termo costuma ganhar. Com λ = 1 e α
+    grande, o rastro acumulativo pode divergir.
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- TAB 3 — ATOR–CRÍTICO -->
+<!-- ============================================================ -->
+<section class="panel" id="panel-ac">
+  <h2 class="ac">3 · Ator–crítico: um erro, duas aprendizagens</h2>
+  <p class="desc">
+    A cada ensaio, uma pista aparece e o agente escolhe entre as alavancas A e B, que dão recompensa 1 com probabilidades
+    diferentes. O <strong>crítico</strong> (estriado ventral, na hipótese clássica) aprende o valor V da pista; o
+    <strong>ator</strong> (estriado dorsal) aprende preferências h(A) e h(B) e escolhe por softmax. O mesmo erro δ = r − V
+    — a "dopamina" no momento da recompensa — ensina os dois. Inverta as alavancas a qualquer momento e veja o que acontece.
+  </p>
+  <div class="lab">
+    <div class="canvas-wrap">
+      <canvas id="ac-plot" width="720" height="280"></canvas>
+      <canvas id="ac-da" width="720" height="170"></canvas>
+      <div class="legend">
+        <span class="swatch" style="background:#1A56DB"></span> π(A), probabilidade de escolher A &nbsp;·&nbsp;
+        <span class="swatch" style="background:#6D28D9"></span> V (crítico) &nbsp;·&nbsp;
+        Embaixo: δ em cada ensaio (azul positivo, vermelho negativo); linhas tracejadas: inversões.
+      </div>
+    </div>
+    <div class="controls">
+      <h3>Controles</h3>
+      <div class="group">
+        <label>P(recompensa | A) <span class="val" id="ac-pa-val">0,80</span></label>
+        <input type="range" id="ac-pa" min="0" max="1" step="0.05" value="0.8">
+      </div>
+      <div class="group">
+        <label>P(recompensa | B) <span class="val" id="ac-pb-val">0,20</span></label>
+        <input type="range" id="ac-pb" min="0" max="1" step="0.05" value="0.2">
+      </div>
+      <div class="group">
+        <label>α do crítico <span class="val" id="ac-a-val">0,10</span></label>
+        <input type="range" id="ac-a" min="0.01" max="1" step="0.01" value="0.1">
+      </div>
+      <div class="group">
+        <label>β do ator <span class="val" id="ac-b-val">0,20</span></label>
+        <input type="range" id="ac-b" min="0.01" max="1" step="0.01" value="0.2">
+      </div>
+      <button class="primary ns" id="ac-1">1 ensaio</button>
+      <button class="secondary" id="ac-50">50 ensaios</button>
+      <button class="secondary" id="ac-swap">Inverter as alavancas</button>
+      <button class="ghost" id="ac-reset">Resetar</button>
+      <div class="stats">
+        <div class="row"><span class="k">Ensaios</span><span id="ac-n">0</span></div>
+        <div class="row"><span class="k">Última escolha · r</span><span id="ac-last">—</span></div>
+        <div class="row"><span class="k">δ</span><span id="ac-d">—</span></div>
+        <div class="row"><span class="k">V</span><span id="ac-v">0,00</span></div>
+        <div class="row"><span class="k">h(A) · h(B)</span><span id="ac-h">0,00 · 0,00</span></div>
+        <div class="row"><span class="k">π(A)</span><span id="ac-p">0,50</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="ped ns">
+    <strong>O que esta simulação ensina:</strong> no começo δ é grande e positivo a cada recompensa; à medida que o crítico
+    aprende, δ encolhe — como a resposta dopaminérgica a uma recompensa que passa a ser prevista. O ator só aprende enquanto
+    houver surpresa. Depois de uma inversão, π(A) demora dezenas a centenas de ensaios para virar (com a política quase determinística, o termo 1 − π(A) é pequeno e o ator quase não muda): é o que Rolls (2023, seção 19.5)
+    chama de lentidão do reforço dopaminérgico, em contraste com a reversão em um único ensaio feita pelo córtex
+    orbitofrontal. Teste α do crítico muito alto: o crítico prevê depressa, δ some e o ator para de aprender cedo demais.
+  </div>
+</section>
+
+<footer>
+  Neurociência Computacional · Aula 11 · Instituto do Cérebro — UFRN · <a href="../aula11.html">atividades da Aula 11</a>
+</footer>
+
+<script>
+"use strict";
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+const C = { dark: '#1E293B', gray: '#64748B', lgray: '#94A3B8', xlgray: '#CBD5E1', bg: '#F8FAFC', white: '#FFFFFF', blue: '#1A56DB', amber: '#B45309', green: '#15803D', violet: '#6D28D9', red: '#B91C1C', teal: '#0D7377' };
+const fmt = (v, d = 2) => (v === null || v === undefined || isNaN(v)) ? '—' : v.toFixed(d).replace('.', ',').replace('-', '−');
+const $ = (id) => document.getElementById(id);
+function hiDPI(c) { const r = window.devicePixelRatio || 1; const w = c.width, h = c.height; c.width = w * r; c.height = h * r; c.style.aspectRatio = w + '/' + h; const g = c.getContext('2d'); g.scale(r, r); return { g, w, h }; }
+function bindVal(id, d = 2) { const el = $(id), v = $(id + '-val'); const up = () => { v.textContent = fmt(+el.value, d); }; el.addEventListener('input', up); up(); }
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+const mean = (a) => a.length ? a.reduce((s, x) => s + x, 0) / a.length : NaN;
+
+// ============================================================
+// TAB 1 — CLIFF WALKING
+// ============================================================
+(() => {
+  ['cw-eps', 'cw-alpha'].forEach(id => bindVal(id));
+  const G = hiDPI($('cw-grid')), K = hiDPI($('cw-curve'));
+  const MV = [[-1, 0], [0, 1], [1, 0], [0, -1]];
+  let Qs, Qq, Rs, Rq, Fs, Fq, eps, anim = null;
+  const newQ = () => Array.from({ length: 4 }, () => Array.from({ length: 12 }, () => [0, 0, 0, 0]));
+  function reset() { Qs = newQ(); Qq = newQ(); Rs = []; Rq = []; Fs = []; Fq = []; eps = +$('cw-eps').value; anim = null; draw(); }
+  function step(r, c, a) { r = Math.min(Math.max(r + MV[a][0], 0), 3); c = Math.min(Math.max(c + MV[a][1], 0), 11);
+    if (r === 3 && c >= 1 && c <= 10) return [3, 0, -100, false, true]; return [r, c, -1, r === 3 && c === 11, false]; }
+  function eg(Q, r, c, e) { if (Math.random() < e) return Math.floor(Math.random() * 4); const q = Q[r][c], m = Math.max(...q); const b = [0, 1, 2, 3].filter(a => q[a] === m); return b[Math.floor(Math.random() * b.length)]; }
+  function episode(Q, algo, e, al, trace) {
+    let r = 3, c = 0, a = eg(Q, r, c, e), tot = 0, falls = 0, done = false, n = 0; const path = [[3, 0]];
+    while (!done && n < 3000) { n++; const [r2, c2, rw, d, f] = step(r, c, a); tot += rw; falls += f; const a2 = eg(Q, r2, c2, e);
+      const tg = d ? 0 : (algo === 'sarsa' ? Q[r2][c2][a2] : Math.max(...Q[r2][c2]));
+      Q[r][c][a] += al * (rw + tg - Q[r][c][a]); if (trace) path.push(f ? [3, 1] : [r2, c2]); if (f && trace) path.push([3, 0]);
+      r = r2; c = c2; a = a2; done = d; }
+    return { tot, falls, path };
+  }
+  function train(n) { const al = +$('cw-alpha').value;
+    for (let k = 0; k < n; k++) { const a = episode(Qs, 'sarsa', eps, al), b = episode(Qq, 'q', eps, al); Rs.push(a.tot); Rq.push(b.tot); Fs.push(a.falls); Fq.push(b.falls); if ($('cw-decay').checked) eps *= 0.99; }
+    draw(); }
+  function greedy(Q) { const P = [[3, 0]]; let r = 3, c = 0; for (let k = 0; k < 60; k++) { const q = Q[r][c]; const a = q.indexOf(Math.max(...q)); const [r2, c2, rw, d, f] = step(r, c, a); if (f) { P.push([3, 1]); return { P, ok: false }; } r = r2; c = c2; P.push([r, c]); if (d) return { P, ok: true }; } return { P, ok: false }; }
+  function draw() {
+    const { g, w, h } = G; g.clearRect(0, 0, w, h); const s = Math.min((w - 20) / 12, (h - 20) / 4), x0 = (w - 12 * s) / 2, y0 = (h - 4 * s) / 2;
+    for (let r = 0; r < 4; r++) for (let c = 0; c < 12; c++) { const cl = r === 3 && c >= 1 && c <= 10; g.fillStyle = cl ? '#9CA3AF' : C.white; g.fillRect(x0 + c * s, y0 + r * s, s, s); g.strokeStyle = C.xlgray; g.strokeRect(x0 + c * s, y0 + r * s, s, s); }
+    g.fillStyle = C.dark; g.font = 'bold 22px sans-serif'; g.fillText('S', x0 + 0.33 * s, y0 + 3.65 * s); g.fillText('G', x0 + 11.3 * s, y0 + 3.65 * s);
+    g.fillStyle = C.white; g.font = 'bold 18px sans-serif'; g.fillText('penhasco: r = −100', x0 + 4 * s, y0 + 3.62 * s);
+    const line = (P, col, off, dash) => { g.strokeStyle = col; g.lineWidth = dash ? 2 : 5; g.setLineDash(dash ? [6, 5] : []); g.beginPath(); P.forEach(([r, c], k) => { const X = x0 + (c + 0.5) * s + off, Y = y0 + (r + 0.5) * s + off; k ? g.lineTo(X, Y) : g.moveTo(X, Y); }); g.stroke(); g.setLineDash([]); };
+    const ps = greedy(Qs), pq = greedy(Qq);
+    if (Rs.length) { line(ps.P, C.blue, -4); line(pq.P, C.green, 4); }
+    if (anim) line(anim.path, anim.col, 0, true);
+    // curvas
+    const k = K.g, W = K.w, H = K.h; k.clearRect(0, 0, W, H); const n = Rs.length; const X = (i) => 50 + (W - 70) * i / Math.max(n - 1, 1), Y = (v) => 15 + (H - 45) * (Math.min(0, Math.max(v, -120)) / -120);
+    k.strokeStyle = C.xlgray; k.fillStyle = C.gray; k.font = '12px sans-serif';
+    [0, -40, -80, -120].forEach(v => { k.beginPath(); k.moveTo(50, Y(v)); k.lineTo(W - 20, Y(v)); k.stroke(); k.fillText(String(v).replace('-', '−'), 14, Y(v) + 4); });
+    k.fillText('episódio →', W - 90, H - 8); k.fillText('soma das recompensas por episódio', 56, 12);
+    const sm = (R) => R.map((_, i) => mean(R.slice(Math.max(0, i - 9), i + 1)));
+    [[Rs, C.blue], [Rq, C.green]].forEach(([R, col]) => { if (!R.length) return; k.strokeStyle = col; k.lineWidth = 2; k.beginPath(); sm(R).forEach((v, i) => i ? k.lineTo(X(i), Y(v)) : k.moveTo(X(i), Y(v))); k.stroke(); });
+    $('cw-n').textContent = n; $('cw-epsnow').textContent = fmt(eps);
+    $('cw-rs').textContent = fmt(mean(Rs.slice(-50)), 1); $('cw-rq').textContent = fmt(mean(Rq.slice(-50)), 1);
+    $('cw-fs').textContent = fmt(mean(Fs.slice(-50)), 2); $('cw-fq').textContent = fmt(mean(Fq.slice(-50)), 2);
+    $('cw-len').textContent = n ? `SARSA ${ps.ok ? ps.P.length - 1 : '—'} · Q ${pq.ok ? pq.P.length - 1 : '—'}` : '—';
+  }
+  async function animate(algo) { const Q = algo === 'sarsa' ? Qs : Qq; const res = episode(Q, algo, eps, +$('cw-alpha').value, true);
+    const col = algo === 'sarsa' ? C.blue : C.green; for (let i = 2; i <= Math.min(res.path.length, 200); i++) { anim = { path: res.path.slice(0, i), col }; draw(); await sleep(25); } }
+  $('cw-50').addEventListener('click', () => train(50)); $('cw-500').addEventListener('click', () => train(500));
+  $('cw-anim-s').addEventListener('click', () => animate('sarsa')); $('cw-anim-q').addEventListener('click', () => animate('q'));
+  $('cw-reset').addEventListener('click', reset); $('cw-eps').addEventListener('change', () => { eps = +$('cw-eps').value; draw(); });
+  reset();
+})();
+
+// ============================================================
+// TAB 2 — TD(λ)
+// ============================================================
+(() => {
+  bindVal('td-lam'); bindVal('td-alpha');
+  const N = 19, TRUE = Array.from({ length: N }, (_, i) => -1 + 2 * (i + 1) / (N + 1));
+  const A = hiDPI($('td-v')), E = hiDPI($('td-err'));
+  let V, z, s, eps, errs, lastD;
+  function reset() { V = Array(N).fill(0); z = Array(N).fill(0); s = Math.floor(N / 2); eps = 0; errs = []; lastD = null; draw(); }
+  const rms = () => Math.sqrt(mean(V.map((v, i) => (v - TRUE[i]) ** 2)));
+  function step() { const lam = +$('td-lam').value, al = +$('td-alpha').value, rep = $('td-rep').checked;
+    const s2 = s + (Math.random() < 0.5 ? 1 : -1); let r = 0, v2 = 0, fim = false;
+    if (s2 < 0) { r = -1; fim = true; } else if (s2 >= N) { r = 1; fim = true; } else v2 = V[s2];
+    const d = r + v2 - V[s]; lastD = d;
+    for (let i = 0; i < N; i++) z[i] *= lam; z[s] = rep ? 1 : z[s] + 1;
+    for (let i = 0; i < N; i++) V[i] += al * d * z[i];
+    if (fim) { eps++; errs.push(rms()); z = Array(N).fill(0); s = Math.floor(N / 2); return true; } s = s2; return false; }
+  function draw() {
+    const { g, w, h } = A; g.clearRect(0, 0, w, h); const bw = (w - 80) / N, X = (i) => 60 + (i + 0.5) * bw, Y = (v) => h / 2 - 20 - v * (h / 2 - 40);
+    g.strokeStyle = C.xlgray; g.fillStyle = C.gray; g.font = '12px sans-serif';
+    [-1, 0, 1].forEach(v => { g.beginPath(); g.moveTo(50, Y(v)); g.lineTo(w - 10, Y(v)); g.stroke(); g.fillText(String(v).replace('-', '−'), 30, Y(v) + 4); });
+    g.fillText('V(s)', 8, Y(1) - 6);
+    const base = h - 20, zh = 70; g.fillText('e(s)', 14, base - 4);
+    z.forEach((e, i) => { g.fillStyle = C.green; const hh = Math.min(e, 3) / 3 * zh; g.fillRect(X(i) - bw * 0.35, base - hh, bw * 0.7, hh); });
+    g.strokeStyle = C.lgray; g.lineWidth = 2; g.beginPath(); TRUE.forEach((v, i) => i ? g.lineTo(X(i), Y(v)) : g.moveTo(X(i), Y(v))); g.stroke();
+    V.forEach((v, i) => { g.fillStyle = C.blue; g.beginPath(); g.arc(X(i), Y(Math.max(-1.4, Math.min(1.4, v))), 5, 0, 7); g.fill(); });
+    g.fillStyle = C.amber; g.beginPath(); g.moveTo(X(s), base - zh - 16); g.lineTo(X(s) - 7, base - zh - 28); g.lineTo(X(s) + 7, base - zh - 28); g.fill();
+    const k = E.g, W = E.w, H = E.h; k.clearRect(0, 0, W, H); const n = errs.length; const Xe = (i) => 50 + (W - 70) * i / Math.max(n - 1, 1), Ye = (v) => 15 + (H - 40) * (1 - Math.min(v, 0.7) / 0.7);
+    k.strokeStyle = C.xlgray; k.fillStyle = C.gray; k.font = '12px sans-serif';
+    [0, 0.35, 0.7].forEach(v => { k.beginPath(); k.moveTo(50, Ye(v)); k.lineTo(W - 20, Ye(v)); k.stroke(); k.fillText(fmt(v), 12, Ye(v) + 4); }); k.fillText('erro RMS por episódio', 56, 12); k.fillText('episódio →', W - 90, H - 6);
+    if (n) { k.strokeStyle = C.blue; k.lineWidth = 2; k.beginPath(); errs.forEach((v, i) => i ? k.lineTo(Xe(i), Ye(v)) : k.moveTo(Xe(i), Ye(v))); k.stroke(); }
+    $('td-n').textContent = eps; $('td-d').textContent = fmt(lastD, 3); $('td-k').textContent = z.filter(e => e > 0.01).length; $('td-rms').textContent = fmt(rms(), 3);
+  }
+  $('td-step').addEventListener('click', () => { step(); draw(); });
+  $('td-ep').addEventListener('click', () => { let k = 0; while (!step() && k++ < 5000); draw(); });
+  $('td-10').addEventListener('click', () => { for (let e = 0; e < 10; e++) { let k = 0; while (!step() && k++ < 5000); } draw(); });
+  $('td-reset').addEventListener('click', reset);
+  reset();
+})();
+
+// ============================================================
+// TAB 3 — ATOR–CRÍTICO
+// ============================================================
+(() => {
+  ['ac-pa', 'ac-pb', 'ac-a', 'ac-b'].forEach(id => bindVal(id));
+  const P = hiDPI($('ac-plot')), D = hiDPI($('ac-da'));
+  let V, h, hist, swaps, last;
+  function reset() { V = 0; h = [0, 0]; hist = []; swaps = []; last = null; draw(); }
+  function trial() { const pa = +$('ac-pa').value, pb = +$('ac-pb').value, al = +$('ac-a').value, be = +$('ac-b').value;
+    const e0 = Math.exp(h[0]), e1 = Math.exp(h[1]); const pi = [e0 / (e0 + e1), e1 / (e0 + e1)];
+    const a = Math.random() < pi[0] ? 0 : 1; const r = Math.random() < (a ? pb : pa) ? 1 : 0; const d = r - V;
+    V += al * d; h = h.map((x, k) => x + be * d * ((k === a ? 1 : 0) - pi[k]));
+    const e2 = Math.exp(h[0]), e3 = Math.exp(h[1]); last = { a, r, d }; hist.push({ pA: e2 / (e2 + e3), V, d }); }
+  function draw() {
+    const { g, w, h: H } = P; g.clearRect(0, 0, w, H); const n = Math.max(hist.length, 50); const X = (i) => 50 + (w - 70) * i / (n - 1), Y = (v) => 15 + (H - 40) * (1 - v);
+    g.strokeStyle = C.xlgray; g.fillStyle = C.gray; g.font = '12px sans-serif';
+    [0, 0.5, 1].forEach(v => { g.beginPath(); g.moveTo(50, Y(v)); g.lineTo(w - 20, Y(v)); g.stroke(); g.fillText(fmt(v, 1), 18, Y(v) + 4); }); g.fillText('ensaio →', w - 80, H - 6);
+    swaps.forEach(t => { g.setLineDash([5, 4]); g.strokeStyle = C.amber; g.beginPath(); g.moveTo(X(t), 10); g.lineTo(X(t), H - 25); g.stroke(); g.setLineDash([]); });
+    [['pA', C.blue], ['V', C.violet]].forEach(([key, col]) => { if (!hist.length) return; g.strokeStyle = col; g.lineWidth = 2.2; g.beginPath(); hist.forEach((o, i) => i ? g.lineTo(X(i), Y(o[key])) : g.moveTo(X(i), Y(o[key]))); g.stroke(); });
+    const k = D.g, W = D.w, HH = D.h; k.clearRect(0, 0, W, HH); const Yd = (v) => HH / 2 - v * (HH / 2 - 15), bw = Math.max(1, (W - 70) / n - 1);
+    k.strokeStyle = C.xlgray; k.beginPath(); k.moveTo(50, Yd(0)); k.lineTo(W - 20, Yd(0)); k.stroke(); k.fillStyle = C.gray; k.font = '12px sans-serif'; k.fillText('δ ("dopamina")', 56, 12); k.fillText('+1', 22, Yd(1) + 4); k.fillText('−1', 22, Yd(-1) + 4);
+    hist.forEach((o, i) => { k.fillStyle = o.d >= 0 ? C.blue : C.red; const y0 = Yd(0), y1 = Yd(o.d); k.fillRect(X(i) - bw / 2, Math.min(y0, y1), bw, Math.abs(y1 - y0)); });
+    $('ac-n').textContent = hist.length; $('ac-last').textContent = last ? `${last.a ? 'B' : 'A'} · ${last.r}` : '—'; $('ac-d').textContent = last ? fmt(last.d) : '—';
+    $('ac-v').textContent = fmt(V); $('ac-h').textContent = `${fmt(h[0])} · ${fmt(h[1])}`; const e0 = Math.exp(h[0]), e1 = Math.exp(h[1]); $('ac-p').textContent = fmt(e0 / (e0 + e1));
+  }
+  $('ac-1').addEventListener('click', () => { trial(); draw(); }); $('ac-50').addEventListener('click', () => { for (let i = 0; i < 50; i++) trial(); draw(); });
+  $('ac-swap').addEventListener('click', () => { const a = $('ac-pa').value, b = $('ac-pb').value; $('ac-pa').value = b; $('ac-pb').value = a; ['ac-pa', 'ac-pb'].forEach(id => $(id).dispatchEvent(new Event('input'))); swaps.push(hist.length); draw(); });
+  $('ac-reset').addEventListener('click', reset);
+  reset();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulações — Aula 11b: Explorar ou explotar: bases neurais e estados latentes</title>
+<style>
+  :root{
+    --teal:#0D7377; --mint:#14B8A6; --xlteal:#CCFBF1;
+    --blue:#1A56DB; --amber:#B45309; --lamber:#F59E0B; --xlamber:#FEF3C7;
+    --violet:#6D28D9; --green:#15803D; --red:#DC2626;
+    --dark:#1E293B; --gray:#64748B; --lgray:#94A3B8; --xlgray:#E2E8F0; --bg:#F8FAFC;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,Arial,sans-serif;background:var(--bg);color:var(--dark);line-height:1.5}
+  header{background:var(--dark);color:#fff;padding:18px 26px;border-bottom:5px solid var(--teal)}
+  header .tag{color:var(--mint);font-size:12px;font-weight:700;letter-spacing:3px}
+  header h1{font-size:21px;margin-top:3px}
+  header .sub{color:var(--lgray);font-size:13px;margin-top:3px}
+  nav{display:flex;flex-wrap:wrap;background:#fff;border-bottom:1px solid var(--xlgray);position:sticky;top:0;z-index:10}
+  nav button{flex:1;min-width:160px;border:none;background:#fff;padding:14px 10px;font-size:14px;font-weight:600;
+    color:var(--gray);cursor:pointer;border-bottom:3px solid transparent;transition:.15s}
+  nav button:hover{background:var(--bg)}
+  nav button.active{color:var(--teal);border-bottom-color:var(--teal);background:var(--xlteal)}
+  .panel{display:none;max-width:1080px;margin:0 auto;padding:22px}
+  .panel.active{display:block}
+  h2.title{font-size:22px;color:var(--teal);margin-bottom:4px}
+  p.lead{color:var(--gray);font-size:14px;margin-bottom:16px}
+  .row{display:flex;gap:18px;flex-wrap:wrap}
+  .col{flex:1;min-width:280px}
+  canvas{background:#fff;border:1px solid var(--xlgray);border-radius:10px;width:100%;display:block}
+  .controls{background:#fff;border:1px solid var(--xlgray);border-radius:10px;padding:16px;margin-top:14px}
+  .ctl{margin-bottom:12px}
+  .ctl label{display:block;font-size:13px;font-weight:600;margin-bottom:4px}
+  .ctl .val{color:var(--teal);font-weight:700}
+  input[type=range]{width:100%;accent-color:var(--teal)}
+  button.act{background:var(--teal);color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:14px;
+    font-weight:600;cursor:pointer;margin:4px 6px 4px 0}
+  button.act:hover{background:#0a5d60}
+  button.act.amber{background:var(--amber)} button.act.amber:hover{background:#8f4307}
+  button.act.gray{background:var(--gray)}
+  .note{background:var(--xlteal);border-left:5px solid var(--teal);border-radius:8px;padding:12px 14px;margin-top:14px;font-size:13.5px}
+  .note b{color:var(--teal)}
+  .stat{display:inline-block;background:var(--bg);border:1px solid var(--xlgray);border-radius:8px;padding:8px 12px;margin:4px 6px 0 0;font-size:13px}
+  .stat b{font-size:17px;color:var(--dark)}
+  .legend{font-size:12.5px;color:var(--gray);margin-top:8px}
+  .legend span{display:inline-block;margin-right:14px}
+  .dot{display:inline-block;width:11px;height:11px;border-radius:3px;vertical-align:middle;margin-right:4px}
+  /* quiz */
+  .q{background:#fff;border:1px solid var(--xlgray);border-radius:10px;padding:16px;margin-bottom:14px}
+  .q .qt{font-weight:600;margin-bottom:10px}
+  .opt{display:block;width:100%;text-align:left;background:var(--bg);border:1.5px solid var(--xlgray);border-radius:8px;
+    padding:10px 12px;margin:6px 0;font-size:14px;cursor:pointer;transition:.12s}
+  .opt:hover{border-color:var(--teal)}
+  .opt.correct{background:#dcfce7;border-color:var(--green);color:#14532d}
+  .opt.wrong{background:#fee2e2;border-color:var(--red);color:#7f1d1d}
+  .opt.disabled{cursor:default;pointer-events:none}
+  .fb{font-size:13px;margin-top:8px;padding:8px 10px;border-radius:6px;display:none}
+  .fb.show{display:block}
+  .fb.ok{background:#dcfce7;color:#14532d} .fb.no{background:#fef3c7;color:#713f12}
+  footer{text-align:center;color:var(--lgray);font-size:12px;padding:20px}
+  .scorebar{position:sticky;top:54px;background:#fff;border:1px solid var(--xlgray);border-radius:8px;padding:10px 14px;
+    margin-bottom:14px;font-weight:600;z-index:5}
+</style>
+</head>
+<body>
+<header>
+  <div class="tag">NEUROCIÊNCIA COMPUTACIONAL · UFRN</div>
+  <h1>Aula 11b — Explorar ou explotar: bases neurais e estados latentes</h1>
+  <div class="sub">Simulações interativas · Forrageamento (MVT) · HMM ao vivo · Estratégias de exploração · Quiz &nbsp;|&nbsp; <a href="../aula11b.html" style="color:inherit">atividades da Aula 11b</a> &nbsp;|&nbsp; Daniel Y Takahashi</div>
+</header>
+
+<nav>
+  <button class="active" data-tab="forr">Forrageamento (MVT)</button>
+  <button data-tab="hmm">HMM ao vivo</button>
+  <button data-tab="expl">Explorar dirigido × aleatório</button>
+  <button data-tab="quiz">Quiz</button>
+</nav>
+
+<!-- =================== TAB 1: FORRAGEAMENTO / MVT =================== -->
+<section class="panel active" id="forr">
+  <h2 class="title">Forrageamento e o Teorema do Valor Marginal</h2>
+  <p class="lead">Um animal colhe recompensa numa mancha que vai se <b>esgotando</b>. Quando vale a pena <b>partir</b> (pagando o custo de viagem) para uma mancha nova? Charnov (1976): parta quando a taxa local cair até a <b>taxa média do ambiente</b>.</p>
+  <div class="row">
+    <div class="col" style="flex:1.3">
+      <canvas id="forrCanvas" width="660" height="380"></canvas>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--teal)"></span>ganho acumulado g(t)</span>
+        <span><span class="dot" style="background:var(--red)"></span>tangente / taxa média (MVT)</span>
+        <span><span class="dot" style="background:var(--amber)"></span>seu ponto de partida</span>
+      </div>
+    </div>
+    <div class="col">
+      <div class="controls">
+        <div class="ctl"><label>Tempo de viagem entre manchas: <span class="val" id="vTau">3.0</span> s</label>
+          <input type="range" id="sTau" min="0.5" max="8" step="0.1" value="3"></div>
+        <div class="ctl"><label>Riqueza da mancha (recompensa máxima G): <span class="val" id="vG">8.0</span></label>
+          <input type="range" id="sG" min="3" max="14" step="0.5" value="8"></div>
+        <div class="ctl"><label>Velocidade de esgotamento (k): <span class="val" id="vK">0.45</span></label>
+          <input type="range" id="sK" min="0.15" max="1.0" step="0.05" value="0.45"></div>
+        <div>
+          <button class="act amber" id="leaveBtn">Sair agora ➜ viajar</button>
+          <button class="act" id="autoBtn">Auto: política MVT ótima</button>
+          <button class="act gray" id="resetForr">Zerar</button>
+        </div>
+        <div style="margin-top:12px">
+          <span class="stat">Tempo na mancha<br><b id="stTime">0.0</b> s</span>
+          <span class="stat">Sua taxa média<br><b id="stRate">0.00</b></span>
+          <span class="stat">Taxa ótima (MVT)<br><b id="stOpt">0.00</b></span>
+        </div>
+        <div style="margin-top:8px">
+          <span class="stat" style="border-color:var(--amber)">Tempo ótimo de partida t*<br><b id="stTstar">0.0</b> s</span>
+        </div>
+      </div>
+      <div class="note" id="forrNote"><b>Como usar:</b> deixe o tempo correr — a curva de ganho sobe e desacelera (esgotamento). Clique <b>Sair agora</b> para viajar a uma mancha nova. Tente bater a <b>taxa ótima</b>. Aumente o tempo de viagem e veja o t* ótimo crescer: vale a pena ficar mais quando viajar custa caro.</div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== TAB 2: HMM AO VIVO =================== -->
+<section class="panel" id="hmm">
+  <h2 class="title">HMM ao vivo: inferindo explorar/explotar só das escolhas</h2>
+  <p class="lead">Um animal alterna entre um modo <b style="color:var(--teal)">explotar</b> (escolhe a melhor opção quase sempre) e <b style="color:var(--amber)">explorar</b> (escolhe quase ao acaso). Vendo <b>apenas as escolhas</b>, o HMM recupera o modo interno a cada ensaio (forward-backward) e a trajetória mais provável (Viterbi).</p>
+  <div class="row">
+    <div class="col" style="flex:1.5">
+      <canvas id="hmmCanvas" width="720" height="360"></canvas>
+      <div class="legend">
+        <span><span class="dot" style="background:#000"></span>escolhas (escuro = melhor opção)</span>
+        <span><span class="dot" style="background:var(--amber)"></span>p(explorar) — posterior</span>
+        <span><span class="dot" style="background:var(--dark)"></span>estado verdadeiro</span>
+        <span><span class="dot" style="background:var(--violet)"></span>Viterbi</span>
+      </div>
+    </div>
+    <div class="col">
+      <div class="controls">
+        <div class="ctl"><label>Separação dos modos (acerto explotar): <span class="val" id="vEhi">0.92</span></label>
+          <input type="range" id="sEhi" min="0.6" max="0.98" step="0.01" value="0.92"></div>
+        <div class="ctl"><label>Acerto no modo explorar: <span class="val" id="vElo">0.50</span></label>
+          <input type="range" id="sElo" min="0.30" max="0.65" step="0.01" value="0.50"></div>
+        <div class="ctl"><label>Persistência do estado (quão "grudento"): <span class="val" id="vStick">0.93</span></label>
+          <input type="range" id="sStick" min="0.70" max="0.99" step="0.01" value="0.93"></div>
+        <div class="ctl"><label>Nº de ensaios: <span class="val" id="vN">200</span></label>
+          <input type="range" id="sN" min="80" max="320" step="20" value="200"></div>
+        <div>
+          <button class="act" id="hmmNew">Novo conjunto de dados</button>
+        </div>
+        <div style="margin-top:12px">
+          <span class="stat">Acurácia do Viterbi<br><b id="stAcc">—</b></span>
+          <span class="stat">% do tempo explorando<br><b id="stExpl">—</b></span>
+        </div>
+      </div>
+      <div class="note" id="hmmNote"><b>Experimente:</b> aproxime os dois acertos (separação pequena) e veja a inferência ficar <b>incerta</b> — explorar fica difícil de distinguir de simples erro. Reduza a persistência e veja como transições rápidas escapam ao Viterbi. Validado em código: ~90% de acurácia com os valores padrão.</div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== TAB 3: EXPLORAR DIRIGIDO x ALEATORIO =================== -->
+<section class="panel" id="expl">
+  <h2 class="title">Estratégias de exploração: dirigida (UCB) × aleatória (softmax) × Thompson</h2>
+  <p class="lead">Duas opções: a <b style="color:var(--teal)">A é conhecida</b> (crença estreita) e a <b style="color:var(--amber)">B é incerta</b> (crença larga). Veja como cada estratégia decide entre explotar A e explorar B — e por que explorar o incerto faz sentido.</p>
+  <div class="row">
+    <div class="col" style="flex:1.4">
+      <canvas id="explCanvas" width="680" height="380"></canvas>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--teal)"></span>A (conhecida)</span>
+        <span><span class="dot" style="background:var(--amber)"></span>B (incerta)</span>
+        <span><span class="dot" style="background:var(--violet)"></span>amostras de Thompson</span>
+      </div>
+    </div>
+    <div class="col">
+      <div class="controls">
+        <div class="ctl"><label>Valor médio da opção incerta B: <span class="val" id="vMuB">4.0</span></label>
+          <input type="range" id="sMuB" min="1" max="7" step="0.1" value="4"></div>
+        <div class="ctl"><label>Incerteza sobre B (largura): <span class="val" id="vSdB">1.8</span></label>
+          <input type="range" id="sSdB" min="0.3" max="3.0" step="0.1" value="1.8"></div>
+        <div class="ctl"><label>Bônus de exploração dirigida (UCB, c): <span class="val" id="vC">1.0</span></label>
+          <input type="range" id="sC" min="0" max="2.5" step="0.1" value="1.0"></div>
+        <div class="ctl"><label>Ruído de decisão (softmax, τ): <span class="val" id="vTau2">0.6</span></label>
+          <input type="range" id="sTau2" min="0.05" max="2.5" step="0.05" value="0.6"></div>
+        <div>
+          <button class="act" id="thompRun">Rodar 200 escolhas de Thompson</button>
+          <button class="act gray" id="thompReset">Zerar</button>
+        </div>
+        <div style="margin-top:12px">
+          <span class="stat" style="border-color:var(--teal)">Guloso escolhe<br><b id="stGreedy">A</b></span>
+          <span class="stat" style="border-color:var(--blue)">UCB escolhe<br><b id="stUCB">A</b></span>
+          <span class="stat" style="border-color:var(--violet)">Thompson: % em B<br><b id="stThomp">—</b></span>
+        </div>
+      </div>
+      <div class="note" id="explNote"><b>Observe:</b> o <b>guloso</b> (média pura) só troca para B se a média de B passar a de A. A <b>exploração dirigida (UCB)</b> escolhe B quando a incerteza é alta, mesmo com média menor — explora o que é mais incerto. O <b>Thompson</b> amostra de cada crença: B incerta ocasionalmente sorteia valores altos e é escolhida. A <b>softmax</b> explora por puro ruído (τ alto).</div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== TAB 4: QUIZ =================== -->
+<section class="panel" id="quiz">
+  <h2 class="title">Quiz — fixe os conceitos da Aula 11b</h2>
+  <p class="lead">Doze perguntas embaralhadas, com explicação ao responder. Teste o que você reteve sobre forrageamento, neuromodulação, estados latentes e HMMs.</p>
+  <div class="scorebar" id="scorebar">Pontuação: 0 / 0 &nbsp;·&nbsp; responda as questões abaixo</div>
+  <div id="quizBox"></div>
+  <button class="act" id="quizReset">Reiniciar quiz</button>
+</section>
+
+<footer>Neurociência Computacional — Instituto do Cérebro, UFRN · Aula 11b · Simulações offline (HTML/Canvas, sem dependências externas)</footer>
+
+<script>
+"use strict";
+const TEAL="#0D7377",MINT="#14B8A6",AMBER="#B45309",LAMBER="#F59E0B",BLUE="#1A56DB",
+      VIOLET="#6D28D9",GREEN="#15803D",RED="#DC2626",DARK="#1E293B",GRAY="#64748B",
+      LGRAY="#94A3B8",XLGRAY="#E2E8F0";
+
+/* ---------- navegação por abas ---------- */
+document.querySelectorAll('nav button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById(b.dataset.tab).classList.add('active');
+  });
+});
+
+/* ============================================================
+   TAB 1 — FORRAGEAMENTO / MVT
+============================================================ */
+(function(){
+  const cv=document.getElementById('forrCanvas'), ctx=cv.getContext('2d');
+  const W=cv.width, H=cv.height;
+  let tau=3.0, G=8.0, k=0.45;
+  let tIn=0;                 // tempo na mancha atual
+  let totalReward=0, totalTime=0;
+  let traveling=false, travProg=0;
+  let auto=false;
+  let last=performance.now();
+  const dt=0.04;             // passo de tempo por frame (s)
+
+  function g(t){ return G*(1-Math.exp(-k*t)); }
+  function rate(t){ return g(t)/(t+tau); }
+  function optT(){ let best=-1,bt=0; for(let t=0.02;t<40;t+=0.02){const r=rate(t); if(r>best){best=r;bt=t;}} return bt; }
+
+  function leave(){
+    if(traveling) return;
+    totalReward+=g(tIn); totalTime+=tIn+tau;
+    traveling=true; travProg=0;
+  }
+  function resetAll(){ tIn=0; totalReward=0; totalTime=0; traveling=false; travProg=0; }
+
+  document.getElementById('sTau').oninput=e=>{tau=+e.target.value; document.getElementById('vTau').textContent=tau.toFixed(1);};
+  document.getElementById('sG').oninput=e=>{G=+e.target.value; document.getElementById('vG').textContent=G.toFixed(1);};
+  document.getElementById('sK').oninput=e=>{k=+e.target.value; document.getElementById('vK').textContent=k.toFixed(2);};
+  document.getElementById('leaveBtn').onclick=leave;
+  document.getElementById('autoBtn').onclick=()=>{auto=!auto; document.getElementById('autoBtn').textContent= auto?'Auto: LIGADO (MVT)':'Auto: política MVT ótima';};
+  document.getElementById('resetForr').onclick=resetAll;
+
+  function step(){
+    if(traveling){
+      travProg+=dt/Math.max(tau,0.4);
+      if(travProg>=1){ traveling=false; tIn=0; }
+    } else {
+      tIn+=dt;
+      if(auto && tIn>=optT()) leave();
+    }
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const tstar=optT(), optRate=rate(tstar);
+    // ---- painel esquerdo: cena ----
+    const sceneW=230;
+    ctx.fillStyle="#F8FAFC"; ctx.fillRect(0,0,sceneW,H);
+    // chão
+    ctx.fillStyle="#E0F4EA"; ctx.fillRect(0,H-70,sceneW,70);
+    // mancha (arbusto) com frutos que somem conforme esgota
+    const remain = Math.max(0, 1 - g(tIn)/G); // fração restante
+    ctx.fillStyle="#15803D"; ctx.beginPath(); ctx.arc(sceneW/2, H-150, 56, 0, Math.PI*2); ctx.fill();
+    const nB=14;
+    for(let i=0;i<nB;i++){
+      const ang=i/nB*Math.PI*2, rr=38;
+      const bx=sceneW/2+Math.cos(ang)*rr, by=H-150+Math.sin(ang)*rr;
+      ctx.fillStyle = (i/nB < remain) ? "#DC2626" : "rgba(120,120,120,0.18)";
+      ctx.beginPath(); ctx.arc(bx,by,6,0,Math.PI*2); ctx.fill();
+    }
+    // animal
+    let ax=sceneW/2, ay=H-95;
+    if(traveling){ ax = sceneW/2 + travProg*(sceneW-40) - (sceneW/2-20); ay=H-95; }
+    ctx.fillStyle=traveling?AMBER:TEAL; ctx.beginPath(); ctx.arc(ax,ay,15,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle="#fff"; ctx.beginPath(); ctx.arc(ax+5,ay-4,3,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle=DARK; ctx.font="bold 12px Segoe UI";
+    ctx.fillText(traveling?"viajando…":"forrageando", 12, 22);
+    // medidor dACC (rampa até limiar)
+    const mx=18,my=40,mw=18,mh=H-130;
+    ctx.strokeStyle=XLGRAY; ctx.strokeRect(mx,my,mw,mh);
+    const ramp=Math.min(1, tIn/tstar); // sobe até o limiar no t*
+    ctx.fillStyle = ramp>=0.999? RED : VIOLET;
+    ctx.fillRect(mx, my+mh*(1-ramp), mw, mh*ramp);
+    ctx.strokeStyle=RED; ctx.setLineDash([4,3]); ctx.beginPath(); ctx.moveTo(mx-3,my); ctx.lineTo(mx+mw+3,my); ctx.stroke(); ctx.setLineDash([]);
+    ctx.save(); ctx.translate(mx+mw+14, my+mh/2); ctx.rotate(-Math.PI/2);
+    ctx.fillStyle=GRAY; ctx.font="10px Segoe UI"; ctx.textAlign="center";
+    ctx.fillText("dACC: rampa → limiar de partir", 0,0); ctx.restore(); ctx.textAlign="left";
+
+    // ---- painel direito: curva g(t) ----
+    const px=sceneW+50, py=40, pw=W-px-30, ph=H-100;
+    ctx.strokeStyle=DARK; ctx.lineWidth=1.2;
+    ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(px,py+ph); ctx.lineTo(px+pw,py+ph); ctx.stroke();
+    const Tmax=Math.max(12, tstar*2.4);
+    const sx=t=> px + (t/Tmax)*pw;
+    const sy=v=> py+ph - (v/(G*1.05))*ph;
+    // marca tempo de viagem à esquerda do eixo (origem deslocada)
+    const x0 = px - (tau/Tmax)*pw*0.0; // origem em 0; tangente parte de -tau
+    // curva
+    ctx.strokeStyle=TEAL; ctx.lineWidth=2.4; ctx.beginPath();
+    for(let t=0;t<=Tmax;t+=0.1){ const X=sx(t),Y=sy(g(t)); t===0?ctx.moveTo(X,Y):ctx.lineTo(X,Y); }
+    ctx.stroke();
+    // tangente do MVT: reta de (-tau,0) tocando a curva em t*
+    const xNeg = px - (tau/Tmax)*pw;
+    ctx.strokeStyle=RED; ctx.lineWidth=1.8; ctx.setLineDash([6,4]);
+    ctx.beginPath(); ctx.moveTo(xNeg, sy(0)); ctx.lineTo(sx(tstar), sy(g(tstar)));
+    // estende a reta
+    const slope=(sy(g(tstar))-sy(0))/(sx(tstar)-xNeg);
+    ctx.lineTo(px+pw, sy(0)+slope*(px+pw-xNeg)); ctx.stroke(); ctx.setLineDash([]);
+    // ponto t*
+    ctx.fillStyle=RED; ctx.beginPath(); ctx.arc(sx(tstar),sy(g(tstar)),5,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle=GRAY; ctx.font="10px Segoe UI";
+    ctx.fillText("t* (ótimo)", sx(tstar)-18, sy(g(tstar))-9);
+    ctx.fillText("−tempo de viagem", xNeg-10, sy(0)+15);
+    // posição atual do agente na curva
+    if(!traveling){
+      ctx.fillStyle=AMBER; ctx.beginPath(); ctx.arc(sx(tIn),sy(g(tIn)),6,0,Math.PI*2); ctx.fill();
+      ctx.strokeStyle=AMBER; ctx.setLineDash([3,3]); ctx.beginPath();
+      ctx.moveTo(sx(tIn),sy(g(tIn))); ctx.lineTo(sx(tIn),sy(0)); ctx.stroke(); ctx.setLineDash([]);
+    }
+    ctx.fillStyle=DARK; ctx.font="12px Segoe UI";
+    ctx.fillText("ganho acumulado g(t)", px+6, py-6);
+    ctx.fillStyle=GRAY; ctx.font="11px Segoe UI";
+    ctx.fillText("tempo na mancha →", px+pw-110, py+ph+22);
+
+    // ---- stats ----
+    document.getElementById('stTime').textContent=tIn.toFixed(1);
+    const myRate = totalTime>0 ? totalReward/totalTime : 0;
+    document.getElementById('stRate').textContent=myRate.toFixed(2);
+    document.getElementById('stOpt').textContent=optRate.toFixed(2);
+    document.getElementById('stTstar').textContent=tstar.toFixed(1);
+    // colore a taxa do aluno vs ótima
+    const rateEl=document.getElementById('stRate');
+    rateEl.style.color = (myRate>=optRate*0.97)?GREEN : (myRate>=optRate*0.85?AMBER:RED);
+  }
+
+  function loop(now){ if(now-last>=1000*dt){ step(); last=now; } draw(); requestAnimationFrame(loop); }
+  document.getElementById('vTau').textContent=tau.toFixed(1);
+  requestAnimationFrame(loop);
+})();
+
+/* ============================================================
+   TAB 2 — HMM AO VIVO
+============================================================ */
+(function(){
+  const cv=document.getElementById('hmmCanvas'), ctx=cv.getContext('2d');
+  const W=cv.width, H=cv.height;
+  let Ehi=0.92, Elo=0.50, stick=0.93, N=200;
+  let data=null;
+
+  function emis(E, xt, s){ return xt===1 ? E[s] : 1-E[s]; }
+  function gen(){
+    const A=[[stick,1-stick],[1-stick,stick]], E=[Ehi,Elo], pi=[1,0];
+    const z=[], x=[]; let s=0;
+    for(let t=0;t<N;t++){
+      if(t>0) s = Math.random()<A[z[t-1]][0]?0:1;
+      z.push(s); x.push(Math.random()<E[s]?1:0);
+    }
+    // forward-backward
+    const al=[], be=[];
+    let a0=[pi[0]*emis(E,x[0],0), pi[1]*emis(E,x[0],1)]; let sm=a0[0]+a0[1]; al.push([a0[0]/sm,a0[1]/sm]);
+    for(let t=1;t<N;t++){ const a=[0,0];
+      for(let j=0;j<2;j++) a[j]=emis(E,x[t],j)*(al[t-1][0]*A[0][j]+al[t-1][1]*A[1][j]);
+      const s2=a[0]+a[1]; al.push([a[0]/s2,a[1]/s2]); }
+    be[N-1]=[1,1];
+    for(let t=N-2;t>=0;t--){ const b=[0,0];
+      for(let i=0;i<2;i++) b[i]=A[i][0]*emis(E,x[t+1],0)*be[t+1][0]+A[i][1]*emis(E,x[t+1],1)*be[t+1][1];
+      const s2=b[0]+b[1]; be[t]=[b[0]/s2,b[1]/s2]; }
+    const post=[];
+    for(let t=0;t<N;t++){ const p0=al[t][0]*be[t][0], p1=al[t][1]*be[t][1]; const s2=p0+p1; post.push(p1/s2); }
+    // viterbi
+    const L=Math.log;
+    const d=[[L(pi[0]+1e-12)+L(emis(E,x[0],0)+1e-12), L(pi[1]+1e-12)+L(emis(E,x[0],1)+1e-12)]], psi=[[0,0]];
+    for(let t=1;t<N;t++){ const dt=[0,0], pt=[0,0];
+      for(let j=0;j<2;j++){ const c0=d[t-1][0]+L(A[0][j]+1e-12), c1=d[t-1][1]+L(A[1][j]+1e-12);
+        if(c0>=c1){pt[j]=0; dt[j]=c0+L(emis(E,x[t],j)+1e-12);} else {pt[j]=1; dt[j]=c1+L(emis(E,x[t],j)+1e-12);} }
+      d.push(dt); psi.push(pt); }
+    const path=new Array(N); path[N-1]= d[N-1][0]>=d[N-1][1]?0:1;
+    for(let t=N-2;t>=0;t--) path[t]=psi[t+1][path[t+1]];
+    let acc=0, expl=0; for(let t=0;t<N;t++){ if(path[t]===z[t])acc++; if(z[t]===1)expl++; }
+    data={z,x,post,path,acc:acc/N,expl:expl/N};
+  }
+
+  function draw(){
+    if(!data) return;
+    ctx.clearRect(0,0,W,H);
+    const px=70, pw=W-px-20;
+    const sx=t=> px + (t/(N-1))*pw;
+    // faixa de escolhas (raster)
+    const ry=30, rh=42;
+    ctx.fillStyle=DARK; ctx.font="12px Segoe UI"; ctx.textAlign="right";
+    ctx.fillText("escolhas", px-8, ry+rh/2+4); ctx.textAlign="left";
+    ctx.strokeStyle=XLGRAY; ctx.strokeRect(px,ry,pw,rh);
+    const bw=pw/N;
+    for(let t=0;t<N;t++){ if(data.x[t]===1){ ctx.fillStyle=DARK; ctx.fillRect(px+t*bw, ry, Math.max(bw,1), rh);} }
+    // gráfico de estado/posterior
+    const gy=110, gh=200;
+    const yTop=gy, yBot=gy+gh;
+    ctx.strokeStyle=XLGRAY; ctx.strokeRect(px,gy,pw,gh);
+    // posterior p(explorar) como área
+    ctx.fillStyle="rgba(180,83,9,0.28)"; ctx.beginPath(); ctx.moveTo(px,yBot);
+    for(let t=0;t<N;t++) ctx.lineTo(sx(t), yBot - data.post[t]*gh);
+    ctx.lineTo(sx(N-1),yBot); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle=AMBER; ctx.lineWidth=1.4; ctx.beginPath();
+    for(let t=0;t<N;t++){ const X=sx(t),Y=yBot-data.post[t]*gh; t===0?ctx.moveTo(X,Y):ctx.lineTo(X,Y);} ctx.stroke();
+    // estado verdadeiro (degraus)
+    ctx.strokeStyle=DARK; ctx.lineWidth=1.8; ctx.beginPath();
+    for(let t=0;t<N;t++){ const X=sx(t),Y=yBot-data.z[t]*gh; if(t===0)ctx.moveTo(X,Y); else {ctx.lineTo(sx(t),yBot-data.z[t-1]*gh); ctx.lineTo(X,Y);} } ctx.stroke();
+    // viterbi (tracejado)
+    ctx.strokeStyle=VIOLET; ctx.lineWidth=1.6; ctx.setLineDash([5,3]); ctx.beginPath();
+    for(let t=0;t<N;t++){ const Y=yBot-(data.path[t]*0.94+0.03)*gh; const X=sx(t);
+      if(t===0)ctx.moveTo(X,Y); else {ctx.lineTo(sx(t),yBot-(data.path[t-1]*0.94+0.03)*gh); ctx.lineTo(X,Y);} } ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle=DARK; ctx.font="11px Segoe UI"; ctx.textAlign="right";
+    ctx.fillText("explotar", px-8, yBot); ctx.fillText("explorar", px-8, yTop+10); ctx.textAlign="left";
+    ctx.fillStyle=GRAY; ctx.font="11px Segoe UI"; ctx.fillText("ensaio →", px+pw-60, yBot+22);
+
+    document.getElementById('stAcc').textContent=(data.acc*100).toFixed(0)+"%";
+    document.getElementById('stExpl').textContent=(data.expl*100).toFixed(0)+"%";
+    const accEl=document.getElementById('stAcc');
+    accEl.style.color = data.acc>=0.85?GREEN : data.acc>=0.7?AMBER:RED;
+  }
+
+  function regen(){ gen(); draw(); }
+  document.getElementById('sEhi').oninput=e=>{Ehi=+e.target.value; document.getElementById('vEhi').textContent=Ehi.toFixed(2); regen();};
+  document.getElementById('sElo').oninput=e=>{Elo=+e.target.value; document.getElementById('vElo').textContent=Elo.toFixed(2); regen();};
+  document.getElementById('sStick').oninput=e=>{stick=+e.target.value; document.getElementById('vStick').textContent=stick.toFixed(2); regen();};
+  document.getElementById('sN').oninput=e=>{N=+e.target.value; document.getElementById('vN').textContent=N; regen();};
+  document.getElementById('hmmNew').onclick=regen;
+  regen();
+})();
+
+/* ============================================================
+   TAB 3 — EXPLORAR DIRIGIDO x ALEATORIO
+============================================================ */
+(function(){
+  const cv=document.getElementById('explCanvas'), ctx=cv.getContext('2d');
+  const W=cv.width, H=cv.height;
+  const muA=5.0, sdA=0.5;            // opção conhecida (fixa)
+  let muB=4.0, sdB=1.8, c=1.0, tau=0.6;
+  let thompSamples=[], thompCountB=0, thompTotal=0, anim=null;
+
+  function gauss(x,m,s){ return Math.exp(-0.5*((x-m)/s)**2)/(s*Math.sqrt(2*Math.PI)); }
+  function randn(){ let u=0,v=0; while(!u)u=Math.random(); while(!v)v=Math.random(); return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const px=50, py=30, pw=W-px-30, ph=H-150;
+    const xmin=0, xmax=9;
+    const sx=v=> px + ((v-xmin)/(xmax-xmin))*pw;
+    const peak=Math.max(gauss(muA,muA,sdA), gauss(muB,muB,sdB));
+    const sy=d=> py+ph - (d/(peak*1.1))*ph;
+    // eixos
+    ctx.strokeStyle=DARK; ctx.lineWidth=1.2;
+    ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(px,py+ph); ctx.lineTo(px+pw,py+ph); ctx.stroke();
+    ctx.fillStyle=GRAY; ctx.font="11px Segoe UI"; ctx.fillText("valor da opção →", px+pw-100, py+ph+24);
+    // curva A
+    function curve(m,s,col){ ctx.strokeStyle=col; ctx.lineWidth=2.4; ctx.beginPath();
+      for(let v=xmin;v<=xmax;v+=0.03){ const X=sx(v),Y=sy(gauss(v,m,s)); v===xmin?ctx.moveTo(X,Y):ctx.lineTo(X,Y);} ctx.stroke();
+      ctx.fillStyle=col+"22"; ctx.lineTo(sx(xmax),sy(0)); ctx.lineTo(sx(xmin),sy(0)); ctx.closePath(); ctx.fill(); }
+    curve(muA,sdA,TEAL); curve(muB,sdB,AMBER);
+    // médias
+    ctx.setLineDash([4,3]);
+    ctx.strokeStyle=TEAL; ctx.beginPath(); ctx.moveTo(sx(muA),py); ctx.lineTo(sx(muA),py+ph); ctx.stroke();
+    ctx.strokeStyle=AMBER; ctx.beginPath(); ctx.moveTo(sx(muB),py); ctx.lineTo(sx(muB),py+ph); ctx.stroke();
+    ctx.setLineDash([]);
+    // limite superior UCB (média + c*sd)
+    const ucbA=muA+c*sdA, ucbB=muB+c*sdB;
+    ctx.fillStyle=TEAL; ctx.beginPath(); ctx.arc(sx(ucbA),py+ph+0,0,0,0);
+    function ucbMark(v,col,lab){ ctx.strokeStyle=col; ctx.lineWidth=2; ctx.beginPath();
+      ctx.moveTo(sx(v),py+ph-6); ctx.lineTo(sx(v),py+ph+6); ctx.stroke();
+      ctx.fillStyle=col; ctx.font="10px Segoe UI"; ctx.fillText(lab, sx(v)-12, py+ph+38); }
+    ucbMark(ucbA,TEAL,"UCB A"); ucbMark(ucbB,AMBER,"UCB B");
+    // rótulos
+    ctx.fillStyle=TEAL; ctx.font="bold 12px Segoe UI"; ctx.fillText("A conhecida", sx(muA)-30, sy(gauss(muA,muA,sdA))-8);
+    ctx.fillStyle=AMBER; ctx.fillText("B incerta", sx(muB)-22, sy(gauss(muB,muB,sdB))-8);
+    // amostras de thompson (dots)
+    ctx.fillStyle=VIOLET;
+    thompSamples.slice(-60).forEach((s,i)=>{ ctx.globalAlpha=0.5; ctx.beginPath(); ctx.arc(sx(s.v), py+ph+58 - (i%2)*0, 3,0,Math.PI*2); ctx.fill(); });
+    ctx.globalAlpha=1;
+
+    // decisões
+    const greedy = muB>muA ? "B" : "A";
+    const ucb = ucbB>ucbA ? "B" : "A";
+    document.getElementById('stGreedy').textContent=greedy;
+    document.getElementById('stGreedy').style.color = greedy==="B"?AMBER:TEAL;
+    document.getElementById('stUCB').textContent=ucb;
+    document.getElementById('stUCB').style.color = ucb==="B"?AMBER:TEAL;
+    const pct = thompTotal>0 ? Math.round(100*thompCountB/thompTotal) : null;
+    document.getElementById('stThomp').textContent = pct===null?"—":pct+"%";
+  }
+
+  function thompStep(){
+    // amostra de cada crença e escolhe a maior; tau adiciona ruído (softmax-like) via jitter
+    const sA = muA + sdA*randn();
+    const sB = muB + sdB*randn();
+    const chooseB = sB > sA;
+    thompSamples.push({v:sB}); if(thompSamples.length>200) thompSamples.shift();
+    thompTotal++; if(chooseB) thompCountB++;
+  }
+  function runThomp(){
+    if(anim) cancelAnimationFrame(anim);
+    let i=0;
+    (function go(){ for(let j=0;j<4;j++){ if(i<200){ thompStep(); i++; } } draw(); if(i<200) anim=requestAnimationFrame(go); })();
+  }
+  function resetThomp(){ thompSamples=[]; thompCountB=0; thompTotal=0; if(anim)cancelAnimationFrame(anim); draw(); }
+
+  document.getElementById('sMuB').oninput=e=>{muB=+e.target.value; document.getElementById('vMuB').textContent=muB.toFixed(1); draw();};
+  document.getElementById('sSdB').oninput=e=>{sdB=+e.target.value; document.getElementById('vSdB').textContent=sdB.toFixed(1); draw();};
+  document.getElementById('sC').oninput=e=>{c=+e.target.value; document.getElementById('vC').textContent=c.toFixed(1); draw();};
+  document.getElementById('sTau2').oninput=e=>{tau=+e.target.value; document.getElementById('vTau2').textContent=tau.toFixed(2); draw();};
+  document.getElementById('thompRun').onclick=runThomp;
+  document.getElementById('thompReset').onclick=resetThomp;
+  draw();
+})();
+
+/* ============================================================
+   TAB 4 — QUIZ
+============================================================ */
+(function(){
+  const QS=[
+    {q:"Pelo Teorema do Valor Marginal (Charnov, 1976), quando um animal deve abandonar uma mancha de recurso?",
+     o:["Quando o recurso da mancha acabar completamente",
+        "Quando a taxa instantânea local de recompensa cair até a taxa média do ambiente",
+        "Assim que chegar na mancha, para economizar tempo",
+        "Quando a bateria/energia do animal acabar"],
+     a:1, e:"O MVT diz: parta quando a taxa marginal local igualar a taxa média do ambiente. Ficar enquanto render mais que a média; partir quando render menos."},
+    {q:"No estudo de Hayden et al. (2011), como neurônios do córtex cingulado anterior dorsal (dACC) sinalizam a decisão de partir?",
+     o:["Disparam aleatoriamente",
+        "Silenciam completamente até a partida",
+        "Aumentam a atividade em rampa até cruzar um limiar",
+        "Codificam apenas a recompensa já recebida"],
+     a:2, e:"A atividade do dACC sobe como uma rampa a cada permanência na mancha; ao cruzar um limiar, o animal decide partir — uma dinâmica de rampa-até-o-limiar."},
+    {q:"Qual a diferença entre exploração ALEATÓRIA e DIRIGIDA?",
+     o:["São sinônimos",
+        "Aleatória injeta ruído na decisão; dirigida direciona a busca para o que é mais incerto (bônus de informação)",
+        "Dirigida é sempre pior que aleatória",
+        "Aleatória só ocorre em animais; dirigida só em humanos"],
+     a:1, e:"Aleatória (softmax) explora por ruído, de forma cega. Dirigida (UCB) dá um bônus às opções incertas, explorando onde há mais a aprender. Humanos usam ambas."},
+    {q:"Na horizon task (Wilson et al., 2014), o que acontece quando o horizonte é LONGO?",
+     o:["Os sujeitos exploram menos",
+        "Aumentam tanto a exploração dirigida quanto a aleatória",
+        "Param de explorar completamente",
+        "Só mudam a velocidade das respostas"],
+     a:1, e:"Com horizonte longo (mais escolhas futuras), vale explorar: os sujeitos aumentam tanto a escolha da opção incerta (dirigida) quanto a variabilidade (aleatória) — efeitos dissociáveis."},
+    {q:"Na teoria do ganho adaptativo (Aston-Jones & Cohen, 2005), o modo TÔNICO do locus coeruleus está associado a:",
+     o:["Explotação focada e engajamento na tarefa",
+        "Sono profundo apenas",
+        "Exploração, distratibilidade e desengajamento da tarefa atual",
+        "Ausência total de noradrenalina"],
+     a:2, e:"Modo fásico (rajadas precisas) = explotação focada; modo tônico (atividade de fundo alta) = exploração e distratibilidade. O desempenho segue um U invertido."},
+    {q:"Por que a pupila é útil no estudo do explorar/explotar (Jepma & Nieuwenhuis, 2011)?",
+     o:["A pupila controla diretamente a noradrenalina",
+        "O diâmetro pupilar indexa indiretamente a atividade do sistema locus coeruleus-noradrenalina; é maior na exploração",
+        "A pupila só mede a luz ambiente",
+        "Não há relação entre pupila e decisão"],
+     a:1, e:"A pupila é um índice não-invasivo da atividade do LC-NE. Jepma & Nieuwenhuis mostraram que ela é maior durante a exploração — consistente com o modo tônico."},
+    {q:"Segundo Daw et al. (2006), quais regiões se ativam preferencialmente durante escolhas EXPLORATÓRIAS?",
+     o:["Córtex pré-frontal ventromedial (vmPFC) e estriado",
+        "Cerebelo e medula",
+        "Córtex frontopolar (RLPFC) e sulco intraparietal",
+        "Apenas o córtex visual primário"],
+     a:2, e:"Frontopolar (RLPFC) e intraparietal acompanham a exploração; vmPFC e estriado acompanham o valor (explotação). Há uma competição entre dois sistemas."},
+    {q:"O que é um 'estado comportamental latente'?",
+     o:["Uma região do cérebro",
+        "Um modo interno não-observável que gera as escolhas e persiste por muitos ensaios",
+        "Um tipo de recompensa",
+        "Uma sinapse específica"],
+     a:1, e:"É um estado interno oculto (ex.: engajado, explorador) que não vemos diretamente — só inferimos pelas escolhas — e que tende a persistir por dezenas a centenas de ensaios."},
+    {q:"Quais são os três componentes de um Modelo de Markov Oculto (HMM)?",
+     o:["Entrada, processamento e saída",
+        "Estados ocultos, matriz de transição e modelo de emissão (A, B, π)",
+        "Recompensa, valor e política",
+        "Dendrito, axônio e sinapse"],
+     a:1, e:"Um HMM = (A, B, π): estados ocultos z, matriz de transição A entre estados, modelo de emissão B (prob. da observação dado o estado) e distribuição inicial π."},
+    {q:"Qual a diferença entre os algoritmos FORWARD e de VITERBI num HMM?",
+     o:["São idênticos",
+        "Forward soma as probabilidades dos caminhos (avaliação); Viterbi encontra o caminho mais provável (decodificação)",
+        "Forward aprende parâmetros; Viterbi gera dados",
+        "Viterbi só funciona com 1 estado"],
+     a:1, e:"Mesma estrutura de treliça, mas o forward SOMA sobre caminhos (probabilidade da sequência) e o Viterbi MAXIMIZA (sequência de estados mais provável)."},
+    {q:"O que Ashwood et al. (2022) descobriram em camundongos usando um GLM-HMM?",
+     o:["Que os camundongos seguem uma única política estável",
+        "Que o comportamento alterna entre estados discretos (engajado vs enviesado/desengajado) por dezenas a centenas de ensaios",
+        "Que não há estrutura no comportamento",
+        "Que os camundongos não conseguem aprender"],
+     a:1, e:"O comportamento foi muito melhor descrito por 3-4 estados internos do que por uma curva única. A 'taxa de lapso' tradicional escondia transições estruturadas entre estados."},
+    {q:"Segundo Behrens et al. (2007), como a VOLATILIDADE do ambiente deve afetar a taxa de aprendizado?",
+     o:["Ambiente volátil → taxa de aprendizado maior (dar mais peso a resultados recentes)",
+        "Volatilidade não afeta o aprendizado",
+        "Ambiente volátil → taxa de aprendizado menor",
+        "A taxa de aprendizado deve ser sempre zero"],
+     a:0, e:"Em ambiente volátil, um resultado recente pode sinalizar mudança real, então deve pesar mais (α alto). O cingulado anterior rastreia a volatilidade. Em ambiente estável, α baixo."},
+  ];
+  let order=[], idx=0, score=0, answered=0;
+  const box=document.getElementById('quizBox'), bar=document.getElementById('scorebar');
+  function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+  function render(){
+    box.innerHTML="";
+    order.forEach((qi,pos)=>{
+      const item=QS[qi];
+      const card=document.createElement('div'); card.className='q';
+      const qt=document.createElement('div'); qt.className='qt'; qt.textContent=(pos+1)+". "+item.q; card.appendChild(qt);
+      const optOrder=shuffle(item.o.map((t,i)=>({t,i})));
+      const fb=document.createElement('div'); fb.className='fb';
+      optOrder.forEach(o=>{
+        const btn=document.createElement('button'); btn.className='opt'; btn.textContent=o.t;
+        btn.onclick=()=>{
+          if(card.dataset.done) return; card.dataset.done="1"; answered++;
+          const correct = o.i===item.a;
+          if(correct){ btn.classList.add('correct'); score++; fb.className='fb show ok'; fb.textContent="✓ Correto! "+item.e; }
+          else { btn.classList.add('wrong'); fb.className='fb show no'; fb.textContent="✗ "+item.e;
+            // marca a correta
+            [...card.querySelectorAll('.opt')].forEach(b=>{ if(b.textContent===item.o[item.a]) b.classList.add('correct'); });
+          }
+          card.querySelectorAll('.opt').forEach(b=>b.classList.add('disabled'));
+          bar.textContent=`Pontuação: ${score} / ${answered}  ·  ${answered===order.length?'quiz completo!':'continue…'}`;
+          bar.style.color = score/answered>=0.7? GREEN : (answered>0?AMBER:DARK);
+        };
+        card.appendChild(btn);
+      });
+      card.appendChild(fb); box.appendChild(card);
+    });
+  }
+  function reset(){ order=shuffle(QS.map((_,i)=>i)); idx=0; score=0; answered=0;
+    bar.textContent="Pontuação: 0 / 0  ·  responda as questões abaixo"; bar.style.color=DARK; render(); }
+  document.getElementById('quizReset').onclick=reset;
+  reset();
+})();
+</script>
+</body>
+</html>

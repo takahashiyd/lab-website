@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neurociência Computacional · Aula 8 — Atividades</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#142033; --muted:#5b6879; --line:#d8dee6;
+  --accent:#0d7377; --accent-ink:#ffffff; --you:#b45309; --soft:#e2f0f0; --warn:#a33a2a; --ok:#15803d; --okbg:#e3f3e8; --nobg:#fbe9e6;
+  --display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --ok:#5fd08a; --okbg:#173a28; --nobg:#3d2020; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --ok:#5fd08a; --okbg:#173a28; --nobg:#3d2020; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:17px/1.5 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:grid;gap:22px}
+header{display:grid;gap:8px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(32px,8vw,50px)/1.02 var(--display);font-stretch:115%;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font:750 23px/1.15 var(--display);font-stretch:108%;margin:0;text-wrap:balance}
+p{margin:0;max-width:65ch}
+.lead{color:var(--muted)}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{font:600 14px/1 var(--body);color:var(--fg);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:9px 12px;background:var(--surface)}
+nav a.done{border-color:var(--ok);color:var(--ok)}
+a{color:var(--accent)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,nav a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.exp>*{min-width:0}
+section.exp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 18px;display:grid;gap:16px;min-width:0;scroll-margin-top:12px}
+.num{font:600 13px/1 var(--mono);color:var(--you);letter-spacing:.06em;text-transform:uppercase}
+.meta{font:500 13px/1.3 var(--mono);color:var(--muted)}
+.q{display:grid;gap:8px;border-top:1px dashed var(--line);padding-top:14px}
+.q>.qt{font-weight:600}
+.q .qt i{font-family:var(--mono);font-style:normal;color:var(--you);margin-right:6px}
+.opts{display:grid;gap:8px}
+@media (min-width:560px){.opts.two{grid-template-columns:1fr 1fr}}
+.opt{display:flex;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;cursor:pointer;min-height:48px;background:var(--bg)}
+.opt input{width:20px;height:20px;accent-color:var(--accent);flex:none}
+.opt:has(input:checked){border-color:var(--accent);background:var(--soft)}
+.opt.right{border-color:var(--ok);background:var(--okbg)}
+.opt.wrong{border-color:var(--warn);background:var(--nobg)}
+textarea,input[type=number],input[type=text]{width:100%;font:500 17px/1.4 var(--body);color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;min-height:48px}
+textarea{min-height:90px;resize:vertical}
+.inline{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.inline label{display:grid;gap:4px;font-size:14px;font-weight:600;flex:1 1 140px;min-width:0}
+select{font:500 17px var(--body);color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px;min-height:48px;width:100%}
+button{font:700 16px/1 var(--display);border:0;border-radius:10px;padding:14px 18px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px;touch-action:manipulation}
+button.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+button:disabled{opacity:.45;cursor:default}
+.send{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.sent{font:600 14px/1.3 var(--mono);color:var(--ok)}
+.sent.pend{color:var(--you)}
+.fb{background:var(--soft);border-radius:10px;padding:14px 16px;display:grid;gap:8px;font-size:16px}
+.fb h3{margin:0;font:700 17px/1.2 var(--display)}
+.fb .score{font:700 22px/1 var(--display);color:var(--you)}
+.fb ul{margin:0;padding-left:20px;display:grid;gap:6px}
+.mark{font-weight:700}
+.mark.ok{color:var(--ok)} .mark.no{color:var(--warn)}
+figure{margin:0;display:grid;gap:6px}
+figure img{width:100%;height:auto;border-radius:8px;background:#fff;border:1px solid var(--line)}
+figcaption{font-size:13px;color:var(--muted)}
+.tablewrap{overflow-x:auto}
+table.dec{border-collapse:collapse;width:100%;font:500 15px/1.2 var(--mono);text-align:center}
+table.dec th,table.dec td{border:1px solid var(--line);padding:8px 3px}
+table.dec th{background:var(--soft);font:600 13px/1.2 var(--body)}
+table.dec td.test{background:color-mix(in srgb,var(--you) 18%,transparent);font-weight:700}
+table.dec td.hi{font-weight:700;color:var(--accent)}
+.dots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.dots label{display:grid;gap:4px;font:600 13px/1.2 var(--body);text-align:center;min-width:0}
+.dots input{min-width:0;font-size:15px;padding:10px 2px;text-align:center}
+.opts.five{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+.opts.five .opt{padding:10px 6px;gap:6px;justify-content:center}
+.dots input{text-align:center;padding:10px 4px;font-family:var(--mono)}
+.dots input.right{border-color:var(--ok);background:var(--okbg)}
+.dots input.wrong{border-color:var(--warn);background:var(--nobg)}
+.marr{display:grid;gap:10px}
+.marr .st{display:grid;gap:8px;border:1px solid var(--line);border-radius:10px;padding:12px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.seg label{border:1.5px solid var(--line);border-radius:8px;text-align:center;padding:10px 4px;font:700 14px/1.1 var(--display);cursor:pointer;min-height:44px;display:grid;place-items:center;background:var(--bg)}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){border-color:var(--accent);background:var(--soft);color:var(--accent)}
+.seg label.right{border-color:var(--ok)!important;background:var(--okbg)!important;color:var(--ok)!important}
+.seg label.wrong{border-color:var(--warn)!important;background:var(--nobg)!important;color:var(--warn)!important}
+.seg label:focus-within{outline:3px solid var(--accent);outline-offset:1px}
+.xor{display:grid;gap:12px}
+.xor table{border-collapse:collapse;font:500 16px/1 var(--mono);text-align:center;width:100%;max-width:420px}
+.xor th,.xor td{border:1px solid var(--line);padding:9px}
+.xor th{background:var(--soft);font:600 13px var(--body)}
+.xor td.ok{color:var(--ok);font-weight:700} .xor td.no{color:var(--warn);font-weight:700}
+.xor .ctl{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.xor .ctl label{display:grid;gap:4px;font:600 13px/1.2 var(--mono)}
+.xor input[type=range]{width:100%;accent-color:var(--accent)}
+.badge{font:700 14px/1.2 var(--mono)}
+footer{font-size:13px;color:var(--muted);display:grid;gap:6px}
+/* cartão de identificação (registro.js) */
+.nc-id{background:var(--surface);border:2px solid var(--accent);border-radius:14px;padding:18px;display:grid;gap:12px}
+.nc-id.nc-in{border:0;padding:0;background:none}
+.nc-id h2{margin:0 0 4px}
+.nc-lead{color:var(--muted);margin:0 0 12px!important}
+.nc-row{display:grid;gap:10px;grid-template-columns:1fr}
+@media (min-width:560px){.nc-row{grid-template-columns:1fr 1.6fr}}
+.nc-id label{display:grid;gap:4px;font:600 14px/1.2 var(--body)}
+.nc-id input{font:17px var(--body);padding:12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);min-height:48px;width:100%}
+.nc-err{color:var(--warn);font-size:14px;min-height:1em;margin:6px 0!important}
+.nc-priv{font-size:13px;color:var(--muted);margin-top:10px!important}
+.nc-who{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:15px;background:var(--soft);border-radius:10px;padding:10px 14px}
+.nc-link{background:none!important;border:0!important;color:var(--accent)!important;font:600 14px var(--body)!important;padding:4px 0!important;min-height:0!important;text-decoration:underline;cursor:pointer}
+.nc-fila{font:500 13px var(--mono);color:var(--muted)}
+.nc-flash{animation:ncflash 1.2s 2}
+@keyframes ncflash{50%{box-shadow:0 0 0 6px var(--you)}}
+@media (prefers-reduced-motion:reduce){.nc-flash{animation:none}}
+canvas.plot{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;touch-action:none}
+.ctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.ctl label{display:grid;gap:4px;font:600 13px/1.2 var(--mono)}
+.ctl input[type=range]{width:100%;accent-color:var(--accent)}
+.readout{font:600 15px/1.4 var(--mono);color:var(--accent)}
+.mp{display:grid;gap:10px}
+.mp .row{display:grid;gap:8px;border:1px solid var(--line);border-radius:10px;padding:12px}
+.mp .ins{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.mp .ins label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center;min-width:0}
+.mp .ins input{text-align:center;padding:9px 2px;font-family:var(--mono);min-width:0}
+.tt{display:flex;flex-wrap:wrap;gap:6px;font:500 13px/1 var(--mono)}
+.tt span{border:1px solid var(--line);border-radius:6px;padding:6px 7px}
+.tt span.ok{border-color:var(--ok);color:var(--ok);background:var(--okbg)}
+.tt span.no{border-color:var(--warn);color:var(--warn);background:var(--nobg)}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btns button{padding:11px 14px;min-height:44px;font-size:15px}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.trio label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center;min-width:0}
+.trio input{text-align:center;padding:9px 2px;font-family:var(--mono);min-width:0}
+.trio input.right,.inline input.right{border-color:var(--ok);background:var(--okbg)}
+.trio input.wrong,.inline input.wrong{border-color:var(--warn);background:var(--nobg)}
+table.log{border-collapse:collapse;width:100%;font:500 13px/1.2 var(--mono);text-align:center}
+table.log th,table.log td{border:1px solid var(--line);padding:5px 2px}
+table.log th{background:var(--soft);font:600 12px var(--body)}
+table.log tr.err td{color:var(--warn)}
+.match{display:grid;gap:8px}
+.match .m{display:grid;grid-template-columns:1fr minmax(0,1.3fr);gap:8px;align-items:center}
+.match .m span{font-weight:600}
+@media (max-width:420px){.match .m{grid-template-columns:1fr}}
+.grid64{display:grid;grid-template-columns:auto repeat(4,minmax(0,1fr));gap:5px;align-items:center;max-width:420px}
+.grid64 span{font:600 12px/1 var(--mono);color:var(--muted);text-align:center}
+.grid64 input{text-align:center;padding:8px 2px;min-height:40px;font-family:var(--mono);min-width:0}
+.grid64 input.right{border-color:var(--ok);background:var(--okbg)}
+.grid64 input.wrong{border-color:var(--warn);background:var(--nobg)}
+.quad{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;max-width:420px}
+.quad label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center;min-width:0}
+.quad input{text-align:center;padding:9px 2px;font-family:var(--mono);min-width:0}
+.quad input.right{border-color:var(--ok);background:var(--okbg)}
+.quad input.wrong{border-color:var(--warn);background:var(--nobg)}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;max-width:300px}
+.pair label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center}
+.pair input{text-align:center;font-family:var(--mono)}
+.pair input.right{border-color:var(--ok);background:var(--okbg)}
+.pair input.wrong{border-color:var(--warn);background:var(--nobg)}
+table.cases{border-collapse:collapse;width:100%;font-size:15px}
+table.cases td,table.cases th{border-bottom:1px solid var(--line);padding:8px 4px;vertical-align:middle;text-align:left}
+table.cases th{font:600 13px var(--body);color:var(--muted)}
+table.cases select{min-height:44px;padding:6px;font-size:15px}
+select.right{border-color:var(--ok);background:var(--okbg)}
+select.wrong{border-color:var(--warn);background:var(--nobg)}
+.tb{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1fr);gap:6px;align-items:center}
+.tb b{font-size:13px;color:var(--muted)}
+.tb select{font-size:14px;padding:8px 4px}
+/* Aula 8 */
+.five{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+.five label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center;min-width:0}
+.five input{text-align:center;padding:9px 2px;font-family:var(--mono);min-width:0}
+.five input.right{border-color:var(--ok);background:var(--okbg)}
+.five input.wrong{border-color:var(--warn);background:var(--nobg)}
+.counts{display:flex;flex-wrap:wrap;gap:6px;font:600 13px/1 var(--mono)}
+.counts span{border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+</style>
+
+<div class="wrap" id="student">
+<header>
+  <span class="eyebrow">Neurociência Computacional · Aula 8 · UFRN</span>
+  <h1>Mapas auto-organizados</h1>
+  <p class="lead">Topografia no córtex e o algoritmo de Kohonen. Identifique-se abaixo, faça cada atividade quando o professor pedir e toque em <b>Enviar</b> — sua resposta fica registrada e o gabarito aparece em seguida.</p>
+</header>
+
+<nav aria-label="Atividades">
+  <a href="#a1">1 · Mapa cortical</a><a href="#a2">2 · Chapéu mexicano</a><a href="#a3">3 · Um passo à mão</a><a href="#a4">4 · Desdobrar</a><a href="#a5">5 · Magnificação</a><a href="#a6">6 · Amputação</a><a href="#a7">7 · Métodos e Marr</a>
+</nav>
+
+<!-- ============ ATIVIDADE 1 ============ -->
+<section class="exp" id="a1" data-titulo="Ler um mapa cortical">
+  <div><p class="num">Atividade 1 · 5 min · individual, com calculadora</p><h2>Ler um mapa cortical</h2></div>
+  <p>Magnificação de V1 humano (Horton &amp; Hoyt, 1991): <span class="badge">M(E) = 17,3 / (E + 0,75)</span> milímetros de córtex por grau de campo visual, na excentricidade E (graus).</p>
+  <div class="q"><p class="qt"><i>a</i>Quanto vale M na fóvea (E = 0) e a 10°?</p>
+    <div class="pair"><label>M(0) (mm/grau)<input type="text" inputmode="decimal" name="a1a"></label><label>M(10) (mm/grau)<input type="text" inputmode="decimal" name="a1b"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Quantas vezes mais córtex por grau a fóvea recebe em relação a 10°?</p>
+    <div class="inline"><label>razão M(0)/M(10)<input type="text" inputmode="decimal" name="a1c"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Merzenich et al. (1984) amputaram o dedo 3 de macacos adultos. Meses depois, a área de 3b que era de D3 passa a responder…</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a1d" value="nada">a nada: fica silenciosa para sempre</label><label class="opt"><input type="radio" name="a1d" value="vizinhos">aos dedos vizinhos, D2 e D4, mantendo a ordem</label><label class="opt"><input type="radio" name="a1d" value="pé">ao pé, escolhido ao acaso</label></div></div>
+  <div class="q"><p class="qt"><i>d</i>Por que lábios e pontas dos dedos ocupam tanta área em S1?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a1e" value="tamanho">porque são partes grandes do corpo</label><label class="opt"><input type="radio" name="a1e" value="receptores">pela densidade de receptores e pelo uso</label><label class="opt"><input type="radio" name="a1e" value="acaso">por acaso do desenvolvimento</label></div></div>
+  <div class="send"><button data-send="a1">Enviar</button><span class="sent" data-status="a1"></span></div>
+  <div class="fb" data-fb="a1" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 2 ============ -->
+<section class="exp" id="a2" data-titulo="Excitação perto, inibição longe">
+  <div><p class="num">Atividade 2 · 5 min · individual</p><h2>Excitação perto, inibição longe</h2></div>
+  <p>Peso lateral entre dois neurônios a distância d: <span class="badge">w(d) = 1,5 e^(−d²/2) − 0,5 e^(−d²/32)</span>. Ajuda: e^(−0,5) ≈ 0,607; e^(−1/32) ≈ 0,969; e^(−4,5) ≈ 0,011; e^(−9/32) ≈ 0,755.</p>
+  <div class="q"><p class="qt"><i>a</i>Calcule w(0), w(1) e w(3).</p>
+    <div class="trio"><label>w(0)<input type="text" inputmode="decimal" name="a2a"></label><label>w(1)<input type="text" inputmode="decimal" name="a2b"></label><label>w(3)<input type="text" inputmode="decimal" name="a2c"></label></div></div>
+  <p class="meta">Simulador: 60 neurônios num anel. Em cima, o perfil lateral (excitação curta menos inibição ampla). Embaixo, a entrada (cinza) e a atividade depois da interação lateral (cor).</p>
+  <canvas class="plot" id="mhC" width="400" height="330" aria-label="Perfil de interação lateral e bolha de atividade"></canvas>
+  <div class="ctl"><label>alcance da excitação = <span id="mhEv">2,5</span><input type="range" id="mhE" min="1" max="5" step="0.5" value="2.5"></label><label>inibição = <span id="mhIv">0,040</span><input type="range" id="mhI" min="0" max="0.08" step="0.005" value="0.04"></label></div>
+  <div class="btns"><button type="button" class="ghost" id="mhN">Nova entrada</button></div>
+  <p class="readout" id="mhR"></p>
+  <div class="q"><p class="qt"><i>b</i>Uma entrada larga e ruidosa chega à fileira. A interação lateral…</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a2d" value="copia">copia a entrada, com o mesmo ruído</label><label class="opt"><input type="radio" name="a2d" value="bolha">forma uma bolha localizada em torno do ponto mais estimulado</label><label class="opt"><input type="radio" name="a2d" value="apaga">apaga toda a atividade</label></div></div>
+  <div class="q"><p class="qt"><i>c</i>O que o algoritmo de Kohonen põe no lugar dessa dinâmica?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a2e" value="vizinhança">uma função de vizinhança h explícita, centrada no vencedor</label><label class="opt"><input type="radio" name="a2e" value="backprop">um erro propagado para trás</label><label class="opt"><input type="radio" name="a2e" value="nada">nada: só o vencedor aprende</label></div></div>
+  <div class="q"><p class="qt"><i>d</i>No simulador, ponha a inibição em zero. A atividade…</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a2f" value="espalha">se espalha e cresce: não há mais competição</label><label class="opt"><input type="radio" name="a2f" value="estreita">fica ainda mais estreita</label><label class="opt"><input type="radio" name="a2f" value="some">desaparece</label></div></div>
+  <div class="send"><button data-send="a2">Enviar</button><span class="sent" data-status="a2"></span></div>
+  <div class="fb" data-fb="a2" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 3 ============ -->
+<section class="exp" id="a3" data-titulo="Um passo de Kohonen à mão">
+  <div><p class="num">Atividade 3 · 7 min · em duplas, no papel</p><h2>Um passo de Kohonen à mão</h2></div>
+  <div class="tablewrap"><table class="dec"><tr><th>neurônio</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr>
+    <tr><td>w₁</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr><tr><td>w₂</td><td>1</td><td>1</td><td>2</td><td>4</td><td>3</td></tr></table></div>
+  <p>Os 5 neurônios formam uma cadeia 1–2–3–4–5. Entrada <b>x = (3; 3)</b>, <b>η = 0,5</b>. Vizinhança: <b>h = 1</b> no vencedor, <b>0,5</b> nos vizinhos imediatos da cadeia, 0 nos demais. Regra: <span class="badge">Δw = η h (x − w)</span>.</p>
+  <div class="q"><p class="qt"><i>a</i>Calcule ‖x − wᵢ‖² para cada neurônio. Qual é o vencedor?</p>
+    <div class="inline"><label>neurônio vencedor (1–5)<input type="text" inputmode="numeric" name="a3a"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Novos pesos do vencedor:</p>
+    <div class="pair"><label>w₁<input type="text" inputmode="decimal" name="a3b1"></label><label>w₂<input type="text" inputmode="decimal" name="a3b2"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Novos pesos do neurônio 4:</p>
+    <div class="pair"><label>w₁<input type="text" inputmode="decimal" name="a3c1"></label><label>w₂<input type="text" inputmode="decimal" name="a3c2"></label></div></div>
+  <div class="q"><p class="qt"><i>d</i>Novos pesos do neurônio 2:</p>
+    <div class="pair"><label>w₁<input type="text" inputmode="decimal" name="a3d1"></label><label>w₂<input type="text" inputmode="decimal" name="a3d2"></label></div></div>
+  <div class="q"><p class="qt"><i>e</i>Na competição pura (sem vizinhança), quais pesos mudariam?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a3e" value="só 3">só os do vencedor</label><label class="opt"><input type="radio" name="a3e" value="3 e 4">os do vencedor e do neurônio mais próximo de x depois dele</label><label class="opt"><input type="radio" name="a3e" value="todos">todos, um pouco</label></div></div>
+  <p class="meta">Simulador: a mesma cadeia. Toque no gráfico para escolher outra entrada x e aplique um passo (η = 0,5, mesma vizinhança).</p>
+  <canvas class="plot" id="bmC" width="420" height="360" style="max-width:420px" aria-label="Cadeia de cinco neurônios e uma entrada que pode ser escolhida tocando"></canvas>
+  <div class="btns"><button type="button" class="ghost" id="bmA">Aplicar um passo</button><button type="button" class="ghost" id="bmZ">Voltar aos pesos da tabela</button></div>
+  <p class="readout" id="bmR"></p>
+  <div class="send"><button data-send="a3">Enviar</button><span class="sent" data-status="a3"></span></div>
+  <div class="fb" data-fb="a3" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 4 ============ -->
+<section class="exp" id="a4" data-titulo="Desdobrar a grade">
+  <div><p class="num">Atividade 4 · 6 min · individual</p><h2>Desdobrar a grade</h2></div>
+  <p>Decaimento: <span class="badge">η(t) = η₀ e^(−t/τ)</span> e <span class="badge">σ(t) = σ₀ e^(−t/τ)</span>.</p>
+  <div class="q"><p class="qt"><i>a</i>Com η₀ = 0,5 e τ = 1000, quanto vale η em t = 2000?</p>
+    <div class="inline"><label>η(2000)<input type="text" inputmode="decimal" name="a4a"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Com σ₀ = 4 e τ = 1000, em que iteração σ chega a 1?</p>
+    <div class="inline"><label>t<input type="text" inputmode="decimal" name="a4b"></label></div></div>
+  <p class="meta">Simulador: grade de 8 × 8 neurônios; entradas uniformes no quadrado. Escolha σ₀, sorteie pesos e treine (3000 passos; η de 0,5 a 0,01; σ de σ₀ a 0,5).</p>
+  <canvas class="plot" id="ufC" width="400" height="400" style="max-width:400px" aria-label="Grade de neurônios se desdobrando sobre o quadrado"></canvas>
+  <div class="ctl"><label>σ₀ = <span id="ufSv">4</span><input type="range" id="ufS" min="0.5" max="5" step="0.5" value="4"></label></div>
+  <div class="btns"><button type="button" class="ghost" id="ufR">Pesos ao acaso</button><button type="button" class="ghost" id="ufC1">Centro (pequeno)</button><button type="button" class="ghost" id="ufT">Treinar 300 passos</button><button type="button" class="ghost" id="ufE">Treinar até o fim</button></div>
+  <p class="readout" id="ufO"></p>
+  <div class="q"><p class="qt"><i>c</i>Treine com σ₀ = 1 a partir de pesos ao acaso (várias vezes). O que tende a acontecer?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a4c" value="perfeito">a grade sempre fica perfeita</label><label class="opt"><input type="radio" name="a4c" value="dobras">surgem dobras/torções que não se desfazem</label><label class="opt"><input type="radio" name="a4c" value="encolhe">a grade encolhe para um ponto</label></div></div>
+  <div class="q"><p class="qt"><i>d</i>De 1000 entradas, 37 têm o 1º e o 2º vencedores não vizinhos na grade. Qual o erro topográfico?</p>
+    <div class="inline"><label>erro topográfico (%)<input type="text" inputmode="decimal" name="a4d"></label></div></div>
+  <div class="q"><p class="qt"><i>e</i>Por que começar com σ grande?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a4e" value="velocidade">só para treinar mais rápido</label><label class="opt"><input type="radio" name="a4e" value="ordem global">para a grade inteira se orientar de uma vez antes do ajuste fino</label><label class="opt"><input type="radio" name="a4e" value="erro">para diminuir o erro de quantização final</label></div></div>
+  <div class="send"><button data-send="a4">Enviar</button><span class="sent" data-status="a4"></span></div>
+  <div class="fb" data-fb="a4" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 5 ============ -->
+<section class="exp" id="a5" data-titulo="Mais entrada, mais córtex">
+  <div><p class="num">Atividade 5 · 6 min · individual</p><h2>Mais entrada, mais córtex</h2></div>
+  <p>Entrada 1-D em [0, 1]: a metade esquerda é <b>8 vezes</b> mais frequente que a direita. Um SOM 1-D tem <b>50 neurônios</b>. Densidade de neurônios ∝ p(x)<sup>α</sup>, com α = 2/3 para o SOM (Ritter &amp; Schulten, 1986).</p>
+  <div class="q"><p class="qt"><i>a</i>Quantas vezes mais neurônios por unidade de comprimento há na metade densa?</p>
+    <div class="inline"><label>razão<input type="text" inputmode="decimal" name="a5a"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Quantos dos 50 neurônios ficam na metade densa?</p>
+    <div class="inline"><label>neurônios<input type="text" inputmode="decimal" name="a5b"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>E com o k-means (α = 1/3)? (aproximado)</p>
+    <div class="inline"><label>neurônios<input type="text" inputmode="decimal" name="a5c"></label></div></div>
+  <p class="meta">Simulador: SOM 1-D de 50 neurônios. Escolha a razão de densidade e treine; os traços são os pesos.</p>
+  <canvas class="plot" id="mgC" width="400" height="220" aria-label="Densidade de entrada em duas metades e posição dos pesos de 50 neurônios"></canvas>
+  <div class="ctl"><label>razão de densidade = <span id="mgDv">8</span><input type="range" id="mgD" min="1" max="16" step="1" value="8"></label></div>
+  <div class="btns"><button type="button" class="ghost" id="mgT">Treinar</button></div>
+  <p class="readout" id="mgR"></p>
+  <div class="q"><p class="qt"><i>d</i>Como isso explica um homúnculo com lábios enormes?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a5d" value="frequência">regiões que mandam mais entradas ganham mais neurônios (menos que proporcionalmente)</label><label class="opt"><input type="radio" name="a5d" value="proporcional">a área é exatamente proporcional ao número de receptores</label><label class="opt"><input type="radio" name="a5d" value="genes">o SOM não tem nada a dizer sobre isso</label></div></div>
+  <div class="send"><button data-send="a5">Enviar</button><span class="sent" data-status="a5"></span></div>
+  <div class="fb" data-fb="a5" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 6 ============ -->
+<section class="exp" id="a6" data-titulo="Remapeamento após a amputação">
+  <div><p class="num">Atividade 6 · 6 min · em duplas</p><h2>Remapeamento após a amputação</h2></div>
+  <p>Uma cadeia de 30 neurônios (um pedaço de S1) recebe toques nos 5 dedos de uma mão, igualmente usados. Cada cor = dedo que mais ativa o neurônio.</p>
+  <canvas class="plot" id="rmC" width="400" height="150" aria-label="Faixa de 30 neurônios coloridos pelo dedo preferido"></canvas>
+  <div class="btns"><button type="button" class="ghost" id="rmT">Treinar</button><button type="button" class="ghost" id="rmA">Amputar D3</button><button type="button" class="ghost" id="rmC2">Continuar o treino</button><button type="button" class="ghost" id="rmZ">Reiniciar</button></div>
+  <label class="checks" style="display:flex;gap:8px;align-items:center;font-size:15px"><input type="checkbox" id="rmF" style="width:20px;height:20px">plasticidade desligada (η = 0)</label>
+  <div class="counts" id="rmR"></div>
+  <div class="q"><p class="qt"><i>a</i>Antes da amputação, quantos neurônios por dedo, em média?</p>
+    <div class="inline"><label>neurônios por dedo<input type="text" inputmode="decimal" name="a6a"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Depois da amputação, se os 4 dedos restantes dividirem os 30 neurônios igualmente, quantos para cada um?</p>
+    <div class="inline"><label>neurônios por dedo<input type="text" inputmode="decimal" name="a6b"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Quais dedos ocupam a área que era de D3?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a6c" value="D2 e D4">D2 e D4</label><label class="opt"><input type="radio" name="a6c" value="D1 e D5">D1 e D5</label><label class="opt"><input type="radio" name="a6c" value="todos">todos igualmente, em mosaico</label></div></div>
+  <div class="q"><p class="qt"><i>d</i>Se η já tivesse decaído a zero (fim da plasticidade), a área de D3…</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a6d" value="silenciosa">ficaria sem entrada eficaz: nada se reorganizaria</label><label class="opt"><input type="radio" name="a6d" value="igual">seria tomada pelos vizinhos do mesmo jeito</label><label class="opt"><input type="radio" name="a6d" value="D1">passaria inteira para D1</label></div></div>
+  <div class="send"><button data-send="a6">Enviar</button><span class="sent" data-status="a6"></span></div>
+  <div class="fb" data-fb="a6" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 7 ============ -->
+<section class="exp" id="a7" data-titulo="O SOM no mapa dos métodos">
+  <div><p class="num">Atividade 7 · 5 min · individual · opcional</p><h2>O SOM no mapa dos métodos</h2></div>
+  <div class="q"><p class="qt"><i>a</i>Que método cada frase descreve?</p>
+    <div class="match" id="metList"></div></div>
+  <div class="q"><p class="qt"><i>b</i>Classifique no nível de Marr.</p>
+  <p class="lead"><b>C</b> = computacional (o quê e por quê) · <b>A</b> = algorítmico (como) · <b>I</b> = implementação (com quê)</p>
+  <div class="marr" id="marrList"></div></div>
+  <div class="send"><button data-send="a7">Enviar</button><span class="sent" data-status="a7"></span></div>
+  <div class="fb" data-fb="a7" hidden></div>
+</section>
+
+<footer>
+  <p>Materiais: <a href="simulacoes/aula08.html">simulações interativas da Aula 8</a> · <a href="simulacoes/aula08_som4passos.html">as 4 fases do SOM, passo a passo</a> · <a href="index.html">todas as aulas</a></p>
+  <p>Prof. Daniel Y. Takahashi · Instituto do Cérebro, UFRN</p>
+</footer>
+</div>
+
+<script>
+(() => {
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const val = (n) => { const el = $(`[name="${n}"]:checked`) || $(`[name="${n}"]:not([type=radio]):not([type=checkbox])`); return el ? String(el.value).trim() : ''; };
+const num = (n) => { let t = String(val(n)).replace(/\s/g, '').replace('%', ''); if (/^-?(\d{1,3}(\.\d{3}){2,}|[1-9]\d{1,2}\.\d{3})$/.test(t)) t = t.replace(/\./g, ''); t = t.replace(',', '.').replace('−', '-'); const v = parseFloat(t); return isNaN(v) ? null : v; };
+const tag = (ok) => `<span class="mark ${ok ? 'ok' : 'no'}">${ok ? '✓' : '✗'}</span>`;
+function markRadio(name, correct) { $$(`[name="${name}"]`).forEach(i => { const l = i.closest('label'); l.classList.remove('right', 'wrong'); if (i.value === correct) l.classList.add('right'); else if (i.checked) l.classList.add('wrong'); }); }
+function markEl(el, ok) { el.classList.toggle('right', ok); el.classList.toggle('wrong', !ok); }
+const markInput = (name, ok) => markEl($(`[name="${name}"]`), ok);
+const near = (v, x, tol) => v !== null && Math.abs(v - x) <= tol;
+const fmt = (v, d = 2) => v.toFixed(d).replace('.', ',').replace('-', '−');
+function setupCanvas(c) { const r = window.devicePixelRatio || 1; const w = c.width, h = c.height; c.width = w * r; c.height = h * r; const g = c.getContext('2d'); g.scale(r, r); return { g, w, h }; }
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const DCOL = ['#93c5fd', '#fcd34d', '#f87171', '#86efac', '#c4b5fd'];
+
+/* ---------- Atividade 2: chapéu mexicano e bolha ---------- */
+const MH = setupCanvas($('#mhC')); const NM = 60; let mhI = null;
+function mhInput() { const c = 15 + Math.random() * 30; mhI = Array.from({ length: NM }, (_, i) => { let d = Math.abs(i - c); d = Math.min(d, NM - d); return 0.5 * Math.exp(-d * d / (2 * 81)) + 0.12 * Math.random(); }); }
+function mhRun(se, inh) {
+  const W = Array.from({ length: NM }, (_, i) => Array.from({ length: NM }, (_, j) => { let d = Math.abs(i - j); d = Math.min(d, NM - d); return 0.2 * Math.exp(-d * d / (2 * se * se)) - inh; }));
+  let r = new Array(NM).fill(0);
+  for (let t = 0; t < 400; t++) { const n = r.map((ri, i) => { let s = mhI[i]; for (let j = 0; j < NM; j++) s += W[i][j] * r[j]; return Math.min(5, ri + 0.2 * (-ri + Math.max(0, s))); }); r = n; }
+  return r;
+}
+function mhDraw() {
+  const se = +$('#mhE').value, inh = +$('#mhI').value; $('#mhEv').textContent = fmt(se, 1); $('#mhIv').textContent = fmt(inh, 3);
+  const { g, w, h } = MH; g.clearRect(0, 0, w, h); g.font = '12px ui-monospace,monospace';
+  // perfil lateral
+  const top = 20, ph = 100, z = top + ph * 0.6; g.strokeStyle = css('--line'); g.beginPath(); g.moveTo(20, z); g.lineTo(w - 10, z); g.stroke();
+  const prof = (d) => 0.2 * Math.exp(-d * d / (2 * se * se)) - inh; const pm = 0.2;
+  g.strokeStyle = css('--accent'); g.lineWidth = 2.2; g.beginPath();
+  for (let k = 0; k <= 200; k++) { const d = -15 + 30 * k / 200, x = 20 + (w - 30) * k / 200, y = z - prof(d) / pm * ph * 0.55; k ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke(); g.lineWidth = 1;
+  g.fillStyle = css('--muted'); g.fillText('peso lateral w(d), d de −15 a 15', 22, 14);
+  // bolha
+  const r = mhRun(se, inh), y0 = h - 25, hh = h - 180, bw = (w - 30) / NM, rm = Math.max(...r, 1e-9);
+  mhI.forEach((v, i) => { g.fillStyle = css('--line'); g.fillRect(20 + i * bw, y0 - v / 0.65 * hh, bw - 1, v / 0.65 * hh); });
+  g.strokeStyle = css('--you'); g.lineWidth = 2.4; g.beginPath(); r.forEach((v, i) => { const x = 20 + (i + 0.5) * bw, y = y0 - v / rm * hh * 0.95; i ? g.lineTo(x, y) : g.moveTo(x, y); }); g.stroke(); g.lineWidth = 1;
+  g.fillStyle = css('--muted'); g.fillText('entrada (cinza) e atividade (laranja, normalizada)', 22, 142);
+  const act = r.filter(v => v > rm / 2).length, sat = r.filter(v => v >= 4.99).length;
+  $('#mhR').textContent = `neurônios acima de metade do máximo: ${act} de ${NM}${sat > 10 ? ' · atividade saturada' : ''}`;
+}
+mhInput(); ['#mhE', '#mhI'].forEach(s => $(s).addEventListener('input', mhDraw)); $('#mhN').addEventListener('click', () => { mhInput(); mhDraw(); }); mhDraw();
+
+/* ---------- Atividade 3: um passo à mão ---------- */
+const BM = setupCanvas($('#bmC')); const W0 = [[1, 1], [2, 1], [3, 2], [4, 4], [5, 3]]; let BW = W0.map(p => p.slice()), BX = [3, 3];
+const bX = (x) => 30 + (x - 0) / 6 * (BM.w - 45), bY = (y) => BM.h - 30 - (y - 0) / 5 * (BM.h - 45);
+function bmCalc() { const d2 = BW.map(w => (w[0] - BX[0]) ** 2 + (w[1] - BX[1]) ** 2); const b = d2.indexOf(Math.min(...d2)); const H = BW.map((_, i) => i === b ? 1 : Math.abs(i - b) === 1 ? 0.5 : 0); return { d2, b, H, N: BW.map((w, i) => [w[0] + 0.5 * H[i] * (BX[0] - w[0]), w[1] + 0.5 * H[i] * (BX[1] - w[1])]) }; }
+function bmDraw() {
+  const { g, w, h } = BM; g.clearRect(0, 0, w, h); g.font = '12px ui-monospace,monospace';
+  g.strokeStyle = css('--line'); for (let k = 0; k <= 6; k++) { g.beginPath(); g.moveTo(bX(k), bY(0)); g.lineTo(bX(k), bY(5)); g.stroke(); g.fillStyle = css('--muted'); g.fillText(k, bX(k) - 3, h - 12); }
+  for (let k = 0; k <= 5; k++) { g.beginPath(); g.moveTo(bX(0), bY(k)); g.lineTo(bX(6), bY(k)); g.stroke(); g.fillText(k, 12, bY(k) + 4); }
+  const { d2, b, H, N } = bmCalc();
+  g.strokeStyle = css('--accent'); g.lineWidth = 2; g.beginPath(); BW.forEach((p, i) => i ? g.lineTo(bX(p[0]), bY(p[1])) : g.moveTo(bX(p[0]), bY(p[1]))); g.stroke(); g.lineWidth = 1;
+  BW.forEach((p, i) => { if (H[i]) { g.strokeStyle = css('--you'); g.lineWidth = 2; g.beginPath(); g.moveTo(bX(p[0]), bY(p[1])); g.lineTo(bX(N[i][0]), bY(N[i][1])); g.stroke(); g.lineWidth = 1; g.fillStyle = css('--you'); g.beginPath(); g.arc(bX(N[i][0]), bY(N[i][1]), 3, 0, 7); g.fill(); } });
+  BW.forEach((p, i) => { g.fillStyle = css('--surface'); g.strokeStyle = i === b ? css('--you') : css('--accent'); g.lineWidth = i === b ? 3 : 2; g.beginPath(); g.arc(bX(p[0]), bY(p[1]), 11, 0, 7); g.fill(); g.stroke(); g.lineWidth = 1; g.fillStyle = css('--fg'); g.font = '600 12px ui-monospace,monospace'; g.fillText(i + 1, bX(p[0]) - 4, bY(p[1]) + 4); });
+  g.fillStyle = css('--you'); g.font = '22px sans-serif'; g.fillText('★', bX(BX[0]) - 9, bY(BX[1]) + 8); g.font = '12px ui-monospace,monospace';
+  $('#bmR').textContent = `x = (${fmt(BX[0], 1)}; ${fmt(BX[1], 1)}) · d² = ${d2.map(v => fmt(v, 2)).join(' | ')} · vencedor: ${b + 1}. Setas: para onde cada peso vai.`;
+}
+$('#bmC').addEventListener('pointerdown', (e) => { const r = e.target.getBoundingClientRect(), sx = BM.w / r.width; const px = (e.clientX - r.left) * sx, py = (e.clientY - r.top) * sx; BX = [Math.round(((px - 30) / (BM.w - 45) * 6) * 2) / 2, Math.round(((BM.h - 30 - py) / (BM.h - 45) * 5) * 2) / 2].map(v => Math.max(0, Math.min(6, v))); bmDraw(); });
+$('#bmA').addEventListener('click', () => { BW = bmCalc().N; bmDraw(); }); $('#bmZ').addEventListener('click', () => { BW = W0.map(p => p.slice()); BX = [3, 3]; bmDraw(); }); bmDraw();
+
+/* ---------- Atividade 4: grade 8 × 8 ---------- */
+const UF = setupCanvas($('#ufC')); const NX = 8, TT = 3000; const UG = []; for (let j = 0; j < NX; j++) for (let i = 0; i < NX; i++) UG.push([i, j]);
+let UW = null, ut = 0; const UTEST = Array.from({ length: 400 }, () => [Math.random(), Math.random()]);
+function ufInit(center) { UW = UG.map(() => center ? [0.5 + (Math.random() - 0.5) * 0.15, 0.5 + (Math.random() - 0.5) * 0.15] : [Math.random(), Math.random()]); ut = 0; ufDraw(); }
+function ufPar() { const s0 = +$('#ufS').value, f = Math.min(ut / TT, 1); return { s: s0 * Math.pow(0.5 / s0, f), e: 0.5 * Math.pow(0.02, f) }; }
+function ufStep(n) { for (let k = 0; k < n && ut < TT; k++, ut++) { const { s, e } = ufPar(), x = [Math.random(), Math.random()]; let b = 0, bd = 1e9; UW.forEach((w, i) => { const d = (w[0] - x[0]) ** 2 + (w[1] - x[1]) ** 2; if (d < bd) { bd = d; b = i; } });
+  UW.forEach((w, i) => { const dg = (UG[i][0] - UG[b][0]) ** 2 + (UG[i][1] - UG[b][1]) ** 2, hh = Math.exp(-dg / (2 * s * s)) * e; w[0] += hh * (x[0] - w[0]); w[1] += hh * (x[1] - w[1]); }); } }
+function ufTE() { let bad = 0; UTEST.forEach(x => { const d = UW.map(w => (w[0] - x[0]) ** 2 + (w[1] - x[1]) ** 2), o = d.map((v, i) => i).sort((a, b) => d[a] - d[b]); const a = UG[o[0]], c = UG[o[1]]; if (Math.max(Math.abs(a[0] - c[0]), Math.abs(a[1] - c[1])) > 1) bad++; }); return bad / UTEST.length; }
+function ufDraw() {
+  const { g, w, h } = UF; g.clearRect(0, 0, w, h); const X = (v) => 20 + v * (w - 40), Y = (v) => h - 20 - v * (h - 40);
+  g.strokeStyle = css('--line'); g.strokeRect(X(0), Y(1), w - 40, h - 40);
+  g.strokeStyle = css('--accent'); g.lineWidth = 1.6;
+  for (let j = 0; j < NX; j++) { g.beginPath(); for (let i = 0; i < NX; i++) { const p = UW[j * NX + i]; i ? g.lineTo(X(p[0]), Y(p[1])) : g.moveTo(X(p[0]), Y(p[1])); } g.stroke(); }
+  for (let i = 0; i < NX; i++) { g.beginPath(); for (let j = 0; j < NX; j++) { const p = UW[j * NX + i]; j ? g.lineTo(X(p[0]), Y(p[1])) : g.moveTo(X(p[0]), Y(p[1])); } g.stroke(); }
+  g.lineWidth = 1; g.fillStyle = css('--accent'); UW.forEach(p => { g.beginPath(); g.arc(X(p[0]), Y(p[1]), 2.5, 0, 7); g.fill(); });
+  const { s, e } = ufPar(); $('#ufSv').textContent = fmt(+$('#ufS').value, 1);
+  $('#ufO').textContent = `t = ${ut} de ${TT} · η = ${fmt(e, 3)} · σ = ${fmt(s, 2)} · erro topográfico = ${fmt(100 * ufTE(), 1)}%`;
+}
+let ufTimer = null;
+$('#ufR').addEventListener('click', () => { clearInterval(ufTimer); ufInit(false); }); $('#ufC1').addEventListener('click', () => { clearInterval(ufTimer); ufInit(true); });
+$('#ufT').addEventListener('click', () => { clearInterval(ufTimer); ufStep(300); ufDraw(); });
+$('#ufE').addEventListener('click', () => { clearInterval(ufTimer); ufTimer = setInterval(() => { ufStep(100); ufDraw(); if (ut >= TT) clearInterval(ufTimer); }, 30); });
+$('#ufS').addEventListener('input', () => { $('#ufSv').textContent = fmt(+$('#ufS').value, 1); });
+ufInit(false);
+
+/* ---------- Atividade 5: magnificação 1-D ---------- */
+const MG = setupCanvas($('#mgC')); const NN = 50; let MW = null, mgTimer = null;
+function mgSample(r) { const pd = r / (r + 1); return Math.random() < pd ? Math.random() * 0.5 : 0.5 + Math.random() * 0.5; }
+function mgDraw() {
+  const r = +$('#mgD').value; $('#mgDv').textContent = r; const { g, w, h } = MG; g.clearRect(0, 0, w, h);
+  const X = (v) => 20 + v * (w - 40), base = 130, top = 25, pd = 2 * r / (r + 1), ps = 2 / (r + 1), pm = Math.max(pd, ps);
+  g.fillStyle = css('--line'); g.fillRect(X(0), base - pd / pm * (base - top), X(0.5) - X(0), pd / pm * (base - top)); g.fillRect(X(0.5), base - ps / pm * (base - top), X(1) - X(0.5), ps / pm * (base - top));
+  g.fillStyle = css('--muted'); g.font = '12px ui-monospace,monospace'; g.fillText('densidade de entrada p(x)', 22, 16);
+  if (MW) { g.strokeStyle = css('--accent'); g.lineWidth = 1.6; MW.forEach(v => { g.beginPath(); g.moveTo(X(v), base + 12); g.lineTo(X(v), base + 42); g.stroke(); }); g.lineWidth = 1; }
+  g.fillText('0', X(0) - 3, h - 8); g.fillText('0,5', X(0.5) - 10, h - 8); g.fillText('1', X(1) - 3, h - 8);
+  const a = Math.pow(r, 2 / 3), pred = NN * a / (a + 1), predk = NN * Math.cbrt(r) / (Math.cbrt(r) + 1);
+  $('#mgR').textContent = MW ? `${MW.filter(v => v < 0.5).length} de ${NN} neurônios na metade densa · previsão SOM: ${fmt(pred, 1)} · k-means: ${fmt(predk, 1)}` : `Toque em Treinar. Previsão SOM: ${fmt(pred, 1)} neurônios na metade densa.`;
+}
+$('#mgT').addEventListener('click', () => { clearInterval(mgTimer); const r = +$('#mgD').value; MW = Array.from({ length: NN }, () => Math.random()).sort((a, b) => a - b); let t = 0; const T = 40000;
+  mgTimer = setInterval(() => { for (let k = 0; k < 2000; k++, t++) { const f = t / T, s = 10 * Math.pow(0.07, f), e = 0.5 * Math.pow(0.02, f), x = mgSample(r); let b = 0, bd = 9; MW.forEach((v, i) => { const d = Math.abs(v - x); if (d < bd) { bd = d; b = i; } }); for (let i = 0; i < NN; i++) MW[i] += e * Math.exp(-((i - b) ** 2) / (2 * s * s)) * (x - MW[i]); }
+    mgDraw(); if (t >= T) clearInterval(mgTimer); }, 16); });
+$('#mgD').addEventListener('input', () => { clearInterval(mgTimer); MW = null; mgDraw(); }); mgDraw();
+
+/* ---------- Atividade 6: amputação ---------- */
+const RM = setupCanvas($('#rmC')); const NR = 30; let RW = null, rmPresent = [0, 1, 2, 3, 4], rmTimer = null, rmBefore = null;
+function rmLabel(v) { let d = Math.max(0, Math.min(4, Math.floor(v))); if (!rmPresent.includes(d)) { let best = rmPresent[0], bd = 9; rmPresent.forEach(p => { const dd = Math.abs(p + 0.5 - v); if (dd < bd) { bd = dd; best = p; } }); d = best; } return d; }
+function rmDraw() {
+  const { g, w, h } = RM; g.clearRect(0, 0, w, h); const bw = (w - 10) / NR; g.font = '10px ui-monospace,monospace';
+  const row = (W, y, lab) => { g.fillStyle = css('--muted'); g.fillText(lab, 6, y - 6); W.forEach((v, i) => { const d = rmLabel(v); g.fillStyle = DCOL[d]; g.fillRect(5 + i * bw, y, bw - 2, 40); if (bw > 11) { g.fillStyle = '#1e293b'; g.fillText(d + 1, 5 + i * bw + bw / 2 - 3, y + 24); } }); };
+  if (rmBefore) row(rmBefore, 22, 'antes da amputação'); if (RW) row(RW, rmBefore ? 92 : 22, rmBefore ? 'agora' : 'agora');
+  if (!RW) { g.fillStyle = css('--muted'); g.fillText('toque em Treinar', 6, 40); }
+  const c = [0, 0, 0, 0, 0]; if (RW) RW.forEach(v => c[rmLabel(v)]++);
+  $('#rmR').innerHTML = RW ? c.map((n, k) => `<span style="border-color:${DCOL[k]}">D${k + 1}: ${rmPresent.includes(k) ? n : '—'}</span>`).join('') : '';
+}
+function rmTrain(T, s0, s1, e0, e1) { clearInterval(rmTimer); let t = 0; rmTimer = setInterval(() => { for (let k = 0; k < 1000 && t < T; k++, t++) { const f = t / T, s = s0 * Math.pow(s1 / s0, f), e = ($('#rmF').checked ? 0 : 1) * e0 * Math.pow(e1 / e0, f); const d = rmPresent[Math.floor(Math.random() * rmPresent.length)], x = d + 0.1 + 0.8 * Math.random();
+  let b = 0, bd = 99; RW.forEach((v, i) => { const dd = Math.abs(v - x); if (dd < bd) { bd = dd; b = i; } }); for (let i = 0; i < NR; i++) RW[i] += e * Math.exp(-((i - b) ** 2) / (2 * s * s)) * (x - RW[i]); } rmDraw(); if (t >= T) clearInterval(rmTimer); }, 16); }
+$('#rmT').addEventListener('click', () => { rmPresent = [0, 1, 2, 3, 4]; rmBefore = null; RW = Array.from({ length: NR }, () => 2.5 + 0.1 * (Math.random() - 0.5)); rmTrain(30000, 8, 1, 0.4, 0.05); });
+$('#rmA').addEventListener('click', () => { if (!RW) return; clearInterval(rmTimer); rmBefore = RW.slice(); rmPresent = [0, 1, 3, 4]; rmTrain(20000, 1, 1, 0.05, 0.05); });
+$('#rmC2').addEventListener('click', () => { if (RW) rmTrain(20000, 1, 1, 0.05, 0.05); });
+$('#rmZ').addEventListener('click', () => { clearInterval(rmTimer); RW = null; rmBefore = null; rmPresent = [0, 1, 2, 3, 4]; rmDraw(); }); rmDraw();
+
+/* ---------- Atividade 7 ---------- */
+const MET = [
+  ['Protótipos sem relação de vizinhança entre si.', 'k-means'],
+  ['Projeção linear nas direções de maior variância.', 'PCA'],
+  ['Protótipos numa grade fixa; vizinhos na grade aprendem juntos.', 'SOM'],
+  ['Vizinhança pela ordem de distância à entrada, sem grade.', 'gás neural'],
+  ['Magnificação ≈ p^(2/3) em 1-D.', 'SOM'],
+];
+$('#metList').innerHTML = MET.map(([t], k) => `<div class="m"><span>${k + 1}. ${t}</span><select name="t${k}" aria-label="Método da frase ${k + 1}"><option value="">escolha…</option>${['PCA', 'k-means', 'SOM', 'gás neural'].map(o => `<option>${o}</option>`).join('')}</select></div>`).join('');
+const MARR = [
+  ['Neurônios que trocam informação devem ficar perto, para encurtar os axônios.', 'C', 'o objetivo (por quê)'],
+  ['Achar o vencedor, puxar os vizinhos com h gaussiano, reduzir η e σ.', 'A', 'o procedimento'],
+  ['Células em cesto com axônios de ~500 µm fazem a inibição lateral.', 'I', 'o circuito'],
+  ['Representar entradas de muitas dimensões numa folha 2-D, preservando vizinhanças.', 'C', 'o problema a resolver'],
+  ['Substituir a dinâmica do chapéu mexicano por uma vizinhança explícita.', 'A', 'troca de algoritmo'],
+  ['Arborizações talamocorticais de 200–300 µm na camada 4.', 'I', 'anatomia'],
+];
+$('#marrList').innerHTML = MARR.map(([t], k) => `<div class="st"><span>${k + 1}. ${t}</span><div class="seg" role="radiogroup" aria-label="Nível da afirmação ${k + 1}">
+  ${['C', 'A', 'I'].map(l => `<label><input type="radio" name="m${k}" value="${l}">${l}</label>`).join('')}</div></div>`).join('');
+
+/* ---------- correção ---------- */
+const ACT = {
+  a1() {
+    const a = num('a1a'), b = num('a1b'), c = num('a1c');
+    const oa = near(a, 23.07, 0.3), ob = near(b, 1.609, 0.03), oc = near(c, 14.33, 0.4); markInput('a1a', oa); markInput('a1b', ob); markInput('a1c', oc);
+    const d = val('a1d'), e = val('a1e'); markRadio('a1d', 'vizinhos'); markRadio('a1e', 'receptores');
+    const s = oa + ob + oc + (d === 'vizinhos') + (e === 'receptores');
+    return { score: `${s}/5`, resp: `M0 = ${a ?? '—'} | M10 = ${b ?? '—'} | razão = ${c ?? '—'} | D3: ${d || '—'} | lábios: ${e || '—'}`,
+      fb: `<p class="score">${s} de 5</p><ul>
+      <li>${tag(oa && ob)} M(0) = 17,3/0,75 ≈ <b>23,1</b> mm/grau; M(10) = 17,3/10,75 ≈ <b>1,61</b> mm/grau.</li>
+      <li>${tag(oc)} Razão = 10,75/0,75 ≈ <b>14,3</b>: o 17,3 se cancela.</li>
+      <li>${tag(d === 'vizinhos')} A área órfã passa aos <b>dedos vizinhos, D2 e D4</b>, e a ordem se mantém (Merzenich et al., 1984).</li>
+      <li>${tag(e === 'receptores')} <b>Densidade de receptores e uso</b>: o mapa acompanha a estatística da entrada, não o tamanho do órgão.</li></ul>
+      <figure><img src="img/aula08/f1_v1mag.png" alt="Fator de magnificação de V1 caindo de 23 mm por grau na fóvea para 1,6 a 10 graus, e a distância cortical à fóvea crescendo como um logaritmo." loading="lazy"></figure>
+      <figure><img src="img/aula08/f2_merzenich.png" alt="Esquema da área 3b com faixas D1 a D5 antes e, depois da amputação de D3, D2 e D4 ocupando a área de D3." loading="lazy"><figcaption>Esquema baseado em Merzenich et al. (1984).</figcaption></figure>` };
+  },
+  a2() {
+    const a = num('a2a'), b = num('a2b'), c = num('a2c');
+    const oa = near(a, 1.0, 0.02), ob = near(b, 0.425, 0.015), oc = near(c, -0.361, 0.015); markInput('a2a', oa); markInput('a2b', ob); markInput('a2c', oc);
+    const d = val('a2d'), e = val('a2e'), f = val('a2f'); markRadio('a2d', 'bolha'); markRadio('a2e', 'vizinhança'); markRadio('a2f', 'espalha');
+    const s = oa + ob + oc + (d === 'bolha') + (e === 'vizinhança') + (f === 'espalha');
+    return { score: `${s}/6`, resp: `w(0,1,3) = ${a ?? '—'}, ${b ?? '—'}, ${c ?? '—'} | ${d || '—'} | ${e || '—'} | ${f || '—'}`,
+      fb: `<p class="score">${s} de 6</p><ul>
+      <li>${tag(oa && ob && oc)} w(0) = 1,5 − 0,5 = <b>1,0</b>; w(1) = 1,5·0,607 − 0,5·0,969 ≈ <b>0,43</b>; w(3) = 1,5·0,011 − 0,5·0,755 ≈ <b>−0,36</b>. Excitação perto, inibição longe.</li>
+      <li>${tag(d === 'bolha')} Forma uma <b>bolha localizada</b> em torno do ponto mais estimulado; o ruído some.</li>
+      <li>${tag(e === 'vizinhança')} Kohonen usa uma <b>vizinhança h explícita</b>: escolhe o vencedor e atualiza ele e os vizinhos (Rolls, 2023, p. 866).</li>
+      <li>${tag(f === 'espalha')} Sem inibição a atividade <b>se espalha e cresce</b> até saturar: não há competição.</li></ul>
+      <figure><img src="img/aula08/f4_mexhat.png" alt="Perfil chapéu mexicano e uma entrada larga e ruidosa transformada numa bolha de atividade estreita." loading="lazy"></figure>` };
+  },
+  a3() {
+    const a = num('a3a'), oa = a === 3; markInput('a3a', oa);
+    const chk = (p, x, y) => { const o1 = near(num(p + '1'), x, 0.011), o2 = near(num(p + '2'), y, 0.011); markInput(p + '1', o1); markInput(p + '2', o2); return o1 && o2; };
+    const ob = chk('a3b', 3, 2.5), oc = chk('a3c', 3.75, 3.75), od = chk('a3d', 2.25, 1.5);
+    const e = val('a3e'); markRadio('a3e', 'só 3');
+    const s = oa + ob + oc + od + (e === 'só 3'); const g = (p) => `(${num(p + '1') ?? '—'}; ${num(p + '2') ?? '—'})`;
+    return { score: `${s}/5`, resp: `BMU = ${a ?? '—'} | w3 = ${g('a3b')} | w4 = ${g('a3c')} | w2 = ${g('a3d')} | WTA: ${e || '—'}`,
+      fb: `<p class="score">${s} de 5</p><ul>
+      <li>${tag(oa)} d² = 8, 5, 1, 2, 4 → vencedor: <b>neurônio 3</b>.</li>
+      <li>${tag(ob)} w₃ = (3; 2) + 0,5·1·(0; 1) = <b>(3; 2,5)</b>.</li>
+      <li>${tag(oc)} w₄ = (4; 4) + 0,5·0,5·(−1; −1) = <b>(3,75; 3,75)</b>.</li>
+      <li>${tag(od)} w₂ = (2; 1) + 0,25·(1; 2) = <b>(2,25; 1,5)</b>. O neurônio 4 está mais perto de x que o 2, mas os dois têm h = 0,5: h depende da distância <i>na cadeia</i>.</li>
+      <li>${tag(e === 'só 3')} Na competição pura, <b>só o vencedor</b> muda.</li></ul>
+      <figure><img src="img/aula08/f6_steps.png" alt="Os quatro passos do algoritmo com os números da atividade: distâncias, vizinhança, setas de adaptação e a cadeia nova." loading="lazy"></figure>` };
+  },
+  a4() {
+    const a = num('a4a'), oa = near(a, 0.0677, 0.003); markInput('a4a', oa);
+    const b = num('a4b'), ob = near(b, 1386, 15); markInput('a4b', ob);
+    let d = num('a4d'); if (d !== null && d < 1) d = d * 100; const od = near(d, 3.7, 0.1); markInput('a4d', od);
+    const c = val('a4c'), e = val('a4e'); markRadio('a4c', 'dobras'); markRadio('a4e', 'ordem global');
+    const s = oa + ob + (c === 'dobras') + od + (e === 'ordem global');
+    return { score: `${s}/5`, resp: `η = ${a ?? '—'} | t = ${b ?? '—'} | σ0=1: ${c || '—'} | TE = ${num('a4d') ?? '—'} | ${e || '—'}`,
+      fb: `<p class="score">${s} de 5</p><ul>
+      <li>${tag(oa)} η(2000) = 0,5·e<sup>−2</sup> ≈ <b>0,068</b>.</li>
+      <li>${tag(ob)} e<sup>−t/1000</sup> = 1/4 → t = 1000·ln 4 ≈ <b>1386</b>.</li>
+      <li>${tag(c === 'dobras')} Com σ₀ pequeno, cada pedaço da grade se ordena sozinho e surgem <b>dobras que não se desfazem</b> (defeitos topológicos).</li>
+      <li>${tag(od)} 37/1000 = <b>3,7%</b>. Um mapa bem ordenado tem erro topográfico perto de 0.</li>
+      <li>${tag(e === 'ordem global')} A vizinhança larga força uma <b>orientação global</b>; o refino vem depois.</li></ul>
+      <figure><img src="img/aula08/f9_defect.png" alt="Duas grades treinadas nos mesmos dados: com sigma inicial 5 fica ordenada, com sigma inicial 1 fica torcida, erro topográfico 3,7%." loading="lazy"></figure>
+      <figure><img src="img/aula08/f7_decay.png" alt="Curvas de decaimento de eta e sigma, com eta igual a 0,068 em t igual a 2000 e sigma igual a 1 em t igual a 1386." loading="lazy"></figure>` };
+  },
+  a5() {
+    const a = num('a5a'), oa = near(a, 4, 0.05); markInput('a5a', oa);
+    const b = num('a5b'), ob = near(b, 40, 0.5); markInput('a5b', ob);
+    const c = num('a5c'), oc = near(c, 33.3, 1.5); markInput('a5c', oc);
+    const d = val('a5d'); markRadio('a5d', 'frequência');
+    const s = oa + ob + oc + (d === 'frequência');
+    return { score: `${s}/4`, resp: `razão = ${a ?? '—'} | SOM = ${b ?? '—'} | k-means = ${c ?? '—'} | ${d || '—'}`,
+      fb: `<p class="score">${s} de 4</p><ul>
+      <li>${tag(oa)} 8<sup>2/3</sup> = (∛8)² = <b>4</b>.</li>
+      <li>${tag(ob)} Razão 4 : 1 em metades de mesmo comprimento → 50·4/5 = <b>40</b>. A simulação dá 40.</li>
+      <li>${tag(oc)} k-means: 8<sup>1/3</sup> = 2 → 2 : 1 → 50·2/3 ≈ <b>33</b>.</li>
+      <li>${tag(d === 'frequência')} Mais entrada, <b>mais neurônios</b> — mas menos que proporcionalmente (α &lt; 1). É a magnificação do homúnculo e da fóvea.</li></ul>
+      <figure><img src="img/aula08/f10_magnif.png" alt="SOM 1-D com 40 neurônios na metade densa e 10 na esparsa; barras com as previsões 33,3, 40 e 44,4." loading="lazy"></figure>` };
+  },
+  a6() {
+    const a = num('a6a'), oa = near(a, 6, 0.01); markInput('a6a', oa);
+    const b = num('a6b'), ob = near(b, 7.5, 0.05); markInput('a6b', ob);
+    const c = val('a6c'), d = val('a6d'); markRadio('a6c', 'D2 e D4'); markRadio('a6d', 'silenciosa');
+    const s = oa + ob + (c === 'D2 e D4') + (d === 'silenciosa');
+    return { score: `${s}/4`, resp: `antes = ${a ?? '—'} | depois = ${b ?? '—'} | ${c || '—'} | η=0: ${d || '—'}`,
+      fb: `<p class="score">${s} de 4</p><ul>
+      <li>${tag(oa)} 30/5 = <b>6</b> neurônios por dedo.</li>
+      <li>${tag(ob)} 30/4 = <b>7,5</b>. Na simulação da aula: 7, 8, 8, 7.</li>
+      <li>${tag(c === 'D2 e D4')} Os <b>vizinhos D2 e D4</b> herdam o território, e a ordem se conserva — como em Merzenich et al. (1984).</li>
+      <li>${tag(d === 'silenciosa')} Sem plasticidade, <b>nada se reorganiza</b>: a rede só segue a estatística nova se continuar aprendendo (Rolls, 2023, p. 861).</li></ul>
+      <figure><img src="img/aula08/f11_remap.png" alt="Faixa de 30 neurônios coloridos pelo dedo preferido antes e depois da remoção de D3: os neurônios de D3 passam a D2 e D4." loading="lazy"></figure>` };
+  },
+  a7() {
+    let s = 0;
+    MET.forEach(([, c], k) => { const el = $(`[name="t${k}"]`), ok = el.value === c; markEl(el, ok); s += ok; });
+    MARR.forEach(([, c], k) => { const v = val('m' + k); if (v === c) s++;
+      $$(`[name="m${k}"]`).forEach(i => { const l = i.closest('label'); l.classList.remove('right', 'wrong'); if (i.value === c) l.classList.add('right'); else if (i.checked) l.classList.add('wrong'); }); });
+    return { score: `${s}/11`, resp: MET.map((_, k) => `${k + 1}:${val('t' + k) || '—'}`).join(' ') + ' | ' + MARR.map((_, k) => `${k + 1}:${val('m' + k) || '—'}`).join(' '),
+      fb: `<p class="score">${s} de 11</p><ul>
+      ${MET.map(([t, c], k) => `<li>${tag(val('t' + k) === c)} ${k + 1}. <b>${c}</b></li>`).join('')}
+      ${MARR.map(([, c, why], k) => `<li>${tag(val('m' + k) === c)} Marr ${k + 1}. <b>${c}</b> — ${why}</li>`).join('')}</ul>
+      <figure><img src="img/aula08/f13_compare.png" alt="Os mesmos dados em arco: PCA dá uma reta, k-means protótipos soltos, SOM protótipos numa cadeia que segue o arco." loading="lazy"></figure>
+      <figure><img src="img/aula08/f14_ngas.png" alt="Um SOM 7 por 7 esticado sobre o vazio entre um anel e um aglomerado; o gás neural põe todas as unidades sobre os dados." loading="lazy"></figure>` };
+  },
+};
+
+/* ---------- envio ---------- */
+$$('[data-send]').forEach(btn => btn.addEventListener('click', () => {
+  const id = btn.dataset.send, sec = document.getElementById(id);
+  if (!window.Registro || !Registro.identificado()) { window.Registro && Registro.pedeId(); return; }
+  const r = ACT[id]();
+  const ok = Registro.atividade(id, sec.dataset.titulo, r.score, r.resp);
+  const fb = $(`[data-fb="${id}"]`); fb.innerHTML = '<h3>Gabarito</h3>' + r.fb; fb.hidden = false;
+  const st = $(`[data-status="${id}"]`);
+  const first = Registro.aluno().n.split(' ')[0];
+  st.textContent = ok ? `✓ Resposta registrada para ${first}. Você pode corrigir e reenviar.` : 'Identifique-se no topo da página.';
+  btn.textContent = 'Reenviar';
+  const a = $(`nav a[href="#${id}"]`); if (a) a.classList.add('done');
+  fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}));
+})();
+</script>
+<script src="config.js?v=2"></script>
+<script src="registro.js?v=2" data-aula="8"></script>

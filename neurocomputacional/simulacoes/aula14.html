@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulações — Aula 14 · Consciência e o espaço de trabalho global</title>
+<style>
+  :root{
+    --teal:#0D7377; --blue:#1A56DB; --amber:#B45309; --violet:#6D28D9;
+    --green:#15803D; --red:#DC2626; --dark:#1E293B; --gray:#475569; --lgray:#94A3B8;
+    --bg:#F8FAFC; --line:#E2E8F0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Segoe UI',Arial,sans-serif;color:var(--dark);background:var(--bg);}
+  header{background:var(--dark);color:#fff;padding:18px 26px;border-bottom:4px solid var(--violet);}
+  header .course{font-size:12px;letter-spacing:3px;color:#A78BFA;font-weight:700;}
+  header h1{margin:4px 0 2px;font-size:22px;}
+  header .meta{font-size:12.5px;color:#CBD5E1;}
+  nav{display:flex;flex-wrap:wrap;gap:4px;background:#fff;padding:8px 16px;border-bottom:2px solid var(--line);position:sticky;top:0;z-index:10;}
+  nav button{border:none;background:#EEF2F7;color:var(--gray);padding:9px 16px;border-radius:8px 8px 0 0;
+    font-size:14px;font-weight:600;cursor:pointer;transition:.15s;}
+  nav button:hover{background:#E0E7EF;}
+  nav button.active{background:var(--violet);color:#fff;}
+  main{max-width:1080px;margin:0 auto;padding:20px 16px 60px;}
+  .tab{display:none;animation:fade .25s;}
+  .tab.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;}}
+  h2{font-size:20px;margin:6px 0 2px;color:var(--dark);}
+  .lead{font-size:14px;color:var(--gray);margin:0 0 16px;line-height:1.5;}
+  .panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:18px;
+    box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .row{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;}
+  .col{flex:1;min-width:280px;}
+  canvas{width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:8px;}
+  label{display:block;font-size:13px;font-weight:600;margin:12px 0 3px;color:var(--gray);}
+  input[type=range]{width:100%;accent-color:var(--violet);}
+  .val{font-weight:700;color:var(--violet);}
+  .btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+  button.act{border:none;border-radius:8px;padding:9px 14px;font-size:13.5px;font-weight:600;cursor:pointer;color:#fff;}
+  .b-blue{background:var(--blue);} .b-teal{background:var(--teal);} .b-amber{background:var(--amber);}
+  .b-gray{background:var(--gray);} .b-green{background:var(--green);} .b-violet{background:var(--violet);}
+  button.act:hover{filter:brightness(1.08);}
+  .preset{border:1px solid var(--line);background:#fff;color:var(--gray);border-radius:8px;padding:7px 11px;font-size:12.5px;cursor:pointer;font-weight:600;}
+  .preset.sel{background:var(--violet);color:#fff;border-color:var(--violet);}
+  .stat{font-size:14px;margin:5px 0;}
+  .stat b{color:var(--dark);} .big{font-size:30px;font-weight:800;}
+  .note{background:#F5F3FF;border-left:5px solid var(--violet);border-radius:6px;padding:11px 14px;font-size:13px;line-height:1.5;margin-top:14px;}
+  .note.amber{background:#FFFBEB;border-color:var(--amber);}
+  .note.teal{background:#E0F2F1;border-color:var(--teal);}
+  .note.green{background:#E0F4EA;border-color:var(--green);}
+  .pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:12px;font-weight:700;color:#fff;}
+  .q{margin-bottom:16px;padding-bottom:6px;border-bottom:1px dashed var(--line);}
+  .q .qt{font-weight:600;font-size:14.5px;margin-bottom:8px;}
+  .opt{display:block;width:100%;text-align:left;border:1px solid var(--line);background:#fff;border-radius:8px;
+    padding:9px 12px;margin:5px 0;font-size:13.5px;cursor:pointer;transition:.12s;}
+  .opt:hover{background:#F1F5F9;}
+  .opt.correct{background:#DCFCE7;border-color:var(--green);color:#14532d;font-weight:600;}
+  .opt.wrong{background:#FEE2E2;border-color:#DC2626;color:#7f1d1d;}
+  .fb{font-size:12.5px;margin-top:4px;padding:8px 10px;border-radius:6px;background:#F1F5F9;color:var(--gray);display:none;}
+  .fb.show{display:block;}
+  #score{font-size:16px;font-weight:700;color:var(--violet);margin-top:10px;}
+  .legend{font-size:12px;color:var(--gray);margin-top:8px;}
+  .sw{display:inline-block;width:11px;height:11px;border-radius:2px;margin:0 4px 0 10px;vertical-align:middle;}
+</style>
+</head>
+<body>
+<header>
+  <div class="course">NEUROCIÊNCIA COMPUTACIONAL · UFRN</div>
+  <h1>Aula 14 — Consciência e o espaço de trabalho global</h1>
+  <div class="meta">Simulações interativas · Daniel Y Takahashi · Instituto do Cérebro · <a href="../aula14.html" style="color:inherit">atividades da Aula 14</a></div>
+</header>
+<nav>
+  <button class="tnav active" data-t="t1">1 · Ignição</button>
+  <button class="tnav" data-t="t2">2 · Função psicométrica</button>
+  <button class="tnav" data-t="t3">3 · Competição enviesada</button>
+  <button class="tnav" data-t="t4">4 · Informação integrada (Φ)</button>
+  <button class="tnav" data-t="t5">5 · Quiz</button>
+</nav>
+<main>
+
+<!-- ============ SIM 1 — IGNIÇÃO ============ -->
+<section class="tab active" id="t1">
+  <h2>Ignição: a transição tudo-ou-nada do acesso consciente</h2>
+  <p class="lead">O espaço de trabalho é modelado por uma única variável de ativação com <b>recorrência não-linear</b> (auto-amplificação saturante). Um estímulo transiente chega em t≈90 ms. Abaixo do limiar, a atividade <b>decai</b> (subliminar); acima, ela <b>ignita</b> e se sustenta (consciente). Varie a intensidade e veja o regime mudar abruptamente.</p>
+  <div class="panel row">
+    <div class="col" style="flex:1.4;min-width:340px;">
+      <canvas id="c1" width="640" height="380"></canvas>
+      <div class="legend">
+        <span class="sw" style="background:#94A3B8;"></span>limiar de ignição
+        <span class="sw" style="background:#6D28D9;"></span>ativação do workspace
+        <span class="sw" style="background:#B45309;"></span>janela do estímulo
+      </div>
+    </div>
+    <div class="col">
+      <label>Intensidade do estímulo: <span class="val" id="v_stim">0.62</span></label>
+      <input type="range" id="s_stim" min="0.20" max="0.90" step="0.01" value="0.62">
+      <label>Ganho recorrente (força do workspace): <span class="val" id="v_gain">1.60</span></label>
+      <input type="range" id="s_gain" min="1.00" max="2.20" step="0.05" value="1.60">
+      <div class="btns">
+        <button class="preset sel" data-s="0.42">Fraco (0,42)</button>
+        <button class="preset" data-s="0.62">Forte (0,62)</button>
+        <button class="preset" data-s="0.52">Limiar (0,52)</button>
+      </div>
+      <div class="note" id="o_ign" style="margin-top:16px;">
+        <div class="stat">Ativação final: <b id="o_fin">—</b></div>
+        <div class="stat">Pico: <b id="o_pk">—</b></div>
+        <div class="stat">Estado: <b id="o_state">—</b></div>
+      </div>
+      <div class="note amber">Note que estímulos quase iguais (0.50 vs 0.54) podem cair em regimes opostos: é a <b>não-linearidade</b> que cria o caráter categórico do acesso consciente — não um interruptor programado à mão.</div>
+    </div>
+  </div>
+  <div class="panel">
+    <h2 style="font-size:17px;">Curva de ignição (bifurcação)</h2>
+    <p class="lead">Ativação final em função da intensidade do estímulo. O salto abrupto marca o <b>limiar de bifurcação</b>: o ponto onde o sistema passa de "decai" para "ignita".</p>
+    <canvas id="c1b" width="640" height="260"></canvas>
+  </div>
+</section>
+
+<!-- ============ SIM 2 — FUNÇÃO PSICOMÉTRICA ============ -->
+<section class="tab" id="t2">
+  <h2>Função psicométrica neural: ignição com ruído</h2>
+  <p class="lead">Adicionando <b>ruído</b> ao estímulo, a ignição perto do limiar torna-se probabilística. Para cada intensidade, rodamos muitas tentativas e medimos a <b>probabilidade de ignição</b> — que traça uma curva sigmoide, exatamente como as funções psicométricas medidas no laboratório (P(detectar) vs intensidade).</p>
+  <div class="panel row">
+    <div class="col" style="flex:1.4;min-width:340px;">
+      <canvas id="c2" width="640" height="360"></canvas>
+      <div class="legend">
+        <span class="sw" style="background:#6D28D9;"></span>P(ignição) — consciente
+        <span class="sw" style="background:#94A3B8;"></span>limiar (50%)
+      </div>
+    </div>
+    <div class="col">
+      <label>Nível de ruído (σ): <span class="val" id="v_noise">0.06</span></label>
+      <input type="range" id="s_noise" min="0.00" max="0.18" step="0.01" value="0.06">
+      <label>Tentativas por intensidade: <span class="val" id="v_trials">120</span></label>
+      <input type="range" id="s_trials" min="30" max="400" step="10" value="120">
+      <div class="btns">
+        <button class="act b-violet" id="run2">Rodar varredura</button>
+      </div>
+      <div class="note teal" style="margin-top:16px;">
+        <div class="stat">Limiar (50% de ignição): <b id="o_thr">—</b></div>
+        <div class="stat">Inclinação no limiar: <b id="o_slope">—</b></div>
+      </div>
+      <div class="note">Mais ruído = curva mais <b>suave</b> (menos abrupta). Sem ruído, a transição é um degrau. O ruído neural transforma um limiar rígido numa probabilidade graduada — e é por isso que a percepção perto do limiar é incerta de tentativa para tentativa.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SIM 3 — COMPETIÇÃO ENVIESADA ============ -->
+<section class="tab" id="t3">
+  <h2>Competição enviesada: o mecanismo neural da atenção</h2>
+  <p class="lead">Duas populações neurais codificam dois objetos (A e B) e se inibem mutuamente — uma dinâmica do tipo <b>"o vencedor leva tudo"</b>. A <b>atenção</b> adiciona um viés top-down a favor do alvo. Veja como um pequeno viés desempata a competição, amplificando o alvo e suprimindo o distrator (Desimone & Duncan, 1995).</p>
+  <div class="panel row">
+    <div class="col" style="flex:1.4;min-width:340px;">
+      <canvas id="c3" width="640" height="360"></canvas>
+      <div class="legend">
+        <span class="sw" style="background:#1A56DB;"></span>população A (alvo)
+        <span class="sw" style="background:#B45309;"></span>população B (distrator)
+      </div>
+    </div>
+    <div class="col">
+      <label>Atenção em A (viés top-down): <span class="val" id="v_att">0.00</span></label>
+      <input type="range" id="s_att" min="0.00" max="0.50" step="0.01" value="0.00">
+      <label>Inibição mútua (competição): <span class="val" id="v_inh">1.40</span></label>
+      <input type="range" id="s_inh" min="0.40" max="2.40" step="0.05" value="1.40">
+      <label>Entrada sensorial de A: <span class="val" id="v_ia">0.55</span></label>
+      <input type="range" id="s_ia" min="0.30" max="0.80" step="0.01" value="0.55">
+      <label>Entrada sensorial de B: <span class="val" id="v_ib">0.55</span></label>
+      <input type="range" id="s_ib" min="0.30" max="0.80" step="0.01" value="0.55">
+      <div class="note green" style="margin-top:14px;">
+        <div class="stat">Vencedor: <b id="o_win">—</b></div>
+        <div class="stat">Taxa final A: <b id="o_ra">—</b> &nbsp;|&nbsp; B: <b id="o_rb">—</b></div>
+      </div>
+      <div class="note">Com entradas iguais e sem atenção, a competição fica indecisa ou aleatória. Um viés atencional mínimo basta para A vencer de forma estável — o conteúdo "vencedor" é o candidato a ser difundido pelo espaço de trabalho.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SIM 4 — Φ ============ -->
+<section class="tab" id="t4">
+  <h2>Informação integrada: do modular ao irredutível</h2>
+  <p class="lead">Quatro unidades com dinâmica ruidosa. O <b>acoplamento entre os dois módulos</b> (A–B e C–D) é ajustável. Medimos a <b>informação integrada</b> do sistema (uma aproximação de Φ via informação múltipla: quanto o todo "sabe" além da soma das partes). Módulos desconectados → integração ≈ 0; sistema entrelaçado → integração alta (Tononi, 2004).</p>
+  <div class="panel row">
+    <div class="col" style="min-width:300px;">
+      <canvas id="c4" width="520" height="360"></canvas>
+      <div class="legend">Espessura das arestas = força do acoplamento.</div>
+    </div>
+    <div class="col">
+      <label>Acoplamento entre módulos: <span class="val" id="v_cpl">0.00</span></label>
+      <input type="range" id="s_cpl" min="0.00" max="0.60" step="0.02" value="0.00">
+      <div class="btns">
+        <button class="preset sel" data-c="0.00">Modular</button>
+        <button class="preset" data-c="0.20">Parcial</button>
+        <button class="preset" data-c="0.50">Integrado</button>
+      </div>
+      <div class="note" style="margin-top:16px;">
+        <div class="stat">Informação integrada (≈Φ): <b class="big" id="o_phi" style="color:var(--violet);">—</b></div>
+        <div class="stat" id="o_phidesc">—</div>
+      </div>
+      <div class="note amber">A IIT prevê que o <b>cerebelo</b>, apesar de ter mais neurônios, contribui pouco para a consciência por ser <b>modular</b> (Φ baixo), enquanto a "zona quente" cortical posterior, densamente reentrante, teria Φ alto. A arquitetura — não o número de neurônios — é o que conta.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SIM 5 — QUIZ ============ -->
+<section class="tab" id="t5">
+  <h2>Quiz — fixe os conceitos da aula</h2>
+  <p class="lead">Cinco questões sobre atenção, espaço de trabalho global, informação integrada e o grande debate. Clique para responder.</p>
+  <div class="panel" id="quiz"></div>
+  <div id="score"></div>
+</section>
+
+</main>
+<script>
+// ---------- navegação ----------
+document.querySelectorAll('.tnav').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.tnav').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById(b.dataset.t).classList.add('active');
+  });
+});
+const COL={violet:'#6D28D9',blue:'#1A56DB',amber:'#B45309',teal:'#0D7377',green:'#15803D',gray:'#94A3B8',dark:'#1E293B',red:'#DC2626'};
+
+// ================= SIM 1 — IGNIÇÃO =================
+function runIgnition(stim, gain, T=600, dt=0.12, thr=0.5, noise=0){
+  let x=0; const xs=[];
+  for(let t=0;t<T;t++){
+    const drive = stim*Math.exp(-((t-90)**2)/(2*45*45)) + (noise? noise*gaussian():0);
+    const rec = gain*x*x/(0.3+x*x);
+    x += dt*(-0.9*x + drive + rec);
+    x = Math.min(Math.max(x,0),1.15); xs.push(x);
+  }
+  return xs;
+}
+function gaussian(){ let u=0,v=0; while(u===0)u=Math.random(); while(v===0)v=Math.random();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); }
+
+function drawIgnition(){
+  const stim=+document.getElementById('s_stim').value, gain=+document.getElementById('s_gain').value;
+  document.getElementById('v_stim').textContent=stim.toFixed(2);
+  document.getElementById('v_gain').textContent=gain.toFixed(2);
+  const xs=runIgnition(stim,gain);
+  const cv=document.getElementById('c1'),x=cv.getContext('2d'),W=cv.width,H=cv.height;
+  x.clearRect(0,0,W,H);
+  const pad=44, w=W-pad-20, h=H-pad-30;
+  // janela do estímulo
+  x.fillStyle='rgba(180,83,9,0.10)';
+  x.fillRect(pad+ (40/600)*w, 20, ((140-40)/600)*w, h);
+  // eixos
+  x.strokeStyle='#CBD5E1'; x.lineWidth=1; x.beginPath();
+  x.moveTo(pad,20); x.lineTo(pad,20+h); x.lineTo(pad+w,20+h); x.stroke();
+  // limiar
+  const thr=0.5, yThr=20+h-(thr/1.15)*h;
+  x.strokeStyle=COL.gray; x.setLineDash([6,5]); x.beginPath(); x.moveTo(pad,yThr); x.lineTo(pad+w,yThr); x.stroke(); x.setLineDash([]);
+  x.fillStyle=COL.gray; x.font='11px Arial'; x.fillText('limiar', pad+w-50, yThr-5);
+  // curva
+  x.strokeStyle=COL.violet; x.lineWidth=3; x.beginPath();
+  xs.forEach((v,i)=>{ const px=pad+(i/600)*w, py=20+h-(v/1.15)*h; i?x.lineTo(px,py):x.moveTo(px,py); }); x.stroke();
+  // preenchimento acima do limiar
+  x.fillStyle='rgba(109,40,217,0.10)'; x.beginPath(); x.moveTo(pad,yThr);
+  xs.forEach((v,i)=>{ const px=pad+(i/600)*w, py=20+h-(Math.max(v,thr)/1.15)*h; x.lineTo(px,py); });
+  x.lineTo(pad+w,yThr); x.closePath(); x.fill();
+  // labels
+  x.fillStyle=COL.dark; x.font='12px Arial';
+  x.fillText('ativação', 6, 16);
+  x.fillText('tempo (ms)', pad+w-66, 20+h+22);
+  for(let ms=0;ms<=600;ms+=150){ const px=pad+(ms/600)*w; x.fillStyle=COL.gray; x.fillText(ms, px-8, 20+h+15); }
+  // stats
+  const fin=xs[xs.length-1], pk=Math.max(...xs), ign=fin>thr;
+  document.getElementById('o_fin').textContent=fin.toFixed(3);
+  document.getElementById('o_pk').textContent=pk.toFixed(3);
+  const st=document.getElementById('o_state'); st.textContent=ign?'IGNIÇÃO (consciente)':'subliminar (decai)';
+  st.style.color=ign?COL.violet:COL.gray;
+  document.getElementById('o_ign').className='note'+(ign?'':' amber');
+  drawBifurcation(gain);
+}
+function drawBifurcation(gain){
+  const cv=document.getElementById('c1b'),x=cv.getContext('2d'),W=cv.width,H=cv.height;
+  x.clearRect(0,0,W,H);
+  const pad=44, w=W-pad-20, h=H-pad-20;
+  x.strokeStyle='#CBD5E1'; x.lineWidth=1; x.beginPath();
+  x.moveTo(pad,10); x.lineTo(pad,10+h); x.lineTo(pad+w,10+h); x.stroke();
+  const s0=0.20,s1=0.90; let thrCross=null,prev=0;
+  x.strokeStyle=COL.violet; x.lineWidth=2.5; x.beginPath();
+  let first=true;
+  for(let s=s0;s<=s1+1e-9;s+=0.01){
+    const xs=runIgnition(s,gain); const fin=xs[xs.length-1];
+    const px=pad+((s-s0)/(s1-s0))*w, py=10+h-(fin/1.15)*h;
+    first?(x.moveTo(px,py),first=false):x.lineTo(px,py);
+    if(thrCross===null && prev<0.5 && fin>=0.5) thrCross=s; prev=fin;
+  }
+  x.stroke();
+  if(thrCross!==null){
+    const px=pad+((thrCross-s0)/(s1-s0))*w;
+    x.strokeStyle=COL.amber; x.setLineDash([5,4]); x.beginPath(); x.moveTo(px,10); x.lineTo(px,10+h); x.stroke(); x.setLineDash([]);
+    x.fillStyle=COL.amber; x.font='12px Arial'; x.fillText('limiar ≈ '+thrCross.toFixed(2), px+4, 24);
+  }
+  x.fillStyle=COL.dark; x.font='12px Arial';
+  x.fillText('ativação final', 6, 14);
+  x.fillText('intensidade do estímulo', pad+w-150, 10+h+16);
+  for(let s=0.2;s<=0.9;s+=0.1){ const px=pad+((s-s0)/(s1-s0))*w; x.fillStyle=COL.gray; x.fillText(s.toFixed(1), px-8, 10+h+15); }
+}
+document.getElementById('s_stim').addEventListener('input',drawIgnition);
+document.getElementById('s_gain').addEventListener('input',drawIgnition);
+document.querySelectorAll('#t1 .preset').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#t1 .preset').forEach(x=>x.classList.remove('sel')); b.classList.add('sel');
+  document.getElementById('s_stim').value=b.dataset.s; drawIgnition();
+}));
+drawIgnition();
+
+// ================= SIM 2 — FUNÇÃO PSICOMÉTRICA =================
+function drawPsych(){
+  const noise=+document.getElementById('s_noise').value, trials=+document.getElementById('s_trials').value;
+  document.getElementById('v_noise').textContent=noise.toFixed(2);
+  document.getElementById('v_trials').textContent=trials;
+  const s0=0.30,s1=0.80,step=0.025, pts=[];
+  for(let s=s0;s<=s1+1e-9;s+=step){
+    let ign=0;
+    for(let k=0;k<trials;k++){ const xs=runIgnition(s,1.6,600,0.12,0.5,noise); if(xs[xs.length-1]>0.5) ign++; }
+    pts.push([s, ign/trials]);
+  }
+  const cv=document.getElementById('c2'),x=cv.getContext('2d'),W=cv.width,H=cv.height;
+  x.clearRect(0,0,W,H);
+  const pad=46, w=W-pad-20, h=H-pad-24;
+  x.strokeStyle='#CBD5E1'; x.lineWidth=1; x.beginPath();
+  x.moveTo(pad,14); x.lineTo(pad,14+h); x.lineTo(pad+w,14+h); x.stroke();
+  // linha 50%
+  const y50=14+h-0.5*h; x.strokeStyle=COL.gray; x.setLineDash([6,5]); x.beginPath(); x.moveTo(pad,y50); x.lineTo(pad+w,y50); x.stroke(); x.setLineDash([]);
+  // curva
+  const xx=s=>pad+((s-s0)/(s1-s0))*w, yy=p=>14+h-p*h;
+  x.strokeStyle=COL.violet; x.lineWidth=3; x.beginPath();
+  pts.forEach((p,i)=>{ i?x.lineTo(xx(p[0]),yy(p[1])):x.moveTo(xx(p[0]),yy(p[1])); }); x.stroke();
+  x.fillStyle=COL.violet; pts.forEach(p=>{ x.beginPath(); x.arc(xx(p[0]),yy(p[1]),3,0,7); x.fill(); });
+  // limiar 50%
+  let thr=null;
+  for(let i=1;i<pts.length;i++){ if(pts[i-1][1]<0.5 && pts[i][1]>=0.5){
+    const t=(0.5-pts[i-1][1])/(pts[i][1]-pts[i-1][1]); thr=pts[i-1][0]+t*(pts[i][0]-pts[i-1][0]); break; } }
+  if(thr!==null){ x.strokeStyle=COL.amber; x.setLineDash([5,4]); x.beginPath(); x.moveTo(xx(thr),14); x.lineTo(xx(thr),14+h); x.stroke(); x.setLineDash([]); }
+  x.fillStyle=COL.dark; x.font='12px Arial';
+  x.fillText('P(ignição)', 6, 14);
+  x.fillText('intensidade', pad+w-70, 14+h+20);
+  for(let s=0.3;s<=0.8;s+=0.1){ x.fillStyle=COL.gray; x.fillText(s.toFixed(1), xx(s)-8, 14+h+15); }
+  for(let p=0;p<=1;p+=0.5){ x.fillStyle=COL.gray; x.fillText(p.toFixed(1), pad-26, yy(p)+4); }
+  document.getElementById('o_thr').textContent = thr!==null? thr.toFixed(3):'—';
+  // inclinação aproximada no limiar
+  let slope='—';
+  if(thr!==null){ const ds=0.05; const a=fracIgn(thr-ds,noise,trials), b=fracIgn(thr+ds,noise,trials);
+    slope=((b-a)/(2*ds)).toFixed(1)+' /unid.'; }
+  document.getElementById('o_slope').textContent=slope;
+}
+function fracIgn(s,noise,trials){ let ign=0; for(let k=0;k<trials;k++){ const xs=runIgnition(s,1.6,600,0.12,0.5,noise); if(xs[xs.length-1]>0.5)ign++; } return ign/trials; }
+document.getElementById('run2').addEventListener('click',drawPsych);
+document.getElementById('s_noise').addEventListener('input',()=>{document.getElementById('v_noise').textContent=(+document.getElementById('s_noise').value).toFixed(2);});
+document.getElementById('s_trials').addEventListener('input',()=>{document.getElementById('v_trials').textContent=document.getElementById('s_trials').value;});
+drawPsych();
+
+// ================= SIM 3 — COMPETIÇÃO ENVIESADA =================
+function sig(z){ return 1/(1+Math.exp(-z)); }
+function drawComp(){
+  const att=+document.getElementById('s_att').value, inh=+document.getElementById('s_inh').value;
+  const Ia=+document.getElementById('s_ia').value, Ib=+document.getElementById('s_ib').value;
+  ['att','inh','ia','ib'].forEach(id=>{ const el=document.getElementById('s_'+id); document.getElementById('v_'+id).textContent=(+el.value).toFixed(2); });
+  let ra=0.1,rb=0.1; const A=[],B=[]; const T=300,dt=0.12;
+  for(let t=0;t<T;t++){
+    const da=-ra + sig(6*((Ia+att) - inh*rb - 0.5));
+    const db=-rb + sig(6*(Ib - inh*ra - 0.5));
+    ra+=dt*da; rb+=dt*db; ra=Math.min(Math.max(ra,0),1); rb=Math.min(Math.max(rb,0),1);
+    A.push(ra); B.push(rb);
+  }
+  const cv=document.getElementById('c3'),x=cv.getContext('2d'),W=cv.width,H=cv.height;
+  x.clearRect(0,0,W,H);
+  const pad=44,w=W-pad-20,h=H-pad-24;
+  x.strokeStyle='#CBD5E1'; x.lineWidth=1; x.beginPath(); x.moveTo(pad,14); x.lineTo(pad,14+h); x.lineTo(pad+w,14+h); x.stroke();
+  const plot=(arr,c)=>{ x.strokeStyle=c; x.lineWidth=3; x.beginPath();
+    arr.forEach((v,i)=>{ const px=pad+(i/T)*w, py=14+h-v*h; i?x.lineTo(px,py):x.moveTo(px,py); }); x.stroke(); };
+  plot(A,COL.blue); plot(B,COL.amber);
+  x.fillStyle=COL.dark; x.font='12px Arial'; x.fillText('taxa de disparo', 6,14); x.fillText('tempo', pad+w-44, 14+h+20);
+  for(let p=0;p<=1;p+=0.5){ x.fillStyle=COL.gray; x.fillText(p.toFixed(1), pad-26, 14+h-p*h+4); }
+  const fa=A[A.length-1], fb=B[B.length-1];
+  document.getElementById('o_ra').textContent=fa.toFixed(2);
+  document.getElementById('o_rb').textContent=fb.toFixed(2);
+  const win=document.getElementById('o_win');
+  if(Math.abs(fa-fb)<0.05){ win.textContent='indeciso (empate)'; win.style.color=COL.gray; }
+  else if(fa>fb){ win.textContent='A (alvo)'; win.style.color=COL.blue; }
+  else { win.textContent='B (distrator)'; win.style.color=COL.amber; }
+}
+['s_att','s_inh','s_ia','s_ib'].forEach(id=>document.getElementById(id).addEventListener('input',drawComp));
+drawComp();
+
+// ================= SIM 4 — INFORMAÇÃO INTEGRADA =================
+function detLU(M){ const n=M.length, A=M.map(r=>r.slice()); let det=1;
+  for(let i=0;i<n;i++){ let p=i; for(let r=i+1;r<n;r++) if(Math.abs(A[r][i])>Math.abs(A[p][i]))p=r;
+    if(Math.abs(A[p][i])<1e-12) return 0; if(p!==i){ [A[i],A[p]]=[A[p],A[i]]; det=-det; }
+    det*=A[i][i]; for(let r=i+1;r<n;r++){ const f=A[r][i]/A[i][i]; for(let c=i;c<n;c++) A[r][c]-=f*A[i][c]; } }
+  return det;
+}
+function integratedInfo(cpl){
+  // 4 nós: módulo 1 (0,1), módulo 2 (2,3); acoplamento intra fixo, inter = cpl
+  const n=4, intra=0.45;
+  const Wm=[[0,intra,cpl,0],[intra,0,0,cpl],[cpl,0,0,intra],[0,cpl,intra,0]];
+  // simula x_{t+1}=0.5 x + W x + ruido; acumula covariância
+  let x=[0,0,0,0]; const N=6000; const mean=[0,0,0,0]; const C=[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
+  const buf=[];
+  for(let t=0;t<N;t++){
+    const nx=[0,0,0,0];
+    for(let i=0;i<n;i++){ let s=0.5*x[i]; for(let j=0;j<n;j++) s+=Wm[i][j]*x[j]; nx[i]=s+0.5*gaussian(); }
+    x=nx.map(v=>Math.min(Math.max(v,-6),6));
+    if(t>500) buf.push(x.slice());
+  }
+  const m=buf.length; for(const r of buf) for(let i=0;i<n;i++) mean[i]+=r[i]/m;
+  for(const r of buf) for(let i=0;i<n;i++) for(let j=0;j<n;j++) C[i][j]+=(r[i]-mean[i])*(r[j]-mean[j])/m;
+  // informação múltipla = 0.5*(sum log var_i - log det C)
+  let sumLogVar=0; for(let i=0;i<n;i++) sumLogVar+=Math.log(C[i][i]);
+  const dC=detLU(C); if(dC<=0) return 0;
+  return Math.max(0, 0.5*(sumLogVar-Math.log(dC)));
+}
+function drawPhi(){
+  const cpl=+document.getElementById('s_cpl').value;
+  document.getElementById('v_cpl').textContent=cpl.toFixed(2);
+  const cv=document.getElementById('c4'),x=cv.getContext('2d'),W=cv.width,H=cv.height;
+  x.clearRect(0,0,W,H);
+  const pos={0:[140,90],1:[140,260],2:[380,90],3:[380,260]};
+  const intra=0.45;
+  const drawEdge=(a,b,wgt,c)=>{ if(wgt<0.01)return; x.strokeStyle=c; x.lineWidth=1+wgt*9; x.globalAlpha=0.5;
+    x.beginPath(); x.moveTo(pos[a][0],pos[a][1]); x.lineTo(pos[b][0],pos[b][1]); x.stroke(); x.globalAlpha=1; };
+  drawEdge(0,1,intra,COL.violet); drawEdge(2,3,intra,COL.violet);
+  drawEdge(0,2,cpl,COL.amber); drawEdge(1,3,cpl,COL.amber);
+  const labels=['A','B','C','D'];
+  for(let i=0;i<4;i++){ x.fillStyle=COL.violet; x.beginPath(); x.arc(pos[i][0],pos[i][1],26,0,7); x.fill();
+    x.fillStyle='#fff'; x.font='bold 16px Arial'; x.textAlign='center'; x.textBaseline='middle';
+    x.fillText(labels[i], pos[i][0], pos[i][1]); }
+  x.textAlign='left'; x.textBaseline='alphabetic';
+  x.fillStyle=COL.gray; x.font='12px Arial';
+  x.fillText('módulo 1', 110, 50); x.fillText('módulo 2', 350, 50);
+  const phi=integratedInfo(cpl);
+  document.getElementById('o_phi').textContent=phi.toFixed(2);
+  const d=document.getElementById('o_phidesc');
+  if(cpl<0.05){ d.textContent='Dois módulos independentes: o todo ≈ soma das partes. Φ baixo.'; }
+  else if(cpl<0.3){ d.textContent='Acoplamento parcial: o todo começa a ser mais que as partes.'; }
+  else { d.textContent='Sistema entrelaçado e irredutível: integração alta.'; }
+}
+document.getElementById('s_cpl').addEventListener('input',()=>{
+  document.querySelectorAll('#t4 .preset').forEach(x=>x.classList.remove('sel')); drawPhi(); });
+document.querySelectorAll('#t4 .preset').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#t4 .preset').forEach(x=>x.classList.remove('sel')); b.classList.add('sel');
+  document.getElementById('s_cpl').value=b.dataset.c; drawPhi();
+}));
+drawPhi();
+
+// ================= SIM 5 — QUIZ =================
+const QUIZ=[
+  {q:'Qual a diferença entre consciência de ACESSO e consciência FENOMENAL?',
+   o:['Acesso = informação globalmente disponível (relatável); fenomenal = o caráter subjetivo da experiência (o "problema difícil")',
+      'São sinônimos com nomes diferentes',
+      'Acesso é nos animais; fenomenal só em humanos',
+      'Acesso é inconsciente; fenomenal é consciente'],
+   a:0, f:'O curso ataca a consciência de acesso (mensurável); o problema fenomenal (Chalmers) permanece em aberto.'},
+  {q:'No Espaço de Trabalho Neuronal Global, "ignição" significa:',
+   o:['Uma transição não-linear, tudo-ou-nada, que difunde a informação globalmente',
+      'O disparo de um único neurônio',
+      'A morte celular por excitotoxicidade',
+      'O aumento gradual e linear da atividade sensorial'],
+   a:0, f:'A ignição é uma transição abrupta sustentada por recorrência de longo alcance — a marca dinâmica do acesso consciente.'},
+  {q:'A atenção como "competição enviesada" (Desimone & Duncan) é uma dinâmica do tipo:',
+   o:['"O vencedor leva tudo", aparentada ao mapa de Kohonen e aos atratores de Hopfield',
+      'Soma linear de todas as entradas',
+      'Retropropagação do erro',
+      'Amostragem de Gibbs'],
+   a:0, f:'Inibição mútua + um viés top-down que quebra a simetria a favor do alvo: o mesmo motivo competitivo de aulas anteriores.'},
+  {q:'O que a Teoria da Informação Integrada (IIT) prevê sobre o córtex pré-frontal?',
+   o:['Que NÃO é necessário para a experiência consciente (o substrato seria a zona quente posterior)',
+      'Que é o único local da consciência',
+      'Que gera a onda P3b da consciência',
+      'Que tem o Φ mais baixo do cérebro'],
+   a:0, f:'É justamente o ponto de colisão com o GNW, que dá ao pré-frontal papel central. A IIT enfatiza a zona quente posterior.'},
+  {q:'Qual foi a principal lição da colaboração adversarial Cogitate (Nature, 2025)?',
+   o:['Nenhuma teoria venceu de forma limpa: o conteúdo decodificou-se do córtex posterior, desafiando ambas — e o método (pré-registro adversarial) é o real ganho',
+      'O GNW foi totalmente confirmado',
+      'A IIT foi refutada por completo',
+      'Consciência não pode ser estudada empiricamente'],
+   a:0, f:'Achados favoreceram o papel do córtex posterior (a favor da IIT), mas desafiaram as duas teorias. O valor está no método pré-registrado.'},
+];
+(function(){
+  const box=document.getElementById('quiz'); let answered=0, correct=0;
+  QUIZ.forEach((item,qi)=>{
+    const d=document.createElement('div'); d.className='q';
+    const t=document.createElement('div'); t.className='qt'; t.textContent=(qi+1)+'. '+item.q; d.appendChild(t);
+    const fb=document.createElement('div'); fb.className='fb';
+    item.o.forEach((opt,oi)=>{
+      const b=document.createElement('button'); b.className='opt'; b.textContent=opt;
+      b.addEventListener('click',()=>{
+        if(d.dataset.done)return; d.dataset.done=1; answered++;
+        if(oi===item.a){ b.classList.add('correct'); correct++; }
+        else { b.classList.add('wrong');
+          [...d.querySelectorAll('.opt')][item.a].classList.add('correct'); }
+        fb.textContent=item.f; fb.classList.add('show');
+        const sc=document.getElementById('score');
+        sc.textContent=`Acertos: ${correct} / ${answered}` + (answered===QUIZ.length?'  ·  fim do quiz!':'');
+      });
+      d.appendChild(b);
+    });
+    d.appendChild(fb); box.appendChild(d);
+  });
+})();
+</script>
+</body>
+</html>

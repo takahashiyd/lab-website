@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>As 4 fases do SOM — Aula 8 · Mapas auto-organizados: topografia no córtex e o algoritmo de Kohonen</title>
+<style>
+  :root{
+    --teal:#0D7377; --mint:#14B8A6; --xl-teal:#CCFBF1;
+    --blue:#1A56DB; --amber:#B45309; --l-amber:#F59E0B; --xl-amber:#FEF3C7;
+    --violet:#6D28D9; --xl-viol:#EDE9FE; --green:#15803D; --xl-green:#DCFCE7;
+    --dark:#1E293B; --gray:#64748B; --l-gray:#94A3B8; --xl-gray:#E2E8F0; --bg:#F8FAFC; --white:#FFFFFF;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:'Segoe UI','Calibri',Arial,sans-serif; background:var(--bg); color:var(--dark); line-height:1.5;}
+  header{background:linear-gradient(135deg,var(--teal),var(--mint)); color:var(--white); padding:16px 28px; box-shadow:0 2px 12px rgba(0,0,0,.15);}
+  header .top{display:flex; justify-content:space-between; align-items:baseline;}
+  header .course{font-size:12px; letter-spacing:3px; text-transform:uppercase; opacity:.85;}
+  header .author{font-size:11px; opacity:.85; letter-spacing:2px;}
+  header h1{font-size:23px; font-weight:700; margin-top:6px;}
+  header .subtitle{font-size:13px; opacity:.9; margin-top:2px; font-style:italic;}
+  .wrap{max-width:1240px; margin:0 auto; padding:22px 28px 60px;}
+  /* phase chips */
+  .phases{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:20px;}
+  .chip{background:var(--white); border:2px solid var(--xl-gray); border-radius:12px; padding:12px 14px; transition:all .2s; opacity:.55;}
+  .chip .pn{font-size:11px; font-weight:800; letter-spacing:1px; color:var(--l-gray);}
+  .chip .pt{font-size:15px; font-weight:700; color:var(--dark); margin:2px 0 3px;}
+  .chip .pd{font-size:11.5px; color:var(--gray);}
+  .chip.active{opacity:1; transform:translateY(-2px); box-shadow:0 4px 14px rgba(0,0,0,.12);}
+  .chip.done{opacity:1;}
+  .chip.c1.active,.chip.c1.done{border-color:var(--green);} .chip.c1.active .pn{color:var(--green);}
+  .chip.c2.active,.chip.c2.done{border-color:var(--amber);} .chip.c2.active .pn{color:var(--amber);}
+  .chip.c3.active,.chip.c3.done{border-color:var(--blue);} .chip.c3.active .pn{color:var(--blue);}
+  .chip.c4.active,.chip.c4.done{border-color:var(--violet);} .chip.c4.active .pn{color:var(--violet);}
+  .grid2{display:grid; grid-template-columns:1.35fr 1fr; gap:22px; align-items:start;}
+  .col{display:flex; flex-direction:column; gap:14px;}
+  .cardc{background:var(--white); border:1px solid var(--xl-gray); border-radius:12px; padding:16px; box-shadow:0 1px 4px rgba(0,0,0,.04);}
+  .cardc h3{font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--teal); margin-bottom:10px;}
+  canvas{display:block; width:100%; height:auto; background:var(--white); border-radius:8px;}
+  .caption{font-size:11.5px; color:var(--gray); font-style:italic; margin-top:8px; text-align:center;}
+  /* explanation */
+  .explain{border-radius:12px; padding:18px 20px; transition:background .25s; background:var(--xl-teal); border-left:5px solid var(--teal);}
+  .explain .ph{font-size:12px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--teal);}
+  .explain h2{font-size:19px; margin:4px 0 8px; color:var(--dark);}
+  .explain p{font-size:13.5px; color:var(--dark); margin-bottom:10px;}
+  .eq{display:block; text-align:center; font-family:'Cambria Math','Cambria',Georgia,serif; font-style:italic;
+    background:var(--white); border:1px dashed var(--teal); border-radius:8px; padding:10px; font-size:16px; color:var(--dark);}
+  /* controls */
+  .controls{display:flex; flex-direction:column; gap:12px;}
+  .row{display:flex; align-items:center; gap:10px;}
+  .row label{font-size:13px; flex:1;}
+  .row .value{font-weight:700; color:var(--teal); min-width:56px; text-align:right; font-family:'Consolas',monospace; font-size:13px;}
+  input[type=range]{width:100%; accent-color:var(--teal);}
+  select{width:100%; padding:7px; border:1.5px solid var(--xl-gray); border-radius:6px; font-size:13px; background:var(--white); color:var(--dark);}
+  .btns{display:flex; gap:8px; flex-wrap:wrap;}
+  button.btn{flex:1; background:var(--teal); color:var(--white); border:none; padding:11px 12px; border-radius:7px; font-weight:700; cursor:pointer; font-size:13px; transition:background .15s;}
+  button.btn:hover{background:var(--mint);}
+  button.btn.big{font-size:14px;}
+  button.btn.violet{background:var(--violet);} button.btn.violet:hover{background:#7c3aed;}
+  button.btn.secondary{background:var(--gray);} button.btn.secondary:hover{background:var(--l-gray);}
+  button.btn.amber{background:var(--amber);} button.btn.amber:hover{background:var(--l-amber);}
+  .stat{font-size:12px; color:var(--gray); padding:9px 11px; background:var(--bg); border-radius:6px; border-left:3px solid var(--teal); font-family:'Consolas',monospace; line-height:1.7;}
+  .legend{display:flex; flex-wrap:wrap; gap:12px; font-size:11.5px; color:var(--gray); margin-top:4px;}
+  .legend span{display:flex; align-items:center; gap:5px;}
+  .dot{width:11px; height:11px; border-radius:50%; display:inline-block;}
+  footer{background:var(--dark); color:var(--l-gray); text-align:center; padding:14px; font-size:11px; margin-top:30px; letter-spacing:1px;}
+  @media(max-width:880px){ .grid2{grid-template-columns:1fr;} .phases{grid-template-columns:repeat(2,1fr);} }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="top">
+    <span class="course">Neurociência Computacional · Aula 8</span>
+    <span class="author">Daniel Y Takahashi · UFRN</span>
+  </div>
+  <h1>As 4 Fases do SOM de Kohonen — passo a passo</h1>
+  <div class="subtitle">Competição → Cooperação → Adaptação → Decaimento, uma fase de cada vez · <a href="../aula08.html" style="color:inherit">atividades da Aula 8</a></div>
+</header>
+
+<div class="wrap">
+
+  <!-- phase chips -->
+  <div class="phases">
+    <div class="chip c1" id="chip1"><div class="pn">FASE 1</div><div class="pt">Competição</div><div class="pd">encontrar o BMU</div></div>
+    <div class="chip c2" id="chip2"><div class="pn">FASE 2</div><div class="pt">Cooperação</div><div class="pd">vizinhança gaussiana</div></div>
+    <div class="chip c3" id="chip3"><div class="pn">FASE 3</div><div class="pt">Adaptação</div><div class="pd">mover os pesos</div></div>
+    <div class="chip c4" id="chip4"><div class="pn">FASE 4</div><div class="pt">Decaimento</div><div class="pd">reduzir η e σ</div></div>
+  </div>
+
+  <div id="modeNote" class="cardc" style="padding:11px 16px; margin-bottom:18px; border-left:4px solid var(--teal); font-size:13px;"></div>
+
+  <div class="grid2">
+    <!-- LEFT: canvases -->
+    <div class="col">
+      <div class="cardc">
+        <h3>Espaço de dados — a grade se dobra sobre os dados</h3>
+        <canvas id="cData" width="620" height="560"></canvas>
+        <div class="legend">
+          <span><span class="dot" style="background:#cbd5e1"></span>dados</span>
+          <span><span class="dot" style="background:#6D28D9"></span>entrada x</span>
+          <span><span class="dot" style="background:#B45309"></span>vencedor (BMU)</span>
+          <span><span class="dot" style="background:#1E293B"></span>protótipos w<sub>j</sub></span>
+        </div>
+        <div class="caption">Cada nó é o vetor de pesos w<sub>j</sub> de um neurônio, posicionado no espaço de entrada.</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: grid + explanation + controls -->
+    <div class="col">
+      <div class="explain" id="explain">
+        <div class="ph" id="exPh">PRONTO</div>
+        <h2 id="exTitle">Pressione “Próxima fase”</h2>
+        <p id="exText">A simulação executa uma iteração do SOM, parando em cada uma das quatro fases para você observar o que muda. Comece quando quiser.</p>
+        <div class="eq" id="exEq">i*(x) = argmin<sub>j</sub> ‖ x − w<sub>j</sub> ‖</div>
+      </div>
+
+      <div class="cardc">
+        <h3>Grade abstrata — a vizinhança vive AQUI</h3>
+        <canvas id="cGrid" width="380" height="300"></canvas>
+        <div class="caption">A distância da vizinhança h é medida nas <b>posições da grade</b> r<sub>j</sub> — não nos pesos. O BMU é o quadrado destacado; o brilho âmbar mostra h.</div>
+      </div>
+
+      <div class="cardc">
+        <h3>Controles</h3>
+        <div class="controls">
+          <div class="btns">
+            <button class="btn big" id="btnNext">▶ Próxima fase</button>
+            <button class="btn violet" id="btnIter">⤼ Iteração completa</button>
+          </div>
+          <div class="btns">
+            <button class="btn secondary" id="btnAuto">Auto (10×)</button>
+            <button class="btn secondary" id="btnPause">❚❚ Pausar</button>
+            <button class="btn amber" id="btnReset">↺ Reiniciar</button>
+          </div>
+          <div class="row"><label>Regra de aprendizado</label></div>
+          <select id="selMode">
+            <option value="som">SOM de Kohonen (com vizinhança)</option>
+            <option value="wta">Competitivo puro / k-means (só o BMU)</option>
+          </select>
+          <div class="row"><label>Distribuição</label></div>
+          <select id="selDist">
+            <option value="ring">Anel</option>
+            <option value="square">Quadrado</option>
+            <option value="blobs">Dois aglomerados</option>
+            <option value="triangle">Triângulo</option>
+          </select>
+          <div class="row"><label>Lado da grade (N×N)</label><span class="value" id="vGrid">8</span></div>
+          <input type="range" id="sGrid" min="5" max="12" value="8">
+          <div class="row"><label>η₀ (taxa inicial)</label><span class="value" id="vEta">0.50</span></div>
+          <input type="range" id="sEta" min="10" max="90" value="50">
+          <div class="row"><label>σ₀ (vizinhança inicial)</label><span class="value" id="vSig">3.0</span></div>
+          <input type="range" id="sSig" min="8" max="70" value="30">
+          <div class="stat" id="stat">iteração t = 0 · η = 0.500 · σ = 3.00<br>BMU = — · fase = pronto</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>Neurociência Computacional · Instituto do Cérebro · UFRN · Daniel Y Takahashi · 2026</footer>
+</div>
+
+<script>
+const C={teal:'#0D7377',mint:'#14B8A6',blue:'#1A56DB',amber:'#B45309',lAmber:'#F59E0B',
+  violet:'#6D28D9',green:'#15803D',dark:'#1E293B',gray:'#64748B',lGray:'#94A3B8',xlGray:'#E2E8F0',white:'#FFFFFF'};
+
+const cD=document.getElementById('cData'), gD=cD.getContext('2d');
+const cG=document.getElementById('cGrid'), gG=cG.getContext('2d');
+const PADD=42, WD=cD.width, HD=cD.height;
+
+// ---- parameters / state ----
+let G=8, eta0=0.50, sig0=3.0, mode='som';
+let W=[], data=[], t=0;
+let phase=0;            // 0 ready, 1 competition, 2 cooperation, 3 adaptation, 4 decay(done)
+let x=null, bmu=null, hField=null, wOld=null, anim=null;
+let autoTimer=null;
+
+function nx(u){return PADD+u*(WD-2*PADD);}
+function ny(u){return PADD+(1-u)*(HD-2*PADD);}
+function etaT(){return eta0*Math.exp(-t/14);}
+function sigT(){return Math.max(sig0*Math.exp(-t/12),0.4);}
+
+function genData(){
+  const kind=document.getElementById('selDist').value, N=1100, d=[];
+  const rnd=(a,b)=>a+Math.random()*(b-a);
+  for(let i=0;i<N;i++){
+    if(kind==='square') d.push([rnd(0.06,0.94),rnd(0.06,0.94)]);
+    else if(kind==='ring'){const a=Math.random()*6.2832,r=rnd(0.27,0.40);d.push([0.5+r*Math.cos(a),0.5+r*Math.sin(a)]);}
+    else if(kind==='blobs'){const c=Math.random()<0.5?[0.30,0.34]:[0.72,0.68];d.push([c[0]+(Math.random()+Math.random()+Math.random()-1.5)*0.10,c[1]+(Math.random()+Math.random()+Math.random()-1.5)*0.10]);}
+    else {let u=Math.random(),v=Math.random();if(u+v>1){u=1-u;v=1-v;}const A=[0.5,0.92],B=[0.08,0.10],Cc=[0.92,0.10];d.push([A[0]+u*(B[0]-A[0])+v*(Cc[0]-A[0]),A[1]+u*(B[1]-A[1])+v*(Cc[1]-A[1])]);}
+  }
+  return d;
+}
+function initW(){ W=[]; for(let i=0;i<G;i++){const r=[];for(let j=0;j<G;j++)r.push([0.5+(Math.random()-0.5)*0.14,0.5+(Math.random()-0.5)*0.14]);W.push(r);} }
+
+function reset(){
+  stopAuto(); if(anim){cancelAnimationFrame(anim);anim=null;}
+  data=genData(); initW(); t=0; phase=0; x=null; bmu=null; hField=null; wOld=null;
+  drawData(); drawGrid(); setExplain(0); setChips(); updateModeUI(); updateStat();
+}
+
+function findBMU(){ let bi=0,bj=0,bd=1e9; for(let i=0;i<G;i++)for(let j=0;j<G;j++){const w=W[i][j],dd=(w[0]-x[0])**2+(w[1]-x[1])**2;if(dd<bd){bd=dd;bi=i;bj=j;}} return [bi,bj]; }
+function computeH(){ hField=[];
+  if(mode==='wta'){ for(let i=0;i<G;i++){const r=[];for(let j=0;j<G;j++)r.push((i===bmu[0]&&j===bmu[1])?1:0);hField.push(r);} return; }
+  const sig=sigT(),s2=2*sig*sig;
+  for(let i=0;i<G;i++){const r=[];for(let j=0;j<G;j++){const dg=(i-bmu[0])**2+(j-bmu[1])**2;r.push(Math.exp(-dg/s2));}hField.push(r);} }
+
+// ---- phase progression ----
+function nextPhase(){
+  if(anim) return;
+  if(phase===0||phase===4){ // start a new iteration -> phase 1
+    x=data[(Math.random()*data.length)|0];
+    bmu=findBMU(); hField=null; wOld=null;
+    phase=1; drawData(); drawGrid(); setExplain(1); setChips(); updateStat(); return;
+  }
+  if(phase===1){ computeH(); phase=2; drawData(); drawGrid(); setExplain(2); setChips(); updateStat(); return; }
+  if(phase===2){ // adaptation with animation
+    phase=3; setExplain(3); setChips();
+    const eta=etaT();
+    wOld=W.map(row=>row.map(w=>[w[0],w[1]]));
+    const wTar=W.map((row,i)=>row.map((w,j)=>{const h=hField[i][j]*eta;return [w[0]+h*(x[0]-w[0]), w[1]+h*(x[1]-w[1])];}));
+    const t0=performance.now(), DUR=620;
+    (function step(now){
+      const k=Math.min((now-t0)/DUR,1), e=k<.5?2*k*k:1-((-2*k+2)**2)/2;
+      for(let i=0;i<G;i++)for(let j=0;j<G;j++){W[i][j][0]=wOld[i][j][0]+e*(wTar[i][j][0]-wOld[i][j][0]); W[i][j][1]=wOld[i][j][1]+e*(wTar[i][j][1]-wOld[i][j][1]);}
+      drawData(); drawGrid();
+      if(k<1){ anim=requestAnimationFrame(step); }
+      else { anim=null; W=wTar; updateStat(); }
+    })(t0);
+    return;
+  }
+  if(phase===3){ // decay
+    t++; phase=4; drawData(); drawGrid(); setExplain(4); setChips(); updateStat(); return;
+  }
+}
+function fullIteration(){
+  if(autoTimer) return;
+  const advance=()=>{
+    nextPhase();
+    if(phase===4) return;            // iteration finished at decay
+    const wait=setInterval(()=>{ if(!anim){ clearInterval(wait); advance(); } },50);
+  };
+  advance();
+}
+
+// ---- drawing ----
+function drawData(){
+  gD.clearRect(0,0,WD,HD);
+  gD.fillStyle='rgba(148,163,184,0.40)';
+  for(const p of data){gD.beginPath();gD.arc(nx(p[0]),ny(p[1]),1.7,0,7);gD.fill();}
+  // edges
+  gD.strokeStyle=C.teal; gD.lineWidth=1.4;
+  for(let i=0;i<G;i++)for(let j=0;j<G;j++){const w=W[i][j];
+    if(j<G-1){const w2=W[i][j+1];gD.beginPath();gD.moveTo(nx(w[0]),ny(w[1]));gD.lineTo(nx(w2[0]),ny(w2[1]));gD.stroke();}
+    if(i<G-1){const w2=W[i+1][j];gD.beginPath();gD.moveTo(nx(w[0]),ny(w[1]));gD.lineTo(nx(w2[0]),ny(w2[1]));gD.stroke();}}
+  // adaptation arrows (phase 3)
+  if(phase===3 && hField){
+    gD.strokeStyle='rgba(26,86,219,0.55)'; gD.lineWidth=1.2;
+    for(let i=0;i<G;i++)for(let j=0;j<G;j++){ if(hField[i][j]<0.06) continue; const w=W[i][j];
+      gD.beginPath(); gD.moveTo(nx(w[0]),ny(w[1])); gD.lineTo(nx(x[0]),ny(x[1])); gD.globalAlpha=hField[i][j]*0.5; gD.stroke(); gD.globalAlpha=1; }
+  }
+  // nodes (glow by h in phases 2-4)
+  for(let i=0;i<G;i++)for(let j=0;j<G;j++){const w=W[i][j]; let h=(hField&&phase>=2)?hField[i][j]:0;
+    const cr=Math.round(30+(180-30)*h), cg=Math.round(41+(83-41)*h), cb=Math.round(59+(9-59)*h);
+    gD.fillStyle=(h>0.02)?`rgb(${cr},${cg},${cb})`:C.dark;
+    gD.beginPath(); gD.arc(nx(w[0]),ny(w[1]),2.6+3.4*h,0,7); gD.fill();}
+  // BMU highlight + x
+  if(bmu){const w=W[bmu[0]][bmu[1]];
+    gD.strokeStyle=C.amber; gD.lineWidth=3; gD.beginPath(); gD.arc(nx(w[0]),ny(w[1]),8,0,7); gD.stroke();}
+  if(x){
+    if(bmu && (phase===1)){ const w=W[bmu[0]][bmu[1]]; gD.strokeStyle=C.violet; gD.setLineDash([5,4]); gD.lineWidth=1.8;
+      gD.beginPath(); gD.moveTo(nx(x[0]),ny(x[1])); gD.lineTo(nx(w[0]),ny(w[1])); gD.stroke(); gD.setLineDash([]); }
+    gD.fillStyle=C.violet; gD.beginPath(); gD.arc(nx(x[0]),ny(x[1]),7,0,7); gD.fill();
+    gD.strokeStyle=C.white; gD.lineWidth=2; gD.stroke();
+    gD.fillStyle=C.violet; gD.font='bold 15px Segoe UI'; gD.fillText('x',nx(x[0])+10,ny(x[1])-9);}
+}
+
+function drawGrid(){
+  const W2=cG.width,H2=cG.height,pad=26;
+  gG.clearRect(0,0,W2,H2);
+  const cw=(W2-2*pad)/(G-1), ch=(H2-2*pad)/(G-1);
+  const gx=j=>pad+j*cw, gy=i=>pad+i*ch;
+  // links
+  gG.strokeStyle=C.xlGray; gG.lineWidth=1;
+  for(let i=0;i<G;i++)for(let j=0;j<G;j++){
+    if(j<G-1){gG.beginPath();gG.moveTo(gx(j),gy(i));gG.lineTo(gx(j+1),gy(i));gG.stroke();}
+    if(i<G-1){gG.beginPath();gG.moveTo(gx(j),gy(i));gG.lineTo(gx(j),gy(i+1));gG.stroke();}}
+  // neighborhood radius circle around BMU (phase>=2)
+  if(bmu && hField && phase>=2 && mode!=='wta'){ const sig=sigT();
+    gG.strokeStyle='rgba(180,83,9,0.55)'; gG.setLineDash([5,4]); gG.lineWidth=1.6;
+    gG.beginPath(); gG.ellipse(gx(bmu[1]),gy(bmu[0]),sig*cw,sig*ch,0,0,7); gG.stroke(); gG.setLineDash([]); }
+  // nodes
+  for(let i=0;i<G;i++)for(let j=0;j<G;j++){ let h=(hField&&phase>=2)?hField[i][j]:0;
+    const cr=Math.round(226+(180-226)*h), cg=Math.round(232+(83-232)*h), cb=Math.round(240+(9-240)*h);
+    gG.fillStyle=(h>0.02)?`rgb(${cr},${cg},${cb})`:'#e2e8f0';
+    const r=4+5*h;
+    if(bmu && i===bmu[0] && j===bmu[1]){ gG.fillStyle=C.amber; gG.fillRect(gx(j)-6,gy(i)-6,12,12); gG.strokeStyle=C.dark; gG.lineWidth=2; gG.strokeRect(gx(j)-6,gy(i)-6,12,12); }
+    else { gG.beginPath(); gG.arc(gx(j),gy(i),r,0,7); gG.fill(); }
+  }
+}
+
+// ---- explanation per phase ----
+const EX={
+  0:{ph:'PRONTO',cls:'',col:C.teal,bg:'#CCFBF1',title:'Pressione “Próxima fase”',
+     text:'A simulação executa uma iteração do SOM, parando em cada uma das quatro fases para você observar o que muda.',
+     eq:'i*(x) = argmin<sub>j</sub> ‖ x − w<sub>j</sub> ‖'},
+  1:{ph:'FASE 1 · COMPETIÇÃO',col:C.green,bg:'#DCFCE7',title:'Encontrar o BMU',
+     text:'Sorteamos uma entrada <b>x</b> (violeta) dos dados e procuramos o neurônio cujo protótipo está mais próximo de x — o <b>Best Matching Unit</b> (destacado em âmbar). A linha tracejada liga x ao vencedor.',
+     eq:'i*(x) = argmin<sub>j</sub> ‖ x − w<sub>j</sub> ‖'},
+  2:{ph:'FASE 2 · COOPERAÇÃO',col:C.amber,bg:'#FEF3C7',title:'Vizinhança gaussiana na grade',
+     text:'Calculamos um peso h para cada neurônio, conforme sua distância ao BMU <b>na grade</b> (painel da direita). Vizinhos próximos recebem h alto (âmbar); distantes, h ≈ 0. Note: a distância é medida na grade, não nos pesos.',
+     eq:'h<sub>i*,j</sub> = exp( − ‖ r<sub>i*</sub> − r<sub>j</sub> ‖² / 2σ² )'},
+  3:{ph:'FASE 3 · ADAPTAÇÃO',col:C.blue,bg:'#DBEAFE',title:'Mover os pesos em direção a x',
+     text:'Cada neurônio desliza seu protótipo em direção a x, com força η·h. O vencedor e seus vizinhos próximos se movem bastante; os distantes quase não se movem. Observe a grade puxada para a entrada.',
+     eq:'Δw<sub>j</sub> = η · h<sub>i*,j</sub> · ( x − w<sub>j</sub> )'},
+  4:{ph:'FASE 4 · DECAIMENTO',col:C.violet,bg:'#EDE9FE',title:'Reduzir η e σ; avançar t',
+     text:'Encerrada a iteração, reduzimos a taxa de aprendizado η e a largura da vizinhança σ, e avançamos o tempo t. Na próxima entrada, a atualização será um pouco menor e mais local. Pressione novamente para a próxima iteração.',
+     eq:'η(t) = η₀ e<sup>−t/τ</sup>&nbsp;&nbsp;&nbsp;σ(t) = σ₀ e<sup>−t/τ</sup>'},
+};
+function setExplain(p){
+  const e=EX[p], box=document.getElementById('explain');
+  box.style.background=e.bg; box.style.borderLeftColor=e.col;
+  document.getElementById('exPh').textContent=e.ph; document.getElementById('exPh').style.color=e.col;
+  document.getElementById('exTitle').textContent=e.title;
+  document.getElementById('exText').innerHTML=e.text;
+  document.getElementById('exEq').innerHTML=e.eq; document.getElementById('exEq').style.borderColor=e.col;
+  if(p===2 && mode==='wta'){
+    document.getElementById('exPh').textContent='FASE 2 · (AUSENTE)';
+    document.getElementById('exTitle').textContent='Sem cooperação — só o vencedor';
+    document.getElementById('exText').innerHTML='No aprendizado competitivo puro / k-means <b>não existe a fase de cooperação</b>: apenas o BMU recebe h = 1; todos os outros recebem h = 0. Sem vizinhança, cada protótipo se move de forma independente — e a topologia <b>não</b> emerge.';
+    document.getElementById('exEq').innerHTML='h<sub>i*,j</sub> = 1 se j = i* ,&nbsp;&nbsp; 0 caso contrário';
+  }
+}
+function updateModeUI(){
+  const wta=mode==='wta';
+  document.querySelector('#chip2 .pd').textContent = wta ? 'ausente (só o BMU)' : 'vizinhança gaussiana';
+  const sigCtl=document.getElementById('sSig'); if(sigCtl){ sigCtl.disabled=wta; sigCtl.style.opacity=wta?0.4:1; }
+  const note=document.getElementById('modeNote');
+  if(wta) note.innerHTML='<b style="color:#B45309">Regra ativa: Competitivo puro / k-means.</b> &nbsp;Só o vencedor é atualizado a cada passo. Rode “Auto (10×)” e compare: sem a vizinhança, as linhas da grade ficam <b>emaranhadas</b> — os protótipos não preservam a vizinhança (não há topologia).';
+  else note.innerHTML='<b style="color:#0D7377">Regra ativa: SOM de Kohonen.</b> &nbsp;O vencedor arrasta seus vizinhos na grade. Rode “Auto (10×)” e compare: a grade se <b>desdobra</b> e preserva a vizinhança (topologia).';
+}
+function setChips(){
+  for(let k=1;k<=4;k++){const c=document.getElementById('chip'+k); c.classList.remove('active','done');
+    if(phase===k) c.classList.add('active');
+    else if(phase>k || (phase===4 && k<=4 && false)) c.classList.add('done'); }
+  if(phase>=1){ for(let k=1;k<phase;k++) document.getElementById('chip'+k).classList.add('done'); }
+  if(phase===4){ document.getElementById('chip4').classList.add('done'); }
+}
+function updateStat(){
+  const ph=['pronto','competição','cooperação','adaptação','decaimento'][phase];
+  document.getElementById('stat').innerHTML=
+    `iteração t = ${t} · η = ${etaT().toFixed(3)} · σ = ${sigT().toFixed(2)}<br>BMU = ${bmu?('('+bmu[0]+','+bmu[1]+')'):'—'} · fase = ${ph}`;
+}
+
+// ---- auto ----
+function stopAuto(){ if(autoTimer){clearInterval(autoTimer);autoTimer=null;} }
+function startAuto(){ stopAuto(); let iters=0; const tick=()=>{ if(anim) return; nextPhase(); if(phase===4) iters++; if(iters>=10){stopAuto();} };
+  autoTimer=setInterval(tick,520); }
+
+// ---- wiring ----
+document.getElementById('btnNext').addEventListener('click',()=>{stopAuto(); nextPhase();});
+document.getElementById('btnIter').addEventListener('click',()=>{ stopAuto(); fullIteration(); });
+document.getElementById('btnAuto').addEventListener('click',startAuto);
+document.getElementById('btnPause').addEventListener('click',stopAuto);
+document.getElementById('btnReset').addEventListener('click',reset);
+document.getElementById('selMode').addEventListener('change',e=>{ mode=e.target.value; updateModeUI(); reset(); });
+document.getElementById('selDist').addEventListener('change',reset);
+document.getElementById('sGrid').addEventListener('input',e=>{G=+e.target.value;document.getElementById('vGrid').textContent=G;reset();});
+document.getElementById('sEta').addEventListener('input',e=>{eta0=e.target.value/100;document.getElementById('vEta').textContent=eta0.toFixed(2);updateStat();});
+document.getElementById('sSig').addEventListener('input',e=>{sig0=e.target.value/10;document.getElementById('vSig').textContent=sig0.toFixed(1);drawGrid();updateStat();});
+
+reset();
+</script>
+</body>
+</html>

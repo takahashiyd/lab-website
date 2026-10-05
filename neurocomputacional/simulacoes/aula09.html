@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulações — Aula 9 · Memórias que se completam: redes de atratores, Hopfield e o hipocampo</title>
+<style>
+  :root {
+    --teal:#0D7377; --mint:#14B8A6; --xl-teal:#CCFBF1;
+    --blue:#1A56DB; --amber:#B45309; --l-amber:#F59E0B; --xl-amber:#FEF3C7;
+    --violet:#6D28D9; --l-violet:#A78BFA; --xl-violet:#EDE9FE;
+    --green:#15803D; --red:#DC2626; --dark:#1E293B; --dark2:#0F172A;
+    --gray:#64748B; --l-gray:#94A3B8; --xl-gray:#E2E8F0; --bg:#F8FAFC; --white:#FFFFFF;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; background:var(--bg); color:var(--dark); min-height:100vh; }
+  header { background:linear-gradient(135deg,var(--violet),var(--l-violet)); color:var(--white); padding:16px 28px; box-shadow:0 2px 12px rgba(0,0,0,0.15); }
+  header .top { display:flex; justify-content:space-between; align-items:baseline; }
+  header .course { font-size:12px; letter-spacing:3px; text-transform:uppercase; opacity:0.9; }
+  header .author { font-size:11px; opacity:0.9; letter-spacing:2px; }
+  header h1 { font-size:24px; font-weight:700; margin-top:6px; }
+  header .subtitle { font-size:13px; opacity:0.95; margin-top:2px; font-style:italic; }
+  .tabs { background:var(--dark); padding:0 16px; display:flex; gap:4px; border-bottom:4px solid var(--violet); flex-wrap:wrap; }
+  .tab { padding:14px 18px; background:transparent; color:var(--l-gray); border:none; cursor:pointer; font-size:13px; font-weight:600; border-radius:8px 8px 0 0; transition:background .2s,color .2s; letter-spacing:1px; }
+  .tab:hover { background:rgba(255,255,255,0.06); color:var(--white); }
+  .tab.active { background:var(--bg); color:var(--violet); }
+  .panel { display:none; padding:28px; max-width:1300px; margin:0 auto; }
+  .panel.active { display:block; }
+  .panel h2 { color:var(--dark); font-size:22px; margin-bottom:6px; }
+  .panel .lead { color:var(--gray); font-size:14px; margin-bottom:18px; font-style:italic; line-height:1.45; }
+  .layout { display:grid; grid-template-columns:1fr 360px; gap:22px; align-items:start; }
+  .layout.one-col { grid-template-columns:1fr; }
+  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } }
+  canvas { background:var(--white); border:2px solid var(--xl-gray); border-radius:10px; width:100%; height:auto; display:block; }
+  canvas.click { cursor:crosshair; }
+  .side { background:var(--white); border:1px solid var(--xl-gray); border-radius:10px; padding:18px; box-shadow:0 1px 4px rgba(0,0,0,0.04); }
+  .side h3 { color:var(--violet); font-size:12px; letter-spacing:3px; text-transform:uppercase; margin-bottom:14px; }
+  .controls { display:flex; flex-direction:column; gap:12px; }
+  .row { display:flex; align-items:center; gap:10px; }
+  .row label { font-size:13px; color:var(--dark); flex:1; }
+  .row .value { font-weight:700; color:var(--violet); min-width:54px; text-align:right; font-family:'Consolas',monospace; font-size:13px; }
+  input[type=range] { width:100%; accent-color:var(--violet); }
+  select { width:100%; padding:7px; border:1.5px solid var(--xl-gray); border-radius:6px; font-size:13px; color:var(--dark); background:var(--white); }
+  button.btn { background:var(--violet); color:var(--white); border:none; padding:10px 14px; border-radius:6px; font-weight:700; cursor:pointer; font-size:13px; letter-spacing:.5px; transition:background .15s; }
+  button.btn:hover { background:var(--l-violet); }
+  button.btn.secondary { background:var(--gray); }
+  button.btn.secondary:hover { background:var(--l-gray); }
+  button.btn.blue { background:var(--blue); }
+  button.btn.amber { background:var(--amber); }
+  button.btn.green { background:var(--green); }
+  button.btn.red { background:var(--red); }
+  .btns { display:flex; gap:8px; flex-wrap:wrap; }
+  .stat { font-size:12px; color:var(--gray); padding:8px 10px; background:var(--bg); border-radius:6px; border-left:3px solid var(--violet); font-family:'Consolas',monospace; line-height:1.6; }
+  .lesson { background:var(--xl-violet); border-left:4px solid var(--violet); padding:12px 16px; border-radius:0 8px 8px 0; font-size:12.5px; line-height:1.5; color:var(--dark); margin-top:14px; }
+  .lesson strong { color:var(--violet); }
+  .palette { display:flex; gap:6px; flex-wrap:wrap; }
+  .pchip { width:46px; height:46px; border:2px solid var(--xl-gray); border-radius:6px; cursor:pointer; background:var(--white); padding:2px; }
+  .pchip.sel { border-color:var(--violet); box-shadow:0 0 0 2px var(--xl-violet); }
+  /* Quiz */
+  .quiz-q { background:var(--white); border:1px solid var(--xl-gray); border-radius:10px; padding:18px; margin-bottom:14px; }
+  .quiz-q .qnum { color:var(--violet); font-size:12px; font-weight:700; letter-spacing:2px; }
+  .quiz-q .qtxt { margin:8px 0 14px 0; font-size:15px; color:var(--dark); line-height:1.45; }
+  .quiz-opts { display:flex; flex-direction:column; gap:8px; }
+  .quiz-opt { background:var(--bg); border:1.5px solid var(--xl-gray); border-radius:6px; padding:10px 14px; cursor:pointer; font-size:13.5px; color:var(--dark); transition:all .15s; text-align:left; }
+  .quiz-opt:hover { border-color:var(--violet); background:var(--xl-violet); }
+  .quiz-opt.correct { background:#DCFCE7; border-color:var(--green); color:var(--green); font-weight:600; }
+  .quiz-opt.wrong { background:#FEE2E2; border-color:var(--red); color:#991B1B; }
+  .quiz-fb { margin-top:12px; padding:10px 12px; background:var(--bg); border-radius:6px; font-size:13px; color:var(--dark); border-left:3px solid var(--blue); display:none; line-height:1.5; }
+  .quiz-fb.show { display:block; }
+  .score { background:var(--dark); color:var(--white); padding:14px 18px; border-radius:8px; font-size:14px; margin-top:12px; display:flex; justify-content:space-between; align-items:center; }
+  .score .num { font-size:22px; font-weight:700; color:var(--l-violet); }
+  footer { background:var(--dark); color:var(--l-gray); text-align:center; padding:14px; font-size:11px; margin-top:32px; letter-spacing:1px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="top">
+    <span class="course">Neurociência Computacional · Aula 9</span>
+    <span class="author">Daniel Y Takahashi · UFRN</span>
+  </div>
+  <h1>Memórias que se completam — Simulações Interativas</h1>
+  <div class="subtitle">Memória associativa ao vivo · Capacidade &amp; catástrofe · Paisagem de energia · Quiz · <a href="../aula09.html" style="color:inherit">atividades da Aula 9</a></div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" data-tab="recall">1. Memória ao vivo</button>
+  <button class="tab" data-tab="capacity">2. Capacidade &amp; catástrofe</button>
+  <button class="tab" data-tab="energy">3. Paisagem de energia</button>
+  <button class="tab" data-tab="quiz">4. Quiz de Hopfield</button>
+</div>
+
+<!-- ============================ TAB 1 ============================ -->
+<section class="panel active" id="tab-recall">
+  <h2>Memória associativa ao vivo: a rede completa o padrão</h2>
+  <div class="lead">Escolha uma das memórias armazenadas, corrompa-a com ruído (ou desenhe clicando nas células) e clique em <b>Recuperar</b>. Veja a dinâmica assíncrona <i>sᵢ ← sign(Σ wᵢⱼ sⱼ)</i> reconstruir o padrão e a energia descer monotonicamente até um atrator.</div>
+  <div class="layout">
+    <canvas id="cRec" class="click" width="640" height="640"></canvas>
+    <div class="side">
+      <h3>Controles</h3>
+      <div class="controls">
+        <div class="row"><label>Memórias armazenadas (clique para carregar)</label></div>
+        <div class="palette" id="recPalette"></div>
+        <div class="row"><label>Ruído a aplicar</label><span class="value" id="recNoiseV">25%</span></div>
+        <input type="range" id="recNoise" min="0" max="60" value="25">
+        <div class="btns">
+          <button class="btn amber" id="recCorrupt">⚡ Corromper</button>
+          <button class="btn" id="recRun">▶ Recuperar</button>
+          <button class="btn secondary" id="recStep">↦ 1 passo</button>
+        </div>
+        <div class="stat" id="recStat">iteração = 0<br>energia = 0.000<br>overlap: X=0.00 T=0.00 O=0.00 +=0.00</div>
+        <div class="row"><label>Velocidade da animação</label><span class="value" id="recSpeedV">médio</span></div>
+        <input type="range" id="recSpeed" min="1" max="60" value="20">
+      </div>
+      <div class="lesson">
+        <strong>O que observar:</strong> mesmo com muito ruído, a rede "rola para o vale" mais próximo e recupera a memória. O <strong>overlap</strong> com o padrão certo sobe para 1; a <strong>energia</strong> nunca aumenta (função de Lyapunov). Aplique ruído &gt; 40% e veja a rede às vezes cair na bacia <em>errada</em> ou num estado <em>espúrio</em> (o negativo de um padrão).
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ TAB 2 ============================ -->
+<section class="panel" id="tab-capacity">
+  <h2>Capacidade de armazenamento e a catástrofe em α ≈ 0,14</h2>
+  <div class="lead">A rede tem <b id="capNlbl">100</b> neurônios. Aumente o número de padrões aleatórios armazenados e meça quantos a rede consegue recuperar a partir de uma pista quase perfeita. Observe o colapso abrupto quando a carga <i>α = P/N</i> passa de ~0,14.</div>
+  <div class="layout">
+    <canvas id="cCap" width="760" height="500"></canvas>
+    <div class="side">
+      <h3>Controles</h3>
+      <div class="controls">
+        <div class="row"><label>N (neurônios)</label><span class="value" id="capNV">100</span></div>
+        <input type="range" id="capN" min="40" max="200" value="100" step="10">
+        <div class="row"><label>Padrões armazenados P</label><span class="value" id="capPV">14</span></div>
+        <input type="range" id="capP" min="1" max="60" value="14">
+        <div class="btns">
+          <button class="btn" id="capTest">▶ Testar este P</button>
+          <button class="btn green" id="capSweep">📈 Varrer todos os P</button>
+          <button class="btn secondary" id="capClear">↺ Limpar</button>
+        </div>
+        <div class="stat" id="capStat">α = 0.140 · P = 14 / N = 100<br>recuperação = —</div>
+      </div>
+      <div class="lesson">
+        <strong>O que observar:</strong> a curva fica perto de 100% enquanto <strong>α &lt; 0,14</strong> e despenca logo depois — a <strong>catástrofe da capacidade</strong>. A linha vermelha marca o limite teórico <strong>α<sub>c</sub> ≈ 0,138</strong> de Amit, Gutfreund &amp; Sompolinsky (1985). Aumente N: o número absoluto de memórias cresce, mas a razão crítica continua ~0,14.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ TAB 3 ============================ -->
+<section class="panel" id="tab-energy">
+  <h2>Paisagem de energia: a memória é um vale</h2>
+  <div class="lead">Cada passo da rede só pode <b>descer</b> na paisagem de energia. Solte a "bola" (estado inicial) em diferentes pontos e veja para qual atrator ela rola. Bacias diferentes levam a memórias diferentes — e existem mínimos <b>espúrios</b>.</div>
+  <div class="layout">
+    <canvas id="cEn" class="click" width="760" height="460"></canvas>
+    <div class="side">
+      <h3>Controles</h3>
+      <div class="controls">
+        <div class="row"><label>Clique na paisagem para soltar a bola</label></div>
+        <div class="btns">
+          <button class="btn" id="enDrop">⬇ Soltar no aleatório</button>
+          <button class="btn secondary" id="enReset">↺ Reiniciar</button>
+        </div>
+        <div class="row"><label>Atrito (suavidade da descida)</label><span class="value" id="enFricV">0.80</span></div>
+        <input type="range" id="enFric" min="50" max="97" value="80">
+        <div class="stat" id="enStat">energia = —<br>destino = —</div>
+      </div>
+      <div class="lesson">
+        <strong>Analogia da bola:</strong> o estado da rede é uma bola numa paisagem <i>E(s)</i>. A atualização assíncrona equivale a rolar ladeira abaixo até parar num <strong>mínimo local</strong>. Mínimos profundos (azul/âmbar/violeta) são as <strong>memórias</strong>; o mínimo cinza é um <strong>estado espúrio</strong>. A região em volta de cada mínimo é sua <strong>bacia de atração</strong>.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ TAB 4 ============================ -->
+<section class="panel" id="tab-quiz">
+  <h2>Quiz de Hopfield</h2>
+  <div class="lead">Dez perguntas para fixar os conceitos centrais. Escolha uma resposta e leia o feedback. Boa sorte!</div>
+  <div id="quizBox" class="layout one-col"></div>
+  <div class="score">Pontuação: <span><span class="num" id="quizScore">0</span> / <span id="quizTotal">10</span></span></div>
+</section>
+
+<footer>Neurociência Computacional · Aula 9 — Modelos Conexionistas: Redes de Hopfield · Daniel Y Takahashi · Instituto do Cérebro · UFRN · 2026</footer>
+
+<script>
+/* ===================== util ===================== */
+function $(id){return document.getElementById(id);}
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    $('tab-'+t.dataset.tab).classList.add('active');
+  });
+});
+
+/* ===================== padrões (12x12) ===================== */
+const G=12, N=G*G;
+function mk(rows){ // rows: array of strings using '#'
+  const s=new Int8Array(N);
+  for(let r=0;r<G;r++)for(let c=0;c<G;c++){ s[r*G+c]= (rows[r] && rows[r][c]==='#')?1:-1; }
+  return s;
+}
+const PAT = {
+  X: mk(["#..........#","##........##",".##......##.","..##....##..","...##..##...","....####....","....####....","...##..##...","..##....##..",".##......##.","##........##","#..........#"]),
+  T: mk(["############","############",".....##.....",".....##.....",".....##.....",".....##.....",".....##.....",".....##.....",".....##.....",".....##.....",".....##.....",".....##....."]),
+  O: mk(["..######....","..########..",".##......##.","##........##","##........##","##........##","##........##","##........##","##........##",".##......##.","..########..","....######.."]),
+  H: mk(["##........##","##........##","##........##","##........##","##........##","############","############","##........##","##........##","##........##","##........##","##........##"]),
+};
+const PNAMES=Object.keys(PAT);        // ['X','T','O','H']
+const PATS=PNAMES.map(k=>PAT[k]);
+
+/* ===================== rede de Hopfield ===================== */
+function buildW(pats){
+  const W=new Float32Array(N*N);
+  for(const p of pats){
+    for(let i=0;i<N;i++){ const pi=p[i];
+      for(let j=0;j<N;j++){ W[i*N+j]+= pi*p[j]; }
+    }
+  }
+  for(let i=0;i<N;i++){ for(let j=0;j<N;j++){ W[i*N+j]/=N; } W[i*N+i]=0; }
+  return W;
+}
+function energy(W,s){
+  let e=0;
+  for(let i=0;i<N;i++){ let h=0; const row=i*N; for(let j=0;j<N;j++) h+=W[row+j]*s[j]; e-=0.5*h*s[i]; }
+  return e;
+}
+function overlap(s,p){ let o=0; for(let i=0;i<N;i++) o+=s[i]*p[i]; return o/N; }
+const Wrec=buildW(PATS);
+
+/* ===================== TAB 1: recall ao vivo ===================== */
+(function(){
+  const cv=$('cRec'),ctx=cv.getContext('2d');
+  const cell=cv.width/G;
+  let state=Int8Array.from(PAT.X);
+  let target='X', iter=0, anim=null, order=[];
+  const COLG={X:'#1A56DB',T:'#B45309',O:'#6D28D9',H:'#15803D'};
+
+  function draw(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    for(let r=0;r<G;r++)for(let c=0;c<G;c++){
+      const v=state[r*G+c];
+      ctx.fillStyle = v>0 ? '#1E293B' : '#FFFFFF';
+      ctx.fillRect(c*cell,r*cell,cell,cell);
+      ctx.strokeStyle='#E2E8F0'; ctx.lineWidth=1;
+      ctx.strokeRect(c*cell,r*cell,cell,cell);
+    }
+  }
+  function stat(){
+    const e=energy(Wrec,state);
+    const ov=PNAMES.map(k=>overlap(state,PAT[k]).toFixed(2));
+    $('recStat').innerHTML=`iteração = ${iter}<br>energia = ${e.toFixed(3)}<br>overlap: X=${ov[0]} T=${ov[1]} O=${ov[2]} H=${ov[3]}`;
+  }
+  function load(name){
+    target=name; state=Int8Array.from(PAT[name]); iter=0;
+    document.querySelectorAll('#recPalette .pchip').forEach(ch=>ch.classList.toggle('sel',ch.dataset.k===name));
+    draw(); stat();
+  }
+  function corrupt(){
+    const frac=+$('recNoise').value/100;
+    const k=Math.round(frac*N);
+    const idx=[...Array(N).keys()]; for(let i=N-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
+    for(let i=0;i<k;i++) state[idx[i]]*=-1;
+    iter=0; draw(); stat();
+  }
+  function stepOnce(){
+    // uma varredura assíncrona completa em ordem aleatória
+    const idx=[...Array(N).keys()]; for(let i=N-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
+    let changed=0;
+    for(const i of idx){ let h=0; const row=i*N; for(let j=0;j<N;j++) h+=Wrec[row+j]*state[j];
+      const ns=h>=0?1:-1; if(ns!==state[i]){state[i]=ns;changed++;} }
+    iter++; draw(); stat();
+    return changed;
+  }
+  function run(){
+    if(anim) return;
+    const speed=+$('recSpeed').value;
+    const loop=()=>{ const ch=stepOnce(); if(ch===0||iter>40){ anim=null; return; }
+      anim=setTimeout(()=>requestAnimationFrame(loop), 320-5*speed); };
+    loop();
+  }
+  // palette chips
+  const pal=$('recPalette');
+  PNAMES.forEach(name=>{
+    const c=document.createElement('canvas'); c.width=c.height=42; c.className='pchip'; c.dataset.k=name;
+    const cc=c.getContext('2d'); const cs=42/G;
+    for(let r=0;r<G;r++)for(let c2=0;c2<G;c2++){ cc.fillStyle=PAT[name][r*G+c2]>0?COLG[name]:'#fff'; cc.fillRect(c2*cs,r*cs,cs,cs); }
+    c.addEventListener('click',()=>{ if(anim){clearTimeout(anim);anim=null;} load(name); });
+    pal.appendChild(c);
+  });
+  cv.addEventListener('click',e=>{
+    const rct=cv.getBoundingClientRect();
+    const x=(e.clientX-rct.left)*cv.width/rct.width, y=(e.clientY-rct.top)*cv.height/rct.height;
+    const c=Math.floor(x/cell), r=Math.floor(y/cell);
+    if(r>=0&&r<G&&c>=0&&c<G){ state[r*G+c]*=-1; draw(); stat(); }
+  });
+  $('recNoise').oninput=()=>$('recNoiseV').textContent=$('recNoise').value+'%';
+  $('recSpeed').oninput=()=>{const v=+$('recSpeed').value;$('recSpeedV').textContent=v<20?'lento':v<45?'médio':'rápido';};
+  $('recCorrupt').onclick=corrupt;
+  $('recRun').onclick=run;
+  $('recStep').onclick=()=>{ if(anim){clearTimeout(anim);anim=null;} stepOnce(); };
+  load('X');
+})();
+
+/* ===================== TAB 2: capacidade ===================== */
+(function(){
+  const cv=$('cCap'),ctx=cv.getContext('2d');
+  let results=[]; // {p, acc}
+  function randPat(n){ const s=new Int8Array(n); for(let i=0;i<n;i++)s[i]=Math.random()<0.5?1:-1; return s; }
+  function buildWn(pats,n){
+    const W=new Float32Array(n*n);
+    for(const p of pats) for(let i=0;i<n;i++){const pi=p[i],row=i*n; for(let j=0;j<n;j++) W[row+j]+=pi*p[j];}
+    for(let i=0;i<n;i++){for(let j=0;j<n;j++)W[i*n+j]/=n; W[i*n+i]=0;}
+    return W;
+  }
+  function recallN(W,s,n,steps){
+    s=Int8Array.from(s);
+    for(let t=0;t<steps;t++){ const idx=[...Array(n).keys()]; for(let i=n-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
+      for(const i of idx){let h=0,row=i*n;for(let j=0;j<n;j++)h+=W[row+j]*s[j]; s[i]=h>=0?1:-1;} }
+    return s;
+  }
+  function testP(n,P,trials){
+    let good=0;
+    for(let t=0;t<trials;t++){
+      const pats=[]; for(let k=0;k<P;k++) pats.push(randPat(n));
+      const W=buildWn(pats,n);
+      const tgt=pats[0]; const s=Int8Array.from(tgt);
+      const flip=Math.round(0.05*n);
+      const idx=[...Array(n).keys()]; for(let i=n-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
+      for(let i=0;i<flip;i++) s[idx[i]]*=-1;
+      const r=recallN(W,s,n,6);
+      let same=0; for(let i=0;i<n;i++) if(r[i]===tgt[i]) same++;
+      if(same/n>0.98) good++;
+    }
+    return good/trials;
+  }
+  function draw(){
+    const W=cv.width,H=cv.height, m={l:60,r:20,t:30,b:50};
+    ctx.clearRect(0,0,W,H);
+    const n=+$('capN').value;
+    const maxP=Math.max(60, Math.round(0.45*n));
+    // axes
+    ctx.strokeStyle='#94A3B8'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(m.l,m.t); ctx.lineTo(m.l,H-m.b); ctx.lineTo(W-m.r,H-m.b); ctx.stroke();
+    const X=p=>m.l+(p/maxP)*(W-m.l-m.r);
+    const Y=a=>H-m.b-a*(H-m.t-m.b);
+    // gridlines + labels y
+    ctx.fillStyle='#64748B'; ctx.font='11px Consolas'; ctx.textAlign='right';
+    for(let a=0;a<=1.0001;a+=0.25){ ctx.strokeStyle='#E2E8F0'; ctx.beginPath(); ctx.moveTo(m.l,Y(a)); ctx.lineTo(W-m.r,Y(a)); ctx.stroke();
+      ctx.fillStyle='#64748B'; ctx.fillText((a*100).toFixed(0)+'%',m.l-6,Y(a)+4); }
+    // alpha_c line
+    const pc=0.138*n;
+    ctx.strokeStyle='#DC2626'; ctx.setLineDash([6,4]); ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(X(pc),m.t); ctx.lineTo(X(pc),H-m.b); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle='#DC2626'; ctx.textAlign='left'; ctx.font='bold 12px Segoe UI';
+    ctx.fillText('αc ≈ 0,14  (P='+pc.toFixed(0)+')', X(pc)+6, m.t+14);
+    // x labels
+    ctx.fillStyle='#64748B'; ctx.font='11px Consolas'; ctx.textAlign='center';
+    for(let p=0;p<=maxP;p+=Math.round(maxP/6)){ ctx.fillText(p, X(p), H-m.b+16); }
+    ctx.fillStyle='#1E293B'; ctx.font='13px Segoe UI';
+    ctx.fillText('Padrões armazenados  P', (m.l+W-m.r)/2, H-12);
+    ctx.save(); ctx.translate(16,(m.t+H-m.b)/2); ctx.rotate(-Math.PI/2); ctx.fillText('Fração recuperada',0,0); ctx.restore();
+    // results
+    if(results.length){
+      ctx.strokeStyle='#6D28D9'; ctx.lineWidth=2.5; ctx.beginPath();
+      results.forEach((d,i)=>{ const x=X(d.p),y=Y(d.acc); if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y); });
+      ctx.stroke();
+      results.forEach(d=>{ ctx.fillStyle = d.p/n<=0.138?'#15803D':'#DC2626'; ctx.beginPath(); ctx.arc(X(d.p),Y(d.acc),4,0,7); ctx.fill(); });
+    } else {
+      ctx.fillStyle='#94A3B8'; ctx.font='14px Segoe UI'; ctx.textAlign='center';
+      ctx.fillText('Clique em "Testar este P" ou "Varrer todos os P" para gerar a curva.', W/2, H/2);
+    }
+  }
+  function syncLbls(){ const n=+$('capN').value,P=+$('capP').value;
+    $('capNV').textContent=n; $('capPV').textContent=P; $('capNlbl').textContent=n;
+    $('capStat').innerHTML=`α = ${(P/n).toFixed(3)} · P = ${P} / N = ${n}<br>recuperação = —`; }
+  $('capN').oninput=()=>{ results=[]; $('capP').max=Math.max(60,Math.round(0.45*+$('capN').value)); syncLbls(); draw(); };
+  $('capP').oninput=()=>{ const n=+$('capN').value,P=+$('capP').value;
+    $('capPV').textContent=P; $('capStat').innerHTML=`α = ${(P/n).toFixed(3)} · P = ${P} / N = ${n}<br>recuperação = —`; };
+  $('capTest').onclick=()=>{ const n=+$('capN').value,P=+$('capP').value; const acc=testP(n,P,30);
+    results=results.filter(d=>d.p!==P); results.push({p:P,acc}); results.sort((a,b)=>a.p-b.p);
+    $('capStat').innerHTML=`α = ${(P/n).toFixed(3)} · P = ${P} / N = ${n}<br>recuperação = ${(acc*100).toFixed(0)}%`; draw(); };
+  $('capSweep').onclick=()=>{ const n=+$('capN').value; const maxP=Math.max(60,Math.round(0.45*n));
+    results=[]; for(let P=1;P<=maxP;P+=Math.max(1,Math.round(maxP/24))){ results.push({p:P,acc:testP(n,P,18)}); } draw(); };
+  $('capClear').onclick=()=>{ results=[]; syncLbls(); draw(); };
+  syncLbls(); draw();
+})();
+
+/* ===================== TAB 3: paisagem de energia ===================== */
+(function(){
+  const cv=$('cEn'),ctx=cv.getContext('2d');
+  const W=cv.width,H=cv.height, m={l:40,r:20,t:20,b:40};
+  // mínimos: x0 (posição), prof (profundidade), largura, cor, rótulo
+  const wells=[
+    {x:0.16,d:2.4,w:0.06,c:'#1A56DB',lbl:"memória 'X'"},
+    {x:0.40,d:1.4,w:0.05,c:'#64748B',lbl:'espúrio'},
+    {x:0.62,d:2.6,w:0.06,c:'#B45309',lbl:"memória 'T'"},
+    {x:0.86,d:2.2,w:0.05,c:'#6D28D9',lbl:"memória 'O'"},
+  ];
+  function E(t){ let e=0.6*(t-0.5)*(t-0.5); for(const w of wells) e-=w.d*Math.exp(-((t-w.x)**2)/(2*w.w*w.w)); return e; }
+  function dE(t){ const h=1e-3; return (E(t+h)-E(t-h))/(2*h); }
+  let emin=1e9,emax=-1e9; for(let i=0;i<=400;i++){const t=i/400;const e=E(t);emin=Math.min(emin,e);emax=Math.max(emax,e);}
+  const X=t=>m.l+t*(W-m.l-m.r);
+  const Y=e=>m.t+(e-emin)/(emax-emin+0.5)*(H-m.t-m.b);
+  let ball=null, vel=0, anim=null, dest='—';
+
+  function drawCurve(){
+    ctx.clearRect(0,0,W,H);
+    // fill under
+    ctx.beginPath(); ctx.moveTo(X(0),Y(E(0)));
+    for(let i=0;i<=400;i++){const t=i/400; ctx.lineTo(X(t),Y(E(t)));}
+    ctx.lineTo(X(1),H-m.b); ctx.lineTo(X(0),H-m.b); ctx.closePath();
+    ctx.fillStyle='#F1F5F9'; ctx.fill();
+    // curve
+    ctx.beginPath(); ctx.moveTo(X(0),Y(E(0)));
+    for(let i=0;i<=400;i++){const t=i/400; ctx.lineTo(X(t),Y(E(t)));}
+    ctx.strokeStyle='#1E293B'; ctx.lineWidth=2.5; ctx.stroke();
+    // wells markers
+    wells.forEach(w=>{ ctx.fillStyle=w.c; ctx.beginPath(); ctx.arc(X(w.x),Y(E(w.x)),7,0,7); ctx.fill();
+      ctx.fillStyle=w.c; ctx.font='bold 11px Segoe UI'; ctx.textAlign='center'; ctx.fillText(w.lbl,X(w.x),Y(E(w.x))+24); });
+    // axes labels
+    ctx.fillStyle='#1E293B'; ctx.font='13px Segoe UI'; ctx.textAlign='center';
+    ctx.fillText('Estado da rede  (espaço de configurações)', W/2, H-10);
+    ctx.save(); ctx.translate(14,H/2); ctx.rotate(-Math.PI/2); ctx.fillText('Energia E', 0,0); ctx.restore();
+    // ball
+    if(ball!==null){ ctx.fillStyle='#0F172A'; ctx.beginPath(); ctx.arc(X(ball),Y(E(ball))-8,10,0,7); ctx.fill();
+      ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.stroke(); }
+  }
+  function nearest(t){ let best=wells[0],bd=9; for(const w of wells){const d=Math.abs(w.x-t); if(d<bd){bd=d;best=w;}} return best; }
+  function roll(){
+    if(anim) cancelAnimationFrame(anim);
+    const fric=+$('enFric').value/100;
+    vel=0;
+    const loop=()=>{
+      // descida de gradiente com momento (atrito):
+      vel = vel*fric - 0.025*dE(ball);
+      ball+=vel; if(ball<0.01){ball=0.01;vel*=-0.3;} if(ball>0.99){ball=0.99;vel*=-0.3;}
+      drawCurve();
+      $('enStat').innerHTML=`energia = ${E(ball).toFixed(3)}<br>destino = ${dest}`;
+      if(Math.abs(vel)<1e-4 && Math.abs(dE(ball))<0.02){ const w=nearest(ball); dest=w.lbl;
+        $('enStat').innerHTML=`energia = ${E(ball).toFixed(3)}<br>destino = <b style="color:${w.c}">${w.lbl}</b>`; drawCurve(); return; }
+      anim=requestAnimationFrame(loop);
+    };
+    loop();
+  }
+  cv.addEventListener('click',e=>{ const r=cv.getBoundingClientRect();
+    const x=(e.clientX-r.left)*cv.width/r.width; ball=Math.min(0.99,Math.max(0.01,(x-m.l)/(W-m.l-m.r))); dest='rolando…'; drawCurve(); roll(); });
+  $('enDrop').onclick=()=>{ ball=0.03+Math.random()*0.94; dest='rolando…'; drawCurve(); roll(); };
+  $('enReset').onclick=()=>{ if(anim)cancelAnimationFrame(anim); ball=null; dest='—'; $('enStat').innerHTML='energia = —<br>destino = —'; drawCurve(); };
+  $('enFric').oninput=()=>$('enFricV').textContent=(+$('enFric').value/100).toFixed(2);
+  drawCurve();
+})();
+
+/* ===================== TAB 4: quiz ===================== */
+(function(){
+  const Q=[
+    {q:"O que torna a rede de Hopfield uma memória 'endereçada por conteúdo'?",
+     o:["Cada memória tem um endereço numérico único","Uma pista parcial ou ruidosa recupera o padrão completo","Os pesos guardam os índices dos padrões","Ela usa uma tabela hash interna"],
+     a:1,f:"Diferente da RAM (endereço por posição), a rede recupera o padrão inteiro a partir de um fragmento — isso é endereçamento por conteúdo."},
+    {q:"Qual condição sobre os pesos garante a existência de uma função de energia?",
+     o:["wᵢⱼ ≥ 0 (pesos positivos)","wᵢⱼ = wⱼᵢ (simetria)","Σⱼ wᵢⱼ = 1 (normalização)","wᵢᵢ = 1 (auto-conexão)"],
+     a:1,f:"A simetria wᵢⱼ = wⱼᵢ é o que permite construir a função de energia de Lyapunov E = −½ Σ wᵢⱼ sᵢ sⱼ."},
+    {q:"Como os padrões são armazenados na rede de Hopfield clássica?",
+     o:["Por retropropagação iterativa do erro","Por gradiente descendente com mini-lotes","Pela regra Hebbiana: W = (1/N) Σ ξξᵀ (one-shot)","Por k-means sobre os padrões"],
+     a:2,f:"O armazenamento é Hebbiano e instantâneo: cada padrão contribui com seu produto externo ξξᵀ, sem iteração."},
+    {q:"Durante a recuperação assíncrona, o que acontece com a energia?",
+     o:["Pode subir ou descer aleatoriamente","Nunca aumenta (ΔE ≤ 0)","Aumenta até estabilizar","Permanece constante"],
+     a:1,f:"Atualizando um neurônio por vez, cada mudança só reduz (ou mantém) a energia. Como E é limitada por baixo, a rede converge."},
+    {q:"O que é um atrator na rede de Hopfield?",
+     o:["Um neurônio com peso máximo","Um mínimo local da energia para onde o estado converge","O padrão com maior overlap inicial","A taxa de aprendizado ótima"],
+     a:1,f:"Cada memória é um mínimo de energia (atrator) com uma bacia de atração ao seu redor."},
+    {q:"Qual é a capacidade aproximada de armazenamento de uma rede de Hopfield com N neurônios?",
+     o:["~N² padrões","~N padrões","~0,14 N padrões","~log N padrões"],
+     a:2,f:"O resultado de Amit, Gutfreund & Sompolinsky (1985): a capacidade crítica é αc ≈ 0,138, ou seja ~0,14 N padrões."},
+    {q:"O que é a 'catástrofe da capacidade'?",
+     o:["A rede esquece o padrão mais antigo a cada novo","Acima de α ≈ 0,14 a recuperação colapsa abruptamente","Os pesos divergem para infinito","A energia deixa de ser limitada"],
+     a:1,f:"Quando a carga ultrapassa ~0,14, os estados espúrios (frustrados) dominam e a recuperação despenca de forma abrupta."},
+    {q:"Um 'estado espúrio' é:",
+     o:["Um padrão de treino corrompido","Um mínimo de energia que não corresponde a nenhuma memória armazenada","Um neurônio com wᵢᵢ ≠ 0","O estado de energia máxima"],
+     a:1,f:"Estados espúrios são mínimos indesejados — complementos (−ξ), misturas de padrões ou estados frustrados da interferência."},
+    {q:"O que a Boltzmann Machine acrescenta à rede de Hopfield?",
+     o:["Neurônios estocásticos controlados por temperatura T","Pesos assimétricos","Camadas convolucionais","Conexões de auto-reforço"],
+     a:0,f:"A Boltzmann Machine torna os neurônios estocásticos (probabilidade sigmoide com temperatura T), permitindo escapar de mínimos locais."},
+    {q:"Por que a região CA3 do hipocampo é associada à rede de Hopfield?",
+     o:["Por ter poucos neurônios","Por suas extensas conexões recorrentes entre neurônios","Por não ter plasticidade","Por processar apenas estímulos visuais"],
+     a:1,f:"CA3 tem o maior grau de conectividade recorrente do cérebro — a arquitetura de Hopfield — e implementa pattern completion (Marr, 1971)."},
+  ];
+  const box=$('quizBox'); let score=0; const answered=new Array(Q.length).fill(false);
+  $('quizTotal').textContent=Q.length;
+  Q.forEach((item,qi)=>{
+    const d=document.createElement('div'); d.className='quiz-q';
+    d.innerHTML=`<div class="qnum">PERGUNTA ${qi+1}</div><div class="qtxt">${item.q}</div>`;
+    const opts=document.createElement('div'); opts.className='quiz-opts';
+    item.o.forEach((opt,oi)=>{
+      const b=document.createElement('button'); b.className='quiz-opt'; b.textContent=opt;
+      b.onclick=()=>{
+        if(answered[qi]) return; answered[qi]=true;
+        const all=opts.querySelectorAll('.quiz-opt');
+        all[item.a].classList.add('correct');
+        if(oi!==item.a) b.classList.add('wrong'); else score++;
+        $('quizScore').textContent=score;
+        fb.classList.add('show');
+      };
+      opts.appendChild(b);
+    });
+    const fb=document.createElement('div'); fb.className='quiz-fb'; fb.textContent='💡 '+item.f;
+    d.appendChild(opts); d.appendChild(fb); box.appendChild(d);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neurociência Computacional · Aula 12 — Atividades</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#142033; --muted:#5b6879; --line:#d8dee6;
+  --accent:#0d7377; --accent-ink:#ffffff; --you:#b45309; --soft:#e2f0f0; --warn:#a33a2a; --ok:#15803d; --okbg:#e3f3e8; --nobg:#fbe9e6;
+  --display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --ok:#5fd08a; --okbg:#173a28; --nobg:#3d2020; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --ok:#5fd08a; --okbg:#173a28; --nobg:#3d2020; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:17px/1.5 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:grid;gap:22px}
+header{display:grid;gap:8px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(32px,8vw,50px)/1.02 var(--display);font-stretch:115%;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font:750 23px/1.15 var(--display);font-stretch:108%;margin:0;text-wrap:balance}
+p{margin:0;max-width:65ch}
+.lead{color:var(--muted)}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{font:600 14px/1 var(--body);color:var(--fg);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:9px 12px;background:var(--surface)}
+nav a.done{border-color:var(--ok);color:var(--ok)}
+a{color:var(--accent)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,nav a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.exp>*{min-width:0}
+section.exp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 18px;display:grid;gap:16px;min-width:0;scroll-margin-top:12px}
+.num{font:600 13px/1 var(--mono);color:var(--you);letter-spacing:.06em;text-transform:uppercase}
+.meta{font:500 13px/1.3 var(--mono);color:var(--muted)}
+.q{display:grid;gap:8px;border-top:1px dashed var(--line);padding-top:14px}
+.q>.qt{font-weight:600}
+.q .qt i{font-family:var(--mono);font-style:normal;color:var(--you);margin-right:6px}
+.opts{display:grid;gap:8px}
+@media (min-width:560px){.opts.two{grid-template-columns:1fr 1fr}}
+.opt{display:flex;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;cursor:pointer;min-height:48px;background:var(--bg)}
+.opt input{width:20px;height:20px;accent-color:var(--accent);flex:none}
+.opt:has(input:checked){border-color:var(--accent);background:var(--soft)}
+.opt.right{border-color:var(--ok);background:var(--okbg)}
+.opt.wrong{border-color:var(--warn);background:var(--nobg)}
+textarea,input[type=number],input[type=text]{width:100%;font:500 17px/1.4 var(--body);color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;min-height:48px}
+textarea{min-height:90px;resize:vertical}
+.inline{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.inline label{display:grid;gap:4px;font-size:14px;font-weight:600;flex:1 1 140px;min-width:0}
+select{font:500 17px var(--body);color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px;min-height:48px;width:100%}
+button{font:700 16px/1 var(--display);border:0;border-radius:10px;padding:14px 18px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px;touch-action:manipulation}
+button.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+button:disabled{opacity:.45;cursor:default}
+.send{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.sent{font:600 14px/1.3 var(--mono);color:var(--ok)}
+.sent.pend{color:var(--you)}
+.fb{background:var(--soft);border-radius:10px;padding:14px 16px;display:grid;gap:8px;font-size:16px}
+.fb h3{margin:0;font:700 17px/1.2 var(--display)}
+.fb .score{font:700 22px/1 var(--display);color:var(--you)}
+.fb ul{margin:0;padding-left:20px;display:grid;gap:6px}
+.mark{font-weight:700}
+.mark.ok{color:var(--ok)} .mark.no{color:var(--warn)}
+figure{margin:0;display:grid;gap:6px}
+figure img{width:100%;height:auto;border-radius:8px;background:#fff;border:1px solid var(--line)}
+figcaption{font-size:13px;color:var(--muted)}
+.tablewrap{overflow-x:auto}
+table.dec{border-collapse:collapse;width:100%;font:500 15px/1.2 var(--mono);text-align:center}
+table.dec th,table.dec td{border:1px solid var(--line);padding:8px 3px}
+table.dec th{background:var(--soft);font:600 13px/1.2 var(--body)}
+table.dec td.test{background:color-mix(in srgb,var(--you) 18%,transparent);font-weight:700}
+table.dec td.hi{font-weight:700;color:var(--accent)}
+.dots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.dots label{display:grid;gap:4px;font:600 13px/1.2 var(--body);text-align:center;min-width:0}
+.dots input{min-width:0;font-size:15px;padding:10px 2px;text-align:center}
+.opts.five{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+.opts.five .opt{padding:10px 6px;gap:6px;justify-content:center}
+.dots input{text-align:center;padding:10px 4px;font-family:var(--mono)}
+.dots input.right{border-color:var(--ok);background:var(--okbg)}
+.dots input.wrong{border-color:var(--warn);background:var(--nobg)}
+.marr{display:grid;gap:10px}
+.marr .st{display:grid;gap:8px;border:1px solid var(--line);border-radius:10px;padding:12px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.seg label{border:1.5px solid var(--line);border-radius:8px;text-align:center;padding:10px 4px;font:700 14px/1.1 var(--display);cursor:pointer;min-height:44px;display:grid;place-items:center;background:var(--bg)}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){border-color:var(--accent);background:var(--soft);color:var(--accent)}
+.seg label.right{border-color:var(--ok)!important;background:var(--okbg)!important;color:var(--ok)!important}
+.seg label.wrong{border-color:var(--warn)!important;background:var(--nobg)!important;color:var(--warn)!important}
+.seg label:focus-within{outline:3px solid var(--accent);outline-offset:1px}
+.xor{display:grid;gap:12px}
+.xor table{border-collapse:collapse;font:500 16px/1 var(--mono);text-align:center;width:100%;max-width:420px}
+.xor th,.xor td{border:1px solid var(--line);padding:9px}
+.xor th{background:var(--soft);font:600 13px var(--body)}
+.xor td.ok{color:var(--ok);font-weight:700} .xor td.no{color:var(--warn);font-weight:700}
+.xor .ctl{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.xor .ctl label{display:grid;gap:4px;font:600 13px/1.2 var(--mono)}
+.xor input[type=range]{width:100%;accent-color:var(--accent)}
+.badge{font:700 14px/1.2 var(--mono)}
+footer{font-size:13px;color:var(--muted);display:grid;gap:6px}
+/* cartão de identificação (registro.js) */
+.nc-id{background:var(--surface);border:2px solid var(--accent);border-radius:14px;padding:18px;display:grid;gap:12px}
+.nc-id.nc-in{border:0;padding:0;background:none}
+.nc-id h2{margin:0 0 4px}
+.nc-lead{color:var(--muted);margin:0 0 12px!important}
+.nc-row{display:grid;gap:10px;grid-template-columns:1fr}
+@media (min-width:560px){.nc-row{grid-template-columns:1fr 1.6fr}}
+.nc-id label{display:grid;gap:4px;font:600 14px/1.2 var(--body)}
+.nc-id input{font:17px var(--body);padding:12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);min-height:48px;width:100%}
+.nc-err{color:var(--warn);font-size:14px;min-height:1em;margin:6px 0!important}
+.nc-priv{font-size:13px;color:var(--muted);margin-top:10px!important}
+.nc-who{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:15px;background:var(--soft);border-radius:10px;padding:10px 14px}
+.nc-link{background:none!important;border:0!important;color:var(--accent)!important;font:600 14px var(--body)!important;padding:4px 0!important;min-height:0!important;text-decoration:underline;cursor:pointer}
+.nc-fila{font:500 13px var(--mono);color:var(--muted)}
+.nc-flash{animation:ncflash 1.2s 2}
+@keyframes ncflash{50%{box-shadow:0 0 0 6px var(--you)}}
+@media (prefers-reduced-motion:reduce){.nc-flash{animation:none}}
+canvas.plot{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;touch-action:none}
+.ctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.ctl label{display:grid;gap:4px;font:600 13px/1.2 var(--mono)}
+.ctl input[type=range]{width:100%;accent-color:var(--accent)}
+.readout{font:600 15px/1.4 var(--mono);color:var(--accent)}
+.mp{display:grid;gap:10px}
+.mp .row{display:grid;gap:8px;border:1px solid var(--line);border-radius:10px;padding:12px}
+.mp .ins{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.mp .ins label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center;min-width:0}
+.mp .ins input{text-align:center;padding:9px 2px;font-family:var(--mono);min-width:0}
+.tt{display:flex;flex-wrap:wrap;gap:6px;font:500 13px/1 var(--mono)}
+.tt span{border:1px solid var(--line);border-radius:6px;padding:6px 7px}
+.tt span.ok{border-color:var(--ok);color:var(--ok);background:var(--okbg)}
+.tt span.no{border-color:var(--warn);color:var(--warn);background:var(--nobg)}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btns button{padding:11px 14px;min-height:44px;font-size:15px}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.trio label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center;min-width:0}
+.trio input{text-align:center;padding:9px 2px;font-family:var(--mono);min-width:0}
+.trio input.right,.inline input.right{border-color:var(--ok);background:var(--okbg)}
+.trio input.wrong,.inline input.wrong{border-color:var(--warn);background:var(--nobg)}
+table.log{border-collapse:collapse;width:100%;font:500 13px/1.2 var(--mono);text-align:center}
+table.log th,table.log td{border:1px solid var(--line);padding:5px 2px}
+table.log th{background:var(--soft);font:600 12px var(--body)}
+table.log tr.err td{color:var(--warn)}
+.match{display:grid;gap:8px}
+.match .m{display:grid;grid-template-columns:1fr minmax(0,1.3fr);gap:8px;align-items:center}
+.match .m span{font-weight:600}
+@media (max-width:420px){.match .m{grid-template-columns:1fr}}
+.grid64{display:grid;grid-template-columns:auto repeat(4,minmax(0,1fr));gap:5px;align-items:center;max-width:420px}
+.grid64 span{font:600 12px/1 var(--mono);color:var(--muted);text-align:center}
+.grid64 input{text-align:center;padding:8px 2px;min-height:40px;font-family:var(--mono);min-width:0}
+.grid64 input.right{border-color:var(--ok);background:var(--okbg)}
+.grid64 input.wrong{border-color:var(--warn);background:var(--nobg)}
+.quad{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;max-width:420px}
+.quad label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center;min-width:0}
+.quad input{text-align:center;padding:9px 2px;font-family:var(--mono);min-width:0}
+.quad input.right{border-color:var(--ok);background:var(--okbg)}
+.quad input.wrong{border-color:var(--warn);background:var(--nobg)}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;max-width:300px}
+.pair label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center}
+.pair input{text-align:center;font-family:var(--mono)}
+.pair input.right{border-color:var(--ok);background:var(--okbg)}
+.pair input.wrong{border-color:var(--warn);background:var(--nobg)}
+table.cases{border-collapse:collapse;width:100%;font-size:15px}
+table.cases td,table.cases th{border-bottom:1px solid var(--line);padding:8px 4px;vertical-align:middle;text-align:left}
+table.cases th{font:600 13px var(--body);color:var(--muted)}
+table.cases select{min-height:44px;padding:6px;font-size:15px}
+select.right{border-color:var(--ok);background:var(--okbg)}
+select.wrong{border-color:var(--warn);background:var(--nobg)}
+.tb{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1fr);gap:6px;align-items:center}
+.tb b{font-size:13px;color:var(--muted)}
+.tb select{font-size:14px;padding:8px 4px}
+/* Aula 12 */
+.ctl label{display:block}
+.ctl label input[type=range]{display:block;margin-top:4px}
+.icons{display:block}
+.legend12{display:flex;flex-wrap:wrap;gap:6px 14px;font:500 13px/1.3 var(--body);color:var(--muted)}
+.legend12 i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.cnt5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;font:600 13px/1.2 var(--mono);text-align:center}
+.cnt5 span{border:1px solid var(--line);border-radius:6px;padding:6px 2px;background:var(--bg)}
+</style>
+
+<div class="wrap" id="student">
+<header>
+  <span class="eyebrow">Neurociência Computacional · Aula 12 · UFRN</span>
+  <h1>O cérebro que aposta</h1>
+  <p class="lead">Fundamentos de inferência bayesiana: neurônios ruidosos, a regra de Bayes, crenças que se atualizam, pistas que se combinam e populações que representam incerteza. Identifique-se abaixo, faça cada atividade quando o professor pedir e toque em <b>Enviar</b> — sua resposta fica registrada e o gabarito aparece em seguida.</p>
+</header>
+
+<nav aria-label="Atividades">
+  <a href="#a1">1 · Ruído</a><a href="#a2">2 · Taxa-base</a><a href="#a3">3 · Sinapse</a><a href="#a4">4 · Estimativas</a><a href="#a5">5 · Ver e tocar</a><a href="#a6">6 · Cinco neurônios</a><a href="#a7">7 · Limites</a>
+</nav>
+
+<!-- ============ ATIVIDADE 1 ============ -->
+<section class="exp" id="a1" data-titulo="Quão ruidoso é um neurônio?">
+  <div><p class="num">Atividade 1 · 5 min · individual, com calculadora</p><h2>Quão ruidoso é um neurônio?</h2></div>
+  <p>Um neurônio dispara como processo de Poisson a <b>20 spikes/s</b>. Olhamos uma janela de <b>100 ms</b>. Ajuda: e<sup>−2</sup> ≈ 0,135; coeficiente de variação <span class="badge">CV = dp/média = 1/√λ</span>.</p>
+  <p class="meta">Simulador: 20 ensaios do mesmo estímulo. A janela destacada é a que contamos; os números embaixo valem para 400 ensaios.</p>
+  <canvas class="plot" id="psC" width="400" height="230" aria-label="Raster de 20 ensaios de um neurônio Poisson com a janela de contagem destacada"></canvas>
+  <div class="ctl"><label>taxa = <span id="psRv">20</span> spikes/s<input type="range" id="psR" min="1" max="60" step="1" value="20"></label>
+    <label>janela = <span id="psWv">100</span> ms<input type="range" id="psW" min="20" max="500" step="10" value="100"></label></div>
+  <div class="btns"><button type="button" class="ghost" id="psN">Novos ensaios</button></div>
+  <p class="readout" id="psT"></p>
+  <div class="q"><p class="qt"><i>a</i>Quais são a média e a variância da contagem na janela de 100 ms?</p>
+    <div class="pair"><label>média<input type="text" inputmode="decimal" name="a1m"></label><label>variância<input type="text" inputmode="decimal" name="a1v"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Em que porcentagem dos ensaios o neurônio não dá nenhum spike?</p>
+    <div class="inline"><label>porcentagem (%)<input type="text" inputmode="decimal" name="a1p"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Para CV = 0,1, que janela um único neurônio exigiria? E quantos neurônios iguais e independentes dariam o mesmo CV em 100 ms?</p>
+    <div class="pair"><label>janela (s)<input type="text" inputmode="decimal" name="a1t"></label><label>neurônios<input type="text" inputmode="numeric" name="a1n"></label></div></div>
+  <div class="q"><p class="qt"><i>d</i>Por que, segundo Rolls (2023), os disparos são quase Poisson?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a1d" value="limiar">o potencial fica logo abaixo do limiar, para responder depressa, e flutua com as entradas</label><label class="opt"><input type="radio" name="a1d" value="medida">é erro do eletrodo, não do neurônio</label><label class="opt"><input type="radio" name="a1d" value="refratario">o período refratário torna os spikes regulares</label></div></div>
+  <div class="send"><button data-send="a1">Enviar</button><span class="sent" data-status="a1"></span></div>
+  <div class="fb" data-fb="a1" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 2 ============ -->
+<section class="exp" id="a2" data-titulo="Um teste positivo">
+  <div><p class="num">Atividade 2 · 6 min · individual</p><h2>Um teste positivo</h2></div>
+  <p>Rastreamento de câncer de mama: prevalência <b>1%</b>; sensibilidade <span class="badge">P(+ | C) = 80%</span>; falso-positivo <span class="badge">P(+ | sem C) = 9,6%</span>. Uma paciente tem resultado positivo.</p>
+  <canvas class="plot icons" id="icC" width="400" height="260" aria-label="Quadro de 1000 ícones com câncer e resultado do teste"></canvas>
+  <div class="legend12"><span><i style="background:#dc2626"></i>câncer, teste +</span><span><i style="background:#f4a6a6"></i>câncer, teste −</span><span><i style="background:#b45309"></i>sem câncer, teste +</span><span><i style="background:#cbd5e1"></i>sem câncer, teste −</span></div>
+  <div class="ctl"><label>prevalência = <span id="icPv">1</span>%<input type="range" id="icP" min="0.5" max="20" step="0.5" value="1"></label>
+    <label>sensibilidade = <span id="icSv">80</span>%<input type="range" id="icS" min="50" max="100" step="1" value="80"></label>
+    <label>falso-positivo = <span id="icFv">9,6</span>%<input type="range" id="icF" min="0.5" max="20" step="0.1" value="9.6"></label></div>
+  <p class="readout" id="icT"></p>
+  <div class="q"><p class="qt"><i>a</i>Em 1000 mulheres, quantas têm câncer e teste positivo? Quantas não têm câncer e testam positivo?</p>
+    <div class="pair"><label>câncer e +<input type="text" inputmode="numeric" name="a2tp"></label><label>sem câncer e +<input type="text" inputmode="numeric" name="a2fp"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Qual a probabilidade de câncer dado um teste positivo, P(C | +)?</p>
+    <div class="inline"><label>P(C | +) em %<input type="text" inputmode="decimal" name="a2p"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Num grupo de risco com prevalência de 10%, quanto vale P(C | +)?</p>
+    <div class="inline"><label>P(C | +) em %<input type="text" inputmode="decimal" name="a2c"></label></div></div>
+  <div class="q"><p class="qt"><i>d</i>Partindo do P(C | +) da letra b, um segundo exame independente também dá positivo. Qual o novo posterior?</p>
+    <div class="inline"><label>posterior em %<input type="text" inputmode="decimal" name="a2d"></label></div></div>
+  <div class="q"><p class="qt"><i>e</i>Qual o erro de raciocínio mais comum nesse problema?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a2e" value="taxa-base">trocar P(+ | C) por P(C | +), ignorando a taxa-base</label><label class="opt"><input type="radio" name="a2e" value="sensibilidade">desconfiar demais da sensibilidade do exame</label><label class="opt"><input type="radio" name="a2e" value="contas">errar a multiplicação 0,8 × 0,01</label></div></div>
+  <div class="send"><button data-send="a2">Enviar</button><span class="sent" data-status="a2"></span></div>
+  <div class="fb" data-fb="a2" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 3 ============ -->
+<section class="exp" id="a3" data-titulo="Uma sinapse que às vezes falha">
+  <div><p class="num">Atividade 3 · 6 min · em duplas</p><h2>Uma sinapse que às vezes falha</h2></div>
+  <p>A probabilidade θ de uma sinapse liberar uma vesícula a cada spike é desconhecida. Prior: <span class="badge">Beta(2, 2)</span>. Em 10 spikes, a sinapse liberou 7 vezes. Regra: <span class="badge">Beta(α + k, β + n − k)</span>, média α/(α + β).</p>
+  <p class="meta">Simulador: escolha o prior e registre liberações e falhas, uma de cada vez — ou sorteie 10 spikes de uma sinapse com θ escondido.</p>
+  <canvas class="plot" id="btC" width="400" height="230" aria-label="Prior e posterior Beta da probabilidade de liberação"></canvas>
+  <div class="ctl"><label>α do prior = <span id="btAv">2</span><input type="range" id="btA" min="1" max="20" step="1" value="2"></label>
+    <label>β do prior = <span id="btBv">2</span><input type="range" id="btB" min="1" max="20" step="1" value="2"></label></div>
+  <div class="btns"><button type="button" class="ghost" id="bt1">Liberou</button><button type="button" class="ghost" id="bt0">Falhou</button><button type="button" class="ghost" id="btR">10 spikes ao acaso</button><button type="button" class="ghost" id="btZ">Reiniciar</button></div>
+  <p class="readout" id="btT"></p>
+  <div class="q"><p class="qt"><i>a</i>Depois dos 10 spikes (7 liberações), qual é o posterior?</p>
+    <div class="pair"><label>α<input type="text" inputmode="numeric" name="a3al"></label><label>β<input type="text" inputmode="numeric" name="a3be"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Qual a média posterior de θ? (três casas)</p>
+    <div class="inline"><label>média<input type="text" inputmode="decimal" name="a3m"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Chegam mais 10 spikes, com 3 liberações. Qual a nova média posterior?</p>
+    <div class="inline"><label>média<input type="text" inputmode="decimal" name="a3m2"></label></div></div>
+  <div class="q"><p class="qt"><i>d</i>Se os mesmos 20 resultados chegassem em outra ordem, o posterior final…</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a3d" value="igual">seria o mesmo: só as contagens totais importam</label><label class="opt"><input type="radio" name="a3d" value="recentes">mudaria: os dados mais recentes pesam mais</label><label class="opt"><input type="radio" name="a3d" value="antigos">mudaria: os primeiros dados pesam mais</label></div></div>
+  <div class="send"><button data-send="a3">Enviar</button><span class="sent" data-status="a3"></span></div>
+  <div class="fb" data-fb="a3" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 4 ============ -->
+<section class="exp" id="a4" data-titulo="Três estimativas e um prior disfarçado">
+  <div><p class="num">Atividade 4 · 5 min · individual</p><h2>Três estimativas e um prior disfarçado</h2></div>
+  <p>MLE = k/n; MAP = (α − 1)/(α + β − 2); média posterior = α/(α + β).</p>
+  <div class="q"><p class="qt"><i>a</i>Para o posterior Beta(9, 5) da Atividade 3 (7 liberações em 10, prior Beta(2, 2)), calcule MLE, MAP e média posterior.</p>
+    <div class="trio"><label>MLE<input type="text" inputmode="decimal" name="a4mle"></label><label>MAP<input type="text" inputmode="decimal" name="a4map"></label><label>média<input type="text" inputmode="decimal" name="a4mean"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Outra sinapse liberou 3 vezes em 3 spikes. Com prior Beta(1, 1), quanto valem o MLE e a média posterior?</p>
+    <div class="pair"><label>MLE<input type="text" inputmode="decimal" name="a4b1"></label><label>média<input type="text" inputmode="decimal" name="a4b2"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Regressão com ruído de variância σ² = 1 e prior w ~ N(0, τ² = 0,25). A que λ da penalidade ½λw² o MAP equivale?</p>
+    <div class="inline"><label>λ<input type="text" inputmode="decimal" name="a4c"></label></div></div>
+  <div class="q"><p class="qt"><i>d</i>Que prior corresponde à penalidade L1, que zera pesos?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a4d" value="gaussiano">gaussiano</label><label class="opt"><input type="radio" name="a4d" value="laplace">de Laplace</label><label class="opt"><input type="radio" name="a4d" value="uniforme">uniforme</label></div></div>
+  <div class="q"><p class="qt"><i>e</i>Para qual função de perda a média posterior é a melhor estimativa?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a4e" value="quadratica">perda quadrática (θ̂ − θ)²</label><label class="opt"><input type="radio" name="a4e" value="absoluta">perda absoluta |θ̂ − θ|</label><label class="opt"><input type="radio" name="a4e" value="01">perda 0–1 (acertar em cheio)</label></div></div>
+  <div class="send"><button data-send="a4">Enviar</button><span class="sent" data-status="a4"></span></div>
+  <div class="fb" data-fb="a4" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 5 ============ -->
+<section class="exp" id="a5" data-titulo="Ver e tocar">
+  <div><p class="num">Atividade 5 · 6 min · individual</p><h2>Ver e tocar</h2></div>
+  <p>Visão: barra de <b>5,0 cm</b>, σ<sub>v</sub> = 0,5 cm. Tato: <b>5,6 cm</b>, σ<sub>t</sub> = 1 cm. <span class="badge">wᵥ = (1/σᵥ²) / (1/σᵥ² + 1/σₜ²)</span>, <span class="badge">1/σ² = 1/σᵥ² + 1/σₜ²</span>.</p>
+  <canvas class="plot" id="fuC" width="400" height="230" aria-label="Verossimilhanças da visão, do tato e da combinação"></canvas>
+  <div class="ctl"><label>visão = <span id="fuXv">5,0</span> cm<input type="range" id="fuX" min="3" max="8" step="0.1" value="5"></label>
+    <label>σ visão = <span id="fuSv">0,5</span> cm<input type="range" id="fuS" min="0.2" max="3" step="0.1" value="0.5"></label>
+    <label>tato = <span id="fuYv">5,6</span> cm<input type="range" id="fuY" min="3" max="8" step="0.1" value="5.6"></label>
+    <label>σ tato = <span id="fuTv">1,0</span> cm<input type="range" id="fuT" min="0.2" max="3" step="0.1" value="1"></label></div>
+  <p class="readout" id="fuR"></p>
+  <div class="q"><p class="qt"><i>a</i>Qual o peso da visão, wᵥ?</p>
+    <div class="inline"><label>wᵥ (entre 0 e 1)<input type="text" inputmode="decimal" name="a5w"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Qual a altura estimada pela combinação?</p>
+    <div class="inline"><label>altura (cm)<input type="text" inputmode="decimal" name="a5x"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Qual o desvio-padrão da estimativa combinada?</p>
+    <div class="inline"><label>σ (cm)<input type="text" inputmode="decimal" name="a5s"></label></div></div>
+  <div class="q"><p class="qt"><i>d</i>A visão fica borrada: σᵥ = 2 cm. Qual a nova estimativa combinada?</p>
+    <div class="inline"><label>altura (cm)<input type="text" inputmode="decimal" name="a5x2"></label></div></div>
+  <div class="q"><p class="qt"><i>e</i>No experimento de Körding &amp; Wolpert (2004), quando o feedback visual fica mais borrado, a estimativa do deslocamento…</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a5e" value="prior">se aproxima da média do prior (1 cm)</label><label class="opt"><input type="radio" name="a5e" value="feedback">segue ainda mais o feedback</label><label class="opt"><input type="radio" name="a5e" value="zero">vai para zero</label></div></div>
+  <div class="send"><button data-send="a5">Enviar</button><span class="sent" data-status="a5"></span></div>
+  <div class="fb" data-fb="a5" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 6 ============ -->
+<section class="exp" id="a6" data-titulo="Ler cinco neurônios">
+  <div><p class="num">Atividade 6 · 7 min · em duplas</p><h2>Ler cinco neurônios</h2></div>
+  <p>Spikes esperados f<sub>i</sub>(s) de 5 neurônios de Poisson para 3 estímulos (a soma é 16 para os três) e a contagem r num ensaio. Como Σf e rᵢ! não dependem de s: <span class="badge">log₂ L(s) = Σᵢ rᵢ log₂ fᵢ(s) + const</span>.</p>
+  <div class="tablewrap"><table class="dec"><tr><th></th><th>n1</th><th>n2</th><th>n3</th><th>n4</th><th>n5</th></tr>
+    <tr><td>f(A)</td><td>8</td><td>4</td><td>2</td><td>1</td><td>1</td></tr>
+    <tr><td>f(B)</td><td>1</td><td>4</td><td>8</td><td>2</td><td>1</td></tr>
+    <tr><td>f(C)</td><td>1</td><td>1</td><td>2</td><td>4</td><td>8</td></tr>
+    <tr><td>r</td><td class="test">1</td><td class="test">2</td><td class="test">2</td><td class="test">0</td><td class="test">0</td></tr></table></div>
+  <div class="q"><p class="qt"><i>a</i>Calcule log₂ L para A, B e C.</p>
+    <div class="trio"><label>A<input type="text" inputmode="decimal" name="a6A"></label><label>B<input type="text" inputmode="decimal" name="a6B"></label><label>C<input type="text" inputmode="decimal" name="a6C"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Qual é o estímulo de máxima verossimilhança?</p>
+    <div class="seg" role="radiogroup" aria-label="Estímulo de máxima verossimilhança"><label><input type="radio" name="a6mle" value="A">A</label><label><input type="radio" name="a6mle" value="B">B</label><label><input type="radio" name="a6mle" value="C">C</label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Com prior uniforme, quanto vale P(B | r)? (duas casas)</p>
+    <div class="inline"><label>P(B | r)<input type="text" inputmode="decimal" name="a6p"></label></div></div>
+  <div class="q"><p class="qt"><i>d</i>Se A for muito mais comum, prior (0,6; 0,2; 0,2): quanto vale P(A | r)? E qual passa a ser o MAP?</p>
+    <div class="inline"><label>P(A | r)<input type="text" inputmode="decimal" name="a6c"></label></div>
+    <div class="seg" role="radiogroup" aria-label="Estímulo MAP"><label><input type="radio" name="a6map" value="A">A</label><label><input type="radio" name="a6map" value="B">B</label><label><input type="radio" name="a6map" value="C">C</label></div></div>
+  <div class="q"><p class="qt"><i>e</i>Com contraste maior, todas as taxas dobram. O posterior…</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a6e" value="estreito">fica mais estreito: mais spikes, mais evidência</label><label class="opt"><input type="radio" name="a6e" value="largo">fica mais largo</label><label class="opt"><input type="radio" name="a6e" value="igual">não muda: as proporções são as mesmas</label></div></div>
+  <p class="meta">Decodificador: 5 neurônios com curvas de sintonia de orientação. Escolha o estímulo verdadeiro e o ganho (contraste); cada ensaio sorteia contagens de Poisson e mostra o posterior P(s | r).</p>
+  <canvas class="plot" id="dcC" width="400" height="330" aria-label="Curvas de sintonia, contagens de um ensaio e posterior sobre a orientação"></canvas>
+  <div class="cnt5" id="dcN"></div>
+  <div class="ctl"><label>estímulo = <span id="dcSv">10</span>°<input type="range" id="dcS" min="-80" max="80" step="1" value="10"></label>
+    <label>ganho = <span id="dcGv">1,00</span><input type="range" id="dcG" min="0.1" max="4" step="0.05" value="1"></label></div>
+  <div class="btns"><button type="button" class="ghost" id="dcT">Novo ensaio</button></div>
+  <p class="readout" id="dcR"></p>
+  <div class="send"><button data-send="a6">Enviar</button><span class="sent" data-status="a6"></span></div>
+  <div class="fb" data-fb="a6" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 7 ============ -->
+<section class="exp" id="a7" data-titulo="Limites e níveis">
+  <div><p class="num">Atividade 7 · 5 min · individual · opcional</p><h2>Limites e níveis</h2></div>
+  <p>Rede bayesiana com 5 variáveis binárias: nuvens → chuva, nuvens → irrigador, chuva e irrigador → grama molhada, grama molhada → escorregar.</p>
+  <div class="q"><p class="qt"><i>a</i>Quantos números exige a tabela conjunta completa? E a rede fatorada?</p>
+    <div class="pair"><label>tabela completa<input type="text" inputmode="numeric" name="a7a1"></label><label>rede<input type="text" inputmode="numeric" name="a7a2"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Com 50 variáveis binárias, a soma da evidência P(D) tem…</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a7b" value="100">cerca de 100 termos: dá para calcular</label><label class="opt"><input type="radio" name="a7b" value="aprox">2⁵⁰ ≈ 10¹⁵ termos: é preciso aproximar (MCMC, variacional)</label><label class="opt"><input type="radio" name="a7b" value="infinito">infinitos termos: não existe posterior</label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Classifique cada afirmação em C, A ou I.</p></div>
+  <p class="lead"><b>C</b> = computacional (o quê e por quê) · <b>A</b> = algorítmico (como) · <b>I</b> = implementação (com quê)</p>
+  <div class="marr" id="marrList"></div>
+  <div class="q"><p class="qt"><i>d</i>Qual a crítica central de Jones &amp; Love (2011)?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a7c" value="otimo">com prior e verossimilhança livres, quase tudo parece ótimo depois do fato — falta mecanismo</label><label class="opt"><input type="radio" name="a7c" value="matematica">a regra de Bayes está matematicamente errada</label><label class="opt"><input type="radio" name="a7c" value="neuronios">neurônios não disparam spikes</label></div></div>
+  <div class="send"><button data-send="a7">Enviar</button><span class="sent" data-status="a7"></span></div>
+  <div class="fb" data-fb="a7" hidden></div>
+</section>
+
+<footer>
+  <p>Materiais: <a href="simulacoes/aula12.html">simulações interativas da Aula 12</a> · <a href="index.html">todas as aulas</a></p>
+  <p>Prof. Daniel Y. Takahashi · Instituto do Cérebro, UFRN</p>
+</footer>
+</div>
+
+<script>
+(() => {
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const val = (n) => { const el = $(`[name="${n}"]:checked`) || $(`[name="${n}"]:not([type=radio]):not([type=checkbox])`); return el ? String(el.value).trim() : ''; };
+const num = (n) => { let t = String(val(n)).replace(/\s/g, '').replace('%', ''); if (/^-?(\d{1,3}(\.\d{3}){2,}|[1-9]\d{1,2}\.\d{3})$/.test(t)) t = t.replace(/\./g, ''); t = t.replace(',', '.').replace('−', '-'); const v = parseFloat(t); return isNaN(v) ? null : v; };
+const tag = (ok) => `<span class="mark ${ok ? 'ok' : 'no'}">${ok ? '✓' : '✗'}</span>`;
+function markRadio(name, correct) { $$(`[name="${name}"]`).forEach(i => { const l = i.closest('label'); l.classList.remove('right', 'wrong'); if (i.value === correct) l.classList.add('right'); else if (i.checked) l.classList.add('wrong'); }); }
+function markEl(el, ok) { el.classList.toggle('right', ok); el.classList.toggle('wrong', !ok); }
+const markInput = (name, ok) => markEl($(`[name="${name}"]`), ok);
+const near = (v, x, tol) => v !== null && Math.abs(v - x) <= tol;
+const fmt = (v, d = 2) => v.toFixed(d).replace('.', ',').replace('-', '−');
+function setupCanvas(c) { const r = window.devicePixelRatio || 1; const w = c.width, h = c.height; c.width = w * r; c.height = h * r; const g = c.getContext('2d'); g.scale(r, r); return { g, w, h }; }
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+function poisson(l) { if (l > 60) { let u = 0, v = 0; while (!u) u = Math.random(); v = Math.random(); return Math.max(0, Math.round(l + Math.sqrt(l) * Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v))); } const L = Math.exp(-l); let k = 0, p = 1; do { k++; p *= Math.random(); } while (p > L); return k - 1; }
+const COL5 = ['#1a56db', '#b45309', '#0d9488', '#6d28d9', '#15803d'];
+const pct = (v) => v === null ? null : (v <= 1.0001 ? 100 * v : v);   // aceita 0,078 ou 7,8
+const frac = (v) => v === null ? null : (v > 1.0001 ? v / 100 : v);   // aceita 66 ou 0,66
+
+/* ---------- Atividade 1: raster de Poisson ---------- */
+const PS = setupCanvas($('#psC')); let psTrials = [];
+function psNew() { const r = +$('#psR').value; psTrials = Array.from({ length: 20 }, () => { const t = []; let x = -Math.log(Math.random()) / r; while (x < 0.6) { t.push(x); x += -Math.log(Math.random()) / r; } return t; }); psDraw(); }
+function psDraw() {
+  const r = +$('#psR').value, W = +$('#psW').value / 1000; $('#psRv').textContent = r; $('#psWv').textContent = Math.round(W * 1000);
+  const { g, w, h } = PS; g.clearRect(0, 0, w, h); const X = (t) => 30 + t / 0.6 * (w - 40), t0 = 0.25, rowH = (h - 40) / 20;
+  g.fillStyle = css('--you'); g.globalAlpha = 0.16; g.fillRect(X(t0), 8, X(t0 + W) - X(t0), h - 40); g.globalAlpha = 1;
+  g.strokeStyle = css('--fg'); g.lineWidth = 1.3;
+  psTrials.forEach((tr, k) => tr.forEach(t => { g.beginPath(); g.moveTo(X(t), 10 + k * rowH); g.lineTo(X(t), 10 + (k + 0.8) * rowH); g.stroke(); }));
+  g.lineWidth = 1; g.fillStyle = css('--muted'); g.font = '12px ui-monospace,monospace'; g.fillText('0', 26, h - 14); g.fillText('600 ms', w - 54, h - 14); g.fillText('ensaios', 2, 12);
+  const lam = r * W, c = Array.from({ length: 400 }, () => poisson(lam)), m = c.reduce((a, b) => a + b, 0) / c.length, v = c.reduce((a, b) => a + (b - m) ** 2, 0) / c.length;
+  $('#psT').textContent = `λ = ${fmt(lam, 1)} · média ${fmt(m)} · variância ${fmt(v)} · Fano ${fmt(v / (m || 1))} · sem spike: ${fmt(100 * c.filter(x => x === 0).length / c.length, 1)}%`;
+}
+$('#psR').addEventListener('input', psNew); $('#psW').addEventListener('input', psDraw); $('#psN').addEventListener('click', psNew); psNew();
+
+/* ---------- Atividade 2: quadro de 1000 ícones ---------- */
+const IC = setupCanvas($('#icC')); const ORDER = (() => { let s = 7; const a = [...Array(1000).keys()]; for (let i = 999; i > 0; i--) { s = (s * 16807) % 2147483647; const j = s % (i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; })();
+function icDraw() {
+  const p = +$('#icP').value / 100, se = +$('#icS').value / 100, fp = +$('#icF').value / 100;
+  $('#icPv').textContent = fmt(100 * p, 1).replace(',0', ''); $('#icSv').textContent = Math.round(100 * se); $('#icFv').textContent = fmt(100 * fp, 1);
+  const nC = Math.round(1000 * p), tp = Math.round(nC * se), fpn = Math.round((1000 - nC) * fp), kind = new Array(1000).fill(3);
+  ORDER.forEach((idx, k) => { kind[idx] = k < tp ? 0 : k < nC ? 1 : k < nC + fpn ? 2 : 3; });
+  const { g, w, h } = IC; g.clearRect(0, 0, w, h); const cols = 40, cell = w / cols, cl = ['#dc2626', '#f4a6a6', '#b45309', css('--line')];
+  for (let i = 0; i < 1000; i++) { const r = Math.floor(i / cols), c = i % cols; g.fillStyle = cl[kind[i]]; g.beginPath(); g.arc(c * cell + cell / 2, r * cell + cell / 2, cell * 0.36, 0, 7); g.fill(); }
+  const post = se * p / (se * p + fp * (1 - p));
+  $('#icT').textContent = `${tp} verdadeiros + ${fpn} falsos positivos · P(C | +) = ${fmt(100 * post, 1)}%`;
+}
+['#icP', '#icS', '#icF'].forEach(s => $(s).addEventListener('input', icDraw)); icDraw();
+
+/* ---------- Atividade 3: atualização Beta ---------- */
+const BT = setupCanvas($('#btC')); let bt = { k: 0, n: 0, theta: null };
+function lbeta(a, b) { const lg = (z) => { const c = [76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5]; let x = z, y = z, t = x + 5.5; t -= (x + 0.5) * Math.log(t); let s = 1.000000000190015; c.forEach(q => s += q / ++y); return -t + Math.log(2.5066282746310005 * s / x); }; return lg(a) + lg(b) - lg(a + b); }
+const bpdf = (x, a, b) => Math.exp((a - 1) * Math.log(x) + (b - 1) * Math.log(1 - x) - lbeta(a, b));
+function btDraw() {
+  const a0 = +$('#btA').value, b0 = +$('#btB').value; $('#btAv').textContent = a0; $('#btBv').textContent = b0;
+  const a = a0 + bt.k, b = b0 + bt.n - bt.k, { g, w, h } = BT; g.clearRect(0, 0, w, h);
+  const xs = Array.from({ length: 199 }, (_, i) => (i + 1) / 200), P0 = xs.map(x => bpdf(x, a0, b0)), P1 = xs.map(x => bpdf(x, a, b)), M = Math.max(...P0, ...P1) * 1.08;
+  const X = (x) => 20 + x * (w - 40), Y = (y) => h - 26 - y / M * (h - 40);
+  g.strokeStyle = css('--line'); g.beginPath(); g.moveTo(20, h - 26); g.lineTo(w - 20, h - 26); g.stroke();
+  const line = (P, col, dash) => { g.strokeStyle = col; g.lineWidth = 2.2; g.setLineDash(dash); g.beginPath(); P.forEach((p, i) => i ? g.lineTo(X(xs[i]), Y(p)) : g.moveTo(X(xs[i]), Y(p))); g.stroke(); g.setLineDash([]); g.lineWidth = 1; };
+  line(P0, '#6d28d9', [5, 4]); line(P1, css('--accent'), []);
+  if (bt.theta !== null && bt.reveal) { g.strokeStyle = css('--you'); g.beginPath(); g.moveTo(X(bt.theta), 10); g.lineTo(X(bt.theta), h - 26); g.stroke(); }
+  g.fillStyle = css('--muted'); g.font = '12px ui-monospace,monospace'; g.fillText('0', 16, h - 10); g.fillText('θ', w / 2, h - 10); g.fillText('1', w - 24, h - 10);
+  g.fillStyle = '#6d28d9'; g.fillText(`prior Beta(${a0}, ${b0})`, 26, 18); g.fillStyle = css('--accent'); g.fillText(`posterior Beta(${a}, ${b})`, 26, 34);
+  $('#btT').textContent = `${bt.k} liberações em ${bt.n} spikes · média posterior ${fmt(a / (a + b), 3)}` + (bt.n ? ` · frequência k/n ${fmt(bt.k / bt.n, 3)}` : '') + (bt.theta !== null && bt.reveal ? ` · θ escondido = ${fmt(bt.theta, 2)}` : '');
+}
+$('#bt1').addEventListener('click', () => { bt.k++; bt.n++; btDraw(); }); $('#bt0').addEventListener('click', () => { bt.n++; btDraw(); });
+$('#btR').addEventListener('click', () => { if (bt.theta === null) bt.theta = 0.15 + 0.7 * Math.random(); for (let i = 0; i < 10; i++) { bt.n++; if (Math.random() < bt.theta) bt.k++; } bt.reveal = bt.n >= 50; btDraw(); });
+$('#btZ').addEventListener('click', () => { bt = { k: 0, n: 0, theta: null }; btDraw(); });
+['#btA', '#btB'].forEach(s => $(s).addEventListener('input', btDraw)); btDraw();
+
+/* ---------- Atividade 5: fusão de visão e tato ---------- */
+const FU = setupCanvas($('#fuC'));
+function fuDraw() {
+  const xv = +$('#fuX').value, sv = +$('#fuS').value, xt = +$('#fuY').value, st = +$('#fuT').value;
+  $('#fuXv').textContent = fmt(xv, 1); $('#fuSv').textContent = fmt(sv, 1); $('#fuYv').textContent = fmt(xt, 1); $('#fuTv').textContent = fmt(st, 1);
+  const pv = 1 / sv ** 2, pt = 1 / st ** 2, wv = pv / (pv + pt), xc = wv * xv + (1 - wv) * xt, sc = 1 / Math.sqrt(pv + pt);
+  const G = (x, m, s) => Math.exp(-0.5 * ((x - m) / s) ** 2) / s, xs = Array.from({ length: 301 }, (_, i) => 2 + i * 7 / 300);
+  const curves = [[xv, sv, '#1a56db', 'visão'], [xt, st, '#b45309', 'tato'], [xc, sc, '#0d9488', 'combinada']], M = Math.max(...curves.map(c => 1 / c[1])) * 1.08;
+  const { g, w, h } = FU; g.clearRect(0, 0, w, h); const X = (x) => 16 + (x - 2) / 7 * (w - 32), Y = (y) => h - 26 - y / M * (h - 40);
+  g.strokeStyle = css('--line'); g.beginPath(); g.moveTo(16, h - 26); g.lineTo(w - 16, h - 26); g.stroke();
+  curves.forEach(([m, s, col, lab], k) => { g.strokeStyle = col; g.lineWidth = k === 2 ? 3 : 2; g.beginPath(); xs.forEach((x, i) => i ? g.lineTo(X(x), Y(G(x, m, s))) : g.moveTo(X(x), Y(G(x, m, s)))); g.stroke(); g.fillStyle = col; g.font = '12px ui-monospace,monospace'; g.fillText(lab, 22, 16 + 15 * k); });
+  g.lineWidth = 1; g.fillStyle = css('--muted'); for (let c = 2; c <= 9; c++) g.fillText(String(c), X(c) - 4, h - 10);
+  $('#fuR').textContent = `peso da visão ${fmt(wv)} · combinada ${fmt(xc)} cm · σ ${fmt(sc)} cm`;
+}
+['#fuX', '#fuS', '#fuY', '#fuT'].forEach(s => $(s).addEventListener('input', fuDraw)); fuDraw();
+
+/* ---------- Atividade 6: decodificador de 5 neurônios ---------- */
+const DC = setupCanvas($('#dcC')); const PREF = [-60, -30, 0, 30, 60];
+const tune = (s, gn) => PREF.map(p => gn * (0.5 + 9.5 * Math.exp(-0.5 * ((s - p) / 22) ** 2)));
+let dcR = null;
+function dcTrial() { dcR = tune(+$('#dcS').value, +$('#dcG').value).map(poisson); dcDraw(); }
+function dcDraw() {
+  const s0 = +$('#dcS').value, gn = +$('#dcG').value; $('#dcSv').textContent = s0; $('#dcGv').textContent = fmt(gn);
+  if (!dcR) dcR = tune(s0, gn).map(poisson);
+  const { g, w, h } = DC; g.clearRect(0, 0, w, h); const S = Array.from({ length: 361 }, (_, i) => -90 + i / 2), X = (s) => 16 + (s + 90) / 180 * (w - 32);
+  const H1 = 130, mx = 10 * Math.max(gn, 0.01) * 1.05, Y1 = (y) => 14 + H1 - y / mx * H1;
+  g.fillStyle = css('--muted'); g.font = '12px ui-monospace,monospace'; g.fillText('curvas de sintonia fᵢ(s) e contagens deste ensaio (●)', 16, 11);
+  PREF.forEach((p, i) => { g.strokeStyle = COL5[i]; g.lineWidth = 2; g.beginPath(); S.forEach((s, k) => { const y = Y1(tune(s, gn)[i]); k ? g.lineTo(X(s), y) : g.moveTo(X(s), y); }); g.stroke();
+    g.fillStyle = COL5[i]; g.beginPath(); g.arc(X(p), Math.max(Y1(dcR[i]), 16), 5, 0, 7); g.fill(); });
+  g.lineWidth = 1; g.strokeStyle = css('--muted'); g.setLineDash([4, 3]); g.beginPath(); g.moveTo(X(s0), 14); g.lineTo(X(s0), h - 24); g.stroke(); g.setLineDash([]);
+  const F = S.map(s => tune(s, gn)), lp = F.map(f => f.reduce((a, fi, i) => a + dcR[i] * Math.log(fi) - fi, 0)), m = Math.max(...lp), p = lp.map(v => Math.exp(v - m)), Z = p.reduce((a, b) => a + b, 0), pn = p.map(v => v / Z);
+  const mean = pn.reduce((a, v, k) => a + v * S[k], 0), sd = Math.sqrt(pn.reduce((a, v, k) => a + v * (S[k] - mean) ** 2, 0)), pm = Math.max(...pn);
+  const y0 = h - 24, H2 = 140; g.fillStyle = css('--muted'); g.fillText('posterior P(s | r), prior uniforme', 16, y0 - H2 - 6);
+  g.fillStyle = css('--accent'); g.globalAlpha = 0.25; g.beginPath(); g.moveTo(X(-90), y0); S.forEach((s, k) => g.lineTo(X(s), y0 - pn[k] / pm * H2)); g.lineTo(X(90), y0); g.fill(); g.globalAlpha = 1;
+  g.strokeStyle = css('--accent'); g.lineWidth = 2; g.beginPath(); S.forEach((s, k) => k ? g.lineTo(X(s), y0 - pn[k] / pm * H2) : g.moveTo(X(s), y0 - pn[k] / pm * H2)); g.stroke(); g.lineWidth = 1;
+  g.strokeStyle = css('--line'); g.beginPath(); g.moveTo(16, y0); g.lineTo(w - 16, y0); g.stroke();
+  g.fillStyle = css('--muted'); [-90, -45, 0, 45, 90].forEach(s => g.fillText(String(s).replace('-', '−'), X(s) - 8, h - 8));
+  $('#dcN').innerHTML = dcR.map((r, i) => `<span style="color:${COL5[i]}">n${i + 1}: ${r}</span>`).join('');
+  $('#dcR').textContent = `${dcR.reduce((a, b) => a + b, 0)} spikes · estimativa ${fmt(mean, 0)}° · incerteza (dp) ${fmt(sd, 1)}°`;
+}
+$('#dcT').addEventListener('click', dcTrial); $('#dcS').addEventListener('input', dcTrial); $('#dcG').addEventListener('input', dcTrial); dcDraw();
+
+/* ---------- Atividade 7 ---------- */
+const MARR = [
+  ['Perceber é escolher a causa mais provável dos sinais, combinando prior e verossimilhança.', 'C', 'o problema e sua solução'],
+  ['Amostrar o posterior com uma cadeia de Metropolis.', 'A', 'o procedimento'],
+  ['O potencial fica perto do limiar, e os disparos saem quase Poisson.', 'I', 'biofísica do neurônio'],
+  ['Somar as contagens de duas populações para multiplicar as verossimilhanças.', 'A', 'como combinar'],
+  ['A liberação de vesículas na sinapse é probabilística.', 'I', 'a sinapse'],
+  ['No rastreamento, decidir minimizando o erro esperado dada a prevalência.', 'C', 'o objetivo (perda esperada)'],
+];
+$('#marrList').innerHTML = MARR.map(([t], k) => `<div class="st"><span>${k + 1}. ${t}</span><div class="seg" role="radiogroup" aria-label="Nível da afirmação ${k + 1}">
+  ${['C', 'A', 'I'].map(l => `<label><input type="radio" name="m${k}" value="${l}">${l}</label>`).join('')}</div></div>`).join('');
+
+/* ---------- correção ---------- */
+const ACT = {
+  a1() {
+    const m = num('a1m'), v = num('a1v'), om = near(m, 2, 0.01) && near(v, 2, 0.01); markInput('a1m', near(m, 2, 0.01)); markInput('a1v', near(v, 2, 0.01));
+    const p = pct(num('a1p')), op = near(p, 13.53, 0.6); markInput('a1p', op);
+    const t = num('a1t'), ot = near(t, 5, 0.05); markInput('a1t', ot);
+    const n = num('a1n'), on = near(n, 50, 0.5); markInput('a1n', on);
+    const d = val('a1d'); markRadio('a1d', 'limiar');
+    const s = om + op + ot + on + (d === 'limiar');
+    return { score: `${s}/5`, resp: `média ${m ?? '—'}, var ${v ?? '—'} | P0 ${num('a1p') ?? '—'} | janela ${t ?? '—'} s | neurônios ${n ?? '—'} | ${d || '—'}`,
+      fb: `<p class="score">${s} de 5</p><ul>
+      <li>${tag(om)} λ = 20 × 0,1 = 2: <b>média 2 e variância 2</b> — num processo de Poisson a variância é igual à média (fator de Fano = 1).</li>
+      <li>${tag(op)} P(0) = e<sup>−2</sup> ≈ <b>13,5%</b> dos ensaios sem spike algum.</li>
+      <li>${tag(ot && on)} CV = 1/√λ = 0,1 exige λ = 100 spikes: <b>5 s</b> com um neurônio (100/20), ou <b>50 neurônios</b> em 100 ms (50 × 2).</li>
+      <li>${tag(d === 'limiar')} O potencial fica <b>logo abaixo do limiar</b>, para responder depressa, e é empurrado pelas entradas quase Poisson dos outros neurônios (Rolls, 2023, p. 711).</li></ul>
+      <figure><img src="img/aula12/f1_poisson.png" alt="Raster de 25 ensaios, histograma da contagem comparado com a Poisson de média 2 e variância contra média sobre a reta de Fano igual a 1." loading="lazy"></figure>` };
+  },
+  a2() {
+    const tp = num('a2tp'), fp = num('a2fp'), otp = near(tp, 8, 0.01), ofp = near(fp, 95, 1.01); markInput('a2tp', otp); markInput('a2fp', ofp);
+    const p = pct(num('a2p')), op = near(p, 7.76, 0.35); markInput('a2p', op);
+    const c = pct(num('a2c')), oc = near(c, 48.08, 1.1); markInput('a2c', oc);
+    const d = pct(num('a2d')), od = near(d, 41.2, 1.6); markInput('a2d', od);
+    const e = val('a2e'); markRadio('a2e', 'taxa-base');
+    const s = otp + ofp + op + oc + od + (e === 'taxa-base');
+    return { score: `${s}/6`, resp: `VP ${tp ?? '—'} FP ${fp ?? '—'} | P(C|+) ${num('a2p') ?? '—'} | prev10 ${num('a2c') ?? '—'} | 2º teste ${num('a2d') ?? '—'} | ${e || '—'}`,
+      fb: `<p class="score">${s} de 6</p><ul>
+      <li>${tag(otp && ofp)} 1000 × 0,01 × 0,8 = <b>8</b> verdadeiros positivos; 990 × 0,096 ≈ <b>95</b> falsos positivos.</li>
+      <li>${tag(op)} P(C | +) = 8 / (8 + 95) ≈ <b>7,8%</b>. Eddy (1982): 95 de 100 médicos responderam algo em torno de 75%.</li>
+      <li>${tag(oc)} Prevalência 10%: 0,08 / (0,08 + 0,9 × 0,096) ≈ <b>48%</b>. A taxa-base manda.</li>
+      <li>${tag(od)} O posterior vira prior: 0,8 × 0,078 / (0,8 × 0,078 + 0,096 × 0,922) ≈ <b>41%</b>.</li>
+      <li>${tag(e === 'taxa-base')} O erro é <b>trocar P(+ | C) por P(C | +)</b>, ignorando a prevalência.</li></ul>
+      <figure><img src="img/aula12/f5_tree.png" alt="Árvore de frequências naturais: 1000 mulheres, 10 com câncer das quais 8 testam positivo, 990 sem câncer das quais 95 testam positivo; 8 de 103 positivos." loading="lazy"><figcaption>Frequências naturais (Gigerenzer &amp; Hoffrage, 1995): contar dispensa multiplicar condicionais.</figcaption></figure>` };
+  },
+  a3() {
+    const al = num('a3al'), be = num('a3be'), oab = al === 9 && be === 5; markInput('a3al', al === 9); markInput('a3be', be === 5);
+    const m = num('a3m'), om = near(m, 9 / 14, 0.006); markInput('a3m', om);
+    const m2 = num('a3m2'), om2 = near(m2, 0.5, 0.006); markInput('a3m2', om2);
+    const d = val('a3d'); markRadio('a3d', 'igual');
+    const s = oab + om + om2 + (d === 'igual');
+    return { score: `${s}/4`, resp: `Beta(${al ?? '—'}, ${be ?? '—'}) | média ${m ?? '—'} | depois ${m2 ?? '—'} | ordem: ${d || '—'}`,
+      fb: `<p class="score">${s} de 4</p><ul>
+      <li>${tag(oab)} <b>Beta(9, 5)</b>: α = 2 + 7 liberações, β = 2 + 3 falhas.</li>
+      <li>${tag(om)} Média 9/14 ≈ <b>0,643</b> — entre o prior (0,5) e a frequência (0,7).</li>
+      <li>${tag(om2)} O posterior vira prior: Beta(12, 12), média <b>0,5</b>.</li>
+      <li>${tag(d === 'igual')} <b>Não muda</b>: só as contagens totais entram. Por isso a regra serve a um sistema que aprende um dado de cada vez.</li></ul>
+      <figure><img src="img/aula12/f6_beta.png" alt="Posteriores Beta depois de 0, 10, 20, 60 e 200 spikes se estreitando em torno do valor verdadeiro, e a média posterior convergindo." loading="lazy"></figure>` };
+  },
+  a4() {
+    const W = [['a4mle', 0.7], ['a4map', 2 / 3], ['a4mean', 9 / 14]]; let oa = 0; W.forEach(([n, x]) => { const ok = near(num(n), x, 0.011); markInput(n, ok); oa += ok; });
+    const b1 = num('a4b1'), b2 = num('a4b2'), ob = near(b1, 1, 0.001) && near(b2, 0.8, 0.005); markInput('a4b1', near(b1, 1, 0.001)); markInput('a4b2', near(b2, 0.8, 0.005));
+    const c = num('a4c'), oc = near(c, 4, 0.01); markInput('a4c', oc);
+    const d = val('a4d'), e = val('a4e'); markRadio('a4d', 'laplace'); markRadio('a4e', 'quadratica');
+    const s = (oa === 3) + ob + oc + (d === 'laplace') + (e === 'quadratica');
+    return { score: `${s}/5`, resp: `MLE ${num('a4mle') ?? '—'} MAP ${num('a4map') ?? '—'} média ${num('a4mean') ?? '—'} | 3/3: ${b1 ?? '—'}, ${b2 ?? '—'} | λ ${c ?? '—'} | L1: ${d || '—'} | perda: ${e || '—'}`,
+      fb: `<p class="score">${s} de 5</p><ul>
+      <li>${tag(oa === 3)} <b>MLE 0,70</b> (7/10) · <b>MAP 0,67</b> (8/12) · <b>média 0,64</b> (9/14). O posterior é assimétrico, por isso os três diferem.</li>
+      <li>${tag(ob)} 3 em 3: <b>MLE = 1</b> (uma falha seria "impossível"); média posterior (1 + 3)/(2 + 3) = <b>0,8</b> — regra da sucessão de Laplace.</li>
+      <li>${tag(oc)} λ = σ²/τ² = 1/0,25 = <b>4</b>: regularização L2 é um prior gaussiano.</li>
+      <li>${tag(d === 'laplace')} <b>Laplace</b>: −log P(w) ∝ |w| — o termo λΣ|aᵢ| da codificação esparsa (Aula 7).</li>
+      <li>${tag(e === 'quadratica')} A média minimiza a <b>perda quadrática</b>; a mediana, a absoluta; o MAP, a 0–1.</li></ul>
+      <figure><img src="img/aula12/f7_estimators.png" alt="MLE, MAP e média marcados sobre o posterior Beta(9,5); priors de força crescente puxando o posterior; penalidades L2 e L1 como menos log de priors gaussiano e de Laplace." loading="lazy"></figure>` };
+  },
+  a5() {
+    const w = num('a5w'), ow = near(w, 0.8, 0.01); markInput('a5w', ow);
+    const x = num('a5x'), ox = near(x, 5.12, 0.02); markInput('a5x', ox);
+    const sg = num('a5s'), os = near(sg, 0.447, 0.01); markInput('a5s', os);
+    const x2 = num('a5x2'), ox2 = near(x2, 5.48, 0.02); markInput('a5x2', ox2);
+    const e = val('a5e'); markRadio('a5e', 'prior');
+    const s = ow + ox + os + ox2 + (e === 'prior');
+    return { score: `${s}/5`, resp: `wv ${w ?? '—'} | ŝ ${x ?? '—'} | σ ${sg ?? '—'} | borrada ${x2 ?? '—'} | K&W: ${e || '—'}`,
+      fb: `<p class="score">${s} de 5</p><ul>
+      <li>${tag(ow)} Precisões 1/0,25 = 4 e 1/1 = 1: <b>wᵥ = 0,8</b>.</li>
+      <li>${tag(ox)} 0,8 × 5,0 + 0,2 × 5,6 = <b>5,12 cm</b>.</li>
+      <li>${tag(os)} 1/σ² = 4 + 1 = 5: <b>σ ≈ 0,45 cm</b>, melhor que a visão sozinha (0,5).</li>
+      <li>${tag(ox2)} σᵥ = 2: precisões 0,25 e 1, wᵥ = 0,2 → <b>5,48 cm</b> (σ ≈ 0,89). Agora o tato manda — como em Ernst &amp; Banks (2002).</li>
+      <li>${tag(e === 'prior')} Feedback mais borrado, mais peso no prior: a estimativa <b>se aproxima de 1 cm</b>.</li></ul>
+      <figure><img src="img/aula12/f8_fusion.png" alt="Gaussianas da visão, do tato e da combinação com visão nítida e com visão borrada." loading="lazy"></figure>
+      <figure><img src="img/aula12/f9_predictions.png" alt="Previsões do modelo: inclinação da estimativa diminuindo com o borrão do feedback; peso da visão caindo com o ruído visual." loading="lazy"><figcaption>Previsões do modelo (não dados) para Körding &amp; Wolpert (2004) e Ernst &amp; Banks (2002).</figcaption></figure>` };
+  },
+  a6() {
+    const W = [['a6A', 9], ['a6B', 10], ['a6C', 2]]; let oa = 0; W.forEach(([n, x]) => { const ok = near(num(n), x, 0.05); markInput(n, ok); oa += ok; });
+    const mle = val('a6mle'); markRadio('a6mle', 'B');
+    const p = frac(num('a6p')), op = near(p, 0.665, 0.012); markInput('a6p', op);
+    const c = frac(num('a6c')), oc = near(c, 0.599, 0.012); markInput('a6c', oc);
+    const map = val('a6map'); markRadio('a6map', 'A');
+    const e = val('a6e'); markRadio('a6e', 'estreito');
+    const s = (oa === 3) + (mle === 'B') + op + oc + (map === 'A') + (e === 'estreito');
+    return { score: `${s}/6`, resp: `log2L ${W.map(([n]) => num(n) ?? '—').join(',')} | MLE ${mle || '—'} | P(B) ${num('a6p') ?? '—'} | P(A) ${num('a6c') ?? '—'} MAP ${map || '—'} | ${e || '—'}`,
+      fb: `<p class="score">${s} de 6</p><ul>
+      <li>${tag(oa === 3)} A: 1·3 + 2·2 + 2·1 = <b>9</b>; B: 2·2 + 2·3 = <b>10</b>; C: 2·1 = <b>2</b>.</li>
+      <li>${tag(mle === 'B')} Máxima verossimilhança: <b>B</b>.</li>
+      <li>${tag(op)} 2¹⁰ / (2⁹ + 2¹⁰ + 2²) = 1024/1540 ≈ <b>0,66</b>. A ainda tem 0,33: guardar só o vencedor perderia isso.</li>
+      <li>${tag(oc && map === 'A')} 0,6 × 512 contra 0,2 × 1024: P(A | r) ≈ <b>0,60</b> e o <b>MAP vira A</b>. Um prior forte vence uma verossimilhança 2 vezes maior.</li>
+      <li>${tag(e === 'estreito')} Mais spikes, mais evidência: o posterior <b>fica mais estreito</b>. O ganho da população codifica a confiança (Ma et al., 2006). Confira no decodificador.</li></ul>
+      <figure><img src="img/aula12/f11_decode3.png" alt="Spikes esperados dos cinco neurônios para A, B e C com as contagens observadas, e o posterior com prior uniforme e com prior favorecendo A." loading="lazy"></figure>` };
+  },
+  a7() {
+    const a1 = num('a7a1'), a2 = num('a7a2'), oa = a1 === 31 && a2 === 11; markInput('a7a1', a1 === 31); markInput('a7a2', a2 === 11);
+    const bb = val('a7b'), c = val('a7c'); markRadio('a7b', 'aprox'); markRadio('a7c', 'otimo');
+    let sm = 0;
+    MARR.forEach(([, cc], k) => { const v = val('m' + k); if (v === cc) sm++;
+      $$(`[name="m${k}"]`).forEach(i => { const l = i.closest('label'); l.classList.remove('right', 'wrong'); if (i.value === cc) l.classList.add('right'); else if (i.checked) l.classList.add('wrong'); }); });
+    const s = oa + (bb === 'aprox') + sm + (c === 'otimo');
+    return { score: `${s}/9`, resp: `tabela ${a1 ?? '—'}, rede ${a2 ?? '—'} | ${bb || '—'} | ` + MARR.map((_, k) => `${k + 1}:${val('m' + k) || '—'}`).join(' ') + ` | ${c || '—'}`,
+      fb: `<p class="score">${s} de 9</p><ul>
+      <li>${tag(oa)} Tabela completa: 2⁵ − 1 = <b>31</b>; rede: 1 + 2 + 2 + 4 + 2 = <b>11</b> (cada nó guarda só P(nó | pais)).</li>
+      <li>${tag(bb === 'aprox')} 2⁵⁰ ≈ <b>10¹⁵ termos</b>: é preciso aproximar — amostrar (MCMC) ou otimizar (variacional, o ELBO do VAE da Aula 7).</li>
+      ${MARR.map(([, cc, why], k) => `<li>${tag(val('m' + k) === cc)} ${k + 1}. <b>${cc}</b> — ${why}</li>`).join('')}
+      <li>${tag(c === 'otimo')} Jones &amp; Love (2011): com prior e verossimilhança à escolha, quase tudo parece ótimo depois do fato; falta dizer algo sobre o mecanismo.</li></ul>
+      <figure><img src="img/aula12/f13_approx.png" alt="Cadeia de Metropolis, histograma das amostras reproduzindo um posterior bimodal e a melhor gaussiana variacional cobrindo só um modo." loading="lazy"></figure>` };
+  },
+};
+
+/* ---------- envio ---------- */
+$$('[data-send]').forEach(btn => btn.addEventListener('click', () => {
+  const id = btn.dataset.send, sec = document.getElementById(id);
+  if (!window.Registro || !Registro.identificado()) { window.Registro && Registro.pedeId(); return; }
+  const r = ACT[id]();
+  const ok = Registro.atividade(id, sec.dataset.titulo, r.score, r.resp);
+  const fb = $(`[data-fb="${id}"]`); fb.innerHTML = '<h3>Gabarito</h3>' + r.fb; fb.hidden = false;
+  const st = $(`[data-status="${id}"]`);
+  const first = Registro.aluno().n.split(' ')[0];
+  st.textContent = ok ? `✓ Resposta registrada para ${first}. Você pode corrigir e reenviar.` : 'Identifique-se no topo da página.';
+  btn.textContent = 'Reenviar';
+  const a = $(`nav a[href="#${id}"]`); if (a) a.classList.add('done');
+  fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}));
+})();
+</script>
+<script src="config.js?v=2"></script>
+<script src="registro.js?v=2" data-aula="12"></script>

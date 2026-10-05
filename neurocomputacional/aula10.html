@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neurociência Computacional · Aula 10 — Atividades</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#142033; --muted:#5b6879; --line:#d8dee6;
+  --accent:#0d7377; --accent-ink:#ffffff; --you:#b45309; --soft:#e2f0f0; --warn:#a33a2a; --ok:#15803d; --okbg:#e3f3e8; --nobg:#fbe9e6;
+  --display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --ok:#5fd08a; --okbg:#173a28; --nobg:#3d2020; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --ok:#5fd08a; --okbg:#173a28; --nobg:#3d2020; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:17px/1.5 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:grid;gap:22px}
+header{display:grid;gap:8px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(32px,8vw,50px)/1.02 var(--display);font-stretch:115%;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font:750 23px/1.15 var(--display);font-stretch:108%;margin:0;text-wrap:balance}
+p{margin:0;max-width:65ch}
+.lead{color:var(--muted)}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{font:600 14px/1 var(--body);color:var(--fg);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:9px 12px;background:var(--surface)}
+nav a.done{border-color:var(--ok);color:var(--ok)}
+a{color:var(--accent)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,nav a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.exp>*{min-width:0}
+section.exp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 18px;display:grid;gap:16px;min-width:0;scroll-margin-top:12px}
+.num{font:600 13px/1 var(--mono);color:var(--you);letter-spacing:.06em;text-transform:uppercase}
+.meta{font:500 13px/1.3 var(--mono);color:var(--muted)}
+.q{display:grid;gap:8px;border-top:1px dashed var(--line);padding-top:14px}
+.q>.qt{font-weight:600}
+.q .qt i{font-family:var(--mono);font-style:normal;color:var(--you);margin-right:6px}
+.opts{display:grid;gap:8px}
+@media (min-width:560px){.opts.two{grid-template-columns:1fr 1fr}}
+.opt{display:flex;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;cursor:pointer;min-height:48px;background:var(--bg)}
+.opt input{width:20px;height:20px;accent-color:var(--accent);flex:none}
+.opt:has(input:checked){border-color:var(--accent);background:var(--soft)}
+.opt.right{border-color:var(--ok);background:var(--okbg)}
+.opt.wrong{border-color:var(--warn);background:var(--nobg)}
+textarea,input[type=number],input[type=text]{width:100%;font:500 17px/1.4 var(--body);color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;min-height:48px}
+textarea{min-height:90px;resize:vertical}
+.inline{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.inline label{display:grid;gap:4px;font-size:14px;font-weight:600;flex:1 1 140px;min-width:0}
+select{font:500 17px var(--body);color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px;min-height:48px;width:100%}
+button{font:700 16px/1 var(--display);border:0;border-radius:10px;padding:14px 18px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px;touch-action:manipulation}
+button.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+button:disabled{opacity:.45;cursor:default}
+.send{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.sent{font:600 14px/1.3 var(--mono);color:var(--ok)}
+.sent.pend{color:var(--you)}
+.fb{background:var(--soft);border-radius:10px;padding:14px 16px;display:grid;gap:8px;font-size:16px}
+.fb h3{margin:0;font:700 17px/1.2 var(--display)}
+.fb .score{font:700 22px/1 var(--display);color:var(--you)}
+.fb ul{margin:0;padding-left:20px;display:grid;gap:6px}
+.mark{font-weight:700}
+.mark.ok{color:var(--ok)} .mark.no{color:var(--warn)}
+figure{margin:0;display:grid;gap:6px}
+figure img{width:100%;height:auto;border-radius:8px;background:#fff;border:1px solid var(--line)}
+figcaption{font-size:13px;color:var(--muted)}
+.tablewrap{overflow-x:auto}
+table.dec{border-collapse:collapse;width:100%;font:500 15px/1.2 var(--mono);text-align:center}
+table.dec th,table.dec td{border:1px solid var(--line);padding:8px 3px}
+table.dec th{background:var(--soft);font:600 13px/1.2 var(--body)}
+table.dec td.test{background:color-mix(in srgb,var(--you) 18%,transparent);font-weight:700}
+table.dec td.hi{font-weight:700;color:var(--accent)}
+.dots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.dots label{display:grid;gap:4px;font:600 13px/1.2 var(--body);text-align:center;min-width:0}
+.dots input{min-width:0;font-size:15px;padding:10px 2px;text-align:center}
+.opts.five{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+.opts.five .opt{padding:10px 6px;gap:6px;justify-content:center}
+.dots input{text-align:center;padding:10px 4px;font-family:var(--mono)}
+.dots input.right{border-color:var(--ok);background:var(--okbg)}
+.dots input.wrong{border-color:var(--warn);background:var(--nobg)}
+.marr{display:grid;gap:10px}
+.marr .st{display:grid;gap:8px;border:1px solid var(--line);border-radius:10px;padding:12px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.seg label{border:1.5px solid var(--line);border-radius:8px;text-align:center;padding:10px 4px;font:700 14px/1.1 var(--display);cursor:pointer;min-height:44px;display:grid;place-items:center;background:var(--bg)}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){border-color:var(--accent);background:var(--soft);color:var(--accent)}
+.seg label.right{border-color:var(--ok)!important;background:var(--okbg)!important;color:var(--ok)!important}
+.seg label.wrong{border-color:var(--warn)!important;background:var(--nobg)!important;color:var(--warn)!important}
+.seg label:focus-within{outline:3px solid var(--accent);outline-offset:1px}
+.xor{display:grid;gap:12px}
+.xor table{border-collapse:collapse;font:500 16px/1 var(--mono);text-align:center;width:100%;max-width:420px}
+.xor th,.xor td{border:1px solid var(--line);padding:9px}
+.xor th{background:var(--soft);font:600 13px var(--body)}
+.xor td.ok{color:var(--ok);font-weight:700} .xor td.no{color:var(--warn);font-weight:700}
+.xor .ctl{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.xor .ctl label{display:grid;gap:4px;font:600 13px/1.2 var(--mono)}
+.xor input[type=range]{width:100%;accent-color:var(--accent)}
+.badge{font:700 14px/1.2 var(--mono)}
+footer{font-size:13px;color:var(--muted);display:grid;gap:6px}
+/* cartão de identificação (registro.js) */
+.nc-id{background:var(--surface);border:2px solid var(--accent);border-radius:14px;padding:18px;display:grid;gap:12px}
+.nc-id.nc-in{border:0;padding:0;background:none}
+.nc-id h2{margin:0 0 4px}
+.nc-lead{color:var(--muted);margin:0 0 12px!important}
+.nc-row{display:grid;gap:10px;grid-template-columns:1fr}
+@media (min-width:560px){.nc-row{grid-template-columns:1fr 1.6fr}}
+.nc-id label{display:grid;gap:4px;font:600 14px/1.2 var(--body)}
+.nc-id input{font:17px var(--body);padding:12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);min-height:48px;width:100%}
+.nc-err{color:var(--warn);font-size:14px;min-height:1em;margin:6px 0!important}
+.nc-priv{font-size:13px;color:var(--muted);margin-top:10px!important}
+.nc-who{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:15px;background:var(--soft);border-radius:10px;padding:10px 14px}
+.nc-link{background:none!important;border:0!important;color:var(--accent)!important;font:600 14px var(--body)!important;padding:4px 0!important;min-height:0!important;text-decoration:underline;cursor:pointer}
+.nc-fila{font:500 13px var(--mono);color:var(--muted)}
+.nc-flash{animation:ncflash 1.2s 2}
+@keyframes ncflash{50%{box-shadow:0 0 0 6px var(--you)}}
+@media (prefers-reduced-motion:reduce){.nc-flash{animation:none}}
+canvas.plot{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;touch-action:none}
+.ctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.ctl label{display:grid;gap:4px;font:600 13px/1.2 var(--mono)}
+.ctl input[type=range]{width:100%;accent-color:var(--accent)}
+.readout{font:600 15px/1.4 var(--mono);color:var(--accent)}
+.mp{display:grid;gap:10px}
+.mp .row{display:grid;gap:8px;border:1px solid var(--line);border-radius:10px;padding:12px}
+.mp .ins{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.mp .ins label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center;min-width:0}
+.mp .ins input{text-align:center;padding:9px 2px;font-family:var(--mono);min-width:0}
+.tt{display:flex;flex-wrap:wrap;gap:6px;font:500 13px/1 var(--mono)}
+.tt span{border:1px solid var(--line);border-radius:6px;padding:6px 7px}
+.tt span.ok{border-color:var(--ok);color:var(--ok);background:var(--okbg)}
+.tt span.no{border-color:var(--warn);color:var(--warn);background:var(--nobg)}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btns button{padding:11px 14px;min-height:44px;font-size:15px}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.trio label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center;min-width:0}
+.trio input{text-align:center;padding:9px 2px;font-family:var(--mono);min-width:0}
+.trio input.right,.inline input.right{border-color:var(--ok);background:var(--okbg)}
+.trio input.wrong,.inline input.wrong{border-color:var(--warn);background:var(--nobg)}
+table.log{border-collapse:collapse;width:100%;font:500 13px/1.2 var(--mono);text-align:center}
+table.log th,table.log td{border:1px solid var(--line);padding:5px 2px}
+table.log th{background:var(--soft);font:600 12px var(--body)}
+table.log tr.err td{color:var(--warn)}
+.match{display:grid;gap:8px}
+.match .m{display:grid;grid-template-columns:1fr minmax(0,1.3fr);gap:8px;align-items:center}
+.match .m span{font-weight:600}
+@media (max-width:420px){.match .m{grid-template-columns:1fr}}
+.grid64{display:grid;grid-template-columns:auto repeat(4,minmax(0,1fr));gap:5px;align-items:center;max-width:420px}
+.grid64 span{font:600 12px/1 var(--mono);color:var(--muted);text-align:center}
+.grid64 input{text-align:center;padding:8px 2px;min-height:40px;font-family:var(--mono);min-width:0}
+.grid64 input.right{border-color:var(--ok);background:var(--okbg)}
+.grid64 input.wrong{border-color:var(--warn);background:var(--nobg)}
+.quad{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;max-width:420px}
+.quad label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center;min-width:0}
+.quad input{text-align:center;padding:9px 2px;font-family:var(--mono);min-width:0}
+.quad input.right{border-color:var(--ok);background:var(--okbg)}
+.quad input.wrong{border-color:var(--warn);background:var(--nobg)}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;max-width:300px}
+.pair label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center}
+.pair input{text-align:center;font-family:var(--mono)}
+.pair input.right{border-color:var(--ok);background:var(--okbg)}
+.pair input.wrong{border-color:var(--warn);background:var(--nobg)}
+table.cases{border-collapse:collapse;width:100%;font-size:15px}
+table.cases td,table.cases th{border-bottom:1px solid var(--line);padding:8px 4px;vertical-align:middle;text-align:left}
+table.cases th{font:600 13px var(--body);color:var(--muted)}
+table.cases select{min-height:44px;padding:6px;font-size:15px}
+select.right{border-color:var(--ok);background:var(--okbg)}
+select.wrong{border-color:var(--warn);background:var(--nobg)}
+.tb{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1fr);gap:6px;align-items:center}
+.tb b{font-size:13px;color:var(--muted)}
+.tb select{font-size:14px;padding:8px 4px}
+/* --- Aula 10 --- */
+.bandit{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bandit.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.bandit button{min-height:64px;font-size:20px}
+.bandit button.hit{outline:3px solid var(--ok)} .bandit button.miss{outline:3px solid var(--warn)}
+.kpi{display:flex;flex-wrap:wrap;gap:8px 16px;font:600 15px/1.4 var(--mono);color:var(--accent)}
+.seg.two{grid-template-columns:repeat(2,1fr)}
+.ctl select{font-size:15px;min-height:44px;padding:6px}
+</style>
+
+<div class="wrap" id="student">
+<header>
+  <span class="eyebrow">Neurociência Computacional · Aula 10 · UFRN</span>
+  <h1>Aprendizado por reforço I</h1>
+  <p class="lead">Valor, Bellman e o erro de diferença temporal. Identifique-se abaixo, faça cada atividade quando o professor pedir e toque em <b>Enviar</b> — sua resposta fica registrada e o gabarito aparece em seguida.</p>
+</header>
+
+<nav aria-label="Atividades">
+  <a href="#a1">1 · Retorno</a><a href="#a2">2 · Bellman</a><a href="#a3">3 · Iteração de valor</a><a href="#a4">4 · Explorar</a><a href="#a5">5 · TD(0)</a><a href="#a6">6 · Dopamina</a><a href="#a7">7 · Marr</a>
+</nav>
+
+<!-- ============ ATIVIDADE 1 ============ -->
+<section class="exp" id="a1" data-titulo="Quanto vale o caminho?">
+  <div><p class="num">Atividade 1 · 6 min · individual</p><h2>Quanto vale o caminho?</h2></div>
+  <p>Recompensas a partir de agora: <b>−1, −1, −1, +10</b> (custo por passo, comida no 4º passo). <span class="badge">G = r₁ + γ·r₂ + γ²·r₃ + γ³·r₄</span></p>
+  <canvas class="plot" id="dgC" width="600" height="300" aria-label="Cada recompensa e sua parcela descontada γ elevado a k vezes r"></canvas>
+  <div class="ctl"><label>γ = <span id="dgGv">0,90</span><input type="range" id="dgG" min="0" max="1" step="0.01" value="0.9"></label></div>
+  <p class="readout" id="dgR"></p>
+  <div class="q"><p class="qt"><i>a</i>Calcule G com γ = 0,9.</p>
+    <div class="inline"><label>G<input type="text" inputmode="decimal" name="a1a"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>E com γ = 0,5?</p>
+    <div class="inline"><label>G<input type="text" inputmode="decimal" name="a1b"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Escolha: <b>1 agora</b> ou <b>5 daqui a três passos</b> (vale 5γ³). Com γ = 0,5, qual vale mais? A partir de que γ as duas se igualam?</p>
+    <div class="opts two"><label class="opt"><input type="radio" name="a1c" value="1 agora">1 agora</label><label class="opt"><input type="radio" name="a1c" value="5 depois">5 depois</label></div>
+    <div class="inline"><label>γ do empate<input type="text" inputmode="decimal" name="a1c2"></label></div></div>
+  <div class="q"><p class="qt"><i>d</i>Tarefa sem fim: r = 1 a cada passo, para sempre, γ = 0,9. Quanto vale G?</p>
+    <div class="inline"><label>G<input type="text" inputmode="decimal" name="a1d"></label></div></div>
+  <div class="send"><button data-send="a1">Enviar</button><span class="sent" data-status="a1"></span></div>
+  <div class="fb" data-fb="a1" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 2 ============ -->
+<section class="exp" id="a2" data-titulo="Bellman à mão no labirinto em T">
+  <div><p class="num">Atividade 2 · 7 min · em duplas</p><h2>Bellman à mão no labirinto em T</h2></div>
+  <figure><img src="img/aula10/g3_tmaze.png" alt="Diagrama do labirinto em T: do estado S, a ação esquerda dá recompensa 1 e termina; a ação direita dá 0 e leva ao estado C; de C, com probabilidade 0,5 ganha 4 e com 0,5 ganha 0, e termina."><figcaption>γ = 0,9. Esquerda: r = 1 e fim. Direita: r = 0 e vai a C; de C, metade das vezes 4, metade 0.</figcaption></figure>
+  <p><span class="badge">V(s) = Σ π(a|s) Σ P(s′|s,a)·[r + γ·V(s′)]</span> · para V*, troque a média sobre ações pelo máximo.</p>
+  <div class="q"><p class="qt"><i>a</i>Quanto vale V(C)? E Q(S, direita)?</p>
+    <div class="pair"><label>V(C)<input type="text" inputmode="decimal" name="a2a1"></label><label>Q(S, dir)<input type="text" inputmode="decimal" name="a2a2"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Política aleatória (0,5 para cada lado): quanto vale Vπ(S)?</p>
+    <div class="inline"><label>Vπ(S)<input type="text" inputmode="decimal" name="a2b"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Quanto vale V*(S), e qual é a ação ótima em S?</p>
+    <div class="inline"><label>V*(S)<input type="text" inputmode="decimal" name="a2c"></label></div>
+    <div class="opts two"><label class="opt"><input type="radio" name="a2c2" value="esquerda">esquerda</label><label class="opt"><input type="radio" name="a2c2" value="direita">direita</label></div></div>
+  <div class="q"><p class="qt"><i>d</i>Abaixo de que γ a esquerda passa a ser a melhor?</p>
+    <div class="inline"><label>γ<input type="text" inputmode="decimal" name="a2d"></label></div></div>
+  <div class="send"><button data-send="a2">Enviar</button><span class="sent" data-status="a2"></span></div>
+  <div class="fb" data-fb="a2" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 3 ============ -->
+<section class="exp" id="a3" data-titulo="Iteração de valor à mão">
+  <div><p class="num">Atividade 3 · 7 min · em duplas, no papel</p><h2>Iteração de valor à mão</h2></div>
+  <p>Corredor <b>s₁ – s₂ – s₃ – G</b>. Ações: esquerda ou direita (na parede, fica). Cada passo custa <b>−1</b>; entrar em G rende <b>+10</b> (e acaba). γ = 0,9; V₀ = 0. <span class="badge">V(s) ← maxₐ [r + γ·V(s′)]</span>, usando os valores da iteração anterior.</p>
+  <div class="q"><p class="qt"><i>a</i>Iteração 1: V(s₃) e V(s₂)?</p>
+    <div class="pair"><label>V(s₃)<input type="text" inputmode="decimal" name="a3a1"></label><label>V(s₂)<input type="text" inputmode="decimal" name="a3a2"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Iteração 2: V(s₂) e V(s₁)?</p>
+    <div class="pair"><label>V(s₂)<input type="text" inputmode="decimal" name="a3b1"></label><label>V(s₁)<input type="text" inputmode="decimal" name="a3b2"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Iteração 3: V(s₁)? A iteração 4 muda algo?</p>
+    <div class="inline"><label>V(s₁)<input type="text" inputmode="decimal" name="a3c"></label></div>
+    <div class="opts two"><label class="opt"><input type="radio" name="a3c2" value="não muda">não muda: convergiu</label><label class="opt"><input type="radio" name="a3c2" value="muda">ainda muda</label></div></div>
+  <div class="q"><p class="qt"><i>d</i>Ação ótima em s₁, e quantos passos até G?</p>
+    <div class="opts two"><label class="opt"><input type="radio" name="a3d" value="direita">direita</label><label class="opt"><input type="radio" name="a3d" value="esquerda">esquerda</label></div>
+    <div class="inline"><label>passos<input type="text" inputmode="numeric" name="a3d2"></label></div></div>
+  <p class="meta">Agora veja num gridworld: meta +1, armadilha −1, parede cinza</p>
+  <canvas class="plot" id="gwC" width="440" height="440" style="max-width:420px" aria-label="Gridworld 4 por 4 com o valor de cada casa e a política gulosa"></canvas>
+  <div class="ctl"><label>γ = <span id="gwGv">0,90</span><input type="range" id="gwG" min="0.1" max="0.99" step="0.01" value="0.9"></label>
+    <label>custo do passo = <span id="gwSv">−0,04</span><input type="range" id="gwS" min="-0.5" max="0" step="0.01" value="-0.04"></label></div>
+  <div class="btns"><button type="button" class="ghost" id="gwStep">Uma iteração</button><button type="button" class="ghost" id="gwRun">Até convergir</button><button type="button" class="ghost" id="gwReset">Zerar</button></div>
+  <p class="readout" id="gwR"></p>
+  <div class="send"><button data-send="a3">Enviar</button><span class="sent" data-status="a3"></span></div>
+  <div class="fb" data-fb="a3" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 4 ============ -->
+<section class="exp" id="a4" data-titulo="Três maneiras de explorar">
+  <div><p class="num">Atividade 4 · 7 min · individual</p><h2>Três maneiras de explorar</h2></div>
+  <p>Primeiro jogue: quatro máquinas pagam 1 ponto com probabilidades que você não conhece. Você e o <b>UCB1</b> jogam 30 vezes, cada um na sua cópia das máquinas.</p>
+  <div class="bandit four"><button type="button" class="ghost" data-arm="0">A</button><button type="button" class="ghost" data-arm="1">B</button><button type="button" class="ghost" data-arm="2">C</button><button type="button" class="ghost" data-arm="3">D</button></div>
+  <p class="kpi" id="bK"></p>
+  <div class="btns"><button type="button" class="ghost" id="bReset">Jogar de novo</button></div>
+  <div class="q"><p class="qt"><i>a</i>ε-guloso com ε = 0,1 e 3 braços (ao explorar, sorteia entre os 3). Com que probabilidade escolhe o braço de maior Q?</p>
+    <div class="inline"><label>probabilidade<input type="text" inputmode="decimal" name="a4a"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Softmax <span class="badge">P(a) ∝ exp(Q(a)/τ)</span> com τ = 0,5, Q₁ = 1 e Q₂ = 0. Probabilidade de escolher o braço 1?</p>
+    <div class="inline"><label>P(braço 1)<input type="text" inputmode="decimal" name="a4b"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>UCB1 na jogada t = 10: A tem Q = 0,5 com N = 8; B tem Q = 0,4 com N = 2. Calcule <span class="badge">Q + √(2·ln t / N)</span> de B. Qual braço o UCB1 escolhe?</p>
+    <div class="inline"><label>índice de B<input type="text" inputmode="decimal" name="a4c"></label></div>
+    <div class="opts two"><label class="opt"><input type="radio" name="a4c2" value="A">A</label><label class="opt"><input type="radio" name="a4c2" value="B">B</label></div></div>
+  <div class="q"><p class="qt"><i>d</i>Por que o UCB1 testa cedo todas as máquinas?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a4d" value="bonus">com N = 0, o bônus de dúvida é infinito</label><label class="opt"><input type="radio" name="a4d" value="acaso">porque escolhe ao acaso uma fração ε das vezes</label><label class="opt"><input type="radio" name="a4d" value="softmax">porque as probabilidades são proporcionais a exp(Q)</label></div></div>
+  <div class="send"><button data-send="a4">Enviar</button><span class="sent" data-status="a4"></span></div>
+  <div class="fb" data-fb="a4" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 5 ============ -->
+<section class="exp" id="a5" data-titulo="TD(0) passo a passo">
+  <div><p class="num">Atividade 5 · 7 min · individual</p><h2>TD(0) passo a passo</h2></div>
+  <p>Cadeia <b>s₁ → s₂ → s₃ → fim</b>, r = 1 só ao sair de s₃. γ = 1, α = 0,5, V = 0 no início. <span class="badge">δ = r + γ·V(s′) − V(s)</span>, <span class="badge">V(s) ← V(s) + α·δ</span>. No Monte Carlo: <span class="badge">V(s) ← V(s) + α·(G − V(s))</span>.</p>
+  <div class="q"><p class="qt"><i>a</i>Episódio 1, por TD(0): V(s₃) e V(s₁)? Por Monte Carlo: V(s₁)?</p>
+    <div class="trio"><label>TD: V(s₃)<input type="text" inputmode="decimal" name="a5a1"></label><label>TD: V(s₁)<input type="text" inputmode="decimal" name="a5a2"></label><label>MC: V(s₁)<input type="text" inputmode="decimal" name="a5a3"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Episódio 2, por TD(0): δ na passagem s₂ → s₃ e δ na saída de s₃.</p>
+    <div class="pair"><label>δ (s₂ → s₃)<input type="text" inputmode="decimal" name="a5b1"></label><label>δ (saída)<input type="text" inputmode="decimal" name="a5b2"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Oito episódios observados: A → B → fim (recompensas 0, 0); seis vezes B → fim (1); uma vez B → fim (0). Qual o V(B)? E V(A) pelo MC e pelo TD?</p>
+    <div class="trio"><label>V(B)<input type="text" inputmode="decimal" name="a5c1"></label><label>MC: V(A)<input type="text" inputmode="decimal" name="a5c2"></label><label>TD: V(A)<input type="text" inputmode="decimal" name="a5c3"></label></div></div>
+  <div class="q"><p class="qt"><i>d</i>Qual das respostas para V(A) usa a propriedade de Markov?</p>
+    <div class="opts two"><label class="opt"><input type="radio" name="a5d" value="TD">a do TD</label><label class="opt"><input type="radio" name="a5d" value="MC">a do MC</label></div></div>
+  <p class="meta">Simulador: cadeia de 5 estados, r = 1 no fim, γ = 1</p>
+  <canvas class="plot" id="tdC" width="600" height="320" aria-label="Valores dos estados e erro delta em cada passo do último episódio"></canvas>
+  <div class="ctl"><label>α = <span id="tdAv">0,50</span><input type="range" id="tdA" min="0.05" max="1" step="0.05" value="0.5"></label>
+    <label>método<select id="tdM"><option value="td">TD(0)</option><option value="mc">Monte Carlo</option></select></label></div>
+  <div class="btns"><button type="button" class="ghost" id="tdEp">Um episódio</button><button type="button" class="ghost" id="tdEp10">10 episódios</button><button type="button" class="ghost" id="tdZ">Zerar</button></div>
+  <p class="readout" id="tdR"></p>
+  <div class="send"><button data-send="a5">Enviar</button><span class="sent" data-status="a5"></span></div>
+  <div class="fb" data-fb="a5" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 6 ============ -->
+<section class="exp" id="a6" data-titulo="Dopamina, incerteza e vício">
+  <div><p class="num">Atividade 6 · 6 min · individual</p><h2>Dopamina, incerteza e vício</h2></div>
+  <div class="q"><p class="qt"><i>a</i>Uma pista prevê suco (r = 1) com p = 0,5. Aprendido, V(pista) = 0,5 (γ = 1; a pista chega sem aviso, o valor antes dela é 0). Calcule δ na pista, no suco e na omissão.</p>
+    <div class="trio"><label>pista<input type="text" inputmode="decimal" name="a6a1"></label><label>suco<input type="text" inputmode="decimal" name="a6a2"></label><label>omissão<input type="text" inputmode="decimal" name="a6a3"></label></div></div>
+  <p>Modelo de Redish (2004) para drogas que liberam dopamina: <span class="badge">δ = max(r + γ·V(s′) − V(s) + D, D)</span>, com D = 0,3, γ = 1 e V(s′) = 0 (fim).</p>
+  <div class="q"><p class="qt"><i>b</i>Com V(s) = 1: δ da recompensa natural (r = 1, D = 0) e δ da droga (r = 1, D = 0,3)?</p>
+    <div class="pair"><label>natural<input type="text" inputmode="decimal" name="a6b1"></label><label>droga<input type="text" inputmode="decimal" name="a6b2"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Com a droga, depois de muitas exposições, V(s) = 5. Quanto vale δ? O que acontece com V?</p>
+    <div class="inline"><label>δ<input type="text" inputmode="decimal" name="a6c"></label></div>
+    <div class="opts"><label class="opt"><input type="radio" name="a6c2" value="cresce">V continua a crescer</label><label class="opt"><input type="radio" name="a6c2" value="cai">V cai de volta para 1</label><label class="opt"><input type="radio" name="a6c2" value="para">V fica parado em 5</label></div></div>
+  <canvas class="plot" id="adC" width="600" height="280" aria-label="Valor aprendido ao longo das exposições para recompensa natural e para droga"></canvas>
+  <div class="ctl"><label>D = <span id="adDv">0,30</span><input type="range" id="adD" min="0" max="1" step="0.05" value="0.3"></label>
+    <label>α = <span id="adAv">0,20</span><input type="range" id="adA" min="0.05" max="0.5" step="0.05" value="0.2"></label></div>
+  <div class="q"><p class="qt"><i>d</i>No ator–crítico dos gânglios da base, onde fica cada papel?</p>
+    <div class="match" id="acMatch"></div></div>
+  <div class="send"><button data-send="a6">Enviar</button><span class="sent" data-status="a6"></span></div>
+  <div class="fb" data-fb="a6" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 7 ============ -->
+<section class="exp" id="a7" data-titulo="Marr e o debate da dopamina">
+  <div><p class="num">Atividade 7 · 4 min · individual · opcional</p><h2>Marr e o debate da dopamina</h2></div>
+  <p class="lead"><b>C</b> = computacional (o quê e por quê) · <b>A</b> = algorítmico (como) · <b>I</b> = implementação (com quê)</p>
+  <div class="marr" id="marrList"></div>
+  <div class="q"><p class="qt"><i>b</i>Segundo Rolls (2023), cada propriedade é da <b>dopamina (D)</b> ou do <b>orbitofrontal (O)</b>?</p>
+    <div class="marr" id="doList"></div></div>
+  <div class="send"><button data-send="a7">Enviar</button><span class="sent" data-status="a7"></span></div>
+  <div class="fb" data-fb="a7" hidden></div>
+</section>
+
+<footer>
+  <p>Materiais: <a href="simulacoes/aula10.html">simulações interativas da Aula 10</a> · <a href="index.html">todas as aulas</a></p>
+  <p>Prof. Daniel Y. Takahashi · Instituto do Cérebro, UFRN</p>
+</footer>
+</div>
+
+<script>
+(() => {
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const val = (n) => { const el = $(`[name="${n}"]:checked`) || $(`[name="${n}"]:not([type=radio]):not([type=checkbox])`); return el ? String(el.value).trim() : ''; };
+const num = (n) => { let t = String(val(n)).replace(/\s/g, ''); if (/^-?(\d{1,3}(\.\d{3}){2,}|[1-9]\d{1,2}\.\d{3})$/.test(t)) t = t.replace(/\./g, ''); t = t.replace(',', '.').replace('−', '-').replace('–', '-'); const v = parseFloat(t); return isNaN(v) ? null : v; };
+const tag = (ok) => `<span class="mark ${ok ? 'ok' : 'no'}">${ok ? '✓' : '✗'}</span>`;
+function markRadio(name, correct) { $$(`[name="${name}"]`).forEach(i => { const l = i.closest('label'); l.classList.remove('right', 'wrong'); if (i.value === correct) l.classList.add('right'); else if (i.checked) l.classList.add('wrong'); }); }
+function markEl(el, ok) { el.classList.toggle('right', ok); el.classList.toggle('wrong', !ok); }
+const markInput = (name, ok) => markEl($(`[name="${name}"]`), ok);
+const near = (v, x, tol) => v !== null && Math.abs(v - x) <= tol;
+const okNum = (name, x, tol) => { const r = near(num(name), x, tol); markInput(name, r); return r; };
+const nv = (n) => { const v = num(n); return v === null ? '—' : String(v).replace('.', ','); };
+function setupCanvas(c) { const r = window.devicePixelRatio || 1; const w = c.width, h = c.height; c.width = w * r; c.height = h * r; const g = c.getContext('2d'); g.scale(r, r); return { g, w, h }; }
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const f2 = (v, d = 2) => v.toFixed(d).replace('.', ',').replace('-', '−');
+const selHTML = (name, opts) => `<select name="${name}"><option value="">—</option>${opts.map(o => `<option>${o}</option>`).join('')}</select>`;
+const segHTML = (name, labels, aria) => `<div class="seg${labels.length === 2 ? ' two' : ''}" role="radiogroup" aria-label="${aria}">${labels.map(l => `<label><input type="radio" name="${name}" value="${l}">${l}</label>`).join('')}</div>`;
+
+/* ---------- Atividade 1: desconto ---------- */
+const DG = setupCanvas($('#dgC')); const RS = [-1, -1, -1, 10];
+function dgDraw() {
+  const gm = +$('#dgG').value; $('#dgGv').textContent = f2(gm);
+  const { g, w, h } = DG; g.clearRect(0, 0, w, h);
+  const Y = (v) => h - 40 - (v + 2) / 13 * (h - 60), X = (k) => 70 + k * (w - 100) / 4;
+  g.strokeStyle = css('--line'); g.lineWidth = 1; g.beginPath(); g.moveTo(40, Y(0)); g.lineTo(w - 10, Y(0)); g.stroke();
+  g.font = '18px ui-monospace,monospace'; g.fillStyle = css('--muted'); g.fillText('0', 18, Y(0) + 6); g.fillText('10', 8, Y(10) + 6);
+  let G = 0;
+  RS.forEach((r, k) => { const c = Math.pow(gm, k) * r; G += c;
+    g.fillStyle = css('--line'); g.fillRect(X(k), Math.min(Y(0), Y(r)), 34, Math.abs(Y(r) - Y(0)));
+    g.fillStyle = '#b45309'; g.fillRect(X(k) + 38, Math.min(Y(0), Y(c)), 34, Math.abs(Y(c) - Y(0)));
+    g.fillStyle = css('--fg'); g.fillText(f2(c), X(k) + 22, c >= 0 ? Y(c) - 8 : Y(c) + 22); g.fillStyle = css('--muted'); g.fillText('t+' + (k + 1), X(k) + 18, h - 10); });
+  g.fillStyle = css('--muted'); g.fillText('cinza: r   laranja: γᵏ·r', 60, 22);
+  $('#dgR').textContent = `γ = ${f2(gm)} · G = ${f2(G)} · horizonte ≈ 1/(1 − γ) = ${gm < 1 ? f2(1 / (1 - gm), 1) : '∞'} passos`;
+}
+$('#dgG').addEventListener('input', dgDraw); dgDraw();
+
+/* ---------- Atividade 3: gridworld ---------- */
+const GW = setupCanvas($('#gwC')); const N = 4, GOAL = '0,3', PIT = '1,3', WALL = '1,1'; let gwV, gwK;
+const ACTS = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+function gwReset() { gwV = Array.from({ length: N }, () => Array(N).fill(0)); gwK = 0; gwDraw(); }
+function gwQ(i, j, V, gm, step) { return ACTS.map(([di, dj]) => { let ni = i + di, nj = j + dj; if (ni < 0 || nj < 0 || ni >= N || nj >= N || `${ni},${nj}` === WALL) { ni = i; nj = j; } const k = `${ni},${nj}`; const r = k === GOAL ? 1 : (k === PIT ? -1 : step); return r + ((k === GOAL || k === PIT) ? 0 : gm * V[ni][nj]); }); }
+function gwIter() { const gm = +$('#gwG').value, st = +$('#gwS').value; const NV = gwV.map(r => r.slice()); let d = 0;
+  for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) { const k = `${i},${j}`; if (k === GOAL || k === PIT || k === WALL) continue; NV[i][j] = Math.max(...gwQ(i, j, gwV, gm, st)); d = Math.max(d, Math.abs(NV[i][j] - gwV[i][j])); }
+  gwV = NV; gwK++; return d; }
+function gwDraw(msg) {
+  const { g, w } = GW; const S = w / N; g.clearRect(0, 0, w, w); const gm = +$('#gwG').value, st = +$('#gwS').value;
+  $('#gwGv').textContent = f2(gm); $('#gwSv').textContent = f2(st);
+  for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) {
+    const k = `${i},${j}`, x = j * S, y = i * S; let fc, t = '';
+    if (k === WALL) fc = '#475569'; else if (k === GOAL) { fc = '#15803d'; t = '+1'; } else if (k === PIT) { fc = '#dc2626'; t = '−1'; }
+    else { const v = gwV[i][j]; const a = Math.min(1, Math.abs(v)); fc = v >= 0 ? `rgba(180,83,9,${0.12 + 0.75 * a})` : `rgba(220,38,38,${0.1 + 0.5 * a})`; t = f2(v); }
+    g.fillStyle = fc; g.fillRect(x + 2, y + 2, S - 4, S - 4);
+    g.fillStyle = (k === GOAL || k === PIT) ? '#fff' : css('--fg'); g.font = '600 22px ui-monospace,monospace'; g.textAlign = 'center'; g.fillText(t, x + S / 2, y + S * (gwK && !(k === GOAL || k === PIT || k === WALL) ? 0.42 : 0.56));
+    if (gwK && !(k === GOAL || k === PIT || k === WALL)) { const q = gwQ(i, j, gwV, gm, st); const b = q.indexOf(Math.max(...q)); const [di, dj] = ACTS[b]; const cx = x + S / 2, cy = y + S * 0.72;
+      g.strokeStyle = css('--fg'); g.lineWidth = 3; g.beginPath(); g.moveTo(cx - dj * 18, cy - di * 12); g.lineTo(cx + dj * 18, cy + di * 12); g.stroke();
+      const ang = Math.atan2(di, dj); g.beginPath(); g.moveTo(cx + dj * 18, cy + di * 12); g.lineTo(cx + dj * 18 - 9 * Math.cos(ang - 0.5), cy + di * 12 - 9 * Math.sin(ang - 0.5)); g.lineTo(cx + dj * 18 - 9 * Math.cos(ang + 0.5), cy + di * 12 - 9 * Math.sin(ang + 0.5)); g.closePath(); g.fillStyle = css('--fg'); g.fill(); }
+  }
+  g.textAlign = 'left';
+  $('#gwR').textContent = msg || `iteração ${gwK}` + (gwK ? ' · setas: política gulosa' : ' · toque em "Uma iteração"');
+}
+$('#gwStep').addEventListener('click', () => { const d = gwIter(); gwDraw(`iteração ${gwK} · maior mudança = ${f2(d, 3)}`); });
+$('#gwRun').addEventListener('click', () => { let d = 1, k = 0; while (d > 1e-6 && k < 500) { d = gwIter(); k++; } gwDraw(`convergiu na iteração ${gwK} · V* e política ótima`); });
+$('#gwReset').addEventListener('click', gwReset); $('#gwG').addEventListener('input', () => gwDraw()); $('#gwS').addEventListener('input', () => gwDraw()); gwReset();
+
+/* ---------- Atividade 4: você contra o UCB1 ---------- */
+let bd = null;
+function bReset() { const ps = [0.2, 0.35, 0.5, 0.75]; for (let i = 3; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [ps[i], ps[j]] = [ps[j], ps[i]]; }
+  bd = { p: ps, n: 0, me: 0, meN: [0, 0, 0, 0], ucb: 0, uN: [0, 0, 0, 0], uS: [0, 0, 0, 0] }; $$('[data-arm]').forEach(b => b.classList.remove('hit', 'miss')); bShow(); }
+function ucbPick() { const t = bd.n + 1; let best = 0, bv = -1; for (let a = 0; a < 4; a++) { const v = bd.uN[a] === 0 ? Infinity : bd.uS[a] / bd.uN[a] + Math.sqrt(2 * Math.log(t) / bd.uN[a]); if (v > bv) { bv = v; best = a; } } return best; }
+function bShow() { const best = bd.p.indexOf(Math.max(...bd.p)); const L = 'ABCD';
+  $('#bK').innerHTML = `<span>jogada ${bd.n}/30</span><span>você: ${bd.me} pts</span><span>UCB1: ${bd.ucb} pts</span><span>você: ${bd.meN.join('·')}</span><span>UCB1: ${bd.uN.join('·')}</span>` +
+    (bd.n >= 30 ? `<span>a melhor era a ${L[best]} (p = ${f2(bd.p[best])}). Jogadas na melhor: você ${bd.meN[best]}, UCB1 ${bd.uN[best]}</span>` : ''); }
+function bPlay(a) { if (bd.n >= 30) return; const r = Math.random() < bd.p[a] ? 1 : 0; bd.me += r; bd.meN[a]++;
+  const u = ucbPick(); const ru = Math.random() < bd.p[u] ? 1 : 0; bd.ucb += ru; bd.uN[u]++; bd.uS[u] += ru; bd.n++;
+  $$('[data-arm]').forEach(b => b.classList.remove('hit', 'miss')); $(`[data-arm="${a}"]`).classList.add(r ? 'hit' : 'miss'); bShow(); }
+$$('[data-arm]').forEach(b => b.addEventListener('click', () => bPlay(+b.dataset.arm))); $('#bReset').addEventListener('click', bReset); bReset();
+
+/* ---------- Atividade 5: TD × MC na cadeia ---------- */
+const TDc = setupCanvas($('#tdC')); const NS = 5; let tdV, tdLast, tdEps;
+function tdZero() { tdV = Array(NS).fill(0); tdLast = Array(NS).fill(0); tdEps = 0; tdDraw(); }
+function tdEpisode() { const a = +$('#tdA').value, m = $('#tdM').value; const d = Array(NS).fill(0);
+  if (m === 'td') { for (let s = 0; s < NS; s++) { const r = s === NS - 1 ? 1 : 0, vn = s === NS - 1 ? 0 : tdV[s + 1]; d[s] = r + vn - tdV[s]; tdV[s] += a * d[s]; } }
+  else { for (let s = 0; s < NS; s++) { d[s] = 1 - tdV[s]; tdV[s] += a * d[s]; } }
+  tdLast = d; tdEps++; }
+function tdDraw() { const { g, w, h } = TDc; g.clearRect(0, 0, w, h); const m = $('#tdM').value; $('#tdAv').textContent = f2(+$('#tdA').value);
+  const X = (s) => 60 + s * (w - 90) / NS, bw = (w - 90) / NS * 0.36, Y1 = (v) => 140 - v * 110, Y2 = (v) => 280 - v * 100;
+  g.font = '18px ui-monospace,monospace'; g.fillStyle = css('--muted'); g.fillText('V', 10, 40); g.fillText(m === 'td' ? 'δ' : 'G − V', 4, 210);
+  g.strokeStyle = css('--line'); g.lineWidth = 1; [Y1(0), Y1(1), Y2(0)].forEach(y => { g.beginPath(); g.moveTo(44, y); g.lineTo(w - 10, y); g.stroke(); });
+  g.fillText('1', 28, Y1(1) + 6); g.fillText('0', 28, Y1(0) + 6);
+  for (let s = 0; s < NS; s++) { g.fillStyle = '#b45309'; g.fillRect(X(s) + 10, Y1(tdV[s]), bw, Y1(0) - Y1(tdV[s]));
+    g.fillStyle = css('--fg'); g.fillText(f2(tdV[s]), X(s) + 4, Y1(tdV[s]) - 6);
+    const d = tdLast[s]; g.fillStyle = d >= 0 ? '#1a56db' : '#dc2626'; g.fillRect(X(s) + 10, Math.min(Y2(0), Y2(d)), bw, Math.abs(Y2(d) - Y2(0)));
+    if (Math.abs(d) > 1e-9) { g.fillStyle = css('--fg'); g.fillText(f2(d), X(s) + 4, Y2(Math.max(d, 0)) - 6); }
+    g.fillStyle = css('--muted'); g.fillText('s' + (s + 1), X(s) + 18, 164); }
+  $('#tdR').textContent = `${m === 'td' ? 'TD(0)' : 'Monte Carlo'} · episódios: ${tdEps} · barras de baixo: ${m === 'td' ? 'δ de cada passo' : 'G − V de cada estado'} no último episódio`; }
+$('#tdEp').addEventListener('click', () => { tdEpisode(); tdDraw(); }); $('#tdEp10').addEventListener('click', () => { for (let k = 0; k < 10; k++) tdEpisode(); tdDraw(); });
+$('#tdZ').addEventListener('click', tdZero); $('#tdM').addEventListener('change', tdZero); $('#tdA').addEventListener('input', tdDraw); tdZero();
+
+/* ---------- Atividade 6: Redish ---------- */
+const AD = setupCanvas($('#adC'));
+function adDraw() { const D = +$('#adD').value, a = +$('#adA').value; $('#adDv').textContent = f2(D); $('#adAv').textContent = f2(a);
+  const n = 60; let vn = 0, vd = 0; const Vn = [0], Vd = [0]; for (let k = 0; k < n; k++) { vn += a * (1 - vn); vd += a * Math.max(1 - vd + D, D); Vn.push(vn); Vd.push(vd); }
+  const { g, w, h } = AD; g.clearRect(0, 0, w, h); const top = Math.max(2, Math.ceil(vd)); const X = (k) => 50 + k * (w - 70) / n, Y = (v) => h - 30 - v / top * (h - 50);
+  g.strokeStyle = css('--line'); g.lineWidth = 1; g.font = '18px ui-monospace,monospace'; g.fillStyle = css('--muted');
+  [0, 1, top].forEach(v => { g.beginPath(); g.moveTo(44, Y(v)); g.lineTo(w - 10, Y(v)); g.stroke(); g.fillText(String(v), 14, Y(v) + 6); }); g.fillText('exposições', w - 120, h - 6);
+  const line = (V, c) => { g.strokeStyle = c; g.lineWidth = 3; g.beginPath(); V.forEach((v, k) => k ? g.lineTo(X(k), Y(v)) : g.moveTo(X(k), Y(v))); g.stroke(); };
+  line(Vn, '#1a56db'); line(Vd, '#dc2626'); g.fillStyle = '#1a56db'; g.fillText('natural', X(40), Y(1) - 10); g.fillStyle = '#dc2626'; g.fillText('droga', X(n) - 70, Y(vd) + 24); }
+$('#adD').addEventListener('input', adDraw); $('#adA').addEventListener('input', adDraw); adDraw();
+const ACQ = [['crítico (aprende V)', 'estriado ventral'], ['ator (aprende a política)', 'estriado dorsal'], ['sinal δ', 'SNc / ATV (dopamina)']];
+const ACO = ['estriado ventral', 'estriado dorsal', 'SNc / ATV (dopamina)'];
+$('#acMatch').innerHTML = ACQ.map(([t], k) => `<div class="m"><span>${t}</span>${selHTML('ac' + k, ACO)}</div>`).join('');
+
+/* ---------- Atividade 7 ---------- */
+const MARR = [
+  ['O agente deve maximizar a soma descontada das recompensas futuras.', 'C', 'o objetivo'],
+  ['V(s) ← V(s) + α·[r + γ·V(s′) − V(s)].', 'A', 'a regra TD(0)'],
+  ['Neurônios da área tegmentar ventral projetam ao núcleo accumbens.', 'I', 'anatomia'],
+  ['Escolher o braço de maior Q + √(2·ln t / N).', 'A', 'a regra de escolha do UCB1'],
+];
+const DOQ = [
+  ['Reverte o valor esperado de um estímulo em um único ensaio, por regra.', 'O', 'Thorpe, Rolls & Maddison (1983); Rolls, seção 11.3.1'],
+  ['Sinal escalar: diz "melhor que o esperado", mas não qual recompensa.', 'D', 'Rolls, p. 690'],
+  ['Neurônios que aumentam o disparo quando a recompensa esperada falta.', 'O', 'neurônios de erro negativo (Rolls, seção 11.3.4); na dopamina, a falta é uma pausa'],
+  ['Responde ao suco mesmo quando esperado e diz qual foi o sabor.', 'O', 'Rolls, p. 690'],
+  ['Ensina hábitos que sobrevivem à desvalorização da recompensa.', 'D', 'via estriado: hábito estímulo → resposta (Rolls, seção 16.1)'],
+];
+$('#marrList').innerHTML = MARR.map(([t], k) => `<div class="st"><span>${k + 1}. ${t}</span>${segHTML('m' + k, ['C', 'A', 'I'], 'Nível da afirmação ' + (k + 1))}</div>`).join('');
+$('#doList').innerHTML = DOQ.map(([t], k) => `<div class="st"><span>${k + 5}. ${t}</span>${segHTML('o' + k, ['D', 'O'], 'Sistema da afirmação ' + (k + 5))}</div>`).join('');
+function markSeg(name, c) { $$(`[name="${name}"]`).forEach(i => { const l = i.closest('label'); l.classList.remove('right', 'wrong'); if (i.value === c) l.classList.add('right'); else if (i.checked) l.classList.add('wrong'); }); }
+
+/* ---------- correção ---------- */
+const ACT = {
+  a1() {
+    const oa = okNum('a1a', 4.58, 0.02), ob = okNum('a1b', -0.5, 0.01);
+    const c = val('a1c'); markRadio('a1c', '1 agora'); const oc = c === '1 agora', oc2 = okNum('a1c2', Math.cbrt(0.2), 0.01);
+    const od = okNum('a1d', 10, 0.05);
+    const s = oa + ob + oc + oc2 + od;
+    return { score: `${s}/5`, resp: `G0,9=${nv('a1a')} | G0,5=${nv('a1b')} | ${c || '—'}, γ*=${nv('a1c2')} | G∞=${nv('a1d')}`,
+      fb: `<p class="score">${s} de 5</p><ul>
+      <li>${tag(oa)} γ = 0,9: −1 − 0,9 − 0,81 + 0,729 × 10 = <b>4,58</b>.</li>
+      <li>${tag(ob)} γ = 0,5: −1 − 0,5 − 0,25 + 0,125 × 10 = <b>−0,5</b>: com esse desconto, nem vale a pena ir.</li>
+      <li>${tag(oc && oc2)} 5 × 0,5³ = 0,625 &lt; 1: <b>o 1 agora</b> vale mais. Empate quando 5γ³ = 1 → γ = 0,2^(1/3) ≈ <b>0,585</b>.</li>
+      <li>${tag(od)} Série geométrica: 1/(1 − 0,9) = <b>10</b>. O horizonte efetivo de um agente é ~1/(1 − γ) passos.</li></ul>
+      <figure><img src="img/aula10/g2_discount.png" alt="Barras de cada recompensa e de sua parcela descontada para gama 0,9 e 0,5, e curvas de gama elevado a k para vários gamas." loading="lazy"><figcaption>O mesmo caminho é bom ou ruim conforme γ.</figcaption></figure>` };
+  },
+  a2() {
+    const oa = okNum('a2a1', 2, 0.01) & okNum('a2a2', 1.8, 0.01), ob = okNum('a2b', 1.4, 0.01);
+    const oc1 = okNum('a2c', 1.8, 0.01); const c2 = val('a2c2'); markRadio('a2c2', 'direita'); const oc = oc1 && c2 === 'direita';
+    const od = okNum('a2d', 0.5, 0.01);
+    const s = !!oa + ob + oc + od;
+    return { score: `${s}/4`, resp: `V(C)=${nv('a2a1')} Q=${nv('a2a2')} | Vπ=${nv('a2b')} | V*=${nv('a2c')} ${c2 || '—'} | γ<${nv('a2d')}`,
+      fb: `<p class="score">${s} de 4</p><ul>
+      <li>${tag(oa)} V(C) = 0,5 × 4 + 0,5 × 0 = <b>2</b>; Q(S, dir) = 0 + 0,9 × 2 = <b>1,8</b>.</li>
+      <li>${tag(ob)} Média sobre as ações: 0,5 × 1 + 0,5 × 1,8 = <b>1,4</b>.</li>
+      <li>${tag(oc)} Máximo em vez da média: V*(S) = max(1; 1,8) = <b>1,8</b>, ação <b>direita</b>.</li>
+      <li>${tag(od)} Esquerda vale 1; direita vale 2γ. Esquerda é melhor quando <b>γ &lt; 0,5</b>.</li></ul>
+      <p>A média sobre ações dá Vπ (depende da política); o máximo dá V* (não depende). São as duas equações de Bellman.</p>` };
+  },
+  a3() {
+    const oa = okNum('a3a1', 10, 0.01) & okNum('a3a2', -1, 0.01), ob = okNum('a3b1', 8, 0.01) & okNum('a3b2', -1.9, 0.01);
+    const oc1 = okNum('a3c', 6.2, 0.01); const c2 = val('a3c2'); markRadio('a3c2', 'não muda'); const oc = oc1 && c2 === 'não muda';
+    const d = val('a3d'); markRadio('a3d', 'direita'); const od = d === 'direita' && okNum('a3d2', 3, 0);
+    const s = !!oa + !!ob + oc + od;
+    return { score: `${s}/4`, resp: `it1: ${nv('a3a1')}, ${nv('a3a2')} | it2: ${nv('a3b1')}, ${nv('a3b2')} | it3: ${nv('a3c')} ${c2 || '—'} | ${d || '—'} ${nv('a3d2')}`,
+      fb: `<p class="score">${s} de 4</p><figure><img src="img/aula10/g6_corridor.png" alt="Tabela das iterações de valor no corredor: iteração 1 dá menos 1, menos 1 e 10; iteração 2 dá menos 1,9, 8 e 10; iteração 3 dá 6,2, 8 e 10." loading="lazy"></figure><ul>
+      <li>${tag(oa)} V(s₃) = max(10; −1 + 0) = <b>10</b>; V(s₂) = max(−1 + 0,9 × 0; −1) = <b>−1</b> — s₂ ainda não "vê" G.</li>
+      <li>${tag(ob)} V(s₂) = −1 + 0,9 × 10 = <b>8</b>; V(s₁) = −1 + 0,9 × (−1) = <b>−1,9</b>.</li>
+      <li>${tag(oc)} V(s₁) = −1 + 0,9 × 8 = <b>6,2</b>; a iteração 4 <b>não muda</b> nada: V* = (6,2; 8; 10).</li>
+      <li>${tag(od)} <b>Direita</b>, <b>3</b> passos. O valor andou uma casa por iteração, a partir da meta.</li></ul>` };
+  },
+  a4() {
+    const oa = okNum('a4a', 0.9 + 0.1 / 3, 0.005), ob = okNum('a4b', Math.exp(2) / (Math.exp(2) + 1), 0.005);
+    const oc1 = okNum('a4c', 0.4 + Math.sqrt(2 * Math.log(10) / 2), 0.02); const c2 = val('a4c2'); markRadio('a4c2', 'B'); const oc = oc1 && c2 === 'B';
+    const d = val('a4d'); markRadio('a4d', 'bonus'); const od = d === 'bonus';
+    const s = oa + ob + oc + od;
+    return { score: `${s}/4`, resp: `ε=${nv('a4a')} | soft=${nv('a4b')} | UCB B=${nv('a4c')} ${c2 || '—'} | ${d || '—'} | jogo: você ${bd.me}, UCB ${bd.ucb} em ${bd.n}`,
+      fb: `<p class="score">${s} de 4</p><ul>
+      <li>${tag(oa)} 0,9 (explota) + 0,1 × 1/3 (explora e sorteia o melhor) ≈ <b>0,933</b>.</li>
+      <li>${tag(ob)} e^(1/0,5) / (e^(1/0,5) + e⁰) = e²/(e² + 1) ≈ <b>0,881</b>.</li>
+      <li>${tag(oc)} ln 10 ≈ 2,30. B: 0,4 + √(4,61/2) ≈ 0,4 + 1,52 = <b>1,92</b>; A: 0,5 + 0,76 = 1,26 → escolhe <b>B</b>, mesmo com Q menor.</li>
+      <li>${tag(od)} Com N = 0, o bônus é infinito: todo braço é testado uma vez. Depois o bônus cai como 1/√N e cresce devagar com ln t — os esquecidos voltam a ser testados.</li></ul>
+      <figure><img src="img/aula10/g8_bandit10.png" alt="Recompensa média e porcentagem de escolhas do melhor braço num bandido de 10 braços para guloso, epsilon-guloso, softmax e UCB1; o UCB1 escolhe o melhor braço cerca de 90 por cento das vezes." loading="lazy"><figcaption>10 braços, 1.000 simulações: explorar dirigido pela dúvida vence.</figcaption></figure>` };
+  },
+  a5() {
+    const oa = okNum('a5a1', 0.5, 0.01) & okNum('a5a2', 0, 0.01) & okNum('a5a3', 0.5, 0.01);
+    const ob = okNum('a5b1', 0.5, 0.01) & okNum('a5b2', 0.5, 0.01);
+    const oc = okNum('a5c1', 0.75, 0.01) & okNum('a5c2', 0, 0.01) & okNum('a5c3', 0.75, 0.01);
+    const d = val('a5d'); markRadio('a5d', 'TD'); const od = d === 'TD';
+    const s = !!oa + !!ob + !!oc + od;
+    return { score: `${s}/4`, resp: `ep1 TD V3=${nv('a5a1')} V1=${nv('a5a2')} MC V1=${nv('a5a3')} | ep2 δ=${nv('a5b1')}, ${nv('a5b2')} | V(B)=${nv('a5c1')} MC V(A)=${nv('a5c2')} TD V(A)=${nv('a5c3')} | ${d || '—'}`,
+      fb: `<p class="score">${s} de 4</p><ul>
+      <li>${tag(oa)} TD: só o último passo tem δ ≠ 0 → V(s₃) = 0,5 × 1 = <b>0,5</b>, V(s₁) = <b>0</b>. MC: G = 1 para todos → V(s₁) = <b>0,5</b>.</li>
+      <li>${tag(ob)} s₂ → s₃: δ = 0 + 0,5 − 0 = <b>0,5</b>; saída: δ = 1 − 0,5 = <b>0,5</b>. O valor anda para trás, um passo por episódio.</li>
+      <li>${tag(oc)} V(B) = 6/8 = <b>0,75</b>. MC: o único retorno visto a partir de A foi 0 → <b>0</b>. TD: A sempre vai a B, que vale 0,75 → <b>0,75</b> (Sutton & Barto, 2018, ex. 6.4).</li>
+      <li>${tag(od)} <b>O TD</b>: uma vez em B, o futuro não depende de ter vindo de A.</li></ul>
+      <figure><img src="img/aula10/g11_td_map.png" alt="Mapa do erro delta ao longo dos ensaios: o erro começa na hora do suco e anda para trás até a pista." loading="lazy"><figcaption>Dividindo um ensaio em instantes, o mesmo TD faz o erro migrar do suco para a pista.</figcaption></figure>` };
+  },
+  a6() {
+    const oa = okNum('a6a1', 0.5, 0.01) & okNum('a6a2', 0.5, 0.01) & okNum('a6a3', -0.5, 0.01);
+    const ob = okNum('a6b1', 0, 0.01) & okNum('a6b2', 0.3, 0.01);
+    const oc1 = okNum('a6c', 0.3, 0.01); const c2 = val('a6c2'); markRadio('a6c2', 'cresce'); const oc = oc1 && c2 === 'cresce';
+    let odn = 0; ACQ.forEach(([, c], k) => { const e = $(`[name="ac${k}"]`); const ok = e.value === c; markEl(e, ok); odn += ok; });
+    const s = !!oa + !!ob + oc + (odn === 3);
+    return { score: `${s}/4`, resp: `p0,5: ${nv('a6a1')}, ${nv('a6a2')}, ${nv('a6a3')} | Redish: ${nv('a6b1')}, ${nv('a6b2')} | V=5: δ=${nv('a6c')} ${c2 || '—'} | ${ACQ.map((_, k) => $(`[name="ac${k}"]`).value || '—').join(' / ')}`,
+      fb: `<p class="score">${s} de 4</p><ul>
+      <li>${tag(oa)} Pista: 0,5 − 0 = <b>+0,5</b>; suco: 1 + 0 − 0,5 = <b>+0,5</b>; omissão: 0 − 0,5 = <b>−0,5</b>. Em geral δ = p, 1 − p e −p.</li>
+      <li>${tag(ob)} Natural: 1 + 0 − 1 = <b>0</b>. Droga: max(0 + 0,3; 0,3) = <b>0,3</b>.</li>
+      <li>${tag(oc)} max(1 − 5 + 0,3; 0,3) = <b>0,3</b> &gt; 0: <b>V continua a crescer</b>. Sem droga, δ = −4 e V cairia de volta.</li>
+      <li>${tag(odn === 3)} Crítico: <b>estriado ventral</b>; ator: <b>estriado dorsal</b>; δ: <b>dopamina da SNc/ATV</b> (O’Doherty et al., 2004).</li></ul>
+      <figure><img src="img/aula10/g12_prob.png" alt="Erro previsto pelo TD na pista, na recompensa e na omissão em função da probabilidade de recompensa." loading="lazy" style="max-width:420px"><figcaption>O TD prevê a parte fásica. Com p = 0,5 os neurônios também mostram um disparo sustentado (incerteza) que o TD não prevê — Fiorillo, Tobler & Schultz (2003).</figcaption></figure>` };
+  },
+  a7() {
+    let s = 0;
+    MARR.forEach(([, c], k) => { if (val('m' + k) === c) s++; markSeg('m' + k, c); });
+    DOQ.forEach(([, c], k) => { if (val('o' + k) === c) s++; markSeg('o' + k, c); });
+    return { score: `${s}/9`, resp: MARR.map((_, k) => `${k + 1}:${val('m' + k) || '—'}`).join(' ') + ' | ' + DOQ.map((_, k) => `${k + 5}:${val('o' + k) || '—'}`).join(' '),
+      fb: `<p class="score">${s} de 9</p><ul>${MARR.map(([, c, why], k) => `<li>${tag(val('m' + k) === c)} ${k + 1}. <b>${c}</b> — ${why}</li>`).join('')}
+      ${DOQ.map(([, c, why], k) => `<li>${tag(val('o' + k) === c)} ${k + 5}. <b>${c === 'O' ? 'orbitofrontal' : 'dopamina'}</b> — ${why}</li>`).join('')}</ul>
+      <figure><img src="img/aula10/f11_14_error.png" alt="Rasters de um neurônio do córtex orbitofrontal que dispara apenas nos primeiros ensaios após uma reversão, quando o macaco esperava suco e recebeu sal." loading="lazy" style="max-width:420px"><figcaption>Neurônio de erro negativo no orbitofrontal: dispara só nos ensaios x, quando a recompensa esperada falha. Rolls (2023, p. 496, Fig. 11.14), orig. Thorpe, Rolls & Maddison (1983).</figcaption></figure>` };
+  },
+};
+
+/* ---------- envio ---------- */
+$$('[data-send]').forEach(btn => btn.addEventListener('click', () => {
+  const id = btn.dataset.send, sec = document.getElementById(id);
+  if (!window.Registro || !Registro.identificado()) { window.Registro && Registro.pedeId(); return; }
+  const r = ACT[id]();
+  const ok = Registro.atividade(id, sec.dataset.titulo, r.score, r.resp);
+  const fb = $(`[data-fb="${id}"]`); fb.innerHTML = '<h3>Gabarito</h3>' + r.fb; fb.hidden = false;
+  const st = $(`[data-status="${id}"]`);
+  const first = Registro.aluno().n.split(' ')[0];
+  st.textContent = ok ? `✓ Resposta registrada para ${first}. Você pode corrigir e reenviar.` : 'Identifique-se no topo da página.';
+  btn.textContent = 'Reenviar';
+  const a = $(`nav a[href="#${id}"]`); if (a) a.classList.add('done');
+  fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}));
+})();
+</script>
+<script src="config.js?v=2"></script>
+<script src="registro.js?v=2" data-aula="10"></script>

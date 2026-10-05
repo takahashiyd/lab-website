@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neurociência Computacional · Aula 14 — Atividades</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#142033; --muted:#5b6879; --line:#d8dee6;
+  --accent:#0d7377; --accent-ink:#ffffff; --you:#b45309; --soft:#e2f0f0; --warn:#a33a2a; --ok:#15803d; --okbg:#e3f3e8; --nobg:#fbe9e6;
+  --display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --ok:#5fd08a; --okbg:#173a28; --nobg:#3d2020; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --ok:#5fd08a; --okbg:#173a28; --nobg:#3d2020; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:17px/1.5 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:grid;gap:22px}
+header{display:grid;gap:8px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(32px,8vw,50px)/1.02 var(--display);font-stretch:115%;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font:750 23px/1.15 var(--display);font-stretch:108%;margin:0;text-wrap:balance}
+p{margin:0;max-width:65ch}
+.lead{color:var(--muted)}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{font:600 14px/1 var(--body);color:var(--fg);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:9px 12px;background:var(--surface)}
+nav a.done{border-color:var(--ok);color:var(--ok)}
+a{color:var(--accent)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,nav a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.exp>*{min-width:0}
+section.exp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 18px;display:grid;gap:16px;min-width:0;scroll-margin-top:12px}
+.num{font:600 13px/1 var(--mono);color:var(--you);letter-spacing:.06em;text-transform:uppercase}
+.meta{font:500 13px/1.3 var(--mono);color:var(--muted)}
+.q{display:grid;gap:8px;border-top:1px dashed var(--line);padding-top:14px}
+.q>.qt{font-weight:600}
+.q .qt i{font-family:var(--mono);font-style:normal;color:var(--you);margin-right:6px}
+.opts{display:grid;gap:8px}
+@media (min-width:560px){.opts.two{grid-template-columns:1fr 1fr}}
+.opt{display:flex;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;cursor:pointer;min-height:48px;background:var(--bg)}
+.opt input{width:20px;height:20px;accent-color:var(--accent);flex:none}
+.opt:has(input:checked){border-color:var(--accent);background:var(--soft)}
+.opt.right{border-color:var(--ok);background:var(--okbg)}
+.opt.wrong{border-color:var(--warn);background:var(--nobg)}
+textarea,input[type=number],input[type=text]{width:100%;font:500 17px/1.4 var(--body);color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;min-height:48px}
+textarea{min-height:90px;resize:vertical}
+.inline{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.inline label{display:grid;gap:4px;font-size:14px;font-weight:600;flex:1 1 140px;min-width:0}
+select{font:500 17px var(--body);color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px;min-height:48px;width:100%}
+button{font:700 16px/1 var(--display);border:0;border-radius:10px;padding:14px 18px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px;touch-action:manipulation}
+button.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+button:disabled{opacity:.45;cursor:default}
+.send{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.sent{font:600 14px/1.3 var(--mono);color:var(--ok)}
+.sent.pend{color:var(--you)}
+.fb{background:var(--soft);border-radius:10px;padding:14px 16px;display:grid;gap:8px;font-size:16px}
+.fb h3{margin:0;font:700 17px/1.2 var(--display)}
+.fb .score{font:700 22px/1 var(--display);color:var(--you)}
+.fb ul{margin:0;padding-left:20px;display:grid;gap:6px}
+.mark{font-weight:700}
+.mark.ok{color:var(--ok)} .mark.no{color:var(--warn)}
+figure{margin:0;display:grid;gap:6px}
+figure img{width:100%;height:auto;border-radius:8px;background:#fff;border:1px solid var(--line)}
+figcaption{font-size:13px;color:var(--muted)}
+.tablewrap{overflow-x:auto}
+table.dec{border-collapse:collapse;width:100%;font:500 15px/1.2 var(--mono);text-align:center}
+table.dec th,table.dec td{border:1px solid var(--line);padding:8px 3px}
+table.dec th{background:var(--soft);font:600 13px/1.2 var(--body)}
+table.dec td.test{background:color-mix(in srgb,var(--you) 18%,transparent);font-weight:700}
+table.dec td.hi{font-weight:700;color:var(--accent)}
+.dots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.dots label{display:grid;gap:4px;font:600 13px/1.2 var(--body);text-align:center;min-width:0}
+.dots input{min-width:0;font-size:15px;padding:10px 2px;text-align:center}
+.opts.five{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+.opts.five .opt{padding:10px 6px;gap:6px;justify-content:center}
+.dots input{text-align:center;padding:10px 4px;font-family:var(--mono)}
+.dots input.right{border-color:var(--ok);background:var(--okbg)}
+.dots input.wrong{border-color:var(--warn);background:var(--nobg)}
+.marr{display:grid;gap:10px}
+.marr .st{display:grid;gap:8px;border:1px solid var(--line);border-radius:10px;padding:12px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.seg label{border:1.5px solid var(--line);border-radius:8px;text-align:center;padding:10px 4px;font:700 14px/1.1 var(--display);cursor:pointer;min-height:44px;display:grid;place-items:center;background:var(--bg)}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){border-color:var(--accent);background:var(--soft);color:var(--accent)}
+.seg label.right{border-color:var(--ok)!important;background:var(--okbg)!important;color:var(--ok)!important}
+.seg label.wrong{border-color:var(--warn)!important;background:var(--nobg)!important;color:var(--warn)!important}
+.seg label:focus-within{outline:3px solid var(--accent);outline-offset:1px}
+.xor{display:grid;gap:12px}
+.xor table{border-collapse:collapse;font:500 16px/1 var(--mono);text-align:center;width:100%;max-width:420px}
+.xor th,.xor td{border:1px solid var(--line);padding:9px}
+.xor th{background:var(--soft);font:600 13px var(--body)}
+.xor td.ok{color:var(--ok);font-weight:700} .xor td.no{color:var(--warn);font-weight:700}
+.xor .ctl{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.xor .ctl label{display:grid;gap:4px;font:600 13px/1.2 var(--mono)}
+.xor input[type=range]{width:100%;accent-color:var(--accent)}
+.badge{font:700 14px/1.2 var(--mono)}
+footer{font-size:13px;color:var(--muted);display:grid;gap:6px}
+/* cartão de identificação (registro.js) */
+.nc-id{background:var(--surface);border:2px solid var(--accent);border-radius:14px;padding:18px;display:grid;gap:12px}
+.nc-id.nc-in{border:0;padding:0;background:none}
+.nc-id h2{margin:0 0 4px}
+.nc-lead{color:var(--muted);margin:0 0 12px!important}
+.nc-row{display:grid;gap:10px;grid-template-columns:1fr}
+@media (min-width:560px){.nc-row{grid-template-columns:1fr 1.6fr}}
+.nc-id label{display:grid;gap:4px;font:600 14px/1.2 var(--body)}
+.nc-id input{font:17px var(--body);padding:12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);min-height:48px;width:100%}
+.nc-err{color:var(--warn);font-size:14px;min-height:1em;margin:6px 0!important}
+.nc-priv{font-size:13px;color:var(--muted);margin-top:10px!important}
+.nc-who{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:15px;background:var(--soft);border-radius:10px;padding:10px 14px}
+.nc-link{background:none!important;border:0!important;color:var(--accent)!important;font:600 14px var(--body)!important;padding:4px 0!important;min-height:0!important;text-decoration:underline;cursor:pointer}
+.nc-fila{font:500 13px var(--mono);color:var(--muted)}
+.nc-flash{animation:ncflash 1.2s 2}
+@keyframes ncflash{50%{box-shadow:0 0 0 6px var(--you)}}
+@media (prefers-reduced-motion:reduce){.nc-flash{animation:none}}
+canvas.plot{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;touch-action:none}
+.ctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.ctl label{display:grid;gap:4px;font:600 13px/1.2 var(--mono)}
+.ctl input[type=range]{width:100%;accent-color:var(--accent)}
+.readout{font:600 15px/1.4 var(--mono);color:var(--accent)}
+.mp{display:grid;gap:10px}
+.mp .row{display:grid;gap:8px;border:1px solid var(--line);border-radius:10px;padding:12px}
+.mp .ins{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.mp .ins label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center;min-width:0}
+.mp .ins input{text-align:center;padding:9px 2px;font-family:var(--mono);min-width:0}
+.tt{display:flex;flex-wrap:wrap;gap:6px;font:500 13px/1 var(--mono)}
+.tt span{border:1px solid var(--line);border-radius:6px;padding:6px 7px}
+.tt span.ok{border-color:var(--ok);color:var(--ok);background:var(--okbg)}
+.tt span.no{border-color:var(--warn);color:var(--warn);background:var(--nobg)}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btns button{padding:11px 14px;min-height:44px;font-size:15px}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.trio label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center;min-width:0}
+.trio input{text-align:center;padding:9px 2px;font-family:var(--mono);min-width:0}
+.trio input.right,.inline input.right{border-color:var(--ok);background:var(--okbg)}
+.trio input.wrong,.inline input.wrong{border-color:var(--warn);background:var(--nobg)}
+table.log{border-collapse:collapse;width:100%;font:500 13px/1.2 var(--mono);text-align:center}
+table.log th,table.log td{border:1px solid var(--line);padding:5px 2px}
+table.log th{background:var(--soft);font:600 12px var(--body)}
+table.log tr.err td{color:var(--warn)}
+.match{display:grid;gap:8px}
+.match .m{display:grid;grid-template-columns:1fr minmax(0,1.3fr);gap:8px;align-items:center}
+.match .m span{font-weight:600}
+@media (max-width:420px){.match .m{grid-template-columns:1fr}}
+.grid64{display:grid;grid-template-columns:auto repeat(4,minmax(0,1fr));gap:5px;align-items:center;max-width:420px}
+.grid64 span{font:600 12px/1 var(--mono);color:var(--muted);text-align:center}
+.grid64 input{text-align:center;padding:8px 2px;min-height:40px;font-family:var(--mono);min-width:0}
+.grid64 input.right{border-color:var(--ok);background:var(--okbg)}
+.grid64 input.wrong{border-color:var(--warn);background:var(--nobg)}
+.quad{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;max-width:420px}
+.quad label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center;min-width:0}
+.quad input{text-align:center;padding:9px 2px;font-family:var(--mono);min-width:0}
+.quad input.right{border-color:var(--ok);background:var(--okbg)}
+.quad input.wrong{border-color:var(--warn);background:var(--nobg)}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;max-width:300px}
+.pair label{display:grid;gap:3px;font:600 12px/1.1 var(--mono);text-align:center}
+.pair input{text-align:center;font-family:var(--mono)}
+.pair input.right{border-color:var(--ok);background:var(--okbg)}
+.pair input.wrong{border-color:var(--warn);background:var(--nobg)}
+table.cases{border-collapse:collapse;width:100%;font-size:15px}
+table.cases td,table.cases th{border-bottom:1px solid var(--line);padding:8px 4px;vertical-align:middle;text-align:left}
+table.cases th{font:600 13px var(--body);color:var(--muted)}
+table.cases select{min-height:44px;padding:6px;font-size:15px}
+select.right{border-color:var(--ok);background:var(--okbg)}
+select.wrong{border-color:var(--warn);background:var(--nobg)}
+.tb{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1fr);gap:6px;align-items:center}
+.tb b{font-size:13px;color:var(--muted)}
+.tb select{font-size:14px;padding:8px 4px}
+/* Aula 7 */
+.sl8{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px}
+.sl8 label{display:grid;gap:2px;font:600 11px/1.1 var(--mono);text-align:center;min-width:0}
+.sl8 input[type=range]{writing-mode:vertical-lr;direction:rtl;width:100%;height:110px;accent-color:var(--accent);margin:0 auto}
+/* Aula 14 */
+.seg label{position:relative}
+.seg.two{grid-template-columns:repeat(2,1fr)}
+.seg.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.seg.four label{font-size:13px;padding:10px 2px}
+.mk{display:grid;gap:10px}
+.mk .stage{position:relative;width:100%;max-width:340px;aspect-ratio:17/10;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.mk .stage canvas{width:100%;height:100%;display:block}
+.mk .resp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mk .resp2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.mk .resp button,.mk .resp2 button{padding:12px 4px;font-size:18px}
+.chk{display:flex;gap:8px;align-items:center;font:600 14px var(--body)}
+.chk input{width:20px;height:20px;accent-color:var(--accent)}
+</style>
+
+<div class="wrap" id="student">
+<header>
+  <span class="eyebrow">Neurociência Computacional · Aula 14 · UFRN</span>
+  <h1>Consciência e o espaço de trabalho global</h1>
+  <p class="lead">Mascaramento, atenção, ignição e as teorias que disputam o que é estar consciente. Identifique-se abaixo, faça cada atividade quando o professor pedir e toque em <b>Enviar</b> — sua resposta fica registrada e o gabarito aparece em seguida.</p>
+</header>
+
+<nav aria-label="Atividades">
+  <a href="#a1">1 · Mascaramento</a><a href="#a2">2 · Contraste</a><a href="#a3">3 · Ignição</a><a href="#a4">4 · Ruído</a><a href="#a5">5 · Teorias</a><a href="#a6">6 · Pré-registro</a><a href="#a7">7 · Níveis</a>
+</nav>
+
+<!-- ============ ATIVIDADE 1 ============ -->
+<section class="exp" id="a1" data-titulo="Mascaramento: o que você viu?">
+  <div><p class="num">Atividade 1 · 8 min · individual · experimento no celular</p><h2>Mascaramento: o que você viu?</h2></div>
+  <p>Fixe o <b>+</b>. Uma letra (E, F, H ou T) aparece por <b>1 quadro</b> da tela e é seguida de uma máscara. Escolha a letra (chute se precisar) e diga se a viu. São 24 ensaios em 6 intervalos (SOA).</p>
+  <div class="mk">
+    <div class="stage"><canvas id="mkC" width="340" height="200" aria-label="Tela do experimento de mascaramento"></canvas></div>
+    <div class="resp" id="mkL" hidden><button type="button" class="ghost">E</button><button type="button" class="ghost">F</button><button type="button" class="ghost">H</button><button type="button" class="ghost">T</button></div>
+    <div class="resp2" id="mkV" hidden><button type="button" class="ghost" data-v="1">vi</button><button type="button" class="ghost" data-v="0">não vi</button></div>
+    <div class="btns"><button type="button" id="mkGo">Começar (24 ensaios)</button></div>
+    <p class="readout" id="mkR"></p>
+    <canvas class="plot" id="mkP" width="400" height="230" aria-label="Curvas de acerto e de relato vi em função do SOA" hidden></canvas>
+  </div>
+  <p class="meta">Rolls &amp; Tovee (1994): um rosto (de 5 possíveis) por 16 ms, máscara após o SOA. Com SOA de 20 ms, neurônios do córtex temporal disparam ~30 ms e as pessoas acertam acima do acaso, mas dizem que chutam; com 40 ms, disparam ~50 ms e o rosto é visto.</p>
+  <div class="q"><p class="qt"><i>a</i>Com 5 rostos possíveis, qual a taxa de acerto por puro chute?</p>
+    <div class="inline"><label>acerto (%)<input type="text" inputmode="decimal" name="a1a"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Acertar acima do acaso dizendo que chutou mostra…</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a1b" value="sem consciência">processamento sem consciência relatada: medida objetiva acima do acaso, relato de chute</label><label class="opt"><input type="radio" name="a1b" value="mentira">que as pessoas estavam mentindo sobre o que viram</label><label class="opt"><input type="radio" name="a1b" value="sorte">sorte: com poucos ensaios, o acaso explica</label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Dados ilustrativos: "vi" em 20% dos ensaios com SOA 30 ms e em 70% com SOA 50 ms. Interpolando, em que SOA a pessoa diz "vi" em 50%?</p>
+    <div class="inline"><label>SOA (ms)<input type="text" inputmode="decimal" name="a1c"></label></div></div>
+  <div class="q"><p class="qt"><i>d</i>A conclusão de Rolls é que…</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a1d" value="limiar">na mesma via, a consciência exige um limiar de atividade mais alto que o processamento inconsciente</label><label class="opt"><input type="radio" name="a1d" value="outra via">o processamento inconsciente usa uma via totalmente separada</label><label class="opt"><input type="radio" name="a1d" value="v1">a consciência está no córtex visual primário</label></div></div>
+  <div class="q"><p class="qt"><i>e</i>Num experimento assim, qual curva sobe em SOAs menores?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a1e" value="acerto">a de acerto (escolha forçada)</label><label class="opt"><input type="radio" name="a1e" value="vi">a de "vi"</label><label class="opt"><input type="radio" name="a1e" value="iguais">sobem juntas, sempre</label></div></div>
+  <div class="send"><button data-send="a1">Enviar</button><span class="sent" data-status="a1"></span></div>
+  <div class="fb" data-fb="a1" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 2 ============ -->
+<section class="exp" id="a2" data-titulo="Desenhe o contraste">
+  <div><p class="num">Atividade 2 · 6 min · em duplas</p><h2>Desenhe o contraste</h2></div>
+  <div class="q"><p class="qt"><i>a</i>Que comparação isola melhor um correlato neural da consciência?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a2a" value="presente">estímulo presente × ausente</label><label class="opt"><input type="radio" name="a2a" value="forte">estímulo forte × fraco</label><label class="opt"><input type="radio" name="a2a" value="vi">o mesmo estímulo, perto do limiar: ensaios "vi" × "não vi"</label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Nos ensaios "vi" a pessoa também acerta mais, e precisa relatar. Que controles atacam esses dois confundidores?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a2b" value="desempenho e sem relato">igualar o desempenho entre condições; usar um paradigma sem relato</label><label class="opt"><input type="radio" name="a2b" value="mais ensaios">coletar mais ensaios de cada tipo</label><label class="opt"><input type="radio" name="a2b" value="estímulo forte">usar estímulos mais fortes</label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Estado (E) ou conteúdo (C)?</p><div class="marr" id="ecList"></div></div>
+  <p class="meta">Simulador de detecção de sinais: a evidência interna é ruidosa; com alvo, a distribuição se desloca de d′. Mova o critério.</p>
+  <canvas class="plot" id="sdC" width="400" height="200" aria-label="Distribuições sem alvo e com alvo e um critério de decisão"></canvas>
+  <div class="ctl"><label>d′ = <span id="sdDv">1,0</span><input type="range" id="sdD" min="0" max="3" step="0.1" value="1"></label><label>critério = <span id="sdKv">0,5</span><input type="range" id="sdK" min="-1.5" max="2.5" step="0.05" value="0.5"></label></div>
+  <p class="readout" id="sdR"></p>
+  <div class="q"><p class="qt"><i>d</i>Observadora 1: "vi" em 69% dos ensaios com alvo e 31% sem alvo (z = 0,50 e −0,50). Observadora 2: 84% e 50% (z = 0,99 e 0). Calcule d′ = z(acertos) − z(falsos alarmes).</p>
+    <div class="pair"><label>d′ obs. 1<input type="text" inputmode="decimal" name="a2d1"></label><label>d′ obs. 2<input type="text" inputmode="decimal" name="a2d2"></label></div></div>
+  <div class="q"><p class="qt"><i>e</i>Quem vê melhor?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a2e" value="1">a observadora 1: tem menos falsos alarmes</label><label class="opt"><input type="radio" name="a2e" value="2">a observadora 2: diz "vi" mais vezes</label><label class="opt"><input type="radio" name="a2e" value="iguais">nenhuma: mesma sensibilidade; a 2 só tem critério mais liberal</label></div></div>
+  <div class="send"><button data-send="a2">Enviar</button><span class="sent" data-status="a2"></span></div>
+  <div class="fb" data-fb="a2" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 3 ============ -->
+<section class="exp" id="a3" data-titulo="Ignição numa unidade recorrente">
+  <div><p class="num">Atividade 3 · 7 min · em duplas</p><h2>Ignição numa unidade recorrente</h2></div>
+  <p><span class="badge">τ dr/dt = −r + H(w r + I − θ)</span>, com H(x) = 1 se x &gt; 0 e 0 caso contrário; <b>w = 0,8</b>, <b>θ = 0,5</b>, <b>τ = 10 ms</b>. Os pontos fixos são r = 0 e r = 1.</p>
+  <div class="q"><p class="qt"><i>a</i>Para que valores da entrada constante I os dois pontos fixos são estáveis ao mesmo tempo? (I entre … e …)</p>
+    <div class="pair"><label>de (excl.)<input type="text" inputmode="decimal" name="a3a1"></label><label>até (incl.)<input type="text" inputmode="decimal" name="a3a2"></label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Em repouso, I = 0 e r = 0. Um pulso leva I a <b>0,6</b> por 50 ms e volta a 0. Onde r termina?</p>
+    <div class="opts two"><label class="opt"><input type="radio" name="a3b" value="1">fica em 1</label><label class="opt"><input type="radio" name="a3b" value="0">volta a 0</label></div></div>
+  <div class="q"><p class="qt"><i>c</i>E com um pulso de <b>0,4</b>?</p>
+    <div class="opts two"><label class="opt"><input type="radio" name="a3c" value="1">fica em 1</label><label class="opt"><input type="radio" name="a3c" value="0">fica em 0</label></div></div>
+  <div class="q"><p class="qt"><i>d</i>Durante o pulso de 0,6, r(t) = 1 − e<sup>−t/τ</sup>. Quanto tempo o pulso precisa durar para a atividade se manter depois? (ln(8/3) ≈ 0,98)</p>
+    <div class="inline"><label>duração mínima (ms)<input type="text" inputmode="decimal" name="a3d"></label></div></div>
+  <p class="meta">Simulador: a unidade com um pulso de entrada. Confira suas respostas; depois desmarque "degrau" (sigmoide) e diminua w.</p>
+  <canvas class="plot" id="igC" width="400" height="220" aria-label="Atividade da unidade recorrente ao longo do tempo"></canvas>
+  <div class="ctl"><label>w = <span id="igWv">0,8</span><input type="range" id="igW" min="0" max="1.2" step="0.05" value="0.8"></label><label>pulso = <span id="igAv">0,6</span><input type="range" id="igA" min="0" max="1" step="0.05" value="0.6"></label><label>duração = <span id="igDv">50</span> ms<input type="range" id="igD" min="2" max="100" step="0.5" value="50"></label></div>
+  <label class="chk"><input type="checkbox" id="igH" checked> função degrau H (desmarque para sigmoide)</label>
+  <p class="readout" id="igR"></p>
+  <div class="q"><p class="qt"><i>e</i>O que acontece sem recorrência (w = 0)?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a3e" value="graduada">a resposta acompanha a entrada e some quando ela some</label><label class="opt"><input type="radio" name="a3e" value="sustentada">a unidade fica acesa para sempre</label><label class="opt"><input type="radio" name="a3e" value="oscila">a unidade oscila</label></div></div>
+  <div class="send"><button data-send="a3">Enviar</button><span class="sent" data-status="a3"></span></div>
+  <div class="fb" data-fb="a3" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 4 ============ -->
+<section class="exp" id="a4" data-titulo="Ruído no limiar">
+  <div><p class="num">Atividade 4 · 6 min · individual</p><h2>Ruído no limiar</h2></div>
+  <p>A mesma unidade, com função sigmoide, w = 1 e ruído σ. Em cada ensaio, um pulso de 50 ms; mede-se a atividade aos 400 ms. Rode ensaios em várias amplitudes.</p>
+  <canvas class="plot" id="nzC" width="400" height="220" aria-label="Histograma da atividade tardia em vários ensaios"></canvas>
+  <div class="ctl"><label>amplitude = <span id="nzAv">0,20</span><input type="range" id="nzA" min="0" max="0.5" step="0.01" value="0.2"></label><label>ruído σ = <span id="nzSv">0,10</span><input type="range" id="nzS" min="0.02" max="0.2" step="0.01" value="0.1"></label></div>
+  <div class="btns"><button type="button" class="ghost" id="nzRun">Rodar 200 ensaios</button><button type="button" class="ghost" id="nzPsy">Curva psicométrica</button></div>
+  <p class="readout" id="nzR"></p>
+  <div class="q"><p class="qt"><i>a</i>Na amplitude do limiar, como é o histograma da atividade tardia?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a4a" value="bimodal">bimodal: dois picos (apagado e aceso)</label><label class="opt"><input type="radio" name="a4a" value="meio">um pico só, no meio</label><label class="opt"><input type="radio" name="a4a" value="plano">plano: qualquer valor é igualmente provável</label></div></div>
+  <div class="q"><p class="qt"><i>b</i>Dados ilustrativos: <span class="badge">p("vi") = 1 / (1 + e^(−(SOA − 50)/8))</span>. Quanto vale p para SOA = 66 ms? (e<sup>−2</sup> ≈ 0,135)</p>
+    <div class="inline"><label>p (%)<input type="text" inputmode="decimal" name="a4b"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Variando o SOA, que componente do EEG cresce aos poucos e qual salta no limiar?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a4c" value="precoce gradual">o precoce (visual, P1/N1) cresce aos poucos; a P3b salta</label><label class="opt"><input type="radio" name="a4c" value="P3b gradual">a P3b cresce aos poucos; o precoce salta</label><label class="opt"><input type="radio" name="a4c" value="ambos saltam">os dois saltam juntos</label></div></div>
+  <div class="q"><p class="qt"><i>d</i>Com mais ruído, a curva psicométrica…</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a4d" value="rasa">fica mais rasa (e surgem ignições sem estímulo)</label><label class="opt"><input type="radio" name="a4d" value="íngreme">fica mais íngreme</label><label class="opt"><input type="radio" name="a4d" value="igual">não muda</label></div></div>
+  <div class="q"><p class="qt"><i>e</i>Para Rolls (seção 18.2.6), o ruído num atrator também decide…</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a4e" value="sistema">qual sistema — implícito ou explícito (consciente) — controla a escolha, e podemos não saber qual foi</label><label class="opt"><input type="radio" name="a4e" value="nada">nada: o ruído só atrapalha</label><label class="opt"><input type="radio" name="a4e" value="memória">apenas quais memórias são apagadas no sono</label></div></div>
+  <div class="send"><button data-send="a4">Enviar</button><span class="sent" data-status="a4"></span></div>
+  <div class="fb" data-fb="a4" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 5 ============ -->
+<section class="exp" id="a5" data-titulo="Que teoria diz isso?">
+  <div><p class="num">Atividade 5 · 6 min · individual</p><h2>Que teoria diz isso?</h2></div>
+  <p class="lead"><b>GNW</b> = espaço de trabalho global · <b>IIT</b> = informação integrada · <b>HOT</b> = ordem superior (inclui a HOST de Rolls) · <b>RPT</b> = processamento recorrente</p>
+  <div class="q"><p class="qt"><i>a</i>Atribua cada afirmação a uma teoria.</p><div class="marr" id="thList"></div></div>
+  <div class="q"><p class="qt"><i>b</i>Com o exemplo de dirigir um carro sem conseguir relatar como, Rolls critica o espaço de trabalho global porque…</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a5b" value="quão global">tarefas que parecem exigir um espaço amplo ocorrem sem consciência relatável: quão global ele precisa ser?</label><label class="opt"><input type="radio" name="a5b" value="pfc">dirigir mostra que o pré-frontal é desnecessário para tudo</label><label class="opt"><input type="radio" name="a5b" value="phi">dirigir tem Φ alto</label></div></div>
+  <div class="send"><button data-send="a5">Enviar</button><span class="sent" data-status="a5"></span></div>
+  <div class="fb" data-fb="a5" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 6 ============ -->
+<section class="exp" id="a6" data-titulo="Pré-registre: quem sai desafiado?">
+  <div><p class="num">Atividade 6 · 6 min · em duplas · opcional</p><h2>Pré-registre: quem sai desafiado?</h2></div>
+  <p>Colaboração adversarial GNW × IIT: rostos, objetos, letras e falsas fontes visíveis por 0,5, 1,0 ou 1,5 s. A GNW previa conteúdo no pré-frontal e ignição no início e no fim do estímulo; a IIT, conteúdo e sincronia posteriores sustentados enquanto o estímulo durasse.</p>
+  <div class="q"><p class="qt"><i>a</i>Cada resultado hipotético desafia qual teoria?</p><div class="marr" id="prList"></div></div>
+  <div class="q"><p class="qt"><i>b</i>Por que pré-registrar as predições?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a6b" value="fixar">para fixar a interpretação antes dos dados: ninguém pode reinterpretar depois</label><label class="opt"><input type="radio" name="a6b" value="rapidez">para publicar mais rápido</label><label class="opt"><input type="radio" name="a6b" value="amostra">para precisar de menos participantes</label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Um paciente sem resposta comportamental tem PCI = 0,44; o limiar empírico é 0,31. Isso sugere…</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a6c" value="encoberta">possível consciência encoberta — um indício a investigar, não um diagnóstico isolado</label><label class="opt"><input type="radio" name="a6c" value="certeza">certeza de que ele está plenamente consciente</label><label class="opt"><input type="radio" name="a6c" value="morte">morte encefálica</label></div></div>
+  <div class="send"><button data-send="a6">Enviar</button><span class="sent" data-status="a6"></span></div>
+  <div class="fb" data-fb="a6" hidden></div>
+</section>
+
+<!-- ============ ATIVIDADE 7 ============ -->
+<section class="exp" id="a7" data-titulo="Níveis de Marr e de explicação">
+  <div><p class="num">Atividade 7 · 5 min · individual · opcional</p><h2>Níveis de Marr e de explicação</h2></div>
+  <p class="lead"><b>C</b> = computacional (o quê e por quê) · <b>A</b> = algorítmico (como) · <b>I</b> = implementação (com quê)</p>
+  <div class="q"><p class="qt"><i>a</i>Classifique cada afirmação.</p><div class="marr" id="marrList"></div></div>
+  <div class="q"><p class="qt"><i>b</i>Para Rolls (2023, seção 19.6), a relação entre um evento mental e os disparos que o implementam é…</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a7b" value="não causal">necessária, mas não causal: dois níveis simultâneos do mesmo processo</label><label class="opt"><input type="radio" name="a7b" value="mente causa">causal: o evento mental causa os disparos</label><label class="opt"><input type="radio" name="a7b" value="atraso">causal: os disparos causam o evento mental com atraso</label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Numa rede de Hopfield (Aula 9) com padrões demais, quem "decide" que a memória colapsa?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a7c" value="emergente">ninguém: o limite emerge das interações locais entre neurônios</label><label class="opt"><input type="radio" name="a7c" value="lei">a lei de capacidade, agindo de cima para baixo nos neurônios</label><label class="opt"><input type="radio" name="a7c" value="neurônio">um neurônio especial que conta os padrões</label></div></div>
+  <div class="send"><button data-send="a7">Enviar</button><span class="sent" data-status="a7"></span></div>
+  <div class="fb" data-fb="a7" hidden></div>
+</section>
+
+<footer>
+  <p>Materiais: <a href="simulacoes/aula14.html">simulações interativas da Aula 14</a> · <a href="index.html">todas as aulas</a></p>
+  <p>Prof. Daniel Y. Takahashi · Instituto do Cérebro, UFRN</p>
+</footer>
+</div>
+
+<script>
+(() => {
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const val = (n) => { const el = $(`[name="${n}"]:checked`) || $(`[name="${n}"]:not([type=radio]):not([type=checkbox])`); return el ? String(el.value).trim() : ''; };
+const num = (n) => { let t = String(val(n)).replace(/\s/g, '').replace('%', ''); if (/^-?(\d{1,3}(\.\d{3}){2,}|[1-9]\d{1,2}\.\d{3})$/.test(t)) t = t.replace(/\./g, ''); t = t.replace(',', '.').replace('−', '-'); const v = parseFloat(t); return isNaN(v) ? null : v; };
+const tag = (ok) => `<span class="mark ${ok ? 'ok' : 'no'}">${ok ? '✓' : '✗'}</span>`;
+function markRadio(name, correct) { $$(`[name="${name}"]`).forEach(i => { const l = i.closest('label'); l.classList.remove('right', 'wrong'); if (i.value === correct) l.classList.add('right'); else if (i.checked) l.classList.add('wrong'); }); }
+function markEl(el, ok) { el.classList.toggle('right', ok); el.classList.toggle('wrong', !ok); }
+const markInput = (name, ok) => markEl($(`[name="${name}"]`), ok);
+const near = (v, x, tol) => v !== null && Math.abs(v - x) <= tol;
+const fmt = (v, d = 2) => v.toFixed(d).replace('.', ',').replace('-', '−');
+function setupCanvas(c) { const r = window.devicePixelRatio || 1; const w = c.width, h = c.height; c.width = w * r; c.height = h * r; const g = c.getContext('2d'); g.scale(r, r); return { g, w, h }; }
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+function gauss() { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+const pct = (v) => v === null ? null : (v <= 1.0001 ? 100 * v : v);  // aceita 0,88 ou 88
+const ROSE = '#be123c', TEAL = '#0d9488';
+// grupo de escolhas segmentadas: itens [texto, correta, porquê], opções
+function segList(id, prefix, items, opts, cls) {
+  $(id).innerHTML = items.map(([t], k) => `<div class="st"><span>${k + 1}. ${t}</span><div class="seg ${cls || ''}" role="radiogroup" aria-label="Item ${k + 1}">
+    ${opts.map(l => `<label><input type="radio" name="${prefix}${k}" value="${l}">${l}</label>`).join('')}</div></div>`).join('');
+}
+function gradeSeg(prefix, items) {
+  let s = 0;
+  items.forEach(([, c], k) => { const v = val(prefix + k); if (v === c) s++;
+    $$(`[name="${prefix}${k}"]`).forEach(i => { const l = i.closest('label'); l.classList.remove('right', 'wrong'); if (i.value === c) l.classList.add('right'); else if (i.checked) l.classList.add('wrong'); }); });
+  return s;
+}
+
+/* ---------- Atividade 1: experimento de mascaramento ---------- */
+const MK = setupCanvas($('#mkC')); const LET = ['E', 'F', 'H', 'T']; const SOAF = [1, 2, 3, 4, 6, 10];
+let frameMs = 16.7, mk = null;
+(function measure() { let n = 0, t0 = 0; function f(t) { if (!n) t0 = t; if (++n < 31) requestAnimationFrame(f); else { frameMs = (t - t0) / 30; if (!(frameMs > 4 && frameMs < 60)) frameMs = 16.7; mkIdle(); } } requestAnimationFrame(f); })();
+function mkClear() { const { g, w, h } = MK; g.fillStyle = '#ffffff'; g.fillRect(0, 0, w, h); }
+function mkFix() { mkClear(); const { g, w, h } = MK; g.fillStyle = '#1e293b'; g.font = '700 30px system-ui,sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('+', w / 2, h / 2); }
+function mkLetter(L) { mkClear(); const { g, w, h } = MK; g.fillStyle = '#1e293b'; g.font = '700 64px system-ui,sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(L, w / 2, h / 2 + 3); }
+function mkMask() { mkClear(); const { g, w, h } = MK; g.strokeStyle = '#1e293b'; g.lineWidth = 4; for (let k = 0; k < 70; k++) { const x = w / 2 - 45 + Math.random() * 90, y = h / 2 - 45 + Math.random() * 90; g.beginPath(); g.moveTo(x, y); g.lineTo(x + (Math.random() - 0.5) * 50, y + (Math.random() - 0.5) * 50); g.stroke(); } }
+function mkIdle(msg) { mkClear(); const { g, w, h } = MK; g.fillStyle = '#64748b'; g.font = '14px system-ui,sans-serif'; g.textAlign = 'center'; g.fillText(msg || `1 quadro desta tela ≈ ${fmt(frameMs, 1)} ms`, w / 2, h / 2); }
+function mkStart() {
+  const T = []; SOAF.forEach(s => { for (let r = 0; r < 4; r++) T.push({ s, L: LET[Math.floor(Math.random() * 4)] }); });
+  for (let i = T.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [T[i], T[j]] = [T[j], T[i]]; }
+  mk = { T, i: 0, res: [] }; $('#mkGo').hidden = true; $('#mkP').hidden = true; mkTrial();
+}
+function mkTrial() {
+  const tr = mk.T[mk.i]; $('#mkR').textContent = `ensaio ${mk.i + 1} de ${mk.T.length}`; mkFix();
+  setTimeout(() => { let f = 0; const step = () => {
+      if (f === 0) mkLetter(tr.L); else if (f < tr.s) mkClear(); else if (f < tr.s + Math.round(250 / frameMs)) { if (f === tr.s) mkMask(); } else { mkClear(); $('#mkL').hidden = false; return; }
+      f++; requestAnimationFrame(step); }; requestAnimationFrame(step); }, 500 + Math.random() * 300);
+}
+$$('#mkL button').forEach(b => b.addEventListener('click', () => { mk.cur = b.textContent; $('#mkL').hidden = true; $('#mkV').hidden = false; }));
+$$('#mkV button').forEach(b => b.addEventListener('click', () => {
+  const tr = mk.T[mk.i]; mk.res.push({ s: tr.s, ok: mk.cur === tr.L, vi: b.dataset.v === '1' }); $('#mkV').hidden = true; mk.i++;
+  if (mk.i < mk.T.length) mkTrial(); else mkEnd();
+}));
+function mkSummary() { if (!mk || !mk.res.length) return null; return SOAF.map(s => { const r = mk.res.filter(x => x.s === s); return { ms: s * frameMs, ok: r.filter(x => x.ok).length / r.length, vi: r.filter(x => x.vi).length / r.length }; }); }
+function mkEnd() {
+  mkIdle('fim! veja suas curvas abaixo'); $('#mkGo').hidden = false; $('#mkGo').textContent = 'Repetir'; $('#mkR').textContent = 'Verde: acerto (acaso = 25%). Vermelho: "vi".';
+  const S = mkSummary(), c = $('#mkP'); c.hidden = false; if (!c._s) c._s = setupCanvas(c); const { g, w, h } = c._s; g.clearRect(0, 0, w, h);
+  const xm = S[S.length - 1].ms * 1.08, X = (x) => 40 + x / xm * (w - 55), Y = (y) => h - 30 - y * (h - 50);
+  g.strokeStyle = css('--line'); g.beginPath(); g.moveTo(40, Y(0)); g.lineTo(w - 10, Y(0)); g.moveTo(40, Y(0)); g.lineTo(40, Y(1)); g.stroke();
+  g.setLineDash([4, 4]); g.beginPath(); g.moveTo(40, Y(0.25)); g.lineTo(w - 10, Y(0.25)); g.stroke(); g.setLineDash([]);
+  g.fillStyle = css('--muted'); g.font = '12px ui-monospace,monospace'; g.fillText('100%', 4, Y(1) + 4); g.fillText('0', 26, Y(0) + 4); g.fillText('SOA (ms)', w - 70, 14);
+  [['ok', TEAL], ['vi', ROSE]].forEach(([k, col]) => { g.strokeStyle = col; g.fillStyle = col; g.lineWidth = 2.5; g.beginPath(); S.forEach((p, i) => { i ? g.lineTo(X(p.ms), Y(p[k])) : g.moveTo(X(p.ms), Y(p[k])); }); g.stroke(); S.forEach(p => { g.beginPath(); g.arc(X(p.ms), Y(p[k]), 4, 0, 7); g.fill(); }); });
+  g.lineWidth = 1; g.fillStyle = css('--muted'); S.forEach(p => g.fillText(String(Math.round(p.ms)), X(p.ms) - 8, h - 14));
+}
+$('#mkGo').addEventListener('click', mkStart);
+
+/* ---------- Atividade 2: estado × conteúdo; detecção de sinais ---------- */
+const EC = [['anestesia geral', 'E'], ['rivalidade binocular', 'C'], ['sono profundo', 'E'], ['mascaramento', 'C'], ['estado vegetativo', 'E'], ['cegueira por desatenção', 'C']];
+segList('#ecList', 'ec', EC, ['E', 'C'], 'two');
+const SD = setupCanvas($('#sdC'));
+const Phi = (x) => { const t = 1 / (1 + 0.2316419 * Math.abs(x)), d = 0.3989423 * Math.exp(-x * x / 2); const p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274)))); return x > 0 ? 1 - p : p; };
+function sdDraw() {
+  const d = +$('#sdD').value, k = +$('#sdK').value; $('#sdDv').textContent = fmt(d, 1); $('#sdKv').textContent = fmt(k, 2);
+  const { g, w, h } = SD; g.clearRect(0, 0, w, h); const X = (x) => 10 + (x + 3.5) / 8 * (w - 20), Y = (y) => h - 25 - y / 0.42 * (h - 40);
+  const pdf = (x, m) => Math.exp(-0.5 * (x - m) ** 2) / Math.sqrt(2 * Math.PI);
+  [[0, css('--muted')], [d, ROSE]].forEach(([m, col]) => { g.fillStyle = col; g.globalAlpha = 0.2; g.beginPath(); g.moveTo(X(k), Y(0)); for (let x = k; x <= 4.5; x += 0.05) g.lineTo(X(x), Y(pdf(x, m))); g.lineTo(X(4.5), Y(0)); g.fill(); g.globalAlpha = 1;
+    g.strokeStyle = col; g.lineWidth = 2.2; g.beginPath(); for (let x = -3.5; x <= 4.5; x += 0.05) { x === -3.5 ? g.moveTo(X(x), Y(pdf(x, m))) : g.lineTo(X(x), Y(pdf(x, m))); } g.stroke(); });
+  g.strokeStyle = css('--fg'); g.setLineDash([5, 4]); g.beginPath(); g.moveTo(X(k), 8); g.lineTo(X(k), h - 25); g.stroke(); g.setLineDash([]); g.lineWidth = 1;
+  g.fillStyle = css('--muted'); g.font = '12px ui-monospace,monospace'; g.fillText('sem alvo', X(-3.3), Y(0.3)); g.fillStyle = ROSE; g.fillText('com alvo', X(Math.min(d + 1.2, 3)), Y(0.3)); g.fillStyle = css('--fg'); g.fillText('"vi" →', X(k) + 4, h - 10);
+  $('#sdR').textContent = `acertos = ${fmt(100 * (1 - Phi(k - d)), 0)}% · falsos alarmes = ${fmt(100 * (1 - Phi(k)), 0)}%`;
+}
+$('#sdD').addEventListener('input', sdDraw); $('#sdK').addEventListener('input', sdDraw); sdDraw();
+
+/* ---------- Atividade 3: unidade recorrente ---------- */
+const IG = setupCanvas($('#igC'));
+function igSim(w, A, dur, step, T = 400, dt = 0.05) { let r = 0; const out = []; for (let k = 0; k * dt <= T; k++) { const t = k * dt, I = t < dur ? A : 0, x = w * r + I - 0.5, f = step ? (x > 0 ? 1 : 0) : 1 / (1 + Math.exp(-x / 0.1)); r += dt / 10 * (-r + f); if (k % 20 === 0) out.push([t, r]); } return out; }
+function igDraw() {
+  const w = +$('#igW').value, A = +$('#igA').value, dur = +$('#igD').value, step = $('#igH').checked;
+  $('#igWv').textContent = fmt(w, 2); $('#igAv').textContent = fmt(A, 2); $('#igDv').textContent = fmt(dur, 1);
+  const P = igSim(w, A, dur, step), { g, w: W, h } = IG; g.clearRect(0, 0, W, h); const X = (t) => 36 + t / 400 * (W - 46), Y = (r) => h - 28 - r * (h - 48);
+  g.fillStyle = ROSE; g.globalAlpha = 0.12; g.fillRect(X(0), Y(1.05), X(dur) - X(0), Y(0) - Y(1.05)); g.globalAlpha = 1;
+  g.strokeStyle = css('--line'); g.beginPath(); g.moveTo(36, Y(0)); g.lineTo(W - 10, Y(0)); g.moveTo(36, Y(0)); g.lineTo(36, Y(1)); g.stroke();
+  g.fillStyle = css('--muted'); g.font = '12px ui-monospace,monospace'; g.fillText('1', 22, Y(1) + 4); g.fillText('0', 22, Y(0) + 4); g.fillText('tempo (ms) →', W - 110, h - 8); g.fillText('400', X(400) - 14, h - 12); g.fillText('pulso', X(0) + 3, 14);
+  g.strokeStyle = css('--accent'); g.lineWidth = 2.6; g.beginPath(); P.forEach(([t, r], i) => i ? g.lineTo(X(t), Y(r)) : g.moveTo(X(t), Y(r))); g.stroke(); g.lineWidth = 1;
+  const rf = P[P.length - 1][1]; $('#igR').textContent = `r aos 400 ms = ${fmt(rf, 2)} → ${rf > 0.5 ? 'aceso (ignição sustentada)' : 'apagado'}`;
+}
+['#igW', '#igA', '#igD', '#igH'].forEach(s => $(s).addEventListener('input', igDraw)); igDraw();
+
+/* ---------- Atividade 4: ruído no limiar ---------- */
+const NZ = setupCanvas($('#nzC'));
+function nzTrials(A, sig, n) { const r = new Float64Array(n), dt = 0.5, c = Math.sqrt(dt / 10); for (let k = 0; k < 800; k++) { const I = k * dt < 50 ? A : 0; for (let j = 0; j < n; j++) { const x = r[j] + I - 0.5; r[j] += dt / 10 * (-r[j] + 1 / (1 + Math.exp(-x / 0.1))) + sig * c * gauss(); } } return r; }
+function nzAxes(title) { const { g, w, h } = NZ; g.clearRect(0, 0, w, h); g.strokeStyle = css('--line'); g.beginPath(); g.moveTo(30, h - 28); g.lineTo(w - 10, h - 28); g.stroke(); g.fillStyle = css('--muted'); g.font = '12px ui-monospace,monospace'; g.fillText(title, 34, 14); return { g, w, h }; }
+function nzRun() {
+  const A = +$('#nzA').value, s = +$('#nzS').value, r = nzTrials(A, s, 200), B = 28, lo = -0.3, hi = 1.3, H = new Array(B).fill(0);
+  r.forEach(v => { const b = Math.floor((v - lo) / (hi - lo) * B); if (b >= 0 && b < B) H[b]++; });
+  const { g, w, h } = nzAxes(`200 ensaios · amplitude ${fmt(A, 2)} · σ = ${fmt(s, 2)}`), bw = (w - 40) / B, m = Math.max(...H, 1);
+  H.forEach((c, k) => { g.fillStyle = lo + (k + 0.5) * (hi - lo) / B > 0.5 ? ROSE : css('--muted'); g.fillRect(30 + k * bw, h - 28 - c / m * (h - 50), bw - 1.5, c / m * (h - 50)); });
+  g.fillStyle = css('--muted'); g.fillText('0', 30 + (0 - lo) / (hi - lo) * (w - 40) - 3, h - 12); g.fillText('1', 30 + (1 - lo) / (hi - lo) * (w - 40) - 3, h - 12); g.fillText('atividade aos 400 ms', w / 2 - 70, h - 2);
+  const p = r.filter(v => v > 0.5).length / r.length; $('#nzR').textContent = `ignições: ${fmt(100 * p, 0)}% dos ensaios`;
+}
+function nzPsy() {
+  const s = +$('#nzS').value, As = [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.5], P = As.map(A => { const r = nzTrials(A, s, 80); return r.filter(v => v > 0.5).length / r.length; });
+  const { g, w, h } = nzAxes(`ignições (80 ensaios/ponto) · σ = ${fmt(s, 2)}`), X = (a) => 30 + a / 0.5 * (w - 45), Y = (p) => h - 28 - p * (h - 50);
+  g.strokeStyle = ROSE; g.fillStyle = ROSE; g.lineWidth = 2.5; g.beginPath(); P.forEach((p, i) => i ? g.lineTo(X(As[i]), Y(p)) : g.moveTo(X(As[i]), Y(p))); g.stroke(); P.forEach((p, i) => { g.beginPath(); g.arc(X(As[i]), Y(p), 3.5, 0, 7); g.fill(); }); g.lineWidth = 1;
+  g.fillStyle = css('--muted'); g.fillText('1', 18, Y(1) + 4); g.fillText('0,5', X(0.5) - 18, h - 12); g.fillText('amplitude', w / 2 - 30, h - 2);
+  $('#nzR').textContent = 'Compare σ = 0,05 e σ = 0,15.';
+}
+['#nzA', '#nzS'].forEach(sel => $(sel).addEventListener('input', () => { $('#nzAv').textContent = fmt(+$('#nzA').value, 2); $('#nzSv').textContent = fmt(+$('#nzS').value, 2); }));
+$('#nzRun').addEventListener('click', nzRun); $('#nzPsy').addEventListener('click', nzPsy); nzRun();
+
+/* ---------- Atividades 5, 6 e 7: listas ---------- */
+const TH = [
+  ['Um conteúdo fica consciente quando neurônios de axônio longo o difundem para muitos processadores.', 'GNW', 'difusão global'],
+  ['Consciência é a estrutura de causa e efeito de um sistema, medida por Φ; o cerebelo contribui pouco.', 'IIT', 'Φ; cerebelo pouco integrado'],
+  ['Um estado é consciente quando o cérebro o representa como um estado seu ("estou vendo vermelho").', 'HOT', 'representação de ordem superior'],
+  ['A recorrência local no córtex visual já basta para a experiência, mesmo sem acesso ao relato.', 'RPT', 'recorrência local basta'],
+  ['O pré-frontal é essencial porque é ali que ocorre a ignição que torna o conteúdo disponível.', 'GNW', 'ignição pré-frontal'],
+  ['Pensar sobre os próprios pensamentos serve para achar o passo errado de um plano de vários passos.', 'HOT', 'a HOST de Rolls: atribuição de crédito'],
+  ['Uma câmera com milhões de pixels independentes não tem experiência, por mais informação que capte.', 'IIT', 'informação sem integração'],
+  ['A 1ª varredura feedforward é inconsciente; a experiência começa quando a atividade volta às áreas visuais.', 'RPT', 'feedforward × recorrente'],
+];
+segList('#thList', 'th', TH, ['GNW', 'IIT', 'HOT', 'RPT'], 'four');
+const PR = [
+  ['Nenhum aumento de atividade no pré-frontal quando o estímulo some da tela.', 'GNW', 'a GNW previa ignição também no fim do estímulo'],
+  ['Sem sincronia sustentada dentro do córtex posterior enquanto o estímulo está na tela.', 'IIT', 'a IIT previa sincronia posterior sustentada'],
+  ['A categoria do estímulo (rosto, objeto…) é decodificável no córtex visual posterior.', 'nenhuma', 'as duas aceitam conteúdo no córtex posterior'],
+  ['Uma dimensão do conteúdo consciente (por exemplo, a orientação) não é decodificável no pré-frontal.', 'GNW', 'a GNW previa o conteúdo consciente no pré-frontal'],
+];
+segList('#prList', 'pr', PR, ['GNW', 'IIT', 'ambas', 'nenhuma'], 'four');
+const MARR = [
+  ['Escolher, a cada instante, um conteúdo e torná-lo disponível para relato, memória e planejamento.', 'C', 'o problema (GNW)'],
+  ['Competição enviesada seguida de ignição num atrator biestável.', 'A', 'o procedimento'],
+  ['Piramidais com axônios longos ligam pré-frontal, parietal e áreas sensoriais.', 'I', 'anatomia'],
+  ['Descobrir qual passo de um plano de vários passos causou o erro.', 'C', 'o problema (HOST)'],
+  ['A atividade persistente no pré-frontal depende de receptores NMDA.', 'I', 'receptores'],
+  ['Um limiar com ruído faz um estímulo fixo gerar "vi" ou "não vi" com certa probabilidade.', 'A', 'o procedimento'],
+];
+segList('#marrList', 'm', MARR, ['C', 'A', 'I']);
+
+/* ---------- correção ---------- */
+const ACT = {
+  a1() {
+    const a = pct(num('a1a')), oa = near(a, 20, 0.6); markInput('a1a', oa);
+    const c = num('a1c'), oc = near(c, 42, 1); markInput('a1c', oc);
+    const b = val('a1b'), d = val('a1d'), e = val('a1e'); markRadio('a1b', 'sem consciência'); markRadio('a1d', 'limiar'); markRadio('a1e', 'acerto');
+    const s = oa + (b === 'sem consciência') + oc + (d === 'limiar') + (e === 'acerto');
+    const S = mkSummary(), exp = S ? S.map(p => `${Math.round(p.ms)}ms:${Math.round(100 * p.ok)}/${Math.round(100 * p.vi)}`).join(' ') : 'não fez';
+    return { score: `${s}/5`, resp: `acaso: ${num('a1a') ?? '—'} | ${b || '—'} | SOA50: ${c ?? '—'} | ${d || '—'} | ${e || '—'} | exp (acerto/vi %): ${exp}`,
+      fb: `<p class="score">${s} de 5</p><ul>
+      <li>${tag(oa)} 1 em 5: <b>20%</b>.</li>
+      <li>${tag(b === 'sem consciência')} <b>Processamento sem consciência relatada</b>: a medida objetiva fica acima do acaso enquanto o relato é de chute — como na visão cega.</li>
+      <li>${tag(oc)} 30 + (50 − 20)/(70 − 20) × 20 = 30 + 0,6 × 20 = <b>42 ms</b>.</li>
+      <li>${tag(d === 'limiar')} Rolls (2023, p. 1012): na mesma via, a consciência exige <b>um limiar de atividade mais alto</b> que o processamento inconsciente (~30 ms de disparo bastam para acertar; ~50 ms para ver).</li>
+      <li>${tag(e === 'acerto')} A curva de <b>acerto</b> sobe em SOAs menores que a de "vi".</li></ul>
+      <figure><img src="img/aula14/f2_mask_curves.png" alt="Esquema de um ensaio de mascaramento e curvas ilustrativas: a identificação sobe do acaso em SOAs menores que o relato vi." loading="lazy"><figcaption>Dados ilustrativos. Compare com as suas curvas do experimento.</figcaption></figure>` };
+  },
+  a2() {
+    const a = val('a2a'), b = val('a2b'), e = val('a2e'); markRadio('a2a', 'vi'); markRadio('a2b', 'desempenho e sem relato'); markRadio('a2e', 'iguais');
+    const sc = gradeSeg('ec', EC);
+    const d1 = num('a2d1'), d2 = num('a2d2'), o1 = near(d1, 1, 0.06), o2 = near(d2, 1, 0.06); markInput('a2d1', o1); markInput('a2d2', o2);
+    const s = (a === 'vi') + (b === 'desempenho e sem relato') + sc + o1 + o2 + (e === 'iguais');
+    return { score: `${s}/11`, resp: `${a || '—'} | ${b || '—'} | ` + EC.map((_, k) => val('ec' + k) || '—').join('') + ` | d′ = ${d1 ?? '—'}; ${d2 ?? '—'} | ${e || '—'}`,
+      fb: `<p class="score">${s} de 11</p><ul>
+      <li>${tag(a === 'vi')} O <b>mesmo estímulo, "vi" × "não vi"</b>: só a percepção muda.</li>
+      <li>${tag(b === 'desempenho e sem relato')} <b>Igualar o desempenho</b> (Lau &amp; Passingham, 2006) e <b>paradigmas sem relato</b> (Frässle et al., 2014).</li>
+      <li>${tag(sc === 6)} Estado: anestesia, sono profundo, vegetativo. Conteúdo: rivalidade, mascaramento, cegueira por desatenção. (${sc} de 6)</li>
+      <li>${tag(o1 && o2)} d′ = 0,50 − (−0,50) = <b>1,0</b> e 0,99 − 0 ≈ <b>1,0</b>.</li>
+      <li>${tag(e === 'iguais')} <b>Mesma sensibilidade</b>; a observadora 2 tem critério mais liberal — diz "vi" mais vezes, também sem alvo.</li></ul>
+      <figure><img src="img/aula14/f3_sdt.png" alt="Duas observadoras com d linha igual a 1: critério neutro com 69 e 31 por cento, critério liberal com 84 e 50 por cento." loading="lazy"></figure>` };
+  },
+  a3() {
+    const lo = num('a3a1'), hi = num('a3a2'), olo = near(lo, -0.3, 0.02), ohi = near(hi, 0.5, 0.02); markInput('a3a1', olo); markInput('a3a2', ohi);
+    const b = val('a3b'), c = val('a3c'), e = val('a3e'); markRadio('a3b', '1'); markRadio('a3c', '0'); markRadio('a3e', 'graduada');
+    const d = num('a3d'), od = near(d, 9.81, 0.3); markInput('a3d', od);
+    const s = (olo && ohi) + (b === '1') + (c === '0') + od + (e === 'graduada');
+    return { score: `${s}/5`, resp: `faixa: ${lo ?? '—'} a ${hi ?? '—'} | 0,6→${b || '—'} | 0,4→${c || '—'} | tmin = ${d ?? '—'} | w=0: ${e || '—'}`,
+      fb: `<p class="score">${s} de 5</p><ul>
+      <li>${tag(olo && ohi)} r = 0 exige I ≤ θ; r = 1 exige w + I − θ &gt; 0. Os dois coexistem para <b>−0,3 &lt; I ≤ 0,5</b> — a largura da faixa é w.</li>
+      <li>${tag(b === '1')} Pulso 0,6: r sobe e <b>fica em 1</b> depois do pulso (0,8 − 0,5 &gt; 0): a recorrência se sustenta sozinha.</li>
+      <li>${tag(c === '0')} Pulso 0,4: 0,4 − 0,5 &lt; 0, <b>nada acontece</b>. Tudo ou nada, com limiar 0,5.</li>
+      <li>${tag(od)} r precisa passar de 0,625 = 5/8: t = τ ln(8/3) ≈ <b>9,8 ms</b>. Uma máscara mais cedo impede a ignição — confira no simulador com duração 9,5 e 10,5 ms.</li>
+      <li>${tag(e === 'graduada')} Sem recorrência não há biestabilidade: a resposta <b>acompanha a entrada e some</b> com ela.</li></ul>
+      <figure><img src="img/aula14/f6_ignition.png" alt="Três painéis: pulsos fracos decaem e fortes acendem a unidade; resposta graduada com w pequeno e em degrau com w grande; histerese." loading="lazy"><figcaption>Com sigmoide: graduada (w = 0,2) × tudo ou nada (w = 1,0). Como os atratores da Aula 9.</figcaption></figure>` };
+  },
+  a4() {
+    const a = val('a4a'), c = val('a4c'), d = val('a4d'), e = val('a4e'); markRadio('a4a', 'bimodal'); markRadio('a4c', 'precoce gradual'); markRadio('a4d', 'rasa'); markRadio('a4e', 'sistema');
+    const p = pct(num('a4b')), op = near(p, 88.08, 1); markInput('a4b', op);
+    const s = (a === 'bimodal') + op + (c === 'precoce gradual') + (d === 'rasa') + (e === 'sistema');
+    return { score: `${s}/5`, resp: `${a || '—'} | p = ${num('a4b') ?? '—'} | ${c || '—'} | ${d || '—'} | ${e || '—'}`,
+      fb: `<p class="score">${s} de 5</p><ul>
+      <li>${tag(a === 'bimodal')} <b>Bimodal</b>: cada ensaio cai num dos dois atratores; o meio é instável.</li>
+      <li>${tag(op)} 1 / (1 + e<sup>−2</sup>) = 1 / 1,135 ≈ <b>88%</b>.</li>
+      <li>${tag(c === 'precoce gradual')} O componente visual <b>precoce cresce aos poucos</b>; a <b>P3b salta</b>, acompanhando o relato (Del Cul et al., 2007).</li>
+      <li>${tag(d === 'rasa')} Mais ruído: <b>curva mais rasa</b> e ignições sem estímulo (falsos alarmes).</li>
+      <li>${tag(e === 'sistema')} Rolls (2023, 18.2.6): o ruído decide, ensaio a ensaio, <b>qual sistema — implícito ou explícito — controla a escolha</b>; o explícito pode confabular uma razão. A mesma decisão ruidosa das Aulas 11b e 12.</li></ul>
+      <figure><img src="img/aula14/f8_noise.png" alt="Histogramas bimodais no limiar e curvas psicométricas mais rasas com mais ruído." loading="lazy"></figure>
+      <figure><img src="img/aula14/f7_signatures.png" alt="Potenciais evocados ilustrativos: componentes precoces iguais e P3b só no visto; componente precoce linear e P3b sigmoide em função do SOA." loading="lazy"><figcaption>Dados ilustrativos.</figcaption></figure>` };
+  },
+  a5() {
+    const st = gradeSeg('th', TH), b = val('a5b'); markRadio('a5b', 'quão global');
+    const s = st + (b === 'quão global');
+    return { score: `${s}/9`, resp: TH.map((_, k) => `${k + 1}:${val('th' + k) || '—'}`).join(' ') + ` | b: ${b || '—'}`,
+      fb: `<p class="score">${s} de 9</p><ul>${TH.map(([, c, why], k) => `<li>${tag(val('th' + k) === c)} ${k + 1}. <b>${c}</b> — ${why}</li>`).join('')}
+      <li>${tag(b === 'quão global')} Rolls (2023, p. 784): dirigir parece exigir um espaço de trabalho grande e pode ser feito sem consciência relatável — <b>quão global ele precisa ser?</b> Rolls prefere identificar a computação específica (HOST).</li></ul>
+      <figure><img src="img/aula14/f9_stages.png" alt="Linha do tempo do processamento: varredura feedforward, recorrência local e ignição global, com o que cada teoria chama de consciente." loading="lazy"></figure>
+      <figure><img src="img/aula14/f10_phi.png" alt="Intuição da IIT: sensores independentes, módulos paralelos e rede recorrente integrada." loading="lazy"></figure>` };
+  },
+  a6() {
+    const st = gradeSeg('pr', PR), b = val('a6b'), c = val('a6c'); markRadio('a6b', 'fixar'); markRadio('a6c', 'encoberta');
+    const s = st + (b === 'fixar') + (c === 'encoberta');
+    return { score: `${s}/6`, resp: PR.map((_, k) => `${k + 1}:${val('pr' + k) || '—'}`).join(' ') + ` | b: ${b || '—'} | c: ${c || '—'}`,
+      fb: `<p class="score">${s} de 6</p><ul>${PR.map(([, c2, why], k) => `<li>${tag(val('pr' + k) === c2)} ${k + 1}. <b>${c2}</b> — ${why}</li>`).join('')}
+      <li>${tag(b === 'fixar')} Para <b>fixar a interpretação antes dos dados</b>: ninguém pode dizer depois que o resultado "na verdade" confirma sua teoria.</li>
+      <li>${tag(c === 'encoberta')} <b>Possível consciência encoberta</b> (Casarotto et al., 2016): um indício, não um diagnóstico isolado.</li></ul>
+      <p>No estudo real (Cogitate, Nature, 2025), faltou ignição no fim do estímulo e algumas dimensões do conteúdo tiveram pouca representação no pré-frontal (contra a GNW), e faltou sincronia sustentada no córtex posterior (contra a IIT). Nenhuma teoria "venceu".</p>
+      <figure><img src="img/aula14/f11_cogitate.png" alt="Esquema das predições: ignição pré-frontal no início e no fim do estímulo para a GNW; atividade posterior sustentada para a IIT." loading="lazy"></figure>` };
+  },
+  a7() {
+    const st = gradeSeg('m', MARR), b = val('a7b'), c = val('a7c'); markRadio('a7b', 'não causal'); markRadio('a7c', 'emergente');
+    const s = st + (b === 'não causal') + (c === 'emergente');
+    return { score: `${s}/8`, resp: MARR.map((_, k) => `${k + 1}:${val('m' + k) || '—'}`).join(' ') + ` | b: ${b || '—'} | c: ${c || '—'}`,
+      fb: `<p class="score">${s} de 8</p><ul>${MARR.map(([, c2, why], k) => `<li>${tag(val('m' + k) === c2)} ${k + 1}. <b>${c2}</b> — ${why}</li>`).join('')}
+      <li>${tag(b === 'não causal')} <b>Necessária, mas não causal</b>: níveis simultâneos do mesmo processo; causa e efeito só dentro de um nível, no tempo (Rolls, 2023, 19.6.1).</li>
+      <li>${tag(c === 'emergente')} <b>Ninguém</b>: nenhum neurônio consulta a "lei" de capacidade; ela descreve o que as interações locais produzem (19.6.2).</li></ul>
+      <figure><img src="img/aula14/f14_levels.png" alt="Pilha de níveis de explicação, de canais iônicos a estados mentais, com causa e efeito dentro de cada nível." loading="lazy" style="max-width:420px"></figure>` };
+  },
+};
+
+/* ---------- envio ---------- */
+$$('[data-send]').forEach(btn => btn.addEventListener('click', () => {
+  const id = btn.dataset.send, sec = document.getElementById(id);
+  if (!window.Registro || !Registro.identificado()) { window.Registro && Registro.pedeId(); return; }
+  const r = ACT[id]();
+  const ok = Registro.atividade(id, sec.dataset.titulo, r.score, r.resp);
+  const fb = $(`[data-fb="${id}"]`); fb.innerHTML = '<h3>Gabarito</h3>' + r.fb; fb.hidden = false;
+  const st = $(`[data-status="${id}"]`);
+  const first = Registro.aluno().n.split(' ')[0];
+  st.textContent = ok ? `✓ Resposta registrada para ${first}. Você pode corrigir e reenviar.` : 'Identifique-se no topo da página.';
+  btn.textContent = 'Reenviar';
+  const a = $(`nav a[href="#${id}"]`); if (a) a.classList.add('done');
+  fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}));
+})();
+</script>
+<script src="config.js?v=2"></script>
+<script src="registro.js?v=2" data-aula="14"></script>
