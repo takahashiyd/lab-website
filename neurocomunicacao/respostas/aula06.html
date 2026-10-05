@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 6 · Dicas e respostas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,600..800&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@600;700&display=swap">
+<style>
+:root{--bg:#f3f5f7;--surface:#fff;--fg:#142033;--muted:#5b6879;--line:#d8dee6;--accent:#0e7c86;--soft:#e5f1f2;--soft2:#fbf1e3;--you:#c9771a;
+--display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;--body:"Source Sans 3","Segoe UI",system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1621;--surface:#172132;--fg:#e6ecf3;--muted:#9aa8b9;--line:#2a3850;--accent:#3db4be;--soft:#173740;--soft2:#3a2c17;--you:#f0a645;color-scheme:dark}}
+:root[data-theme=dark]{--bg:#0f1621;--surface:#172132;--fg:#e6ecf3;--muted:#9aa8b9;--line:#2a3850;--accent:#3db4be;--soft:#173740;--soft2:#3a2c17;--you:#f0a645;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:17px/1.55 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 64px;display:grid;gap:20px}
+header{display:grid;gap:8px}
+.top{display:flex;flex-wrap:wrap;gap:6px 16px;font:600 14px/1.4 var(--body)}
+.top a,a{color:var(--accent)}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(30px,7vw,46px)/1.05 var(--display);font-stretch:112%;margin:0;text-wrap:balance}
+h2{font:750 22px/1.2 var(--display);font-stretch:106%;margin:0;text-wrap:balance}
+.lead{color:var(--muted);margin:0}
+.toc{display:flex;flex-wrap:wrap;gap:8px}
+.toc a{font:600 14px/1 var(--body);text-decoration:none;border:1px solid var(--line);background:var(--surface);padding:8px 12px;border-radius:999px}
+.item{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:12px;scroll-margin-top:12px}
+.num{font:700 12px/1 var(--mono);letter-spacing:.1em;color:var(--muted)}
+details{border-radius:10px;padding:12px 14px}
+details.dica{background:var(--soft)}
+details.resp{background:var(--soft2)}
+summary{cursor:pointer;font:700 16px/1.3 var(--body);list-style:none;display:flex;justify-content:space-between;gap:10px;min-height:28px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"mostrar";font:600 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+details[open] summary::after{content:"esconder"}
+details[open] summary{margin-bottom:8px}
+details p{margin:0 0 10px} details ul{margin:0 0 10px;padding-left:22px} details li{margin:3px 0}
+.aviso{font-size:14px;color:var(--muted);margin:0 0 8px}
+.links{display:flex;flex-wrap:wrap;gap:6px 18px;font:600 14px/1.4 var(--body)}
+footer{color:var(--muted);font-size:14px}
+:target{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+<div class="wrap">
+<header>
+  <nav class="top"><a href="../aula06.html">Laboratório da aula 6</a><a href="../estudo/aula06.html">Material de estudo</a><a href="aula05.html">← Aula 5</a><a href="aula07.html">Aula 7 →</a></nav>
+  <span class="eyebrow">Bases neurais da comunicação humana · Aula 6</span>
+  <h1>Dicas e respostas</h1>
+  <p class="lead">Frases e gramática. Para cada exercício do laboratório: uma dica para fazer bem o exercício e a resposta, com o que a maioria das pessoas obtém e por quê.</p>
+  <nav class="toc" aria-label="Exercícios"><a href="#e1">1. Frases labirinto</a><a href="#e2">2. Certa ou errada?</a><a href="#e3">3. Quanto tempo para entender?</a><a href="#e4">4. Jabberwocky: gramática sem significado</a></nav>
+</header>
+
+<section class="item" id="e1">
+  <span class="num">EXERCÍCIO 1</span>
+  <h2>Frases labirinto</h2>
+  <details class="dica" id="e1-dica"><summary>Dica</summary><p>Leia no seu ritmo de sempre e toque em Próxima assim que entender cada palavra, com um dedo só (toques duplos estragam a medida). Não volte nem acelere de propósito. Responda à pergunta com o que você entendeu na hora.</p></details>
+  <details class="resp" id="e1-resposta"><summary>Resposta</summary><p class="aviso">Tente fazer o exercício antes de ler.</p><p><b>Gabarito das perguntas:</b></p><ul><li>Treino: o professor trouxe café? <b>sim</b></li><li>Os caçadores comeram o coelho? <b>não</b></li><li>O vestido caiu no chão? <b>sim</b></li><li>O carro escorregou? <b>sim</b></li><li>A bola ficou dentro do campo? <b>não</b></li><li>O bebê chorava? <b>sim</b></li><li>A matéria ficou mais difícil? <b>não</b></li><li>O osso caiu da mesa? <b>sim</b></li><li>A música continuou tocando? <b>não</b></li></ul><p>Espera-se um tempo maior em “fugiu” e na palavra seguinte, só na versão sem vírgula. Em “Enquanto os caçadores comiam o coelho…”, o cérebro liga “o coelho” a “comiam” como objeto. Quando chega “fugiu”, essa estrutura desmorona e precisa ser refeita: é a <b>reanálise</b>. No EEG, esse ponto produz um <b>P600</b>. Muita gente também responde “sim” a “Os caçadores comeram o coelho?”: a primeira leitura não some. Quem lê muito rápido ou percebe o truque da vírgula pode ter custo perto de zero. (Osterhout; Holcomb, 1992; Christianson <i>et al.</i>, 2001)</p></details>
+  <div class="links"><a href="../aula06.html#e1">← Voltar ao exercício</a><a href="../estudo/aula06.html#a-frase-se-monta-palavra-por-palavra-e-às-vezes-desmorona">Ler mais no material de estudo</a></div>
+</section>
+<section class="item" id="e2">
+  <span class="num">EXERCÍCIO 2</span>
+  <h2>Certa ou errada?</h2>
+  <details class="dica" id="e2-dica"><summary>Dica</summary><p>As palavras passam sozinhas e rápido: mantenha os olhos no centro e os dedos prontos. Procure os dois tipos de problema, a concordância (masculino/feminino, singular/plural) e o sentido. Responda rápido, mas sem chutar.</p></details>
+  <details class="resp" id="e2-resposta"><summary>Resposta</summary><p class="aviso">Tente fazer o exercício antes de ler.</p><p><b>Gabarito</b> (final certo / erro de concordância / erro de significado): gostosa / gostoso / tímida; cansados / cansado / transparentes; aberta / aberto / grávida; quente / quentes / ciumento; bonitas / bonitos / honestas; rápido / rápida / faminto; animada / animado / enferrujada; quentinhos / quentinho / assustados; interessante / interessantes / careca; tranquilas / tranquilo / quadradas; delicioso / deliciosa / envergonhado; molhada / molhado / alfabetizada. Só o primeiro final é “certa”.</p><p>Os dois tipos de erro costumam ser detectados em tempos parecidos. O tempo do dedo mede a decisão e o movimento, não o processo. É o EEG que mostra a diferença: um erro de significado (“a sopa ficou tímida”) produz o <b>N400</b>, uma onda negativa por volta de 400 ms; um erro de concordância (“a sopa ficou gostoso”) produz o <b>P600</b>, uma onda positiva mais tardia, ligada à revisão da estrutura. Comportamentos parecidos podem esconder processos diferentes no cérebro. (Kutas; Hillyard, 1980; Osterhout; Holcomb, 1992)</p></details>
+  <div class="links"><a href="../aula06.html#e2">← Voltar ao exercício</a><a href="../estudo/aula06.html#dois-tipos-de-erro-duas-ondas-n400-e-p600">Ler mais no material de estudo</a></div>
+</section>
+<section class="item" id="e3">
+  <span class="num">EXERCÍCIO 3</span>
+  <h2>Quanto tempo para entender?</h2>
+  <details class="dica" id="e3-dica"><summary>Dica</summary><p>Leia a frase com calma e só toque em Entendi quando souber quem fez o quê, porque ela some e não volta. Para cada verbo, procure quem fez a ação.</p></details>
+  <details class="resp" id="e3-resposta"><summary>Resposta</summary><p class="aviso">Tente fazer o exercício antes de ler.</p><p><b>Gabarito:</b></p><ul><li>“A menina abraçou a avó que fez o bolo.” Quem fez o bolo? <b>a avó</b></li><li>“O homem que a mulher viu saiu.” Quem saiu? <b>o homem</b></li><li>“O menino chamou o cachorro que mordeu o carteiro que trouxe a carta.” Quem mordeu o carteiro? <b>o cachorro</b></li><li>“O rato que o gato que o cachorro perseguiu pegou fugiu.” Quem pegou o rato? <b>o gato</b></li><li>“A velha porta a carta.” <b>uma senhora leva a carta</b></li></ul><p>A frase do rato costuma levar muito mais tempo, e muita gente erra a pergunta; a versão à direita é rápida. Ela é gramatical, mas cada sujeito precisa esperar na <b>memória de trabalho</b> até o seu verbo aparecer, e três sujeitos ficam abertos antes do primeiro verbo. A gramática permite encaixar sem limite; a memória, não. Frases assim ativam mais o giro frontal inferior esquerdo (área de Broca) e o temporal posterior. Discute-se se essa região monta a hierarquia ou responde à carga de memória. A última frase é um labirinto curto: “velha” e “porta” têm duas leituras possíveis. (Gibson, 1998; Meyer; Friederici, 2016)</p></details>
+  <div class="links"><a href="../aula06.html#e3">← Voltar ao exercício</a><a href="../estudo/aula06.html#frases-encaixadas-a-gramática-permite-a-memória-não">Ler mais no material de estudo</a></div>
+</section>
+<section class="item" id="e4">
+  <span class="num">EXERCÍCIO 4</span>
+  <h2>Jabberwocky: gramática sem significado</h2>
+  <details class="dica" id="e4-dica"><summary>Dica</summary><p>Não procure o sentido das palavras inventadas: ele não existe. Use só as pistas de gramática, como terminações, artigos e a ordem das palavras. Leia com atenção a instrução em laranja: às vezes ela pede o verbo, às vezes quem fez a ação.</p></details>
+  <details class="resp" id="e4-resposta"><summary>Resposta</summary><p class="aviso">Tente fazer o exercício antes de ler.</p><p><b>Gabarito:</b></p><ul><li>O gupo fulou a trima. Verbo: <b>fulou</b></li><li>Os blicos pernaram as zomas. Verbo: <b>pernaram</b></li><li>A trima fulou o gupo. Quem fulou? <b>trima</b></li><li>Os rimpos glabaram muito rapidamente. Quem glabou? <b>rimpos</b></li><li>A zoma foi pernada pelos blicos. Quem pernou? <b>blicos</b></li><li>O vazo foi glabado pela linta. Quem glabou? <b>linta</b></li><li>O tarfo que a mitra brelou sumou. Quem sumou? <b>tarfo</b></li><li>A mitra que brelou o tarfo sumou. Quem brelou? <b>mitra</b></li><li>A crapa dos trenos tiscou. Quem tiscou? <b>crapa</b></li><li>Os trenos da crapa tiscaram. Quem tiscou? <b>trenos</b></li></ul><p>Quase todos acertam só com pistas gramaticais: ordem, artigos, terminações (-ou, -aram), a passiva (“foi … pelo”), a oração relativa (“que…”) e a concordância do verbo. Passiva e relativa costumam ser mais lentas, e relativas de objeto custam mais que as de sujeito. No cérebro, o giro frontal inferior e o temporal posterior acompanham a estrutura da frase mesmo com palavras inventadas. (Pallier; Devauchelle; Dehaene, 2011; Ferreira; Çokal, 2016)</p></details>
+  <div class="links"><a href="../aula06.html#e4">← Voltar ao exercício</a><a href="../estudo/aula06.html#o-cérebro-acompanha-os-constituintes">Ler mais no material de estudo</a></div>
+</section>
+<footer>Material da disciplina Bases neurais da comunicação humana (UFRN), Prof. Daniel Y. Takahashi. As fontes estão nas Referências do material de estudo.</footer>
+</div>
+<script>
+function abre(){const h=decodeURIComponent(location.hash.slice(1));if(!h)return;const el=document.getElementById(h);if(!el)return;
+if(el.tagName==='DETAILS')el.open=true;el.scrollIntoView({block:'start'});}
+window.addEventListener('hashchange',abre);abre();
+</script>

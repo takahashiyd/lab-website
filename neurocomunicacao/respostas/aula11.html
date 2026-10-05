@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 11 · Dicas e respostas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,600..800&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@600;700&display=swap">
+<style>
+:root{--bg:#f3f5f7;--surface:#fff;--fg:#142033;--muted:#5b6879;--line:#d8dee6;--accent:#0e7c86;--soft:#e5f1f2;--soft2:#fbf1e3;--you:#c9771a;
+--display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;--body:"Source Sans 3","Segoe UI",system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1621;--surface:#172132;--fg:#e6ecf3;--muted:#9aa8b9;--line:#2a3850;--accent:#3db4be;--soft:#173740;--soft2:#3a2c17;--you:#f0a645;color-scheme:dark}}
+:root[data-theme=dark]{--bg:#0f1621;--surface:#172132;--fg:#e6ecf3;--muted:#9aa8b9;--line:#2a3850;--accent:#3db4be;--soft:#173740;--soft2:#3a2c17;--you:#f0a645;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:17px/1.55 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 64px;display:grid;gap:20px}
+header{display:grid;gap:8px}
+.top{display:flex;flex-wrap:wrap;gap:6px 16px;font:600 14px/1.4 var(--body)}
+.top a,a{color:var(--accent)}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(30px,7vw,46px)/1.05 var(--display);font-stretch:112%;margin:0;text-wrap:balance}
+h2{font:750 22px/1.2 var(--display);font-stretch:106%;margin:0;text-wrap:balance}
+.lead{color:var(--muted);margin:0}
+.toc{display:flex;flex-wrap:wrap;gap:8px}
+.toc a{font:600 14px/1 var(--body);text-decoration:none;border:1px solid var(--line);background:var(--surface);padding:8px 12px;border-radius:999px}
+.item{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:12px;scroll-margin-top:12px}
+.num{font:700 12px/1 var(--mono);letter-spacing:.1em;color:var(--muted)}
+details{border-radius:10px;padding:12px 14px}
+details.dica{background:var(--soft)}
+details.resp{background:var(--soft2)}
+summary{cursor:pointer;font:700 16px/1.3 var(--body);list-style:none;display:flex;justify-content:space-between;gap:10px;min-height:28px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"mostrar";font:600 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+details[open] summary::after{content:"esconder"}
+details[open] summary{margin-bottom:8px}
+details p{margin:0 0 10px} details ul{margin:0 0 10px;padding-left:22px} details li{margin:3px 0}
+.aviso{font-size:14px;color:var(--muted);margin:0 0 8px}
+.links{display:flex;flex-wrap:wrap;gap:6px 18px;font:600 14px/1.4 var(--body)}
+footer{color:var(--muted);font-size:14px}
+:target{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+<div class="wrap">
+<header>
+  <nav class="top"><a href="../aula11.html">Laboratório da aula 11</a><a href="../estudo/aula11.html">Material de estudo</a><a href="aula10.html">← Aula 10</a><a href="aula12.html">Aula 12 →</a></nav>
+  <span class="eyebrow">Bases neurais da comunicação humana · Aula 11</span>
+  <h1>Dicas e respostas</h1>
+  <p class="lead">Desenvolvimento e bilinguismo. Para cada exercício do laboratório: uma dica para fazer bem o exercício e a resposta, com o que a maioria das pessoas obtém e por quê.</p>
+  <nav class="toc" aria-label="Exercícios"><a href="#e1">1. Fluxo de sílabas</a><a href="#e2">2. Duas línguas</a><a href="#e3">3. Ouvinte universal</a><a href="#e4">4. As línguas da turma</a><a href="#e5">5. Vídeo: experimentos com bebês</a></nav>
+</header>
+
+<section class="item" id="e1">
+  <span class="num">EXERCÍCIO 1</span>
+  <h2>Fluxo de sílabas</h2>
+  <details class="dica" id="e1-dica"><summary>Dica</summary><p>Mantenha a tela ligada e o som perto do ouvido durante os 2 minutos. Não tente decorar nem procurar palavras de propósito: só ouça. No teste, escolha pela intuição, sem pensar muito; se o professor colocou você no grupo controle, pule a escuta.</p></details>
+  <details class="resp" id="e1-resposta"><summary>Resposta</summary><p class="aviso">Tente fazer o exercício antes de ler.</p><p>A língua inventada tinha quatro palavras: <b>GATIBU, PUDAKI, BIKUTA, DIPAGU</b>. Em cada par do teste, uma delas competia com um "pedaço de palavra" que atravessa uma fronteira (TIBUPU, DAKIBI, KUTADI, PAGUGA). A resposta certa era sempre a palavra.</p><p>Não havia pausas nem melodia. A única pista era estatística: dentro de uma palavra, cada sílaba sempre levava à mesma sílaba seguinte (probabilidade de transição 1,0); entre palavras, a seguinte podia ser três outras (0,33).</p><p>O padrão esperado: quem ouviu o fluxo acerta, em média, mais que os 50% do acaso, e o grupo controle fica perto de 50%. Muita gente acerta acima do acaso sem saber dizer quais eram as palavras: é <b>aprendizado implícito</b>. Com 16 pares, o resultado de uma pessoa é ruidoso; o que importa é a distribuição da turma. Bebês de 8 meses segmentam palavras assim depois de 2 minutos. Uma diferença do estudo original: aqui os pedaços também eram menos frequentes que as palavras.</p><p>(Saffran, Aslin &amp; Newport, 1996)</p></details>
+  <div class="links"><a href="../aula11.html#e1">← Voltar ao exercício</a><a href="../estudo/aula11.html#achar-palavras-contando-o-aprendizado-estatístico">Ler mais no material de estudo</a></div>
+</section>
+<section class="item" id="e2">
+  <span class="num">EXERCÍCIO 2</span>
+  <h2>Duas línguas</h2>
+  <details class="dica" id="e2-dica"><summary>Dica</summary><p>Fale o número de verdade, em voz baixa, e toque no cartão no instante em que a palavra começa a sair, nem antes nem depois. Não antecipe o toque: na parte misturada, olhe a cor antes de abrir a boca.</p></details>
+  <details class="resp" id="e2-resposta"><summary>Resposta</summary><p class="aviso">Tente fazer o exercício antes de ler.</p><p>Nas duas primeiras partes você usava uma língua só. Na parte misturada, quando a cor <b>troca</b>, você precisa reativar uma língua e frear a outra. Isso custa tempo: é o <b>custo de troca</b>, a diferença entre as tentativas de troca e as de repetição.</p><p>O padrão esperado é um custo de troca positivo, de dezenas a centenas de milissegundos. Também costuma aparecer um <b>custo de mistura</b>: a mesma língua fica mais lenta no bloco misturado do que no bloco só dela.</p><p>Muita gente vê algo contraintuitivo: voltar ao <b>português</b>, a língua mais forte, custa mais. Para falar na língua fraca, foi preciso frear com força a forte, e esse freio ainda pesa na tentativa seguinte. Isso mostra que as duas línguas ficam ativas ao mesmo tempo e que falar uma exige controlar a outra. Limitação: o tempo veio do toque do dedo, não da voz, então a medida é imprecisa; compare a turma, não indivíduos.</p><p>(Meuter &amp; Allport, 1999)</p></details>
+  <div class="links"><a href="../aula11.html#e2">← Voltar ao exercício</a><a href="../estudo/aula11.html#falar-uma-língua-exige-frear-a-outra">Ler mais no material de estudo</a></div>
+</section>
+<section class="item" id="e3">
+  <span class="num">EXERCÍCIO 3</span>
+  <h2>Ouvinte universal</h2>
+  <details class="dica" id="e3-dica"><summary>Dica</summary><p>Use fones, se tiver. A altura da voz muda dentro de todos os pares de propósito: ignore isso e preste atenção só no começo da sílaba, na consoante. Responda pelo que ouviu, sem tentar compensar.</p></details>
+  <details class="resp" id="e3-resposta"><summary>Resposta</summary><p class="aviso">Tente fazer o exercício antes de ler.</p><p>Metade dos pares usava um contraste do português, <b>d × g</b>. A outra metade usava um contraste do hindi que o português não tem: <i>d</i> dental × <i>ɖ</i> retroflexo (ponta da língua curvada para trás). Fisicamente, as duas diferenças são de tamanho parecido; só uma separa sons que o português distingue.</p><p>O padrão esperado é acerto perto do máximo no d × g e mais baixo e variável no contraste do hindi. Bebês de 6–8 meses de qualquer país distinguem esse contraste; aos 10–12 meses, bebês que só ouvem inglês quase não distinguem mais. Essa <b>especialização perceptual</b> é sintonia fina: o cérebro melhora no que importa para a sua língua e junta sons que ela não separa numa só categoria.</p><p>Adultos ainda conseguem distinguir em tarefas fáceis: a capacidade auditiva não some, muda o modo de ouvir. Se o retroflexo soou como "dr" para você, ele pode ter ficado fácil, porque encaixamos sons novos nas categorias que já temos.</p><p>(Werker &amp; Tees, 1984)</p></details>
+  <div class="links"><a href="../aula11.html#e3">← Voltar ao exercício</a><a href="../estudo/aula11.html#o-primeiro-ano-de-ouvinte-universal-a-ouvinte-nativo">Ler mais no material de estudo</a></div>
+</section>
+<section class="item" id="e4">
+  <span class="num">EXERCÍCIO 4</span>
+  <h2>As línguas da turma</h2>
+  <details class="dica" id="e4-dica"><summary>Dica</summary><p>Responda pensando na língua mais forte depois do português, e conte Libras e línguas indígenas. Na proficiência, avalie o que você consegue fazer hoje, não o tempo que estudou.</p></details>
+  <details class="resp" id="e4-resposta"><summary>Resposta</summary><p class="aviso">Tente fazer o exercício antes de ler.</p><p>Aqui não há resposta certa: é um levantamento. A expectativa é que a maioria da turma tenha português e uma segunda língua aprendida na escola, em curso ou pela internet, e que quem começou mais cedo ou morou fora se avalie melhor, com muita dispersão.</p><p>Esse padrão <b>não prova</b> um período crítico. Quem começa cedo também costuma ter mais anos de uso, mais contato com falantes, mais input (a língua que ouve e lê) e outra motivação. Separar a idade de início desses fatores é o problema central dos estudos de <b>períodos sensíveis</b>, fases em que a experiência tem efeito maior, com limites graduais.</p><p>Repare também em onde vocês aprenderam. Séries, jogos e internet dão muito input, mas pouca interação contingente, aquela em que alguém responde ao que você acabou de dizer. É o ingrediente que, nos bebês, se mostrou necessário para aprender sons de outra língua.</p><p>(Johnson &amp; Newport, 1989; Kuhl, Tsao &amp; Liu, 2003)</p></details>
+  <div class="links"><a href="../aula11.html#e4">← Voltar ao exercício</a><a href="../estudo/aula11.html#existe-tarde-demais-períodos-sensíveis">Ler mais no material de estudo</a></div>
+</section>
+<section class="item" id="e5">
+  <span class="num">EXERCÍCIO 5</span>
+  <h2>Vídeo: experimentos com bebês</h2>
+  <details class="dica" id="e5-dica"><summary>Dica</summary><p>Ao assistir, procure duas coisas: como se mede o que um bebê ouve se ele ainda não fala, e o que muda entre os bebês que aprenderam mandarim com uma pessoa e os que viram o mesmo material pela TV.</p></details>
+  <details class="resp" id="e5-resposta"><summary>Resposta</summary><p class="aviso">Tente fazer o exercício antes de ler.</p><p>O vídeo mostra, com bebês, as duas ideias que você testou em si mesmo no experimento 3.</p><ul><li><b>Como medir a percepção:</b> os bebês aparecem no teste de virar a cabeça, um jeito de saber se eles distinguem dois sons sem que precisem falar. Com testes assim, Werker e Tees viram que bebês de qualquer país distinguem sons de outras línguas no início e que essa capacidade se especializa entre os 6 e os 12 meses.</li><li><b>Ao vivo × gravação:</b> bebês americanos de 9 meses tiveram 12 sessões com falantes de mandarim. Os que interagiram com uma pessoa passaram a discriminar sons do mandarim. Os que receberam os mesmos falantes e materiais em vídeo ou só em áudio não aprenderam.</li></ul><p>O que isso mostra: nessa idade, o aprendizado de sons depende da <b>interação social</b>, o "portão social". Ouvir não basta; importa ter alguém que olha, responde e compartilha a atenção.</p><p>(Kuhl, Tsao &amp; Liu, 2003)</p></details>
+  <div class="links"><a href="../aula11.html#e5">← Voltar ao exercício</a><a href="../estudo/aula11.html#o-portão-social-interação-balbucio-e-retorno-contingente">Ler mais no material de estudo</a></div>
+</section>
+<footer>Material da disciplina Bases neurais da comunicação humana (UFRN), Prof. Daniel Y. Takahashi. As fontes estão nas Referências do material de estudo.</footer>
+</div>
+<script>
+function abre(){const h=decodeURIComponent(location.hash.slice(1));if(!h)return;const el=document.getElementById(h);if(!el)return;
+if(el.tagName==='DETAILS')el.open=true;el.scrollIntoView({block:'start'});}
+window.addEventListener('hashchange',abre);abre();
+</script>

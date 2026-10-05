@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 2 · Dicas e respostas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,600..800&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@600;700&display=swap">
+<style>
+:root{--bg:#f3f5f7;--surface:#fff;--fg:#142033;--muted:#5b6879;--line:#d8dee6;--accent:#0e7c86;--soft:#e5f1f2;--soft2:#fbf1e3;--you:#c9771a;
+--display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;--body:"Source Sans 3","Segoe UI",system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1621;--surface:#172132;--fg:#e6ecf3;--muted:#9aa8b9;--line:#2a3850;--accent:#3db4be;--soft:#173740;--soft2:#3a2c17;--you:#f0a645;color-scheme:dark}}
+:root[data-theme=dark]{--bg:#0f1621;--surface:#172132;--fg:#e6ecf3;--muted:#9aa8b9;--line:#2a3850;--accent:#3db4be;--soft:#173740;--soft2:#3a2c17;--you:#f0a645;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:17px/1.55 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 64px;display:grid;gap:20px}
+header{display:grid;gap:8px}
+.top{display:flex;flex-wrap:wrap;gap:6px 16px;font:600 14px/1.4 var(--body)}
+.top a,a{color:var(--accent)}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(30px,7vw,46px)/1.05 var(--display);font-stretch:112%;margin:0;text-wrap:balance}
+h2{font:750 22px/1.2 var(--display);font-stretch:106%;margin:0;text-wrap:balance}
+.lead{color:var(--muted);margin:0}
+.toc{display:flex;flex-wrap:wrap;gap:8px}
+.toc a{font:600 14px/1 var(--body);text-decoration:none;border:1px solid var(--line);background:var(--surface);padding:8px 12px;border-radius:999px}
+.item{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:12px;scroll-margin-top:12px}
+.num{font:700 12px/1 var(--mono);letter-spacing:.1em;color:var(--muted)}
+details{border-radius:10px;padding:12px 14px}
+details.dica{background:var(--soft)}
+details.resp{background:var(--soft2)}
+summary{cursor:pointer;font:700 16px/1.3 var(--body);list-style:none;display:flex;justify-content:space-between;gap:10px;min-height:28px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"mostrar";font:600 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+details[open] summary::after{content:"esconder"}
+details[open] summary{margin-bottom:8px}
+details p{margin:0 0 10px} details ul{margin:0 0 10px;padding-left:22px} details li{margin:3px 0}
+.aviso{font-size:14px;color:var(--muted);margin:0 0 8px}
+.links{display:flex;flex-wrap:wrap;gap:6px 18px;font:600 14px/1.4 var(--body)}
+footer{color:var(--muted);font-size:14px}
+:target{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+<div class="wrap">
+<header>
+  <nav class="top"><a href="../aula02.html">Laboratório da aula 2</a><a href="../estudo/aula02.html">Material de estudo</a><a href="aula01.html">← Aula 1</a><a href="aula03.html">Aula 3 →</a></nav>
+  <span class="eyebrow">Bases neurais da comunicação humana · Aula 2</span>
+  <h1>Dicas e respostas</h1>
+  <p class="lead">Como sabemos? História e métodos. Para cada exercício do laboratório: uma dica para fazer bem o exercício e a resposta, com o que a maioria das pessoas obtém e por quê.</p>
+  <nav class="toc" aria-label="Exercícios"><a href="#e1">1. Quanto tempo leva uma decisão?</a><a href="#e2">2. Quatro pacientes, uma dupla dissociação</a><a href="#e3">3. Encontre a N400 no meio do ruído</a><a href="#e4">4. Qual hemisfério lê mais rápido?</a><a href="#e5">5. Qual método você usaria?</a></nav>
+</header>
+
+<section class="item" id="e1">
+  <span class="num">EXERCÍCIO 1</span>
+  <h2>Quanto tempo leva uma decisão?</h2>
+  <details class="dica" id="e1-dica"><summary>Dica</summary><p>Faça a tarefa A primeiro e use a mesma posição e os mesmos dedos nas duas tarefas. Na B, responda rápido, mas sem chutar: erros, toques antes da forma e respostas abaixo de 100 ms não entram na conta.</p></details>
+  <details class="resp" id="e1-resposta"><summary>Resposta</summary><p class="aviso">Tente fazer o exercício antes de ler.</p><p>O padrão esperado: a <b>tarefa B (escolha) é mais lenta que a A (simples)</b>, e a diferença B − A estima o tempo de decisão. A página usa a mediana das 12 tentativas de cada tarefa, que pesa pouco uma tentativa isolada muito lenta.</p><p>Por quê? A tarefa A tem só perceber e mover o dedo. A B tem tudo isso e mais duas etapas: identificar a forma e escolher o botão. Subtraindo A de B, sobra o tempo dessas etapas. É o <b>método da subtração</b> de F. C. Donders. Bônus: o atraso da tela e do toque do celular entra nas duas tarefas e some na subtração. O limite do método é que ele supõe que acrescentar uma etapa não muda as outras, o que nem sempre é verdade. A mesma lógica (tarefa menos controle) é usada até hoje nas imagens do cérebro, como a fMRI.</p><p>(Donders, 1969; Mildner, 2008)</p></details>
+  <div class="links"><a href="../aula02.html#e1">← Voltar ao exercício</a><a href="../estudo/aula02.html#a-subtração-de-donders">Ler mais no material de estudo</a></div>
+</section>
+<section class="item" id="e2">
+  <span class="num">EXERCÍCIO 2</span>
+  <h2>Quatro pacientes, uma dupla dissociação</h2>
+  <details class="dica" id="e2-dica"><summary>Dica</summary><p>Compare cada barra com a linha tracejada de 85%, o limite inferior das pessoas sem lesão. Leia a pergunta com cuidado: algumas falam de um par de pacientes, outras de um paciente sozinho.</p></details>
+  <details class="resp" id="e2-resposta"><summary>Resposta</summary><p class="aviso">Tente fazer o exercício antes de ler.</p><p><b>Gabarito:</b></p><ul><li><b>1. Fala fluente × compreensão:</b> Antônio e Beatriz. Antônio fala mal (25%) e compreende bem (90%); Beatriz faz o inverso (90% e 25%).</li><li><b>2. Só o Sr. Carlos:</b> dissociação simples. Um paciente sozinho não exclui que repetir seja apenas mais difícil.</li><li><b>3. Par de Carlos entre repetir e ler em voz alta:</b> Dalva. Carlos repete mal (20%) e lê bem (80%); Dalva repete bem (92%) e lê mal (20%).</li><li><b>4. Parecido com Leborgne:</b> Antônio (fala muito prejudicada, compreensão relativamente boa, lesão frontal inferior esquerda).</li><li><b>5. Previsto por Lichtheim:</b> Carlos, a afasia de condução.</li></ul><p>A dissociação dupla afasta a explicação pela dificuldade: as duas funções dependem, ao menos em parte, de sistemas diferentes. Os pacientes são fictícios e "limpos" demais; pacientes reais raramente são assim. Note que Antônio e Beatriz também repetem mal: lesões grandes atingem mais de um componente.</p><p>(Small; Hickok, 2016; Mildner, 2008)</p></details>
+  <div class="links"><a href="../aula02.html#e2">← Voltar ao exercício</a><a href="../estudo/aula02.html#dissociação-simples-e-dissociação-dupla">Ler mais no material de estudo</a></div>
+</section>
+<section class="item" id="e3">
+  <span class="num">EXERCÍCIO 3</span>
+  <h2>Encontre a N400 no meio do ruído</h2>
+  <details class="dica" id="e3-dica"><summary>Dica</summary><p>Acrescente tentativas aos poucos e olhe só a faixa de 300–500 ms, lembrando que no gráfico o negativo fica para cima. Não decida pela linha cinza: ela mostra só a última tentativa, não a média.</p></details>
+  <details class="resp" id="e3-resposta"><summary>Resposta</summary><p class="aviso">Tente fazer o exercício antes de ler.</p><p>O padrão esperado: com 1 tentativa não dá para ver a N400; com dezenas, uma das curvas mostra uma onda negativa clara (para cima no gráfico) por volta de 400 ms. Quem decide com pouquíssimas tentativas corre mais risco de errar a curva. A página também informa com quantas tentativas um teste estatístico (t &gt; 2,6) ficou confiável.</p><p>Por quê? O EEG de fundo tem cerca de 10 µV, e a N400 só uns 5 µV. O ruído varia de uma tentativa para outra e se cancela na média, caindo com a raiz de N; a resposta se repete e fica. Por isso os experimentos de EEG repetem cada condição muitas vezes; em geral, de 10 a 100 repetições bastam. A N400 aparece quando uma palavra não combina com o sentido da frase ("manteiga no sapato"). O ponto forte do EEG é dizer <b>quando</b> algo acontece, com precisão de milissegundos; o fraco é dizer onde.</p><p>(Kutas; Hillyard, 1980; Mildner, 2008)</p></details>
+  <div class="links"><a href="../aula02.html#e3">← Voltar ao exercício</a><a href="../estudo/aula02.html#o-eeg-e-os-potenciais-relacionados-a-eventos">Ler mais no material de estudo</a></div>
+</section>
+<section class="item" id="e4">
+  <span class="num">EXERCÍCIO 4</span>
+  <h2>Qual hemisfério lê mais rápido?</h2>
+  <details class="dica" id="e4-dica"><summary>Dica</summary><p>Mantenha o olhar fixo no + o tempo todo, mesmo quando as letras piscarem: tentar olhar para elas estraga a medida. Segure o celular de pé, a uns 30 cm, e use os mesmos dedos do começo ao fim.</p></details>
+  <details class="resp" id="e4-resposta"><summary>Resposta</summary><p class="aviso">Tente fazer o exercício antes de ler.</p><p><b>Parte A.</b> Na média da turma, espera-se uma pequena vantagem (mais acertos e respostas mais rápidas) para palavras no <b>campo visual direito</b>, que chegam primeiro ao hemisfério esquerdo, dominante para a linguagem na maioria dos destros. Do campo esquerdo, a palavra precisa atravessar o corpo caloso. Num cérebro intacto, a diferença é pequena; com poucas tentativas, empates e resultados invertidos são normais.</p><p><b>Parte B (gabarito):</b></p><ul><li>ANEL à direita: ele diz "anel".</li><li>CHAVE à esquerda: diz "não vi nada", mas a mão esquerda pega a chave.</li><li>CHAVE à esquerda e ANEL à direita: diz "anel"; a mão esquerda pega a chave, e não um chaveiro.</li><li>Perguntado por que segura a chave: inventa uma explicação plausível (o "intérprete" de Gazzaniga).</li></ul><p>Com o corpo caloso cortado, só o hemisfério esquerdo fala, e ele não sabe o que o direito viu.</p><p>(Mildner, 2008)</p></details>
+  <div class="links"><a href="../aula02.html#e4">← Voltar ao exercício</a><a href="../estudo/aula02.html#dois-hemisférios-campos-visuais-e-cérebro-dividido">Ler mais no material de estudo</a></div>
+</section>
+<section class="item" id="e5">
+  <span class="num">EXERCÍCIO 5</span>
+  <h2>Qual método você usaria?</h2>
+  <details class="dica" id="e5-dica"><summary>Dica</summary><p>Antes de escolher, decida o que a pergunta quer saber: quando, onde, se uma região é necessária, ou tudo isso em detalhe. Repare também em quem é o participante (pessoa saudável, paciente, bebê) e no que é possível fazer com ele.</p></details>
+  <details class="resp" id="e5-resposta"><summary>Resposta</summary><p class="aviso">Tente fazer o exercício antes de ler.</p><p><b>Gabarito</b> (a ordem das perguntas muda a cada vez):</p><ul><li>Em quantos milissegundos o cérebro nota a palavra que não combina: EEG/ERP.</li><li>Regiões mais ativas para verbos que para substantivos: fMRI.</li><li>Região temporal necessária para nomear ferramentas em pessoas saudáveis: TMS.</li><li>AVC temporal esquerdo e compreensão de substantivos ou verbos: estudo de lesão.</li><li>Grupos de neurônios do giro temporal superior respondendo a cada fonema: ECoG.</li><li>Bebês de 3 meses distinguem "ba" de "da": EEG/ERP.</li><li>Onde não cortar numa cirurgia para preservar a fala: ECoG.</li><li>Córtex motor dos lábios e ouvir "ba" ou "da": TMS.</li><li>Perderam a leitura, mas escrevem: estudo de lesão.</li><li>Áreas que oscilam juntas em repouso: fMRI.</li></ul><p>Regra prática: quando → EEG/MEG; onde → fMRI; é necessário? → lesão ou TMS; onde e quando, em detalhe → registros no córtex, só em pacientes que já precisam deles. O erro mais comum é escolher fMRI para perguntas de necessidade: medir atividade mostra que uma região participa; perturbar mostra que ela é necessária.</p><p>(Mildner, 2008)</p></details>
+  <div class="links"><a href="../aula02.html#e5">← Voltar ao exercício</a><a href="../estudo/aula02.html#nenhum-método-vê-tudo">Ler mais no material de estudo</a></div>
+</section>
+<footer>Material da disciplina Bases neurais da comunicação humana (UFRN), Prof. Daniel Y. Takahashi. As fontes estão nas Referências do material de estudo.</footer>
+</div>
+<script>
+function abre(){const h=decodeURIComponent(location.hash.slice(1));if(!h)return;const el=document.getElementById(h);if(!el)return;
+if(el.tagName==='DETAILS')el.open=true;el.scrollIntoView({block:'start'});}
+window.addEventListener('hashchange',abre);abre();
+</script>

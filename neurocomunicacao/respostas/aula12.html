@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 12 · Dicas e respostas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,600..800&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@600;700&display=swap">
+<style>
+:root{--bg:#f3f5f7;--surface:#fff;--fg:#142033;--muted:#5b6879;--line:#d8dee6;--accent:#0e7c86;--soft:#e5f1f2;--soft2:#fbf1e3;--you:#c9771a;
+--display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;--body:"Source Sans 3","Segoe UI",system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1621;--surface:#172132;--fg:#e6ecf3;--muted:#9aa8b9;--line:#2a3850;--accent:#3db4be;--soft:#173740;--soft2:#3a2c17;--you:#f0a645;color-scheme:dark}}
+:root[data-theme=dark]{--bg:#0f1621;--surface:#172132;--fg:#e6ecf3;--muted:#9aa8b9;--line:#2a3850;--accent:#3db4be;--soft:#173740;--soft2:#3a2c17;--you:#f0a645;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:17px/1.55 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 64px;display:grid;gap:20px}
+header{display:grid;gap:8px}
+.top{display:flex;flex-wrap:wrap;gap:6px 16px;font:600 14px/1.4 var(--body)}
+.top a,a{color:var(--accent)}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(30px,7vw,46px)/1.05 var(--display);font-stretch:112%;margin:0;text-wrap:balance}
+h2{font:750 22px/1.2 var(--display);font-stretch:106%;margin:0;text-wrap:balance}
+.lead{color:var(--muted);margin:0}
+.toc{display:flex;flex-wrap:wrap;gap:8px}
+.toc a{font:600 14px/1 var(--body);text-decoration:none;border:1px solid var(--line);background:var(--surface);padding:8px 12px;border-radius:999px}
+.item{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:12px;scroll-margin-top:12px}
+.num{font:700 12px/1 var(--mono);letter-spacing:.1em;color:var(--muted)}
+details{border-radius:10px;padding:12px 14px}
+details.dica{background:var(--soft)}
+details.resp{background:var(--soft2)}
+summary{cursor:pointer;font:700 16px/1.3 var(--body);list-style:none;display:flex;justify-content:space-between;gap:10px;min-height:28px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"mostrar";font:600 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+details[open] summary::after{content:"esconder"}
+details[open] summary{margin-bottom:8px}
+details p{margin:0 0 10px} details ul{margin:0 0 10px;padding-left:22px} details li{margin:3px 0}
+.aviso{font-size:14px;color:var(--muted);margin:0 0 8px}
+.links{display:flex;flex-wrap:wrap;gap:6px 18px;font:600 14px/1.4 var(--body)}
+footer{color:var(--muted);font-size:14px}
+:target{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+<div class="wrap">
+<header>
+  <nav class="top"><a href="../aula12.html">Laboratório da aula 12</a><a href="../estudo/aula12.html">Material de estudo</a><a href="aula11.html">← Aula 11</a><a href="aula13.html">Aula 13 →</a></nav>
+  <span class="eyebrow">Bases neurais da comunicação humana · Aula 12</span>
+  <h1>Dicas e respostas</h1>
+  <p class="lead">Quando a comunicação falha. Para cada exercício do laboratório: uma dica para fazer bem o exercício e a resposta, com o que a maioria das pessoas obtém e por quê.</p>
+  <nav class="toc" aria-label="Exercícios"><a href="#e1">1. Estudos de caso</a><a href="#e2">2. Na ponta da língua</a><a href="#e3">3. Siga as instruções</a><a href="#e4">4. Decodificador de fala</a><a href="#e5">5. Cantar para falar</a></nav>
+</header>
+
+<section class="item" id="e1">
+  <span class="num">EXERCÍCIO 1</span>
+  <h2>Estudos de caso</h2>
+  <details class="dica" id="e1-dica"><summary>Dica</summary><p>Para cada caso, procurem nas observações a resposta às três perguntas, nesta ordem: fluência, compreensão e repetição. A repetição é a pergunta que os grupos mais esquecem, e é ela que separa as transcorticais das outras.</p></details>
+  <details class="resp" id="e1-resposta"><summary>Resposta</summary><p class="aviso">Tente fazer o exercício antes de ler.</p><p><b>Gabarito</b> (fluência · compreensão · repetição → local):</p><ul><li><b>Seu Antônio: Broca.</b> Não fluente, compreende, não repete → giro frontal inferior esquerdo.</li><li><b>Dona Lúcia: Wernicke.</b> Fluente, não compreende, não repete → temporal superior posterior.</li><li><b>Rafael: condução.</b> Fluente, compreende, não repete → giro supramarginal e fascículo arqueado.</li><li><b>Seu José: global.</b> Tudo comprometido → grande parte do território perissilviano.</li><li><b>Marta: anômica.</b> Tudo bom, menos achar palavras → temporal médio e inferior ou giro angular.</li><li><b>Paulo: transcortical motora.</b> Não fluente, compreende, repete → frontal dorsolateral ou área motora suplementar.</li><li><b>Dona Rita: transcortical sensorial.</b> Fluente, não compreende, repete → junção temporo-parieto-occipital.</li></ul><p>Fala não fluente aponta para o lobo frontal; compreensão ruim, para o temporal posterior; repetição ruim, para a via perissilviana que liga os dois. Repetição preservada indica lesão fora desse anel. Confusões comuns: condução × Wernicke (a compreensão decide) e as transcorticais. Os casos eram idealizados: na clínica, a mesma lesão pode dar quadros diferentes.</p><p>(Tippett; Hillis, 2016)</p></details>
+  <div class="links"><a href="../aula12.html#e1">← Voltar ao exercício</a><a href="../estudo/aula12.html#três-perguntas-que-organizam-as-síndromes">Ler mais no material de estudo</a></div>
+</section>
+<section class="item" id="e2">
+  <span class="num">EXERCÍCIO 2</span>
+  <h2>Na ponta da língua</h2>
+  <details class="dica" id="e2-dica"><summary>Dica</summary><p>Seja honesto: toque em "Sei o nome" só se a palavra veio inteira, e use "Na ponta da língua" quando sabe o que é o objeto, mas o nome não sai. Quando a pista aparecer, dê alguns segundos antes de desistir.</p></details>
+  <details class="resp" id="e2-resposta"><summary>Resposta</summary><p class="aviso">Tente fazer o exercício antes de ler.</p><p><b>Os 12 desenhos:</b> ampulheta, dedal, metrônomo, estetoscópio, saca-rolhas, berimbau, cata-vento, ralador, alicate, bússola, regador e funil. Regionalismos contam como acerto.</p><p>São nomes pouco usados, e é comum ficar com algum "na ponta da língua". Nesse estado, você sabe o que o objeto é e para que serve, às vezes até a primeira letra e o número de sílabas, mas os sons não chegam. Por isso, na maioria das pessoas, a <b>pista de som</b> (as primeiras sílabas) resolve mais do que a <b>pista de significado</b>: o conceito já estava ativo; faltava a forma sonora.</p><p>Na <b>anomia</b>, a dificuldade de achar palavras que existe em quase toda afasia, isso acontece a toda hora. Pessoas com afasia também melhoram a nomeação com pistas, sinal de que a palavra não foi perdida, mas ficou difícil de acessar. Ressalva de método: aqui a pista de som vinha sempre depois da de significado e dava mais informação.</p><p>(Brown; McNeill, 1966; Blumstein, 2016)</p></details>
+  <div class="links"><a href="../aula12.html#e2">← Voltar ao exercício</a><a href="../estudo/aula12.html#o-que-o-laboratório-mostrou">Ler mais no material de estudo</a></div>
+</section>
+<section class="item" id="e3">
+  <span class="num">EXERCÍCIO 3</span>
+  <h2>Siga as instruções</h2>
+  <details class="dica" id="e3-dica"><summary>Dica</summary><p>A instrução some depressa de propósito, como uma frase falada: leia uma vez com atenção, repetindo-a mentalmente. Nas frases com "antes de", "depois de" e "em vez de", pense na ordem dos <b>atos</b>, não na ordem das palavras.</p></details>
+  <details class="resp" id="e3-resposta"><summary>Resposta</summary><p class="aviso">Tente fazer o exercício antes de ler.</p><p>As fichas e as instruções são sorteadas, mas cada nível segue uma regra:</p><ul><li><b>Níveis 1–3:</b> tocar uma, duas ou três fichas; a ordem não importa.</li><li><b>Nível 4:</b> a ordem importa. "Antes de tocar no A, toque no B" e "Toque no A depois de tocar no B" pedem <b>B e depois A</b>; "Toque no A antes de tocar no B" pede A e depois B.</li><li><b>Nível 5:</b> "todos os… menos o verde" (todos, exceto aquele); "Se houver um círculo preto…": nunca há fichas pretas, então vale a segunda opção; "Em vez de tocar no A, toque no B": só B.</li></ul><p>Os primeiros erros costumam aparecer quando a instrução fica longa (memória de trabalho) ou quando a ordem das palavras não coincide com a dos atos. Compreender não é uma coisa só: depende de reconhecer palavras, guardá-las e analisar a sintaxe. Pessoas com afasia de Wernicke ou global erram já nos primeiros níveis; com afasia de Broca ou de condução, nos níveis com sintaxe e carga de memória.</p><p>(De Renzi; Vignolo, 1962)</p></details>
+  <div class="links"><a href="../aula12.html#e3">← Voltar ao exercício</a><a href="../estudo/aula12.html#o-que-o-laboratório-mostrou">Ler mais no material de estudo</a></div>
+</section>
+<section class="item" id="e4">
+  <span class="num">EXERCÍCIO 4</span>
+  <h2>Decodificador de fala</h2>
+  <details class="dica" id="e4-dica"><summary>Dica</summary><p>Comece com "Uma frase" algumas vezes para ver onde cada decodificador erra; depois use "Testar 20 frases" com <b>64 eletrodos</b>, que é o valor a informar. Se sobrar tempo, compare com 16 e 256.</p></details>
+  <details class="resp" id="e4-resposta"><summary>Resposta</summary><p class="aviso">Tente fazer o exercício antes de ler.</p><p>A simulação é simplificada: cada letra faz o papel de um fonema, com um padrão de atividade mais ruído. O padrão esperado, com 64 eletrodos:</p><ul><li><b>Letra a letra:</b> quase nunca acerta a palavra inteira; o sinal é ruidoso demais.</li><li><b>Vocabulário pequeno (56 palavras):</b> restringir a palavras reais ajuda muito.</li><li><b>Vocabulário grande (~600):</b> o erro sobe, porque há mais palavras vizinhas parecidas.</li><li><b>Grande + modelo de linguagem:</b> o erro cai muito, porque o modelo sabe quais palavras costumam vir juntas e usa o contexto, como você faz ao ouvir alguém num lugar barulhento.</li></ul><p>Mais eletrodos também ajudam. É a mesma receita das neuropróteses de fala reais: um decodificador de fonemas a partir do córtex motor e um modelo de linguagem para as frases. Os números mudam de rodada para rodada; o que importa é a direção dos efeitos.</p><p>(Willett et al., 2023; Metzger et al., 2023)</p></details>
+  <div class="links"><a href="../aula12.html#e4">← Voltar ao exercício</a><a href="../estudo/aula12.html#neuropróteses-de-fala">Ler mais no material de estudo</a></div>
+</section>
+<section class="item" id="e5">
+  <span class="num">EXERCÍCIO 5</span>
+  <h2>Cantar para falar</h2>
+  <details class="dica" id="e5-dica"><summary>Dica</summary><p>Ouça primeiro a versão falada e depois a entoada. Na entoada, cante junto, baixinho, e bata a mão esquerda na mesa a cada sílaba: repare no que muda no ritmo e na altura.</p></details>
+  <details class="resp" id="e5-resposta"><summary>Resposta</summary><p class="aviso">Tente fazer o exercício antes de ler.</p><p>É uma demonstração da <b>terapia de entonação melódica</b>. Na versão entoada, "Bom dia, tudo bem?" vira uma melodia de duas notas, bem devagar, com uma batida da mão esquerda a cada sílaba. O que se quer observar:</p><ul><li><b>Lentidão:</b> cada sílaba dura muito mais que na fala, o que dá tempo ao planejamento motor.</li><li><b>Melodia:</b> só duas alturas, fáceis de cantar em coro com o terapeuta.</li><li><b>Mão esquerda:</b> a batida pode acionar uma rede sensório-motora do hemisfério direito que funciona como um "marca-passo" para a fala.</li></ul><p>A terapia nasceu da observação de que pessoas com afasia não fluente grave às vezes cantam palavras que não conseguem falar. A ideia é recrutar redes do hemisfério direito ligadas ao canto e ao ritmo. O programa é intensivo. Ainda não se sabe quanto do efeito vem da melodia e quanto vem do ritmo e da intensidade.</p><p>(Schlaug, 2016)</p></details>
+  <div class="links"><a href="../aula12.html#e5">← Voltar ao exercício</a><a href="../estudo/aula12.html#recuperação-e-terapia">Ler mais no material de estudo</a></div>
+</section>
+<footer>Material da disciplina Bases neurais da comunicação humana (UFRN), Prof. Daniel Y. Takahashi. As fontes estão nas Referências do material de estudo.</footer>
+</div>
+<script>
+function abre(){const h=decodeURIComponent(location.hash.slice(1));if(!h)return;const el=document.getElementById(h);if(!el)return;
+if(el.tagName==='DETAILS')el.open=true;el.scrollIntoView({block:'start'});}
+window.addEventListener('hashchange',abre);abre();
+</script>

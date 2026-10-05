@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 13 · Dicas e respostas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,600..800&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@600;700&display=swap">
+<style>
+:root{--bg:#f3f5f7;--surface:#fff;--fg:#142033;--muted:#5b6879;--line:#d8dee6;--accent:#0e7c86;--soft:#e5f1f2;--soft2:#fbf1e3;--you:#c9771a;
+--display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;--body:"Source Sans 3","Segoe UI",system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1621;--surface:#172132;--fg:#e6ecf3;--muted:#9aa8b9;--line:#2a3850;--accent:#3db4be;--soft:#173740;--soft2:#3a2c17;--you:#f0a645;color-scheme:dark}}
+:root[data-theme=dark]{--bg:#0f1621;--surface:#172132;--fg:#e6ecf3;--muted:#9aa8b9;--line:#2a3850;--accent:#3db4be;--soft:#173740;--soft2:#3a2c17;--you:#f0a645;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:17px/1.55 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 64px;display:grid;gap:20px}
+header{display:grid;gap:8px}
+.top{display:flex;flex-wrap:wrap;gap:6px 16px;font:600 14px/1.4 var(--body)}
+.top a,a{color:var(--accent)}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(30px,7vw,46px)/1.05 var(--display);font-stretch:112%;margin:0;text-wrap:balance}
+h2{font:750 22px/1.2 var(--display);font-stretch:106%;margin:0;text-wrap:balance}
+.lead{color:var(--muted);margin:0}
+.toc{display:flex;flex-wrap:wrap;gap:8px}
+.toc a{font:600 14px/1 var(--body);text-decoration:none;border:1px solid var(--line);background:var(--surface);padding:8px 12px;border-radius:999px}
+.item{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:12px;scroll-margin-top:12px}
+.num{font:700 12px/1 var(--mono);letter-spacing:.1em;color:var(--muted)}
+details{border-radius:10px;padding:12px 14px}
+details.dica{background:var(--soft)}
+details.resp{background:var(--soft2)}
+summary{cursor:pointer;font:700 16px/1.3 var(--body);list-style:none;display:flex;justify-content:space-between;gap:10px;min-height:28px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"mostrar";font:600 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+details[open] summary::after{content:"esconder"}
+details[open] summary{margin-bottom:8px}
+details p{margin:0 0 10px} details ul{margin:0 0 10px;padding-left:22px} details li{margin:3px 0}
+.aviso{font-size:14px;color:var(--muted);margin:0 0 8px}
+.links{display:flex;flex-wrap:wrap;gap:6px 18px;font:600 14px/1.4 var(--body)}
+footer{color:var(--muted);font-size:14px}
+:target{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+<div class="wrap">
+<header>
+  <nav class="top"><a href="../aula13.html">Laboratório da aula 13</a><a href="../estudo/aula13.html">Material de estudo</a><a href="aula12.html">← Aula 12</a></nav>
+  <span class="eyebrow">Bases neurais da comunicação humana · Aula 13</span>
+  <h1>Dicas e respostas</h1>
+  <p class="lead">Evolução da comunicação e síntese. Para cada exercício do laboratório: uma dica para fazer bem o exercício e a resposta, com o que a maioria das pessoas obtém e por quê.</p>
+  <nav class="toc" aria-label="Exercícios"><a href="#e1">1. Troca de turnos</a><a href="#e2">2. Gramáticas artificiais</a><a href="#e3">3. É linguagem?</a><a href="#e4">4. Homologia ou convergência</a><a href="#e5">5. Uma ideia por aula</a><a href="#e6">6. Para rever a dança das abelhas</a></nav>
+</header>
+
+<section class="item" id="e1">
+  <span class="num">EXERCÍCIO 1</span>
+  <h2>Troca de turnos</h2>
+  <details class="dica" id="e1-dica"><summary>Dica</summary><p>Use fone com fio ou o alto-falante: fone Bluetooth atrasa o som e estraga a medida. Faça a parte A antes da B e responda como numa conversa, tentando acertar o momento em que o parceiro termina, sem esperar só pelo silêncio.</p></details>
+  <details class="resp" id="e1-resposta"><summary>Resposta</summary><p class="aviso">Tente fazer o exercício antes de ler.</p><p>Na parte A, todos os chamados tinham a mesma duração; na parte B, a duração mudava a cada vez.</p><p>O padrão esperado: na parte A, muita gente aprende o ritmo e passa a <b>antecipar</b> o fim, com intervalos curtos e algumas sobreposições (tocar antes do fim). Na parte B, só resta esperar o silêncio, e os intervalos ficam maiores, perto de um tempo de reação simples.</p><p>Na conversa real, o intervalo mais comum entre turnos fica em torno de 200 ms, com diferenças pequenas entre línguas. Como planejar e começar a dizer uma palavra leva cerca de 600 ms, quem vai falar precisa <b>planejar a resposta enquanto o outro ainda fala</b>, prevendo o conteúdo e o momento em que o turno vai acabar. Lembre que tocar um botão é mais rápido que falar.</p><p>Os saguis seguem regras parecidas, alternando e evitando sobreposição, mas com intervalos de alguns segundos. O "diálogo de dois saguis" dá uma ideia dessa escala.</p><p>(Levinson, 2019; Rossano, 2019)</p></details>
+  <div class="links"><a href="../aula13.html#e1">← Voltar ao exercício</a><a href="../estudo/aula13.html#saguis-adultos-alternam-a-vez-de-falar">Ler mais no material de estudo</a></div>
+</section>
+<section class="item" id="e2">
+  <span class="num">EXERCÍCIO 2</span>
+  <h2>Gramáticas artificiais</h2>
+  <details class="dica" id="e2-dica"><summary>Dica</summary><p>Na fase de escuta, só preste atenção na ordem das vozes agudas (A) e graves (B), não nas sílabas. Faça o bloco 1 antes do bloco 2. No teste, pergunte-se se a sequência segue a <b>mesma regra</b>, inclusive quando é mais longa que as que você ouviu.</p></details>
+  <details class="resp" id="e2-resposta"><summary>Resposta</summary><p class="aviso">Tente fazer o exercício antes de ler.</p><p><b>Gabarito:</b></p><ul><li><b>Bloco 1, (AB)ⁿ:</b> seguem o padrão as sequências alternadas (ABAB, ABABAB…). Não seguem as do tipo AABB, AAABBB.</li><li><b>Bloco 2, AⁿBⁿ:</b> seguem o padrão as que têm um número de A seguido do <i>mesmo</i> número de B (AABB, AAABBB, AAAABBBB). Não seguem as alternadas (ABAB…) nem as duas em que os números não batem (AAABB e AABBB).</li></ul><p>O bloco 1 costuma sair quase perfeito: basta saber o que vem depois de quê. No bloco 2, muitas pessoas rejeitam com facilidade as alternadas, mas aceitam AAABB. Uma regra mais simples, "primeiro os A, depois os B", acerta quase tudo sem contar. Quem rejeitou AAABB provavelmente contou.</p><p>É a crítica feita aos estudos com animais: passar num teste AⁿBⁿ não prova que a estrutura encaixada, como a de frases dentro de frases, foi representada. Humanos aprenderam as duas regras; saguis-cabeça-de-algodão, só a primeira.</p><p>(Fitch &amp; Hauser, 2004; ten Cate; Petkov, 2019)</p></details>
+  <div class="links"><a href="../aula13.html#e2">← Voltar ao exercício</a><a href="../estudo/aula13.html#gramáticas-artificiais-os-animais-aprendem-estruturas-encaixadas">Ler mais no material de estudo</a></div>
+</section>
+<section class="item" id="e3">
+  <span class="num">EXERCÍCIO 3</span>
+  <h2>É linguagem?</h2>
+  <details class="dica" id="e3-dica"><summary>Dica</summary><p>Preencha a grade inteira antes de comparar, usando "½" quando o traço existe só em parte. Para cada célula, pense num exemplo concreto do sistema: se você não consegue imaginar um, provavelmente o traço falta.</p></details>
+  <details class="resp" id="e3-resposta"><summary>Resposta</summary><p class="aviso">Tente fazer o exercício antes de ler.</p><p><b>Grade de referência</b> (arbitrariedade · deslocamento · produtividade · dupla articulação · transmissão cultural):</p><ul><li><b>Macaco-vervet:</b> ✓ · – · – · – · ½</li><li><b>Dança das abelhas:</b> ½ · ✓ · ½ · – · ½</li><li><b>Ave canora:</b> ✓ · – · ½ · ½ · ✓</li><li><b>Sagui:</b> ✓ · – · – · – · ½</li><li><b>Kanzi:</b> ✓ · ½ · ½ · – · ✓</li><li><b>Humanos:</b> ✓ em todos</li></ul><p>A grade é um julgamento feito a partir da literatura, não um gabarito; várias células são debatidas, como a arbitrariedade da dança. A dança tem <b>deslocamento</b>: informa onde está um alimento que as outras não veem. Mas é em parte <b>icônica</b> (o ângulo imita a direção), só fala de poucos assuntos e não tem dupla articulação. Abelhas que não puderam observar dançarinas experientes erram mais: há algum aprendizado social. Nenhum sistema animal conhecido reúne os cinco traços. Uma conclusão defensável: a dança é comunicação referencial, mas não linguagem no sentido humano.</p><p>(Fitch, 2019; Dong et al., 2023)</p></details>
+  <div class="links"><a href="../aula13.html#e3">← Voltar ao exercício</a><a href="../estudo/aula13.html#de-volta-à-dança-das-abelhas">Ler mais no material de estudo</a></div>
+</section>
+<section class="item" id="e4">
+  <span class="num">EXERCÍCIO 4</span>
+  <h2>Homologia ou convergência</h2>
+  <details class="dica" id="e4-dica"><summary>Dica</summary><p>Para cada caso, pergunte: o ancestral comum das duas espécies já tinha esse traço? Cuidado com os casos em que o comportamento e o gene ou a estrutura cerebral contam histórias diferentes.</p></details>
+  <details class="resp" id="e4-resposta"><summary>Resposta</summary><p class="aviso">Tente fazer o exercício antes de ler.</p><p><b>Gabarito:</b></p><ul><li>Asas de morcegos e aves, como superfícies de voo: <b>convergência</b>.</li><li>Ossos do braço do morcego e do humano: <b>homologia</b>.</li><li>Aprendizado vocal de aves canoras e humanos: <b>convergência</b>.</li><li>Laringe de macacos e humanos: <b>homologia</b>.</li><li>Substância cinzenta periaquedutal (PAG): <b>homologia</b>.</li><li>Ecolocalização de morcegos e golfinhos: <b>convergência</b>.</li><li>Gene FOXP2 em aves e humanos: <b>homologia</b>.</li><li>Alarmes de vervets e galinhas: <b>convergência</b>.</li><li>Troca de turnos de saguis e humanos: provável <b>convergência</b> (debatida).</li><li>Estriado de aves e humanos: <b>homologia</b> da estrutura.</li></ul><p>Os erros costumam se concentrar no FOXP2 e no estriado. O aprendizado vocal surgiu várias vezes, mas reaproveitou um gene e uma estrutura herdados do ancestral comum: <b>homologia profunda</b>. Um mesmo traço pode ter as duas histórias em níveis diferentes.</p><p>(Fisher, 2016; Fitch, 2019)</p></details>
+  <div class="links"><a href="../aula13.html#e4">← Voltar ao exercício</a><a href="../estudo/aula13.html#genes-o-foxp2-e-o-mito-do-gene-da-linguagem">Ler mais no material de estudo</a></div>
+</section>
+<section class="item" id="e5">
+  <span class="num">EXERCÍCIO 5</span>
+  <h2>Uma ideia por aula</h2>
+  <details class="dica" id="e5-dica"><summary>Dica</summary><p>Antes de olhar as opções, tente lembrar em que aula você viu a ideia e qual experimento a acompanhou. As opções são sempre aulas vizinhas, então a diferença está no detalhe.</p></details>
+  <details class="resp" id="e5-resposta"><summary>Resposta</summary><p class="aviso">Tente fazer o exercício antes de ler.</p><p><b>Gabarito:</b></p><ul><li><b>Aula 1:</b> o sinal precisa cair no mundo sensorial de quem recebe (Umwelt).</li><li><b>Aula 2:</b> correlação não basta; lesão ou TMS mostram necessidade.</li><li><b>Aula 3:</b> ouvimos sílabas como categorias ("ba" ou "da").</li><li><b>Aula 4:</b> falar coordena lábios, língua, laringe e respiração.</li><li><b>Aula 5:</b> palavra fora do contexto produz a N400.</li><li><b>Aula 6:</b> frases têm estrutura hierárquica; Broca ajuda a montá-la.</li><li><b>Aula 7:</b> ler recicla uma região visual do hemisfério esquerdo.</li><li><b>Aula 8:</b> línguas de sinais usam a mesma rede esquerda que a fala.</li><li><b>Aula 9:</b> a melodia da voz carrega emoção e intenção.</li><li><b>Aula 10:</b> entender ironia exige imaginar o que o outro quis dizer.</li><li><b>Aula 11:</b> bebês se especializam na língua materna no primeiro ano.</li><li><b>Aula 12:</b> neuropróteses transformam fala tentada em texto e voz.</li></ul><p>Confusões entre aulas vizinhas são esperadas e mostram o que vale revisar antes da avaliação. Use as quatro perguntas de Tinbergen para organizar o curso: as aulas 3 a 7 trataram de <b>mecanismos</b>; as 8 a 10, de corpo, voz e conversa, perto da <b>função</b>; a 11, do <b>desenvolvimento</b>; a 12, dos mecanismos vistos pela falha; e a 13, da <b>evolução</b>.</p><p>(Fitch, 2019)</p></details>
+  <div class="links"><a href="../aula13.html#e5">← Voltar ao exercício</a><a href="../estudo/aula13.html#síntese-do-curso-quatro-perguntas-e-uma-abelha">Ler mais no material de estudo</a></div>
+</section>
+<section class="item" id="e6">
+  <span class="num">EXERCÍCIO 6</span>
+  <h2>Para rever a dança das abelhas</h2>
+  <details class="dica" id="e6-dica"><summary>Dica</summary><p>Assista ao vídeo com a grade do experimento 3 ao lado. Repare no ângulo da corrida em relação à vertical do favo e na duração do requebrado, e depois reescreva sua resposta da aula 1 com uma justificativa para cada traço.</p></details>
+  <details class="resp" id="e6-resposta"><summary>Resposta</summary><p class="aviso">Tente fazer o exercício antes de ler.</p><p>Não há resposta única: o que se pede é uma resposta <b>justificada</b>. Ao rever o vídeo, observe:</p><ul><li><b>Direção:</b> o ângulo da corrida em relação à vertical do favo corresponde ao ângulo entre o alimento e o sol.</li><li><b>Distância:</b> alimentos mais distantes produzem requebrados mais longos.</li><li><b>Deslocamento:</b> a dança informa onde está um alimento que as companheiras não estão vendo.</li><li><b>Limites:</b> o sinal acompanha o que representa (é em parte icônico) e não permite dizer a cor ou a forma das flores.</li></ul><p>Uma conclusão defensável é que a dança é um sistema de comunicação referencial, com deslocamento, mas não uma linguagem no sentido humano. A pergunta mais interessante não é "sim ou não", e sim <b>quais componentes</b> ela compartilha com a linguagem. Compare com a sua resposta da aula 1: o que mudou na sua justificativa?</p><p>(Frisch, 1974; Fitch, 2019)</p></details>
+  <div class="links"><a href="../aula13.html#e6">← Voltar ao exercício</a><a href="../estudo/aula13.html#de-volta-à-dança-das-abelhas">Ler mais no material de estudo</a></div>
+</section>
+<footer>Material da disciplina Bases neurais da comunicação humana (UFRN), Prof. Daniel Y. Takahashi. As fontes estão nas Referências do material de estudo.</footer>
+</div>
+<script>
+function abre(){const h=decodeURIComponent(location.hash.slice(1));if(!h)return;const el=document.getElementById(h);if(!el)return;
+if(el.tagName==='DETAILS')el.open=true;el.scrollIntoView({block:'start'});}
+window.addEventListener('hashchange',abre);abre();
+</script>

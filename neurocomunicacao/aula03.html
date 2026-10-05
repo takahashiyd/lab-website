@@ -75,6 +75,11 @@ footer{font-size:13px;color:var(--muted)}
 .legend{display:flex;gap:14px;font-size:13px;color:var(--muted)}
 .sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:5px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* ajuda: links para dicas e respostas */
+.ajuda{display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-top:1px dashed var(--line);padding-top:12px;margin-top:2px}
+.ajuda span{font:600 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.ajuda a{font:600 15px/1 var(--body);text-decoration:none;color:var(--accent);border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 14px;min-height:36px;display:inline-flex;align-items:center}
+.ajuda a:hover{border-color:var(--accent)}
 </style>
 
 <div class="wrap" id="student">
@@ -102,6 +107,7 @@ footer{font-size:13px;color:var(--muted)}
       <div class="report">Seu limite: <b id="e1kHz"></b> · informe a faixa <b id="e1bin"></b> e se você tem até 24 anos ou 25+.</div>
       <p class="why">As células ciliadas da <b>base</b> da cóclea respondem às frequências mais altas. Elas são as primeiras a se perder com a idade e com ruído (presbiacusia). Alto-falantes de celular também cortam acima de ~16 kHz: o equipamento faz parte do experimento.</p>
     </div>
+    <div class="ajuda"><span>Ajuda</span><a href="respostas/aula03.html#e1-dica" target="_blank" rel="noopener">Dica</a><a href="respostas/aula03.html#e1-resposta" target="_blank" rel="noopener">Ver a resposta</a></div>
   </section>
 
   <!-- E2 -->
@@ -130,6 +136,7 @@ footer{font-size:13px;color:var(--muted)}
       <div class="report" id="e2rep"></div>
       <p class="why">Os 7 passos estão igualmente espaçados em hertz, mas você os ouve como duas categorias, com uma troca brusca. Diferenças dentro de uma categoria quase não são notadas; a mesma diferença física na fronteira salta aos ouvidos. Isso é <b>percepção categórica</b>, e o giro temporal superior mostra o mesmo padrão em registros intracranianos.</p>
     </div>
+    <div class="ajuda"><span>Ajuda</span><a href="respostas/aula03.html#e2-dica" target="_blank" rel="noopener">Dica</a><a href="respostas/aula03.html#e2-resposta" target="_blank" rel="noopener">Ver a resposta</a></div>
   </section>
 
   <!-- E3 -->
@@ -149,6 +156,7 @@ footer{font-size:13px;color:var(--muted)}
       <div class="report" id="e3rep"></div>
       <p class="why">As vias auditivas cruzadas são mais fortes que as diretas: o ouvido direito fala primeiro com o hemisfério esquerdo, onde está a rede da linguagem na maioria das pessoas. Por isso a maioria da turma deve mostrar <b>vantagem do ouvido direito</b>. Canhotos e algumas pessoas destras podem mostrar o contrário.</p>
     </div>
+    <div class="ajuda"><span>Ajuda</span><a href="respostas/aula03.html#e3-dica" target="_blank" rel="noopener">Dica</a><a href="respostas/aula03.html#e3-resposta" target="_blank" rel="noopener">Ver a resposta</a></div>
   </section>
 
   <!-- E4 -->
@@ -163,6 +171,7 @@ footer{font-size:13px;color:var(--muted)}
       <button class="ghost" data-mf="3">D · só 800–1200 Hz</button>
     </div>
     <p class="why">Em C e D não há energia em 200 Hz, e mesmo assim a altura continua igual à de A. O cérebro deduz a fundamental a partir do espaçamento dos harmônicos. É assim que você reconhece a voz de alguém ao telefone, que corta as frequências abaixo de ~300 Hz.</p>
+    <div class="ajuda"><span>Ajuda</span><a href="respostas/aula03.html#e4-dica" target="_blank" rel="noopener">Dica</a><a href="respostas/aula03.html#e4-resposta" target="_blank" rel="noopener">Ver a resposta</a></div>
   </section>
 
   <!-- links -->
@@ -173,6 +182,7 @@ footer{font-size:13px;color:var(--muted)}
       <p><a href="https://auditoryneuroscience.com/node/53" target="_blank" rel="noopener">Efeito McGurk (vídeo de Patricia Kuhl, 30 s)</a>. Assista olhando para a boca e depois de olhos fechados. O que muda? Se não abrir, use o <a href="https://www.youtube.com/watch?v=2k8fHR9jKVM" target="_blank" rel="noopener">clipe da BBC no YouTube</a>.</p>
       <p><a href="https://www.mrc-cbu.cam.ac.uk/people/matt-davis/sine-wave-speech/" target="_blank" rel="noopener">Fala de ondas senoidais (MRC CBU, Cambridge)</a>. Ouça o assobio, depois a frase original, depois o assobio de novo.</p>
     </div>
+    <div class="ajuda"><span>Ajuda</span><a href="respostas/aula03.html#e5-dica" target="_blank" rel="noopener">Dica</a><a href="respostas/aula03.html#e5-resposta" target="_blank" rel="noopener">Ver a resposta</a></div>
   </section>
 
   <footer>Os sons são sintetizados no seu aparelho; nenhuma resposta sai do celular. Professor: abra esta página com <span style="font-family:var(--mono)">#professor</span> no fim do link para o placar da turma.</footer>
