@@ -53,7 +53,7 @@
 
   /* ---------- presença ---------- */
   function presenca() {
-    if (!aluno || location.hash === '#professor') return;
+    if (!aluno || /^#p=/.test(location.hash)) return;
     const k = `nc-pres-${AULA}-${hoje()}-${aluno.m}`;
     if (store.get(k, false)) return;
     store.set(k, true);

@@ -185,7 +185,7 @@ footer{font-size:13px;color:var(--muted)}
     <div class="ajuda"><span>Ajuda</span><a href="respostas/aula03.html#e5-dica" target="_blank" rel="noopener">Dica</a><a href="respostas/aula03.html#e5-resposta" target="_blank" rel="noopener" data-resp hidden>Ver a resposta</a><span class="trava" hidden>A resposta aparece quando você terminar o exercício.</span></div>
   </section>
 
-  <footer>Os sons são sintetizados no seu aparelho; nenhuma resposta sai do celular. Professor: abra esta página com <span style="font-family:var(--mono)">#professor</span> no fim do link para o placar da turma.</footer>
+  <footer>Os sons são sintetizados no seu aparelho. Sua matrícula, seu nome e seus resultados vão só para o professor; nenhum aluno vê os dados de outro.</footer>
 </div>
 
 <!-- Teacher board -->
@@ -320,11 +320,12 @@ function renderBoard(){const host=$('board');host.innerHTML='';
 let armed=false;$('reset').onclick=()=>{if(!armed){armed=true;$('reset').textContent='Confirmar: zerar tudo';$('resetMsg').textContent='';return;}
   S={};save();renderBoard();armed=false;$('reset').textContent='Zerar placar';$('resetMsg').textContent='Placar zerado.';};
 $('toStudent').onclick=e=>{e.preventDefault();location.hash='';route();};
-function route(){const t=location.hash==='#professor';$('prof').hidden=!t;$('student').hidden=t;if(t)renderBoard();}
+function route(){const t=(window.ncProf&&window.ncProf());$('prof').hidden=!t;$('student').hidden=t;if(t)renderBoard();}
 window.addEventListener('hashchange',route);route();
 })();
 </script>
 
+<script src="prof.js?v=1"></script>
 <script src="config.js?v=2"></script>
 <script src="registro.js?v=2" data-aula="3"></script>
 <script src="ajuda.js?v=1" data-aula="3"></script>
