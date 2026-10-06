@@ -508,7 +508,7 @@ const ACT = {
     return { score: `${s}/6`, resp: `VP ${tp ?? '—'} FP ${fp ?? '—'} | P(C|+) ${num('a2p') ?? '—'} | prev10 ${num('a2c') ?? '—'} | 2º teste ${num('a2d') ?? '—'} | ${e || '—'}`,
       fb: `<p class="score">${s} de 6</p><ul>
       <li>${tag(otp && ofp)} 1000 × 0,01 × 0,8 = <b>8</b> verdadeiros positivos; 990 × 0,096 ≈ <b>95</b> falsos positivos.</li>
-      <li>${tag(op)} P(C | +) = 8 / (8 + 95) ≈ <b>7,8%</b>. Eddy (1982): 95 de 100 médicos responderam algo em torno de 75%.</li>
+      <li>${tag(op)} P(C | +) = 8 / (8 + 95) ≈ <b>7,8%</b>. Eddy (1982): 95 de 100 médicos responderam algo entre 70% e 80%.</li>
       <li>${tag(oc)} Prevalência 10%: 0,08 / (0,08 + 0,9 × 0,096) ≈ <b>48%</b>. A taxa-base manda.</li>
       <li>${tag(od)} O posterior vira prior: 0,8 × 0,078 / (0,8 × 0,078 + 0,096 × 0,922) ≈ <b>41%</b>.</li>
       <li>${tag(e === 'taxa-base')} O erro é <b>trocar P(+ | C) por P(C | +)</b>, ignorando a prevalência.</li></ul>

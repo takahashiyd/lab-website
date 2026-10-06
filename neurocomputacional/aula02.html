@@ -261,7 +261,7 @@ select.wrong{border-color:var(--warn);background:var(--nobg)}
 <section class="exp" id="a6" data-titulo="O cerebelo é um perceptron?">
   <div><p class="num">Atividade 6 · 4 min · em duplas</p><h2>O cerebelo é um perceptron?</h2></div>
   <figure><img src="img/aula02/g10_cerebellum.png" alt="Esquema do córtex cerebelar: fibras musgosas chegam às células granulares, cujas fibras paralelas cruzam o dendrito de uma célula de Purkinje; uma fibra trepadeira, vinda da oliva inferior, também contacta a Purkinje." loading="lazy">
-    <figcaption>O circuito do córtex cerebelar (Rolls, 2023, cap. 17).</figcaption></figure>
+    <figcaption>O circuito do córtex cerebelar desenhado como um perceptron (esquema feito para a aula, com base em Rolls, 2023, cap. 17).</figcaption></figure>
   <p>Associe cada estrutura ao seu papel no perceptron.</p>
   <div class="match" id="cbList"></div>
   <div class="q"><p class="qt"><i>bônus</i>Quantas fibras trepadeiras contactam cada célula de Purkinje?</p>
@@ -492,7 +492,7 @@ const ACT = {
     return { score: `${s + ob}/7`, resp: CB.map((_, k) => `${k + 1}:${$(`[name="cb${k}"]`).value || '—'}`).join(' | ') + ` | trepadeiras: ${b || '—'} — ${val('a6b2')}`,
       fb: `<p class="score">${s + ob} de 7</p><ul>${CB.map(([st, r], k) => `<li>${tag($(`[name="cb${k}"]`).value === r)} ${st} → <b>${r}</b></li>`).join('')}
       <li>${tag(ob)} <b>Uma</b> fibra trepadeira por Purkinje: cada neurônio de saída tem seu próprio "professor" — exatamente o que a regra do perceptron exige (Rolls, 2023, p. 702).</li></ul>
-      <p>Ressalva: a fibra trepadeira dispara ~1 vez por segundo e pode sinalizar também recompensa — talvez o cerebelo faça um pouco de aprendizado por reforço.</p>` };
+      <p>Ressalva: a fibra trepadeira dispara pouco (raramente mais que alguns spikes por segundo) e pode sinalizar também recompensa (Rolls, 2023, pp. 700–702) — talvez o cerebelo faça um pouco de aprendizado por reforço.</p>` };
   },
   a7() {
     const a = num('a7a'); const oa = a === 160000; markInput('a7a', oa);

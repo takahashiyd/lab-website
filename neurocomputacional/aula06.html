@@ -499,7 +499,7 @@ const ACT = {
       <li>${tag(ok[0])} Densa: 3.072 × 16.384 = <b>50.331.648</b>.</li>
       <li>${tag(ok[1])} Local: 16.384 × 75 = <b>1.228.800</b> — a localidade sozinha reduz ~41 vezes.</li>
       <li>${tag(ok[2])} Convolucional: 16 × 75 = <b>1.200</b> — o compartilhamento reduz mais 1.024 vezes (32 × 32 posições).</li>
-      <li>${tag(d === 'local')} O córtex parece a <b>local sem compartilhar</b>: conexões locais e topográficas, mas cada neurônio com as suas sinapses. Copiar pesos é “biologicamente implausível” (Rolls, 2023, B.14).</li></ul>
+      <li>${tag(d === 'local')} O córtex parece a <b>local sem compartilhar</b>: conexões locais e topográficas, mas cada neurônio com as suas sinapses. Copiar pesos é “biologicamente implausível” (Rolls, 2023, B.14; tradução livre).</li></ul>
       <figure><img src="img/aula06/k3_params.png" alt="Barras em escala logarítmica: 50 milhões de pesos na camada densa, 1,2 milhão na local e 1.200 na convolucional." loading="lazy"></figure>` };
   },
   a3() {
@@ -525,7 +525,7 @@ const ACT = {
       <li>${tag(!!okB)} <b>w = (1,5; 0,25; 0,125)</b>: A@2 e A@3 ganham peso sem que o neurônio tenha disparado para elas.</li>
       <li>${tag(!!okC)} Hebb: <b>w = (2; 0; 0)</b> — só a vista que já dispara é reforçada.</li>
       <li>${tag(d === 'A qualquer')} Com o traço, o neurônio passa a responder ao <b>objeto A em qualquer posição</b>; com Hebb, só a “A na posição 1”. Ligações entre objetos diferentes não se acumulam porque a ordem dos objetos varia.</li></ul>
-      <figure><img src="img/aula06/k6_trace.png" alt="Traço decaindo 0,5, 0,25, 0,125; pesos finais com Hebb concentrados em A1 e com o traço distribuídos entre A1, A2 e A3." loading="lazy"><figcaption>No VisNet, “o traço é o fator decisivo” para a invariância (Rolls, 2023, p. 120).</figcaption></figure>
+      <figure><img src="img/aula06/k6_trace.png" alt="Traço decaindo 0,5, 0,25, 0,125; pesos finais com Hebb concentrados em A1 e com o traço distribuídos entre A1, A2 e A3." loading="lazy"><figcaption>No VisNet, “o traço é o fator decisivo” para a invariância (Rolls, 2023, p. 120; tradução livre).</figcaption></figure>
       <figure><img src="img/aula06/trace_hebb.png" alt="Gráficos de Rolls: informação sobre 7 faces em 9 posições, alta com as regras do traço e baixa com Hebb e pesos aleatórios." loading="lazy"><figcaption>VisNet com 7 faces em 9 posições: traço (14, 17) × Hebb (16) × aleatório. Rolls (2023, Fig. 2.50).</figcaption></figure>` };
   },
   a5() {

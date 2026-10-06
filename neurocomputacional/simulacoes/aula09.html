@@ -483,7 +483,7 @@ const Wrec=buildW(PATS);
      a:0,f:"A Boltzmann Machine torna os neurônios estocásticos (probabilidade sigmoide com temperatura T), permitindo escapar de mínimos locais."},
     {q:"Por que a região CA3 do hipocampo é associada à rede de Hopfield?",
      o:["Por ter poucos neurônios","Por suas extensas conexões recorrentes entre neurônios","Por não ter plasticidade","Por processar apenas estímulos visuais"],
-     a:1,f:"CA3 tem o maior grau de conectividade recorrente do cérebro — a arquitetura de Hopfield — e implementa pattern completion (Marr, 1971)."},
+     a:1,f:"CA3 tem um sistema de colaterais recorrentes muito desenvolvido, que forma uma única rede (Rolls, 2023, seção 9.1.2) — a arquitetura de Hopfield. Marr (1971) já propunha que uma rede assim completasse padrões (pattern completion)."},
   ];
   const box=$('quizBox'); let score=0; const answered=new Array(Q.length).fill(false);
   $('quizTotal').textContent=Q.length;

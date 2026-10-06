@@ -211,7 +211,7 @@
       </div>
 
       <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--grey-light);">
-        <button class="btn" onclick="stdpPreset('bipoo')">Preset Bi &amp; Poo</button>
+        <button class="btn" onclick="stdpPreset('bipoo')">Preset típico</button>
         <button class="btn secondary" onclick="stdpPreset('symmetric')">Simétrica</button>
         <button class="btn secondary" onclick="stdpPreset('reset')">Reset</button>
       </div>
@@ -219,7 +219,7 @@
       <div class="notes-box">
         <h4>O que observar</h4>
         Quando ∫Δw dΔt &lt; 0 (LTD domina), a rede produz competição global e os pesos
-        convergem para uma distribuição bimodal (Aula 3, Fig. 4.2).
+        convergem para uma distribuição bimodal (Song, Miller &amp; Abbott, 2000).
       </div>
     </div>
   </div>
@@ -364,7 +364,7 @@
     <p style="font-size: 14px; line-height: 1.7; color: var(--dark); margin: 8px 0 0;">
       A cada apresentação: <code>y = w_EC·x_EC + w_EI·x_EI</code>; depois aplicamos Hebb com
       decaimento: <code>Δw_i = η·y·x_i − c·w_i</code>. O decaimento <code>c</code> evita que os
-      pesos cresçam sem limite (cf. Aula 3, Seção 5.3).
+      pesos cresçam sem limite (cf. notas da Aula 3, seção 6.1).
     </p>
   </details>
 </section>
@@ -935,7 +935,7 @@ const QUESTIONS = [
       "Pre causes post, post causes pre.",
     ],
     correct: 0,
-    why: "Carla Shatz (1992) reformulou Hebb com essa frase compacta. O original de Hebb (1949) era mais longo e técnico."
+    why: "Carla Shatz (1992) resumiu Hebb como \"cells that fire together wire together\"; a variante com \"neurons\" é a forma popular. O original de Hebb (1949) era mais longo e técnico."
   },
   {
     q: "Por que o receptor NMDA é chamado de \"detector de coincidência\"?",
@@ -990,10 +990,10 @@ const QUESTIONS = [
       "A regra de aprendizado competitivo de Kohonen.",
     ],
     correct: 1,
-    why: "Bliss & Lømo aplicaram estimulação tetânica de alta frequência no caminho perfurante do hipocampo de coelho anestesiado, e a resposta EPSP cresceu ~60% e durou horas — primeira evidência direta de plasticidade hebbiana."
+    why: "Bliss & Lømo aplicaram estimulação tetânica de alta frequência no caminho perfurante do hipocampo de coelho anestesiado, e a resposta dos neurônios do giro denteado ficou potenciada por horas — a primeira descrição detalhada da LTP."
   },
   {
-    q: "Qual mecanismo de estabilização corresponde ao scaling sináptico de Turrigiano (1998)?",
+    q: "Qual mecanismo de estabilização corresponde ao scaling sináptico de Turrigiano et al. (1998)?",
     options: [
       "Decaimento de peso (weight decay): −c·w.",
       "Normalização: ‖w‖ = constante.",
