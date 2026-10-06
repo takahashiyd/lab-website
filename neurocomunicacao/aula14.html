@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laboratório de Modelos de Linguagem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: a single lab-notebook column; each experiment is a numbered protocol card; teacher mode swaps in a projector board */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#142033; --muted:#5b6879; --line:#d8dee6;
+  --accent:#0e7c86; --accent-ink:#ffffff; --you:#c9771a; --soft:#e5f1f2; --warn:#a33a2a;
+  --display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:17px/1.5 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-inline:18px;padding-block:28px 64px;display:grid;gap:22px}
+header{display:grid;gap:8px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(34px,8vw,54px)/1 var(--display);font-stretch:118%;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font:750 24px/1.15 var(--display);font-stretch:108%;margin:0;text-wrap:balance}
+h3{font:700 16px/1.2 var(--display);margin:0}
+p{margin:0;max-width:65ch}
+.lead{color:var(--muted)}
+.phones{display:flex;gap:10px;align-items:flex-start;background:var(--soft);border-radius:10px;padding:12px 14px;font-size:15px}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{font:600 14px/1 var(--body);color:var(--fg);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:var(--surface)}
+nav a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.exp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:14px;min-width:0}
+.num{font:600 13px/1 var(--mono);color:var(--muted)}
+.tag{display:inline-block;font:600 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 7px;border-radius:5px;background:var(--soft);color:var(--accent)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+button{font:700 16px/1 var(--display);border:0;border-radius:10px;padding:14px 18px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px;touch-action:manipulation}
+button.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+button.big{flex:1 1 120px;font-size:22px;padding:20px 10px;font-stretch:112%}
+button:disabled{opacity:.4;cursor:default}
+.readout{font:500 15px/1.4 var(--mono);color:var(--muted)}
+.result{border-top:1px dashed var(--line);padding-top:14px;display:grid;gap:10px}
+.report{background:var(--soft);border-radius:10px;padding:12px 14px;font-size:16px}
+.report b{font:700 20px/1.1 var(--display);color:var(--you)}
+.why{font-size:15px;color:var(--muted)}
+.chart{width:100%;height:auto;display:block}
+.chart text{fill:var(--muted);font:12px var(--mono)}
+.chart .ax{stroke:var(--line)}
+.links{display:grid;gap:10px}
+.links a{color:var(--accent);font-weight:600}
+footer{font-size:13px;color:var(--muted)}
+.chart text{fill:var(--muted);font:19px var(--mono)}
+.chart .bar{fill:var(--you)}
+.chart .bar.alt{fill:var(--accent)}
+.chart .val{fill:var(--fg);font:700 21px var(--mono)}
+.screen{background:var(--bg);border:1px solid var(--line);border-radius:12px;min-height:130px;display:grid;place-items:center;padding:18px;text-align:center;user-select:none;-webkit-user-select:none}
+.screen .sent{font:700 clamp(21px,5.6vw,27px)/1.3 var(--display);text-wrap:balance}
+.screen .sent .gap{display:inline-block;min-width:3.2em;border-bottom:3px solid var(--accent);margin-left:.15em}
+.screen .hint{color:var(--muted);font-size:16px}
+input.word{font:600 20px/1.2 var(--body);padding:12px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--fg);flex:1 1 160px;min-height:48px;min-width:0}
+.fb{font:600 16px/1.35 var(--body);min-height:22px}
+.fb.ok{color:var(--accent)} .fb.bad{color:var(--warn)}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{min-height:44px;padding:10px 14px;font-size:15px}
+.seg button[aria-pressed="false"]{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+.gen{display:grid;gap:8px}
+.gen .g{background:var(--bg);border-radius:10px;padding:12px 14px;display:grid;gap:8px}
+.gen .g p{font:600 17px/1.4 var(--body)}
+.rate{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.rate button{min-height:40px;min-width:44px;padding:8px 10px;font-size:15px}
+.rate button[aria-pressed="false"]{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+.rate small{font:500 12px var(--mono);color:var(--muted)}
+.slider{width:100%;accent-color:var(--accent)}
+.est{display:grid;gap:6px;background:var(--bg);border-radius:12px;padding:14px}
+.est .big{font:800 26px/1.1 var(--display);color:var(--you);font-variant-numeric:tabular-nums}
+.card{background:var(--bg);border-radius:12px;padding:16px;display:grid;gap:12px}
+.card .q{font:700 19px/1.3 var(--display);text-wrap:balance}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opts button{font-size:15px;line-height:1.2;padding:12px 10px}
+.opts button.right{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.opts button.wrong{background:var(--warn);color:#fff;border-color:var(--warn)}
+.opts button:disabled{opacity:.55}
+.opts button.right:disabled,.opts button.wrong:disabled{opacity:1}
+.expl{font-size:15px;color:var(--muted)}
+table.lst{border-collapse:collapse;font-size:15px;width:100%}
+table.lst td,table.lst th{padding:5px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+table.lst th{font:600 12px var(--mono);color:var(--muted);text-transform:uppercase}
+/* teacher board */
+#prof{display:grid;gap:18px}
+.board{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:10px;min-width:0}
+.bars{display:grid;gap:6px}
+.bar{display:grid;grid-template-columns:110px 1fr 34px 34px 40px;gap:6px;align-items:center;font-size:14px}
+.bar .lab{font:500 12px var(--mono);color:var(--muted)}
+.bar .track{height:22px;background:var(--bg);border-radius:4px;overflow:hidden}
+.bar .fill{height:100%;background:var(--accent);width:0;transition:width .25s;display:block}
+.bar .fill.b{background:var(--you)}
+.bar .n{font:700 15px var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.bar button{padding:0;min-height:30px;font-size:18px;border-radius:7px}
+.legend{display:flex;gap:14px;font-size:13px;color:var(--muted)}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:5px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* ajuda: links para dicas e respostas */
+.ajuda{display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-top:1px dashed var(--line);padding-top:12px;margin-top:2px}
+.ajuda span{font:600 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.ajuda a{font:600 15px/1 var(--body);text-decoration:none;color:var(--accent);border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 14px;min-height:36px;display:inline-flex;align-items:center}
+.ajuda a:hover{border-color:var(--accent)}
+.ajuda span.trava{font:400 14px/1.3 var(--body);letter-spacing:0;text-transform:none;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap" id="student">
+  <header>
+    <span class="eyebrow">Bases neurais da comunicação humana · Aula 14</span>
+    <h1>Laboratório de Modelos de Linguagem</h1>
+    <p class="lead">Cinco experimentos curtos para comparar você com um modelo de linguagem (LLM, como os que estão por trás dos assistentes de conversa). Você é o participante. No fim de cada um, informe o resultado ao professor.</p>
+    <div class="phones"><span>Nenhum experimento usa inteligência artificial pela internet: tudo roda no seu celular. Os experimentos são individuais. Faça na ordem, quando o professor pedir.</span></div>
+    <nav aria-label="Experimentos"><a href="#e1">1 · Próxima palavra</a><a href="#e2">2 · Modelo de bolso</a><a href="#e3">3 · Concordância</a><a href="#e4">4 · Quanto texto?</a><a href="#e5">5 · Forma ou função?</a></nav>
+  </header>
+
+  <!-- E1 -->
+  <section class="exp" id="e1">
+    <div class="row"><span class="num">EXPERIMENTO 1</span><span class="tag">≈ 5 min · 16 frases</span></div>
+    <h2>Você é um modelo de linguagem: adivinhe a próxima palavra</h2>
+    <p>Aparece o começo de uma frase. Escreva <b>a primeira palavra que vier à cabeça</b> para continuar, sem pensar muito, e toque em <b>Enviar</b>. Depois você vê qual palavra vinha. É exatamente a tarefa com que um modelo de linguagem é treinado: prever a próxima palavra.</p>
+    <div class="screen" id="e1scr"><span class="hint">Toque em Começar.</span></div>
+    <div class="row" id="e1in" hidden><input class="word" id="e1w" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Sua palavra"><button id="e1ok">Enviar</button></div>
+    <div class="fb" id="e1fb" aria-live="polite"></div>
+    <div class="row"><button id="e1go">Começar</button><button class="ghost" id="e1next" hidden>Próxima</button><span class="readout" id="e1p"></span></div>
+    <div class="result" id="e1res" hidden>
+      <svg class="chart" id="e1chart" viewBox="0 0 640 300" role="img" aria-label="Acertos em frases de alta e de baixa previsibilidade"></svg>
+      <div class="report" id="e1rep"></div>
+      <div id="e1tab"></div>
+      <p class="why">Em frases com muito contexto (“Papai…”), quase todo mundo acerta; em frases abertas (“Na mesa havia um…”), quase ninguém. A proporção de pessoas que completa com uma palavra é a <b>probabilidade de cloze</b>, e quanto menos esperada a palavra, maior o N400 que você viu na aula 5 (Kutas &amp; Hillyard, 1984). Um modelo de linguagem aprende exatamente essas probabilidades, lendo bilhões de frases, e é por isso que ele serve de régua para medir o quanto cada palavra surpreende o cérebro.</p>
+    </div>
+    <div class="ajuda"><span>Ajuda</span><a href="respostas/aula14.html#e1-dica" target="_blank" rel="noopener">Dica</a><a href="respostas/aula14.html#e1-resposta" target="_blank" rel="noopener" data-resp hidden>Ver a resposta</a><span class="trava" hidden>A resposta aparece quando você terminar o exercício.</span></div>
+  </section>
+
+  <!-- E2 -->
+  <section class="exp" id="e2">
+    <div class="row"><span class="num">EXPERIMENTO 2</span><span class="tag">≈ 6 min · 9 frases</span></div>
+    <h2>Um modelo de linguagem de bolso</h2>
+    <p>Este “modelo” leu um texto curto (umas 550 palavras) e só sabe uma coisa: <b>contar quais palavras vêm depois de quais</b>. Com contexto de 1 palavra ele escolhe palavras soltas pela frequência; com 2, olha a palavra anterior; com 3, olha as duas anteriores. Gere 3 frases com cada contexto e dê uma nota de 1 (sem sentido) a 5 (frase natural) para cada uma.</p>
+    <div class="row"><span class="readout">Contexto:</span>
+      <div class="seg" role="group" aria-label="Tamanho do contexto"><button data-n="1" aria-pressed="true">1 palavra</button><button data-n="2" aria-pressed="false">2 palavras</button><button data-n="3" aria-pressed="false">3 palavras</button></div>
+    </div>
+    <div class="row"><button id="e2go">Gerar 3 frases</button><span class="readout" id="e2p">Faltam: 1, 2 e 3 palavras</span></div>
+    <div class="gen" id="e2gen"></div>
+    <div class="result" id="e2res" hidden>
+      <svg class="chart" id="e2chart" viewBox="0 0 640 300" role="img" aria-label="Nota média de naturalidade para cada tamanho de contexto"></svg>
+      <div class="report" id="e2rep"></div>
+      <p class="why">Com mais contexto, as frases ficam mais naturais, mas com 3 palavras o modelo de bolso começa a <b>copiar</b> trechos inteiros do texto que leu, porque viu poucos exemplos. Os modelos de linguagem atuais fazem a mesma tarefa (prever a próxima palavra), mas olham milhares de palavras para trás, leram uma quantidade gigantesca de texto e representam cada palavra por um vetor de números que muda com o contexto. Esses vetores são o que os neurocientistas comparam com a atividade do cérebro (Schrimpf <i>et al.</i>, 2021; Goldstein <i>et al.</i>, 2022).</p>
+    </div>
+    <div class="ajuda"><span>Ajuda</span><a href="respostas/aula14.html#e2-dica" target="_blank" rel="noopener">Dica</a><a href="respostas/aula14.html#e2-resposta" target="_blank" rel="noopener" data-resp hidden>Ver a resposta</a><span class="trava" hidden>A resposta aparece quando você terminar o exercício.</span></div>
+  </section>
+
+  <!-- E3 -->
+  <section class="exp" id="e3">
+    <div class="row"><span class="num">EXPERIMENTO 3</span><span class="tag">≈ 4 min · 24 frases</span></div>
+    <h2>Concordância à distância: o verbo concorda com quem?</h2>
+    <p>O começo de uma frase aparece por <b>1,5 segundo</b> e some. Escolha o verbo que completa a frase, <b>o mais rápido que puder</b>. Atenção: o verbo concorda com o núcleo do sujeito, não com a palavra mais próxima.</p>
+    <div class="screen" id="e3scr"><span class="hint">Toque em Começar.</span></div>
+    <div class="row" id="e3btn" hidden><button class="big" data-r="s" id="e3s">está</button><button class="big" data-r="p" id="e3pl">estão</button></div>
+    <div class="row"><button id="e3go">Começar</button><span class="readout" id="e3p"></span></div>
+    <div class="result" id="e3res" hidden>
+      <svg class="chart" id="e3chart" viewBox="0 0 640 300" role="img" aria-label="Erros quando a palavra intrusa concorda e quando não concorda com o núcleo"></svg>
+      <div class="report" id="e3rep"></div>
+      <p class="why">Em “A chave <i>dos armários</i>…”, a palavra mais próxima do verbo está no plural. Esse <b>atrator</b> provoca erros e respostas mais lentas em falantes, sobretudo quando o núcleo é singular e o atrator é plural. Modelos de linguagem também cometem erros de atração, o que mostra que precisam representar a estrutura da frase, e não só a ordem das palavras (Linzen; Dupoux; Goldberg, 2016). Mas o padrão dos erros não é igual ao humano: com orações relativas, as redes testadas erravam mais e as pessoas, menos (Linzen; Leonard, 2018).</p>
+    </div>
+    <div class="ajuda"><span>Ajuda</span><a href="respostas/aula14.html#e3-dica" target="_blank" rel="noopener">Dica</a><a href="respostas/aula14.html#e3-resposta" target="_blank" rel="noopener" data-resp hidden>Ver a resposta</a><span class="trava" hidden>A resposta aparece quando você terminar o exercício.</span></div>
+  </section>
+
+  <!-- E4 -->
+  <section class="exp" id="e4">
+    <div class="row"><span class="num">EXPERIMENTO 4</span><span class="tag">≈ 3 min · 2 estimativas</span></div>
+    <h2>Quanto texto? Uma criança e um modelo de linguagem</h2>
+    <p>Arraste para dar o seu palpite. Não existe resposta exata; pense na <b>ordem de grandeza</b> (milhares, milhões, bilhões…).</p>
+    <div class="est"><span>1. Quantas palavras uma criança ouve até os 5 anos?</span><span class="big" id="e4av">1 milhão</span>
+      <input type="range" class="slider" id="e4a" min="4" max="13" step="0.5" value="6" aria-label="Palavras ouvidas por uma criança até 5 anos (escala logarítmica)"></div>
+    <div class="est"><span>2. Com quantas palavras foi treinado o GPT-3 (2020), um dos primeiros grandes modelos?</span><span class="big" id="e4bv">1 milhão</span>
+      <input type="range" class="slider" id="e4b" min="4" max="13" step="0.5" value="6" aria-label="Palavras de treino do GPT-3 (escala logarítmica)"></div>
+    <div class="row"><button id="e4go">Ver a resposta</button></div>
+    <div class="result" id="e4res" hidden>
+      <svg class="chart" id="e4chart" viewBox="0 0 640 320" role="img" aria-label="Seus palpites e os valores da literatura, em escala logarítmica"></svg>
+      <div class="report" id="e4rep"></div>
+      <p class="why">Uma criança ouve no máximo cerca de 1 milhão de palavras por mês, o que dá uns 60 milhões aos 5 anos; o GPT-3 foi treinado com cerca de 500 bilhões de <i>tokens</i> (pedaços de palavras), e modelos mais novos com mais de 1 trilhão (Frank, 2023). A diferença chega a quatro ou cinco ordens de grandeza. Ainda assim, modelos treinados só com 100 milhões de palavras, o que uma criança ouve em cerca de 10 anos, já preveem bem a resposta do cérebro a frases (Hosseini <i>et al.</i>, 2024). Como aprender tanto com tão pouco é uma das grandes perguntas da aula 11.</p>
+    </div>
+    <div class="ajuda"><span>Ajuda</span><a href="respostas/aula14.html#e4-dica" target="_blank" rel="noopener">Dica</a><a href="respostas/aula14.html#e4-resposta" target="_blank" rel="noopener" data-resp hidden>Ver a resposta</a><span class="trava" hidden>A resposta aparece quando você terminar o exercício.</span></div>
+  </section>
+
+  <!-- E5 -->
+  <section class="exp" id="e5">
+    <div class="row"><span class="num">EXPERIMENTO 5</span><span class="tag">≈ 4 min · 8 casos</span></div>
+    <h2>Forma ou função? O que é saber uma língua</h2>
+    <p>Para cada habilidade, decida: é <b>competência formal</b> (conhecer as regras e padrões da língua) ou <b>competência funcional</b> (usar a língua para pensar e agir no mundo: raciocinar, saber como o mundo funciona, entender as pessoas)?</p>
+    <div class="row"><button id="e5go">Começar</button><span class="readout" id="e5p"></span></div>
+    <div class="card" id="e5card" hidden>
+      <div class="q" id="e5q"></div>
+      <div class="opts" id="e5opts"><button data-r="f">Formal</button><button data-r="u">Funcional</button></div>
+      <p class="expl" id="e5x" aria-live="polite"></p>
+      <div class="row"><button class="ghost" id="e5next" hidden>Próxima</button></div>
+    </div>
+    <div class="result" id="e5res" hidden>
+      <div class="report" id="e5rep"></div>
+      <p class="why">No cérebro humano, a competência formal depende da <b>rede da linguagem</b> (frontal inferior e temporal, à esquerda), que quase não se ativa em matemática, lógica ou música. A competência funcional depende de outras redes: a de demanda múltipla para raciocínio e a de teoria da mente para entender os outros (aulas 6 e 10). Os grandes modelos de linguagem são surpreendentemente bons na forma e irregulares na função. Para os autores dessa distinção, isso combina com o cérebro: dominar a língua não é o mesmo que pensar (Mahowald <i>et al.</i>, 2024; Fedorenko; Piantadosi; Gibson, 2024).</p>
+    </div>
+    <div class="ajuda"><span>Ajuda</span><a href="respostas/aula14.html#e5-dica" target="_blank" rel="noopener">Dica</a><a href="respostas/aula14.html#e5-resposta" target="_blank" rel="noopener" data-resp hidden>Ver a resposta</a><span class="trava" hidden>A resposta aparece quando você terminar o exercício.</span></div>
+  </section>
+
+  <footer>Os experimentos rodam no seu aparelho. Sua matrícula, seu nome e seus resultados vão só para o professor; nenhum aluno vê os dados de outro.</footer>
+</div>
+
+<!-- Teacher board -->
+<div class="wrap" id="prof" hidden>
+  <header>
+    <span class="eyebrow">Placar da turma · Aula 14</span>
+    <h1>Resultados da turma</h1>
+    <p class="lead">Peça que levantem a mão por categoria e registre com + e −. Os números ficam salvos neste navegador.</p>
+    <div class="row"><button class="ghost" id="reset">Zerar placar</button><span class="readout" id="resetMsg"></span><a href="#" id="toStudent" style="color:var(--accent);font-weight:600">Ver página dos alunos</a></div>
+  </header>
+  <div class="board" id="board"></div>
+</div>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const median=a=>{const s=[...a].sort((x,y)=>x-y);const n=s.length;return n?(n%2?s[(n-1)/2]:(s[n/2-1]+s[n/2])/2):NaN;};
+const fmt=v=>isNaN(v)?'—':Math.round(v).toLocaleString('pt-BR');
+const norm=s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z\- ]/g,'').trim();
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function bars(svg,items,{max,unit=''}={}){const W=640,H=+svg.getAttribute('viewBox').split(' ')[3],L=10,R=10,T=40,B=62;
+  const m=max||Math.max(1,...items.map(i=>isNaN(i.value)?0:i.value))*1.15;const n=items.length,slot=(W-L-R)/n,bw=Math.min(110,slot*.6);
+  let g=`<line class="ax" x1="${L}" y1="${H-B}" x2="${W-R}" y2="${H-B}"/>`;
+  items.forEach((it,i)=>{const v=isNaN(it.value)?0:it.value;const h=(H-T-B)*v/m;const x=L+slot*i+(slot-bw)/2;
+    g+=`<rect class="bar${it.alt?' alt':''}" x="${x}" y="${H-B-h}" width="${bw}" height="${h}" rx="4"/>`;
+    g+=`<text class="val" x="${x+bw/2}" y="${H-B-h-8}" text-anchor="middle">${it.text??(isNaN(it.value)?'—':fmt(v)+unit)}</text>`;
+    it.label.split('\n').forEach((ln,k)=>g+=`<text x="${x+bw/2}" y="${H-B+24+k*21}" text-anchor="middle">${ln}</text>`);});
+  svg.innerHTML=g;}
+
+/* ================= E1 · cloze ================= */
+const CLOZE=[
+ ['No Natal, as crianças esperam os presentes do Papai','Noel',['noel'],1],
+ ['Para abrir a porta, ela procurou a','chave',['chave','chaves'],1],
+ ['Choveu a tarde toda e eu esqueci o guarda-','chuva',['chuva'],1],
+ ['Antes de dormir, ela escovou os','dentes',['dentes'],1],
+ ['O goleiro pulou, mas não conseguiu segurar a','bola',['bola'],1],
+ ['O café estava tão quente que ele queimou a','língua',['lingua','boca'],1],
+ ['Escrevi a lista de compras numa folha de','papel',['papel','caderno'],1],
+ ['Depois de um longo voo, o avião finalmente pousou no','aeroporto',['aeroporto','chao','solo'],1],
+ ['Na mesa da cozinha havia um','vaso',['vaso'],0],
+ ['Ontem à noite eu pensei muito no','futuro',['futuro'],0],
+ ['A professora mostrou para a turma uma','foto',['foto','fotografia'],0],
+ ['Meu vizinho acabou de comprar um','carro',['carro'],0],
+ ['Ela abriu a janela e viu o','mar',['mar'],0],
+ ['No fim de semana, nós fomos ao','cinema',['cinema'],0],
+ ['Ele guardou na gaveta o','relógio',['relogio'],0],
+ ['Depois do almoço, a família inteira foi','passear',['passear'],0]];
+let e1o=[],e1i=0,e1r=[];
+function e1show(){const [pre]=CLOZE[e1o[e1i]];$('e1scr').innerHTML=`<span class="sent">${esc(pre)}<span class="gap">&nbsp;</span></span>`;
+  $('e1w').value='';$('e1in').hidden=false;$('e1ok').disabled=false;$('e1fb').textContent='';$('e1fb').className='fb';$('e1next').hidden=true;$('e1p').textContent=`${e1i+1} de 16`;setTimeout(()=>$('e1w').focus(),50);}
+function e1send(){const w=$('e1w').value.trim();if(!w)return;const [pre,t,ok,hi]=CLOZE[e1o[e1i]];const hit=ok.includes(norm(w).replace(/^-/,''));
+  e1r.push({pre,t,w,hit,hi});$('e1ok').disabled=true;$('e1in').hidden=true;
+  $('e1scr').innerHTML=`<span class="sent">${esc(pre)} <span style="color:var(--accent)">${esc(t)}</span></span>`;
+  $('e1fb').className='fb '+(hit?'ok':'bad');$('e1fb').textContent=hit?'Acertou.':`Você escreveu “${w}”. A frase continuava com “${t}”.`;
+  $('e1next').hidden=false;$('e1next').textContent=e1i<15?'Próxima':'Ver resultado';$('e1next').focus();}
+$('e1ok').onclick=e1send;$('e1w').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();e1send();}});
+$('e1go').onclick=()=>{e1o=shuffle([...CLOZE.keys()]);e1i=0;e1r=[];$('e1res').hidden=true;$('e1go').textContent='Recomeçar';e1show();};
+$('e1next').onclick=()=>{e1i++;if(e1i<16)return e1show();
+  $('e1scr').innerHTML='<span class="hint">Pronto!</span>';$('e1next').hidden=true;$('e1fb').textContent='';$('e1p').textContent='';
+  const h=e1r.filter(r=>r.hi&&r.hit).length,l=e1r.filter(r=>!r.hi&&r.hit).length;
+  bars($('e1chart'),[{label:'muito contexto',value:h,text:`${h}/8`,alt:1},{label:'pouco contexto',value:l,text:`${l}/8`}],{max:8*1.15});
+  $('e1rep').innerHTML=`Frases com muito contexto: <b>${h} de 8</b>. Frases com pouco contexto: <b>${l} de 8</b>. Informe os dois números.`;
+  $('e1tab').innerHTML='<table class="lst"><tr><th>Frase</th><th>Você</th><th>Era</th></tr>'+e1r.map(r=>`<tr><td>…${esc(r.pre.split(' ').slice(-3).join(' '))}</td><td>${esc(r.w)}</td><td>${r.hit?'✓':esc(r.t)}</td></tr>`).join('')+'</table>';
+  $('e1res').hidden=false;};
+
+/* ================= E2 · n-gram ================= */
+const TEXTO=`A menina abriu a janela da sala. O sol entrou na sala e o gato acordou. O gato pulou da cadeira e foi para a cozinha. Na cozinha, a mãe preparava o café da manhã. A mãe colocou o pão na mesa e chamou a menina. A menina sentou na cadeira e tomou o café com leite. O pai chegou da rua com o jornal. O pai leu o jornal na mesa da cozinha. Depois do café, a menina pegou a mochila e foi para a escola. Na escola, a professora abriu o livro e leu uma história. A história era sobre um menino que morava perto do mar. O menino tinha um cachorro grande e muito amigo. Todo dia, o menino e o cachorro corriam na praia. Um dia, o cachorro encontrou uma garrafa na areia. Dentro da garrafa havia um papel com uma mensagem. A mensagem dizia que um barco tinha perdido o caminho. O menino levou o papel para a casa do pescador. O pescador leu a mensagem e saiu com o barco. No fim da tarde, o pescador voltou com o barco perdido. Todos na praia ficaram felizes com a notícia. A professora fechou o livro e perguntou o que a turma achou da história. Um aluno disse que o cachorro era o herói da história. Outra aluna disse que o pescador era o herói. A professora disse que a história tinha muitos heróis. Depois da aula, a menina voltou para casa com a amiga. No caminho, as duas viram um cachorro perto da padaria. O cachorro parecia com o cachorro da história. A menina comprou um pão na padaria e deu um pedaço para o cachorro. O cachorro comeu o pão e seguiu as duas até a casa. Em casa, a mãe viu o cachorro na porta. A mãe perguntou de quem era o cachorro. A menina disse que o cachorro era da rua e estava com fome. O pai chegou do trabalho e olhou para o cachorro. O pai disse que o cachorro podia ficar no quintal. A menina ficou feliz e deu um nome para o cachorro. O nome do cachorro era Pescador, por causa da história. À noite, a família jantou na mesa da cozinha. O gato olhava o cachorro pela janela da sala. O cachorro dormia no quintal perto da porta. Na manhã seguinte, o sol entrou de novo na sala. A menina abriu a porta e o cachorro correu para a cozinha. O gato pulou na mesa e derrubou o café. A mãe riu e disse que a casa estava cheia de animais. O pai disse que a casa estava cheia de alegria. A menina pegou a mochila e foi para a escola com a amiga. Na escola, a menina contou a história do cachorro para a professora. A professora disse que era uma história muito bonita. A turma pediu para conhecer o cachorro. No sábado, a turma foi até a casa da menina. O cachorro correu no quintal com todos os alunos. O gato ficou na janela da sala olhando a festa. No fim da tarde, todos voltaram para casa felizes. A menina escreveu a história no caderno. A história começava com uma garrafa na areia da praia e terminava com um cachorro no quintal.`;
+const TOK=TEXTO.toLowerCase().replace(/,/g,'').replace(/\./g,' . ').split(/\s+/).filter(Boolean);
+const NW=TOK.filter(t=>t!=='.').length;
+function gen(n){const out=[];let ctx=['.','.'].slice(0,n-1);
+  for(let k=0;k<22;k++){let cands;
+    if(n===1)cands=TOK.filter(t=>t!=='.'||out.length>3);
+    else{cands=[];for(let i=n-1;i<TOK.length;i++){let m=true;for(let j=0;j<n-1;j++){if(TOK[i-(n-1)+j]!==ctx[j]){m=false;break;}}if(m)cands.push(TOK[i]);}
+      if(n===3&&!cands.length){for(let i=1;i<TOK.length;i++)if(TOK[i-1]===ctx[1])cands.push(TOK[i]);}}
+    const w=cands[Math.floor(Math.random()*cands.length)];if(w==='.')break;out.push(w);if(n>1)ctx=[...ctx.slice(1),w];}
+  let s=out.join(' ');return s.charAt(0).toUpperCase()+s.slice(1)+'.';}
+let e2n=1;const e2s={1:[],2:[],3:[]};
+document.querySelectorAll('#e2 .seg button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#e2 .seg button').forEach(o=>o.setAttribute('aria-pressed',o===b?'true':'false'));e2n=+b.dataset.n;});
+function e2left(){const f=[1,2,3].filter(n=>e2s[n].length<3||e2s[n].some(x=>!x));return f;}
+$('e2go').onclick=()=>{const n=e2n;e2s[n]=[0,0,0];const box=document.createElement('div');box.className='gen';
+  box.innerHTML=`<h3>Contexto de ${n} palavra${n>1?'s':''}</h3>`+[0,1,2].map(i=>`<div class="g"><p>${esc(gen(n))}</p><div class="rate" data-i="${i}"><small>nota</small>${[1,2,3,4,5].map(v=>`<button aria-pressed="false" data-v="${v}">${v}</button>`).join('')}</div></div>`).join('');
+  const old=$('e2gen').querySelector(`[data-n="${n}"]`);box.dataset.n=n;if(old)old.replaceWith(box);else $('e2gen').appendChild(box);
+  box.querySelectorAll('.rate').forEach(r=>r.querySelectorAll('button').forEach(b=>b.onclick=()=>{r.querySelectorAll('button').forEach(o=>o.setAttribute('aria-pressed',o===b?'true':'false'));e2s[n][+r.dataset.i]=+b.dataset.v;e2check();}));
+  e2check();
+  const nx=[1,2,3].find(k=>!e2s[k].length);if(nx){const b=document.querySelector(`#e2 .seg button[data-n="${nx}"]`);if(b)b.click();}};
+function e2check(){const f=e2left();$('e2p').textContent=f.length?'Faltam: '+f.map(n=>n+(n>1?' palavras':' palavra')).join(', '):'';
+  if(f.length)return;const m=[1,2,3].map(n=>e2s[n].reduce((a,b)=>a+b,0)/3);
+  bars($('e2chart'),[1,2,3].map((n,i)=>({label:`contexto ${n}`,value:m[i],text:m[i].toFixed(1).replace('.',','),alt:i===2})),{max:5*1.15});
+  const best=[1,2,3][m.indexOf(Math.max(...m))];
+  $('e2rep').innerHTML=`Nota média: contexto 1 = <b>${m[0].toFixed(1).replace('.',',')}</b>, contexto 2 = <b>${m[1].toFixed(1).replace('.',',')}</b>, contexto 3 = <b>${m[2].toFixed(1).replace('.',',')}</b>. Mais natural: contexto <b>${best}</b>. O modelo de bolso leu ${NW} palavras. Informe qual contexto ficou mais natural.`;
+  $('e2res').hidden=false;}
+
+/* ================= E3 · agreement attraction ================= */
+const HEADS=[['A chave','As chaves'],['O cartaz','Os cartazes'],['A foto','As fotos'],['O bolo','Os bolos'],['A carta','As cartas'],['O livro','Os livros']];
+const MODS=[['do armário','dos armários'],['da festa','das festas'],['do aluno','dos alunos'],['da vizinha','das vizinhas'],['do banco','dos bancos'],['da professora','das professoras']];
+const ENDS=['em cima da mesa','na sala','perto da porta','no corredor','na entrada','ali no canto'];
+let e3t=[],e3i=0,e3r=[],e3t0=0;
+$('e3go').onclick=async()=>{$('e3go').disabled=true;$('e3res').hidden=true;e3t=[];
+  for(let k=0;k<24;k++){const hp=k%2,ap=Math.floor(k/2)%2;e3t.push({hp,ap,h:HEADS[k%6][hp],m:MODS[(k+Math.floor(k/6))%6][ap],e:ENDS[k%6]});}
+  shuffle(e3t);e3r=[];
+  for(e3i=0;e3i<24;e3i++){const t=e3t[e3i];$('e3p').textContent=`${e3i+1} de 24`;
+    $('e3scr').innerHTML='<span class="hint">+</span>';await sleep(500);
+    $('e3scr').innerHTML=`<span class="sent">${t.h} ${t.m} <span class="gap">&nbsp;</span> ${t.e}</span>`;
+    $('e3btn').hidden=false;document.querySelectorAll('#e3btn button').forEach(b=>b.disabled=false);e3t0=performance.now();
+    const hide=setTimeout(()=>{$('e3scr').innerHTML='<span class="hint">…</span>';},1500);
+    const r=await new Promise(res=>{document.querySelectorAll('#e3btn button').forEach(b=>b.onclick=()=>res(b.dataset.r));});
+    clearTimeout(hide);const rt=performance.now()-e3t0;document.querySelectorAll('#e3btn button').forEach(b=>b.disabled=true);
+    const ok=(r==='p')===!!t.hp;e3r.push({mis:t.hp!==t.ap,hp:t.hp,ok,rt});
+    $('e3scr').innerHTML=`<span class="hint" style="color:${ok?'var(--accent)':'var(--warn)'}">${ok?'certo':'errado'}</span>`;await sleep(400);}
+  $('e3btn').hidden=true;$('e3scr').innerHTML='<span class="hint">Pronto!</span>';$('e3p').textContent='';$('e3go').disabled=false;$('e3go').textContent='Recomeçar';
+  const em=e3r.filter(r=>!r.mis&&!r.ok).length,ex=e3r.filter(r=>r.mis&&!r.ok).length,es=e3r.filter(r=>r.mis&&!r.hp&&!r.ok).length;
+  const tm=median(e3r.filter(r=>!r.mis&&r.ok).map(r=>r.rt)),tx=median(e3r.filter(r=>r.mis&&r.ok).map(r=>r.rt));
+  bars($('e3chart'),[{label:'atrator igual\n(a chave do armário)',value:em,text:`${em}/12`,alt:1},{label:'atrator diferente\n(a chave dos armários)',value:ex,text:`${ex}/12`}],{max:Math.max(4,em,ex)*1.15});
+  $('e3rep').innerHTML=`Erros: <b>${em} de 12</b> quando a palavra intrusa tinha o mesmo número do núcleo e <b>${ex} de 12</b> quando tinha número diferente (${es} deles com núcleo singular). Tempo mediano dos acertos: ${fmt(tm)} ms × ${fmt(tx)} ms. Informe os dois números de erros.`;
+  $('e3res').hidden=false;};
+
+/* ================= E4 · data gap ================= */
+const words=x=>{const v=Math.pow(10,x);const u=[[1e12,'trilhão','trilhões'],[1e9,'bilhão','bilhões'],[1e6,'milhão','milhões'],[1e3,'mil','mil']];
+  for(const [b,s,p] of u){if(v>=b){const k=v/b;const r=k<10?Math.round(k*10)/10:Math.round(k);return `${String(r).replace('.',',')} ${r<2&&b>1e3?s:p}`;}}return fmt(v);};
+['e4a','e4b'].forEach(id=>{const f=()=>$(id+'v').textContent=words(+$(id).value);$(id).oninput=f;f();});
+$('e4go').onclick=()=>{const a=+$('e4a').value,b=+$('e4b').value;const CH=Math.log10(6e7),LM=Math.log10(5e11);
+  const W=640,H=320,L=235,R=24,T=24,rowH=58,SUP={4:'⁴',6:'⁶',8:'⁸',10:'¹⁰',12:'¹²'},x=v=>L+(W-L-R)*(v-4)/(13-4);
+  const rows=[['você · criança',a,1],['Frank · criança',CH,0],['você · GPT-3',b,1],['Frank · GPT-3',LM,0]];
+  let g='';[4,6,8,10,12].forEach(v=>{g+=`<line class="ax" x1="${x(v)}" y1="${T}" x2="${x(v)}" y2="${T+rowH*4}"/><text x="${x(v)}" y="${T+rowH*4+24}" text-anchor="middle">10${SUP[v]}</text>`;});
+  rows.forEach(([l,v,you],i)=>{const y=T+i*rowH+10;g+=`<text x="${L-10}" y="${y+24}" text-anchor="end">${l}</text><rect class="bar${you?'':' alt'}" x="${x(4)}" y="${y}" width="${x(v)-x(4)}" height="34" rx="4"/>`;});
+  $('e4chart').innerHTML=g;
+  const gapY=b-a,gapR=LM-CH;
+  $('e4rep').innerHTML=`Seus palpites: criança <b>${words(a)}</b>, GPT-3 <b>${words(b)}</b> de palavras (${gapY>0?'o modelo leria '+words(gapY)+(gapY>=6?' de':'')+' vezes mais':'você estimou que o modelo leria menos ou o mesmo'}). Segundo Frank (2023): criança ≈ 60 milhões; GPT-3 ≈ 500 bilhões de tokens, cerca de 8 mil vezes mais. Lendo 8 horas por dia, a 250 palavras por minuto, uma pessoa levaria uns <b>11 mil anos</b> para ler o que o GPT-3 leu. Informe quantas vezes mais você estimou.`;
+  $('e4res').hidden=false;};
+
+/* ================= E5 · formal × functional ================= */
+const FF=[
+ ['Escolher “estão” e não “está” em “As chaves do armário ___ na mesa”.','f','Concordância é uma regra da gramática: competência formal.'],
+ ['Dizer o plural de uma palavra inventada: “um blico, dois ___”.','f','Aplicar uma regra de formação de palavras a algo novo é competência formal.'],
+ ['Perceber que “Ideias verdes incolores dormem furiosamente” tem a gramática certa, mesmo sem sentido.','f','Julgar se a frase é bem formada, independentemente do sentido, é competência formal.'],
+ ['Colocar as palavras na ordem do português: “o menino chutou a bola”, e não “chutou bola o a menino”.','f','A ordem das palavras é parte da sintaxe: competência formal.'],
+ ['Resolver: “Tenho 3 maçãs, ganho o dobro e como 2. Com quantas fico?”','u','É raciocínio formal (matemática) expresso em palavras: competência funcional.'],
+ ['Saber que, se você deixar um sorvete no sol, ele derrete.','u','É conhecimento de como o mundo funciona: competência funcional.'],
+ ['Entender que “Que beleza de dia!”, dito debaixo de um temporal, é ironia.','u','Exige entender a intenção de quem fala (teoria da mente, aula 10): competência funcional.'],
+ ['Acompanhar uma história longa e lembrar quem fez o quê no capítulo anterior.','u','Exige manter um modelo da situação ao longo do tempo: competência funcional.']];
+let e5o=[],e5i=0,e5s=0;
+function e5show(){const [q]=FF[e5o[e5i]];$('e5q').textContent=q;$('e5x').textContent='';$('e5next').hidden=true;$('e5p').textContent=`${e5i+1} de 8`;
+  $('e5opts').querySelectorAll('button').forEach(b=>{b.disabled=false;b.className='';b.onclick=()=>{const [,a,x]=FF[e5o[e5i]];const ok=b.dataset.r===a;if(ok)e5s++;
+    $('e5opts').querySelectorAll('button').forEach(o=>{o.disabled=true;if(o.dataset.r===a)o.className='right';else if(o===b)o.className='wrong';});
+    $('e5x').textContent=(ok?'Certo. ':'Não. ')+x;$('e5next').hidden=false;$('e5next').textContent=e5i<7?'Próxima':'Ver resultado';};});}
+$('e5go').onclick=()=>{e5o=shuffle([...FF.keys()]);e5i=0;e5s=0;$('e5card').hidden=false;$('e5res').hidden=true;$('e5go').textContent='Recomeçar';e5show();};
+$('e5next').onclick=()=>{e5i++;if(e5i<8)return e5show();$('e5card').hidden=true;$('e5p').textContent='';
+  $('e5rep').innerHTML=`Você acertou <b>${e5s} de 8</b>. Informe esse número. Agora pense: em quais dos 8 casos um modelo de linguagem iria melhor?`;$('e5res').hidden=false;};
+
+/* ---------- teacher board ---------- */
+const BOARD=[
+ {k:'e1',t:'1 · Próxima palavra: acertos (de 8)',two:['muito contexto','pouco contexto'],cats:['0–1','2–3','4–5','6','7','8']},
+ {k:'e2',t:'2 · Modelo de bolso: mais natural',cats:['contexto 1','contexto 2','contexto 3']},
+ {k:'e3',t:'3 · Concordância: erros (de 12)',two:['atrator igual','atrator diferente'],cats:['0','1','2','3','4 ou mais']},
+ {k:'e4',t:'4 · Quantas vezes mais texto (palpite)',cats:['menos de 10×','10–100×','100–1 mil×','1 mil–10 mil×','mais de 10 mil×']},
+ {k:'e5',t:'5 · Forma ou função: acertos (de 8)',cats:['≤ 4','5','6','7','8']}];
+let S={};try{S=JSON.parse(localStorage.getItem('llm-placar')||'{}')}catch(e){S={}}
+const save=()=>{try{localStorage.setItem('llm-placar',JSON.stringify(S))}catch(e){}};
+function renderBoard(){const host=$('board');host.innerHTML='';
+  BOARD.forEach(p=>{const div=document.createElement('div');div.className='panel';
+    const series=p.two?[0,1]:[0];let max=1;series.forEach(s=>p.cats.forEach((_,i)=>max=Math.max(max,(S[p.k+s+'_'+i]||0))));
+    let h=`<h2>${p.t}</h2>`;if(p.two)h+=`<div class="legend"><span><i class="sw" style="background:var(--accent)"></i>${p.two[0]}</span><span><i class="sw" style="background:var(--you)"></i>${p.two[1]}</span></div>`;
+    h+='<div class="bars">';
+    p.cats.forEach((c,i)=>series.forEach(s=>{const key=p.k+s+'_'+i,v=S[key]||0;
+      h+=`<div class="bar"><span class="lab">${s===0?c:''}</span><span class="track"><span class="fill${s?' b':''}" style="width:${100*v/max}%"></span></span><button class="ghost" data-k="${key}" data-d="-1" aria-label="menos ${c}">−</button><button data-k="${key}" data-d="1" aria-label="mais ${c}">+</button><span class="n">${v}</span></div>`;}));
+    div.innerHTML=h+'</div>';host.appendChild(div);});
+  host.querySelectorAll('button[data-k]').forEach(b=>b.onclick=()=>{const k=b.dataset.k;S[k]=Math.max(0,(S[k]||0)+(+b.dataset.d));save();renderBoard();});}
+let armed=false;$('reset').onclick=()=>{if(!armed){armed=true;$('reset').textContent='Confirmar: zerar tudo';$('resetMsg').textContent='';return;}
+  S={};save();renderBoard();armed=false;$('reset').textContent='Zerar placar';$('resetMsg').textContent='Placar zerado.';};
+$('toStudent').onclick=e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();};
+function route(){const t=(window.ncProf&&window.ncProf());$('prof').hidden=!t;$('student').hidden=t;if(t)renderBoard();}
+window.addEventListener('hashchange',route);route();
+})();
+</script>
+
+<script src="prof.js?v=1"></script>
+<script src="config.js?v=2"></script>
+<script src="registro.js?v=2" data-aula="14"></script>
+<script src="ajuda.js?v=1" data-aula="14"></script>
+</body>
+</html>

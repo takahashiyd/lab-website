@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 14 · Dicas e respostas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,600..800&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@600;700&display=swap">
+<style>
+:root{--bg:#f3f5f7;--surface:#fff;--fg:#142033;--muted:#5b6879;--line:#d8dee6;--accent:#0e7c86;--soft:#e5f1f2;--soft2:#fbf1e3;--you:#c9771a;
+--display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;--body:"Source Sans 3","Segoe UI",system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1621;--surface:#172132;--fg:#e6ecf3;--muted:#9aa8b9;--line:#2a3850;--accent:#3db4be;--soft:#173740;--soft2:#3a2c17;--you:#f0a645;color-scheme:dark}}
+:root[data-theme=dark]{--bg:#0f1621;--surface:#172132;--fg:#e6ecf3;--muted:#9aa8b9;--line:#2a3850;--accent:#3db4be;--soft:#173740;--soft2:#3a2c17;--you:#f0a645;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:17px/1.55 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 64px;display:grid;gap:20px}
+header{display:grid;gap:8px}
+.top{display:flex;flex-wrap:wrap;gap:6px 16px;font:600 14px/1.4 var(--body)}
+.top a,a{color:var(--accent)}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(30px,7vw,46px)/1.05 var(--display);font-stretch:112%;margin:0;text-wrap:balance}
+h2{font:750 22px/1.2 var(--display);font-stretch:106%;margin:0;text-wrap:balance}
+.lead{color:var(--muted);margin:0}
+.toc{display:flex;flex-wrap:wrap;gap:8px}
+.toc a{font:600 14px/1 var(--body);text-decoration:none;border:1px solid var(--line);background:var(--surface);padding:8px 12px;border-radius:999px}
+.item{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:12px;scroll-margin-top:12px}
+.num{font:700 12px/1 var(--mono);letter-spacing:.1em;color:var(--muted)}
+details{border-radius:10px;padding:12px 14px}
+details.dica{background:var(--soft)}
+details.resp{background:var(--soft2)}
+summary{cursor:pointer;font:700 16px/1.3 var(--body);list-style:none;display:flex;justify-content:space-between;gap:10px;min-height:28px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"mostrar";font:600 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+details[open] summary::after{content:"esconder"}
+details[open] summary{margin-bottom:8px}
+details p{margin:0 0 10px} details ul{margin:0 0 10px;padding-left:22px} details li{margin:3px 0}
+.travado{background:var(--soft2);border-radius:10px;padding:12px 14px;margin:0;color:var(--muted)}
+.aviso{font-size:14px;color:var(--muted);margin:0 0 8px}
+.links{display:flex;flex-wrap:wrap;gap:6px 18px;font:600 14px/1.4 var(--body)}
+footer{color:var(--muted);font-size:14px}
+:target{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+<body data-aula="14">
+<div class="wrap">
+<header>
+  <nav class="top"><a href="../aula14.html">Laboratório da aula 14</a><a href="../estudo/aula14.html">Material de estudo</a><a href="aula13.html">← Aula 13</a></nav>
+  <span class="eyebrow">Bases neurais da comunicação humana · Aula 14</span>
+  <h1>Dicas e respostas</h1>
+  <p class="lead">Modelos de linguagem e o cérebro. Para cada exercício do laboratório: uma dica para fazer bem o exercício e a resposta, com o que a maioria das pessoas obtém e por quê.</p>
+  <nav class="toc" aria-label="Exercícios"><a href="#e1">1. Próxima palavra</a><a href="#e2">2. Modelo de bolso</a><a href="#e3">3. Concordância à distância</a><a href="#e4">4. Quanto texto?</a><a href="#e5">5. Forma ou função?</a></nav>
+</header>
+
+<section class="item" id="e1" data-trava="1">
+  <span class="num">EXERCÍCIO 1</span>
+  <h2>Próxima palavra</h2>
+  <details class="dica" id="e1-dica"><summary>Dica</summary><p>Escreva a primeira palavra que vier, sem procurar a mais "criativa": o exercício mede o que é mais esperado. Cuidado com o corretor automático do celular, que pode trocar a palavra; acentos e maiúsculas não contam.</p></details>
+  <details class="resp" id="e1-resposta" hidden data-c="PHA+PGI+R2FiYXJpdG88L2I+IChlbnRyZSBwYXLDqm50ZXNlcywgb3V0cmFzIHJlc3Bvc3RhcyBhY2VpdGFzIHBlbGEgcMOhZ2luYSk6PC9wPjx1bD48bGk+PGI+TXVpdG8gY29udGV4dG86PC9iPiBQYXBhaSA8aT5Ob2VsPC9pPjsgcHJvY3Vyb3UgYSA8aT5jaGF2ZTwvaT4gKGNoYXZlcyk7IGd1YXJkYS08aT5jaHV2YTwvaT47IGVzY292b3Ugb3MgPGk+ZGVudGVzPC9pPjsgc2VndXJhciBhIDxpPmJvbGE8L2k+OyBxdWVpbW91IGEgPGk+bMOtbmd1YTwvaT4gKGJvY2EpOyBmb2xoYSBkZSA8aT5wYXBlbDwvaT4gKGNhZGVybm8pOyBwb3Vzb3Ugbm8gPGk+YWVyb3BvcnRvPC9pPiAoY2jDo28sIHNvbG8pLjwvbGk+PGxpPjxiPlBvdWNvIGNvbnRleHRvOjwvYj4gaGF2aWEgdW0gPGk+dmFzbzwvaT47IHBlbnNlaSBtdWl0byBubyA8aT5mdXR1cm88L2k+OyB1bWEgPGk+Zm90bzwvaT4gKGZvdG9ncmFmaWEpOyBjb21wcmFyIHVtIDxpPmNhcnJvPC9pPjsgdml1IG8gPGk+bWFyPC9pPjsgZm9tb3MgYW8gPGk+Y2luZW1hPC9pPjsgbyA8aT5yZWzDs2dpbzwvaT47IGZvaSA8aT5wYXNzZWFyPC9pPi48L2xpPjwvdWw+PHA+TyBlc3BlcmFkbyDDqSBhY2VydGFyIHF1YXNlIHRvZGFzIGFzIGZyYXNlcyBjb20gbXVpdG8gY29udGV4dG8gZSBwb3VjYXMgZGFzIGFiZXJ0YXMuIE5hcyBhYmVydGFzLCBjYWRhIHBlc3NvYSBlc2NvbGhlIHVtYSBwYWxhdnJhIGRpZmVyZW50ZSwgZSBpc3NvIMOpIG8gcG9udG86IGEgcHJvcG9yw6fDo28gZGUgcGVzc29hcyBxdWUgY29tcGxldGEgYSBmcmFzZSBjb20gdW1hIHBhbGF2cmEgw6kgYSA8Yj5wcm9iYWJpbGlkYWRlIGRlIGNsb3plPC9iPi4gQSB0dXJtYSBmdW5jaW9uYSBjb21vIHVtIG1vZGVsbyBkZSBsaW5ndWFnZW0gY29sZXRpdm8uIFF1YW50byBtZW5vcyBlc3BlcmFkYSBhIHBhbGF2cmEsIG1haW9yIG8gTjQwMCBkYSBhdWxhIDUuIFVtIG1vZGVsbyBkZSBsaW5ndWFnZW0gYXByZW5kZSBlc3NhcyBwcm9iYWJpbGlkYWRlcyBsZW5kbyB0ZXh0byBlIHBvciBpc3NvIHNlcnZlIGRlIHLDqWd1YSBwYXJhIG1lZGlyIGEgc3VycHJlc2EgZGUgY2FkYSBwYWxhdnJhLjwvcD48cD4oS3V0YXM7IEhpbGx5YXJkLCAxOTg0KTwvcD4="><summary>Resposta</summary><div class="corpo"></div></details>
+  <p class="travado" hidden>A resposta aparece aqui depois que você fizer o exercício no laboratório, neste celular.</p>
+  <div class="links"><a href="../aula14.html#e1">← Voltar ao exercício</a><a href="../estudo/aula14.html#a-mesma-ideia-do-cloze-e-do-n400">Ler mais no material de estudo</a></div>
+</section>
+<section class="item" id="e2" data-trava="1">
+  <span class="num">EXERCÍCIO 2</span>
+  <h2>Modelo de bolso</h2>
+  <details class="dica" id="e2-dica"><summary>Dica</summary><p>Gere as 3 frases de cada contexto (1, 2 e 3 palavras) antes de comparar e dê as notas só pela naturalidade da frase. Nas frases de contexto 3, compare com o texto que o modelo leu: a frase é nova ou é um trecho repetido?</p></details>
+  <details class="resp" id="e2-resposta" hidden data-c="PHA+TyBtb2RlbG8gZGUgYm9sc28gbGV1IHVtIHRleHRvIGluZmFudGlsIGRlIHVtYXMgNTUwIHBhbGF2cmFzIGUgc8OzIGNvbnRhIHF1ZSBwYWxhdnJhIHZlbSBkZXBvaXMgZGUgcXVhbC48L3A+PHVsPjxsaT48Yj5Db250ZXh0byBkZSAxIHBhbGF2cmE6PC9iPiB1bWEgc29wYSBkZSBwYWxhdnJhcyBzb2x0YXMsIHNvcnRlYWRhcyBwZWxhIGZyZXF1w6puY2lhLjwvbGk+PGxpPjxiPkNvbnRleHRvIGRlIDI6PC9iPiBwZWRhw6dvcyBsb2NhaXMgZmF6ZW0gc2VudGlkbywgbWFzIGEgZnJhc2Ugc2UgcGVyZGUuPC9saT48bGk+PGI+Q29udGV4dG8gZGUgMzo8L2I+IGZyYXNlcyBmbHVlbnRlcywgbWFzIHF1ZSBjb3BpYW0gdHJlY2hvcyBpbnRlaXJvcyBkbyB0ZXh0by48L2xpPjwvdWw+PHA+QSBtYWlvcmlhIGRhcyBwZXNzb2FzIGFjaGEgbyBjb250ZXh0byAzIG8gbWFpcyBuYXR1cmFsLCBjb20gbm90YXMgbcOpZGlhcyBxdWUgY3Jlc2NlbSBkZSAxIHBhcmEgMyBwYWxhdnJhcy4gTWFzIGEgZmx1w6puY2lhIHZlbSBkZSA8Yj5jw7NwaWE8L2I+OiBjb20gcG91Y29zIGRhZG9zLCBjYWRhIHNlcXXDqm5jaWEgZGUgdHLDqnMgcGFsYXZyYXMgYXBhcmVjZSBwb3VjYXMgdmV6ZXMsIGUgbWFpcyBjb250ZXh0byB2aXJhIG1lbW9yaXphw6fDo28uIE9zIG1vZGVsb3MgZGUgbGluZ3VhZ2VtIGF0dWFpcyBmYXplbSBhIG1lc21hIHRhcmVmYSwgcHJldmVyIGEgcHLDs3hpbWEgcGFsYXZyYSwgbWFzIG9saGFtIG1pbGhhcmVzIGRlIHBhbGF2cmFzIHBhcmEgdHLDoXMsIGxlcmFtIHVtYSBxdWFudGlkYWRlIGdpZ2FudGVzY2EgZGUgdGV4dG8gZSByZXByZXNlbnRhbSBjYWRhIHBhbGF2cmEgcG9yIHVtIDxiPnZldG9yPC9iPiAodW1hIGxpc3RhIGRlIG7Dum1lcm9zKSBxdWUgbXVkYSBjb20gbyBjb250ZXh0by4gUGFsYXZyYXMgcGFyZWNpZGFzIGZpY2FtIGNvbSB2ZXRvcmVzIHByw7N4aW1vcywgbyBxdWUgcGVybWl0ZSBnZW5lcmFsaXphciBlbSB2ZXogZGUgY29waWFyLiBFc3NlcyB2ZXRvcmVzIHPDo28gbyBxdWUgc2UgY29tcGFyYSBjb20gYSBhdGl2aWRhZGUgZG8gY8OpcmVicm8uPC9wPjxwPihTY2hyaW1wZiA8aT5ldCBhbC48L2k+LCAyMDIxOyBHb2xkc3RlaW4gPGk+ZXQgYWwuPC9pPiwgMjAyMik8L3A+"><summary>Resposta</summary><div class="corpo"></div></details>
+  <p class="travado" hidden>A resposta aparece aqui depois que você fizer o exercício no laboratório, neste celular.</p>
+  <div class="links"><a href="../aula14.html#e2">← Voltar ao exercício</a><a href="../estudo/aula14.html#por-dentro-do-modelo-vetores-atenção-e-camadas">Ler mais no material de estudo</a></div>
+</section>
+<section class="item" id="e3" data-trava="1">
+  <span class="num">EXERCÍCIO 3</span>
+  <h2>Concordância à distância</h2>
+  <details class="dica" id="e3-dica"><summary>Dica</summary><p>Ache o núcleo do sujeito, a primeira palavra depois do artigo ("A chave", "Os livros"), e ignore o que vem depois de "do/da/dos/das". A frase some em 1,5 segundo de propósito; responda mesmo assim, rápido.</p></details>
+  <details class="resp" id="e3-resposta" hidden data-c="PHA+PGI+UmVncmE6PC9iPiBvIHZlcmJvIGNvbmNvcmRhIGNvbSBvIDxiPm7DumNsZW88L2I+IGRvIHN1amVpdG8uIE7DumNsZW8gbm8gc2luZ3VsYXIgKCJBIGNoYXZlIiwgIk8gY2FydGF6IiwgIkEgZm90byLigKYpIHBlZGUgPGk+ZXN0w6E8L2k+OyBuw7pjbGVvIG5vIHBsdXJhbCAoIkFzIGNoYXZlcyIsICJPcyBjYXJ0YXplcyLigKYpIHBlZGUgPGk+ZXN0w6NvPC9pPiwgcXVhbHF1ZXIgcXVlIHNlamEgbyBuw7ptZXJvIGRlICJkbyBhcm3DoXJpbyIgb3UgImRvcyBhcm3DoXJpb3MiLjwvcD48cD5EYXMgMjQgZnJhc2VzLCAxMiB0w6ptIGEgcGFsYXZyYSBpbnRydXNhLCBvIDxiPmF0cmF0b3I8L2I+LCBjb20gbyBtZXNtbyBuw7ptZXJvIGRvIG7DumNsZW8gKCJhIGNoYXZlIGRvIGFybcOhcmlvIikgZSAxMiBjb20gbsO6bWVybyBkaWZlcmVudGUgKCJhIGNoYXZlIGRvcyBhcm3DoXJpb3MiKS48L3A+PHA+PGI+TyBxdWUgZXNwZXJhcjo8L2I+IHF1YXNlIG5lbmh1bSBlcnJvIGNvbSBhdHJhdG9yIGlndWFsOyBtYWlzIGVycm9zIGUgcmVzcG9zdGFzIG1haXMgbGVudGFzIGNvbSBhdHJhdG9yIGRpZmVyZW50ZSwgc29icmV0dWRvIGNvbSBuw7pjbGVvIHNpbmd1bGFyIGUgYXRyYXRvciBwbHVyYWwgKCJhIGNoYXZlIGRvcyBhcm3DoXJpb3MgZXN0w6NvIikuIENvbSBzw7MgMTIgZnJhc2VzIGRlIGNhZGEgdGlwbywgbXVpdGEgZ2VudGUgbsOjbyBlcnJhIG5lbmh1bWE7IG8gZWZlaXRvIGFwYXJlY2UgbmEgc29tYSBkYSB0dXJtYS48L3A+PHA+UmVkZXMgdHJlaW5hZGFzIHBhcmEgcHJldmVyIHBhbGF2cmFzIHRhbWLDqW0gY29tZXRlbSBlcnJvcyBkZSBhdHJhw6fDo286IGFjZXJ0YXIgZXhpZ2UgcmVwcmVzZW50YXIgYSBlc3RydXR1cmEgZGEgZnJhc2UsIG7Do28gc8OzIGEgb3JkZW0uIE1hcyBvIHBhZHLDo28gw6kgb3V0cm86IGNvbSBvcmHDp8O1ZXMgcmVsYXRpdmFzLCBhcyByZWRlcyBlcnJhdmFtIG1haXMgZSBhcyBwZXNzb2FzLCBtZW5vcy48L3A+PHA+KExpbnplbjsgRHVwb3V4OyBHb2xkYmVyZywgMjAxNjsgTGluemVuOyBMZW9uYXJkLCAyMDE4KTwvcD4="><summary>Resposta</summary><div class="corpo"></div></details>
+  <p class="travado" hidden>A resposta aparece aqui depois que você fizer o exercício no laboratório, neste celular.</p>
+  <div class="links"><a href="../aula14.html#e3">← Voltar ao exercício</a><a href="../estudo/aula14.html#erros-de-concordância-parecidos-mas-não-pelos-mesmos-motivos">Ler mais no material de estudo</a></div>
+</section>
+<section class="item" id="e4" data-trava="1">
+  <span class="num">EXERCÍCIO 4</span>
+  <h2>Quanto texto?</h2>
+  <details class="dica" id="e4-dica"><summary>Dica</summary><p>Pense em ordens de grandeza, não em números exatos: cada passo do controle multiplica o valor. Para a criança, estime quantas palavras ela ouve por dia e multiplique pelos dias de 5 anos.</p></details>
+  <details class="resp" id="e4-resposta" hidden data-c="PHA+PGI+VmFsb3JlcyBkZSByZWZlcsOqbmNpYSAoRnJhbmssIDIwMjMpOjwvYj48L3A+PHVsPjxsaT48Yj5DcmlhbsOnYTo8L2I+IG5vIG3DoXhpbW8gY2VyY2EgZGUgMSBtaWxow6NvIGRlIHBhbGF2cmFzIHBvciBtw6pzLCBvdSBzZWphLCBjZXJjYSBkZSA8Yj42MCBtaWxow7VlczwvYj4gKDYgw5cgMTDigbcpIGFvcyA1IGFub3MgZSAyMDAgbWlsaMO1ZXMgKDIgw5cgMTDigbgpIGFvcyAyMC4gRW0gYW1iaWVudGVzIGNvbSBwb3VjYSBjb252ZXJzYSwgY2VyY2EgZGUgZGV6IHZlemVzIG1lbm9zLjwvbGk+PGxpPjxiPkdQVC0zICgyMDIwKTo8L2I+IGNlcmNhIGRlIDxiPjUwMCBiaWxow7VlczwvYj4gKDUgw5cgMTDCucK5KSBkZSB0b2tlbnMuIENoaW5jaGlsbGEgKDIwMjIpOiBjZXJjYSBkZSAxIHRyaWxow6NvICgxMMK5wrIpLjwvbGk+PGxpPjxiPlJhesOjbzo8L2I+IEdQVC0zIGNvbnRyYSBhIGNyaWFuw6dhIGRlIDUgYW5vcywgY2VyY2EgZGUgPGI+OCBtaWwgdmV6ZXM8L2I+OyBjb20gbW9kZWxvcyBtYWlzIG5vdm9zLCBhdMOpIGNpbmNvIG9yZGVucyBkZSBncmFuZGV6YSAoY2VtIG1pbCB2ZXplcykuPC9saT48L3VsPjxwPk9zIHBhbHBpdGVzIGNvc3R1bWFtIHNlIGVzcGFsaGFyIHBvciB2w6FyaWFzIG9yZGVucyBkZSBncmFuZGV6YSwgZSBhIG1haW9yaWEgc3ViZXN0aW1hIGEgZGlzdMOibmNpYS4gVG9rZW5zIHPDo28gcGVkYcOnb3MgZGUgcGFsYXZyYXMsIGVudMOjbyBhIGNvbXBhcmHDp8OjbyDDqSBhcHJveGltYWRhLiBMZW5kbyA4IGhvcmFzIHBvciBkaWEsIHVtYSBwZXNzb2EgbGV2YXJpYSB1bnMgMTEgbWlsIGFub3MgcGFyYSBsZXIgbyBxdWUgbyBHUFQtMyBsZXUuIEFpbmRhIGFzc2ltLCBtb2RlbG9zIHRyZWluYWRvcyBjb20gMTAwIG1pbGjDtWVzIGRlIHBhbGF2cmFzIGrDoSBwcmV2ZWVtIGJlbSBhIHJlc3Bvc3RhIGRvIGPDqXJlYnJvIGEgZnJhc2VzLiBDb21vIGEgY3JpYW7Dp2EgYXByZW5kZSBhIGzDrW5ndWEgY29tIHTDo28gcG91Y28gw6kgdW1hIHBlcmd1bnRhIGRhIGF1bGEgMTEuPC9wPjxwPihGcmFuaywgMjAyMzsgSG9zc2VpbmkgPGk+ZXQgYWwuPC9pPiwgMjAyNCk8L3A+"><summary>Resposta</summary><div class="corpo"></div></details>
+  <p class="travado" hidden>A resposta aparece aqui depois que você fizer o exercício no laboratório, neste celular.</p>
+  <div class="links"><a href="../aula14.html#e4">← Voltar ao exercício</a><a href="../estudo/aula14.html#dados-a-criança-aprende-com-muito-menos">Ler mais no material de estudo</a></div>
+</section>
+<section class="item" id="e5" data-trava="1">
+  <span class="num">EXERCÍCIO 5</span>
+  <h2>Forma ou função?</h2>
+  <details class="dica" id="e5-dica"><summary>Dica</summary><p>Pergunte-se: para acertar, basta conhecer as regras da língua (formal) ou é preciso raciocinar, saber como o mundo funciona ou entender as pessoas (funcional)? Cuidado com as palavras: "raciocínio formal" não é "competência formal".</p></details>
+  <details class="resp" id="e5-resposta" hidden data-c="PHA+PGI+R2FiYXJpdG86PC9iPjwvcD48dWw+PGxpPkNvbmNvcmTDom5jaWEgKCJhcyBjaGF2ZXMgZG8gYXJtw6FyaW8gZXN0w6NvIik6IDxiPmZvcm1hbDwvYj4uPC9saT48bGk+UGx1cmFsIGRlIHBhbGF2cmEgaW52ZW50YWRhICgidW0gYmxpY28sIGRvaXMgYmxpY29zIik6IDxiPmZvcm1hbDwvYj4uPC9saT48bGk+IklkZWlhcyB2ZXJkZXMgaW5jb2xvcmVzIGRvcm1lbSBmdXJpb3NhbWVudGUiIHRlbSBhIGdyYW3DoXRpY2EgY2VydGE6IDxiPmZvcm1hbDwvYj4uPC9saT48bGk+T3JkZW0gZGFzIHBhbGF2cmFzICgibyBtZW5pbm8gY2h1dG91IGEgYm9sYSIpOiA8Yj5mb3JtYWw8L2I+LjwvbGk+PGxpPlByb2JsZW1hIGRhcyAzIG1hw6fDo3M6IDxiPmZ1bmNpb25hbDwvYj4gKHJhY2lvY8OtbmlvIG1hdGVtw6F0aWNvIGVtIHBhbGF2cmFzKS48L2xpPjxsaT5Tb3J2ZXRlIHF1ZSBkZXJyZXRlIG5vIHNvbDogPGI+ZnVuY2lvbmFsPC9iPiAoY29uaGVjaW1lbnRvIGRlIG11bmRvKS48L2xpPjxsaT4iUXVlIGJlbGV6YSBkZSBkaWEhIiBubyB0ZW1wb3JhbCDDqSBpcm9uaWE6IDxiPmZ1bmNpb25hbDwvYj4gKHRlb3JpYSBkYSBtZW50ZSkuPC9saT48bGk+TGVtYnJhciBxdWVtIGZleiBvIHF1w6ogbnVtYSBoaXN0w7NyaWEgbG9uZ2E6IDxiPmZ1bmNpb25hbDwvYj4gKG1vZGVsbyBkYSBzaXR1YcOnw6NvKS48L2xpPjwvdWw+PHA+T3MgZXJyb3MgbWFpcyBjb211bnMgc8OjbyBvIHByb2JsZW1hIGRlIG1hdGVtw6F0aWNhLCBxdWUgcGFyZWNlICJkZSBsaW5ndWFnZW0iLCBlIGEgZnJhc2Ugc2VtIHNlbnRpZG8gbWFzIGdyYW1hdGljYWwuIE5vIGPDqXJlYnJvLCBhIGZvcm1hIGRlcGVuZGUgZGEgPGI+cmVkZSBkYSBsaW5ndWFnZW08L2I+IChmcm9udGFsIGluZmVyaW9yIGUgdGVtcG9yYWwsIMOgIGVzcXVlcmRhKTsgYSBmdW7Dp8OjbywgZGUgb3V0cmFzIHJlZGVzLCBjb21vIGEgZGUgcmFjaW9jw61uaW8gZSBhIGRlIHRlb3JpYSBkYSBtZW50ZS4gT3MgbW9kZWxvcyBkZSBsaW5ndWFnZW0gaXJpYW0gbWVsaG9yIG5vcyBjYXNvcyBmb3JtYWlzOyBub3MgZnVuY2lvbmFpcywgZXJhbSBpcnJlZ3VsYXJlcyBlbSAyMDI0LCBlIG9zIG1vZGVsb3MgbXVkYW0gcsOhcGlkby48L3A+PHA+KE1haG93YWxkIDxpPmV0IGFsLjwvaT4sIDIwMjQ7IEZlZG9yZW5rbzsgUGlhbnRhZG9zaTsgR2lic29uLCAyMDI0KTwvcD4="><summary>Resposta</summary><div class="corpo"></div></details>
+  <p class="travado" hidden>A resposta aparece aqui depois que você fizer o exercício no laboratório, neste celular.</p>
+  <div class="links"><a href="../aula14.html#e5">← Voltar ao exercício</a><a href="../estudo/aula14.html#dominar-a-língua-não-é-o-mesmo-que-pensar">Ler mais no material de estudo</a></div>
+</section>
+<footer>Material da disciplina Bases neurais da comunicação humana (UFRN), Prof. Daniel Y. Takahashi. As fontes estão nas Referências do material de estudo.</footer>
+</div>
+<script src="../prof.js?v=1"></script>
+<script>
+const AULA=Number(document.body.dataset.aula);
+const feito=id=>{try{return localStorage.getItem(`nc-feito-${AULA}-${id}`)==='1'}catch(e){return false}};
+const dec=b=>new TextDecoder().decode(Uint8Array.from(atob(b),c=>c.charCodeAt(0)));
+function aplicar(){const prof=!!(window.ncProf&&window.ncProf());
+ document.querySelectorAll('.item').forEach(it=>{const r=it.querySelector('details.resp');
+  const livre=it.dataset.trava!=='1'||prof||feito(it.id);
+  if(livre&&r.dataset.c){r.querySelector('.corpo').innerHTML=dec(r.dataset.c);delete r.dataset.c;}
+  r.hidden=!livre;it.querySelector('.travado').hidden=livre;});}
+aplicar();window.addEventListener('hashchange',()=>{aplicar();abre();});
+function abre(){const h=decodeURIComponent(location.hash.slice(1));if(!h)return;const el=document.getElementById(h)||document.getElementById(h.split('-')[0]);if(!el)return;
+if(el.tagName==='DETAILS')el.open=true;el.scrollIntoView({block:'start'});}
+abre();
+</script>

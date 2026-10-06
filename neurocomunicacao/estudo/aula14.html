@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 14 · Modelos de linguagem e o cérebro — Material de estudo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,600..800&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{--bg:#f6f7f9;--surface:#fff;--fg:#142033;--muted:#566377;--line:#d8dee6;--accent:#0e7c86;--accent2:#c9771a;--soft:#e5f1f2;--soft2:#fbf1e3;
+--display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;--body:"Source Serif 4",Georgia,"Times New Roman",serif;--ui:"Source Sans 3","Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1621;--surface:#172132;--fg:#e6ecf3;--muted:#9aa8b9;--line:#2a3850;--accent:#3db4be;--accent2:#f0a645;--soft:#173740;--soft2:#3a2c17;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:18px/1.65 var(--body)}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 80px}
+.top{font:600 13px/1.4 var(--ui);display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:22px}
+.top a{color:var(--accent);text-decoration:none}
+.eyebrow{font:600 12px/1 ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(30px,6.5vw,46px)/1.08 var(--display);font-stretch:112%;margin:10px 0 8px;text-wrap:balance}
+.sub{font:400 20px/1.4 var(--ui);color:var(--muted);margin:0 0 26px}
+h2{font:750 25px/1.2 var(--display);margin:46px 0 12px;text-wrap:balance}
+h3{font:700 19px/1.3 var(--ui);margin:28px 0 8px}
+p{margin:0 0 16px}
+a{color:var(--accent)}
+ul,ol{padding-left:24px;margin:0 0 16px} li{margin:4px 0}
+figure{margin:26px 0;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;break-inside:avoid}
+figure img{width:100%;height:auto;display:block;border-radius:6px;background:#fff}
+figcaption{font:15px/1.5 var(--ui);color:var(--muted);margin-top:10px}
+.objetivos{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;padding:14px 18px 6px;margin:0 0 30px;font-family:var(--ui)}
+.objetivos::before{content:"Nesta aula você vai aprender a";display:block;font:700 13px/1 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:4px 0 10px}
+.destaque{background:var(--soft2);border-radius:10px;padding:14px 18px 2px;margin:22px 0;font-family:var(--ui);break-inside:avoid}
+.conceitos{background:var(--soft);border-radius:12px;padding:16px 20px 6px;margin:30px 0;font-family:var(--ui)}
+.conceitos::before{content:"Conceitos-chave";display:block;font:700 13px/1 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:4px 0 12px}
+.conceitos dl{margin:0} .conceitos dt{font-weight:700;margin-top:10px} .conceitos dd{margin:2px 0 8px 0;color:var(--fg)}
+details{margin:8px 0 4px;font-family:var(--ui);font-size:16px}
+summary{cursor:pointer;color:var(--accent);font-weight:600}
+details[open] summary{margin-bottom:6px}
+.refs p,#referencias + * p{font-size:15px;line-height:1.5;padding-left:1.4em;text-indent:-1.4em}
+.rodape{margin-top:50px;padding-top:16px;border-top:1px solid var(--line);font:13px/1.5 var(--ui);color:var(--muted)}
+@media print{
+ :root{--bg:#fff;--surface:#fff}
+ body{font-size:11.5pt;line-height:1.5}
+ .wrap{max-width:none;padding:0}
+ .top{display:none}
+ h2{font-size:17pt;margin-top:24pt;break-after:avoid}
+ h1{font-size:28pt}
+ figure{padding:8pt;border-color:#ccc}
+ figure img{max-height:9cm;object-fit:contain}
+ details>summary{display:none}
+ details{margin-left:0;font-size:10.5pt}
+ details::before{content:"Resposta: ";font-weight:700}
+ a{color:inherit;text-decoration:none}
+ .refs p{font-size:10pt}
+ @page{size:A4;margin:18mm 18mm 20mm}
+}
+</style>
+<div class="wrap">
+<nav class="top"><a href="index.html">Material de estudo</a><a href="../aula14.html">Laboratório da aula 14</a><a href="aula13.html">← Aula 13</a></nav>
+<span class="eyebrow">Bases neurais da comunicação humana · Aula 14 · Material de estudo</span>
+<h1>Modelos de linguagem e o cérebro</h1>
+<p class="sub">O que máquinas treinadas para prever a próxima palavra nos ensinaram sobre como o cérebro processa a linguagem, e onde elas deixam de se parecer conosco</p>
+<div class="objetivos">
+<ul>
+<li>Explicar, sem matemática, o que um modelo de linguagem faz: dar a probabilidade da próxima palavra.</li>
+<li>Relacionar a surpresa de uma palavra com o tempo de leitura e com o N400 da aula 5.</li>
+<li>Descrever como um modelo de codificação compara os vetores de um modelo com a atividade do cérebro.</li>
+<li>Resumir as evidências de que o cérebro antecipa palavras, em várias escalas de tempo.</li>
+<li>Apontar diferenças entre modelos e pessoas: quantidade de dados, padrão de erros, forma e função.</li>
+<li>Discutir, com argumentos dos dois lados, se os modelos de linguagem são uma teoria da linguagem ou apenas uma ferramenta.</li>
+</ul>
+</div>
+<h2 id="uma-máquina-que-só-prevê-a-próxima-palavra">1. Uma máquina que só prevê a próxima palavra</h2>
+<p>Os assistentes de conversa do celular funcionam com <strong>modelos de linguagem grandes</strong> (LLMs, da sigla em inglês). Eles foram feitos por engenheiros, não para imitar o cérebro, mas viraram uma ferramenta central para quem estuda as bases neurais da linguagem. O que essas máquinas ensinaram sobre o cérebro? Bastante, mas com limites claros.</p>
+<p>Um modelo de linguagem faz uma coisa só. Recebe o começo de um texto e devolve uma lista de probabilidades para o que vem depois. Em “Choveu a tarde toda e eu esqueci o guarda-…”, quase toda a probabilidade vai para “chuva”. Em “Na mesa da cozinha havia um…”, a probabilidade se espalha por muitas palavras (figura 1). Para escrever um texto, o modelo sorteia uma palavra da lista, acrescenta ao texto e repete.</p>
+<p>Na verdade, o modelo trabalha com <strong>tokens</strong>: pedaços de texto que podem ser uma palavra curta (“mesa”), parte de uma palavra longa ou um sinal de pontuação. Por isso o tamanho do treino de um modelo costuma ser contado em tokens, não em palavras.</p>
+<figure>
+<img src="img/aula14/proxima_palavra.png" alt="Figura 1. Probabilidade da próxima palavra em uma frase com muito contexto (à esquerda) e em outra com pouco contexto (à direita). Com muito contexto, uma palavra domina; com pouco, muitas são possíveis. As probabilidades são ilustrativas. Fonte: elaborada para o curso a partir de Kutas e Hillyard (1984) e Smith e Levy (2013)." />
+<figcaption aria-hidden="true"><strong>Figura 1.</strong> Probabilidade da próxima palavra em uma frase com muito contexto (à esquerda) e em outra com pouco contexto (à direita). Com muito contexto, uma palavra domina; com pouco, muitas são possíveis. As probabilidades são ilustrativas. Fonte: elaborada para o curso a partir de Kutas e Hillyard (1984) e Smith e Levy (2013).</figcaption>
+</figure>
+<h3 id="a-mesma-ideia-do-cloze-e-do-n400">A mesma ideia do cloze e do N400</h3>
+<p>Você já viu essa ideia na aula 5. A <strong>probabilidade de cloze</strong> de uma palavra é a proporção de pessoas que completam uma frase com ela. Kutas e Hillyard (1984) mostraram que a amplitude do N400 é uma função inversa dessa probabilidade: quanto menos esperada a palavra, maior o N400. Palavras inesperadas, mas relacionadas à palavra esperada, geram N400 menor (Kutas; Hillyard, 1984).</p>
+<p>Para medir o quanto uma palavra é inesperada, os pesquisadores usam a <strong>surpresa</strong>: o logaritmo da probabilidade com o sinal trocado (−log p). Se a palavra tem probabilidade 1 (certeza), a surpresa é zero. Se a probabilidade cai pela metade, a surpresa sobe um degrau; se cai pela metade de novo, sobe mais um degrau. E por que o logaritmo? Num estudo de leitura, com rastreamento ocular e leitura palavra por palavra, o tempo de leitura cresceu com o logaritmo da previsibilidade, numa faixa de “seis ordens de grandeza” de previsibilidade. Os leitores são sensíveis a diferenças relativas, mesmo entre palavras muito pouco previsíveis (Smith; Levy, 2013).</p>
+<p>Aqui entra a primeira contribuição prática dos modelos. Um teste de cloze exige dezenas de pessoas por frase. Um modelo de linguagem dá uma probabilidade para cada palavra de qualquer texto, inclusive de um audiolivro inteiro. Por isso os modelos viraram uma “régua” de previsibilidade para estudos de leitura e de atividade cerebral (Heilbron <em>et al.</em>, 2022).</p>
+<h2 id="por-dentro-do-modelo-vetores-atenção-e-camadas">2. Por dentro do modelo: vetores, atenção e camadas</h2>
+<p>Os modelos atuais usam uma arquitetura chamada <strong>transformer</strong>, proposta em 2017 para tradução automática (Vaswani <em>et al.</em>, 2017). Três ideias bastam para entendê-la (figura 2).</p>
+<p><strong>Vetor.</strong> Cada palavra (ou token) é representada por um <strong>vetor</strong>: uma lista de centenas ou milhares de números. Pense num endereço com muitas coordenadas em vez de duas. Palavras usadas em contextos parecidos acabam com vetores parecidos, isto é, “moram perto”.</p>
+<p><strong>Atenção.</strong> Em cada etapa, o vetor de cada palavra é atualizado com informação das palavras anteriores. O quanto cada palavra anterior pesa é a <strong>atenção</strong>, e esses pesos são aprendidos. No exemplo da figura 2, o artigo “a” olha sobretudo para “goleiro”, o que torna “bola” a continuação mais provável.</p>
+<p><strong>Camadas.</strong> O processo se repete em várias <strong>camadas</strong>. Nas camadas intermediárias, o vetor de uma palavra já depende do contexto: “banco” da praça e “banco” do dinheiro ficam com vetores diferentes. São esses <strong>vetores contextuais</strong>, camada por camada, que os neurocientistas comparam com o cérebro (seção 3).</p>
+<figure>
+<img src="img/aula14/transformer.png" alt="Figura 2. Esquema de um transformer. Cada palavra vira um vetor (em baixo); em cada camada, a atenção mistura informação das palavras anteriores (arcos; o mais grosso liga “a” a “goleiro”); a última camada dá a probabilidade da próxima palavra (à direita). Fonte: elaborada para o curso a partir de Vaswani et al. (2017)." />
+<figcaption aria-hidden="true"><strong>Figura 2.</strong> Esquema de um transformer. Cada palavra vira um vetor (em baixo); em cada camada, a atenção mistura informação das palavras anteriores (arcos; o mais grosso liga “a” a “goleiro”); a última camada dá a probabilidade da próxima palavra (à direita). Fonte: elaborada para o curso a partir de Vaswani <em>et al.</em> (2017).</figcaption>
+</figure>
+<h3 id="aprender-só-prevendo-palavras">Aprender só prevendo palavras</h3>
+<p>Ninguém ensina gramática ao modelo. Ele lê enormes quantidades de texto e, a cada palavra, tenta prever a seguinte. Quando erra, seus <strong>parâmetros</strong>, os números internos que definem os vetores e os pesos da atenção, mudam um pouco, para errar menos da próxima vez. Um modelo grande tem bilhões de parâmetros. Depois de muitas repetições, o que sobra é um sistema que prevê bem.</p>
+<p>O surpreendente é o que aparece no caminho. Manning e colegas (2020) estudaram modelos treinados apenas para adivinhar uma palavra escondida no meio de uma frase, sem nenhuma informação explícita sobre gramática. Partes desses modelos se especializaram em relações sintáticas, como a de sujeito e verbo, e em descobrir a quem um pronome se refere. Mais ainda: uma transformação simples (linear) dos vetores recupera “a um grau surpreendente” as distâncias entre as palavras na árvore sintática, o que permite reconstruir de forma aproximada as árvores que os linguistas desenham (Manning <em>et al.</em>, 2020). São as árvores de constituintes da aula 6.</p>
+<div class="destaque">
+<p><strong>O que isso quer dizer e o que não quer.</strong> A estrutura hierárquica das frases pode emergir, pelo menos em parte, de uma tarefa estatística simples aplicada a muitos dados. Isso conversa com a perspectiva baseada no uso da aula 11, para a qual a criança extrai padrões do que ouve. Mas não prova que a criança aprende assim, nem que o modelo “sabe gramática” como um linguista: a estrutura está codificada nos vetores e pode ser lida com uma regra simples. Se o caminho é o mesmo da criança é uma pergunta da seção 6.</p>
+</div>
+<h2 id="como-comparar-um-modelo-com-o-cérebro">3. Como comparar um modelo com o cérebro</h2>
+<p>Se um modelo e um cérebro processam a mesma frase, como saber se fazem algo parecido? A estratégia mais usada é o <strong>modelo de codificação</strong> (figura 3). Ele tem três passos.</p>
+<ol type="1">
+<li><strong>A mesma história para os dois.</strong> Pessoas ouvem ou leem histórias enquanto a atividade cerebral é registrada: por ressonância magnética funcional (fMRI), por magnetoencefalografia (MEG) ou por eletrodos colocados sobre o córtex de pacientes que já iam passar por cirurgia (eletrocorticografia, ECoG, que você viu nas neuropróteses da aula 12). O modelo “lê” o mesmo texto, e guardamos os vetores de uma das camadas.</li>
+<li><strong>Uma ponte simples.</strong> Uma regressão linear, o tipo mais simples de ajuste estatístico, aprende a combinar os números dos vetores para prever a resposta de cada região do cérebro.</li>
+<li><strong>O teste.</strong> A regressão é usada para prever a resposta a frases que ela nunca viu. A correlação entre a resposta prevista e a medida é a nota do modelo. Schrimpf e colegas (2021) chamaram essa nota de <strong>“brain score”</strong>.</li>
+</ol>
+<figure>
+<img src="img/aula14/encoding.png" alt="Figura 3. Modelo de codificação. A mesma história é ouvida por uma pessoa (resposta medida, em azul) e lida pelo modelo (vetores de uma camada). Uma regressão linear transforma os vetores numa resposta prevista (em vermelho). A correlação entre previsto e medido, em frases novas, é o “brain score”. Fonte: elaborada para o curso a partir de Jain e Huth (2018) e Schrimpf et al. (2021)." />
+<figcaption aria-hidden="true"><strong>Figura 3.</strong> Modelo de codificação. A mesma história é ouvida por uma pessoa (resposta medida, em azul) e lida pelo modelo (vetores de uma camada). Uma regressão linear transforma os vetores numa resposta prevista (em vermelho). A correlação entre previsto e medido, em frases novas, é o “brain score”. Fonte: elaborada para o curso a partir de Jain e Huth (2018) e Schrimpf <em>et al.</em> (2021).</figcaption>
+</figure>
+<p>Se uma ponte tão simples funciona em dados novos, a informação que o cérebro usa está presente nos vetores do modelo. Isso <strong>não</strong> prova que o cérebro calcula do mesmo jeito: sistemas muito diferentes podem conter a mesma informação.</p>
+<h3 id="o-que-essas-comparações-mostraram">O que essas comparações mostraram</h3>
+<p><strong>O contexto importa.</strong> Jain e Huth (2018) usaram os vetores contextuais de um modelo de linguagem mais antigo, uma rede recorrente que lê as palavras em ordem (LSTM). Esses vetores previram as respostas de fMRI muito melhor do que vetores de palavras isoladas, em quase todas as áreas do cérebro. Parte do ganho veio de vetores melhores, parte da informação de contexto, e a sensibilidade ao contexto variou ao longo do córtex (Jain; Huth, 2018).</p>
+<p><strong>Prever palavras é o que conta.</strong> Num estudo amplo, Schrimpf e colegas compararam dezenas de modelos com dados de fMRI e de ECoG. Os transformers mais potentes previram “quase 100%” da <strong>variância explicável</strong> das respostas a frases, isto é, da parte do sinal que se repete quando a mesma frase é apresentada de novo, e não é ruído. O achado mais importante foi outro: o ajuste ao cérebro acompanhava o desempenho do modelo em prever a próxima palavra, e não em outras tarefas linguísticas. Os autores interpretam isso como evidência de que o <strong>processamento preditivo</strong> molda a compreensão da linguagem (Schrimpf <em>et al.</em>, 2021). Caucheteux e King (2022) chegaram a uma conclusão parecida com fMRI e MEG de 102 pessoas lendo 400 frases: a semelhança entre algoritmo e cérebro dependia sobretudo da capacidade de prever palavras. O título do artigo resume o tom: cérebros e algoritmos convergem <strong>parcialmente</strong> (Caucheteux; King, 2022).</p>
+<p><strong>Não é preciso um modelo gigante.</strong> Hosseini e colegas treinaram modelos com 1 milhão, 10 milhões, 100 milhões e 1 bilhão de palavras. Com 100 milhões, uma quantidade parecida com o que uma criança recebe nos primeiros dez anos de vida, o modelo já chegava perto do ajuste máximo às respostas de fMRI. De novo, prever melhor a próxima palavra acompanhava um ajuste maior (Hosseini <em>et al.</em>, 2024).</p>
+<h2 id="o-cérebro-também-antecipa-a-próxima-palavra">4. O cérebro também antecipa a próxima palavra</h2>
+<p>Se os modelos que preveem melhor são os que mais se parecem com o cérebro, o cérebro também está prevendo? Três estudos atacaram essa pergunta de frente.</p>
+<p><strong>Antes e depois da palavra.</strong> Goldstein e colegas registraram ECoG em nove pessoas ouvindo um podcast de 30 minutos. Encontraram três princípios em comum com os modelos que geram texto palavra por palavra (figura 4). Primeiro, o cérebro carrega informação sobre a próxima palavra <strong>antes</strong> de ela começar a ser dita. Segundo, depois que a palavra chega, ele a compara com a previsão, e aparece um sinal de <strong>surpresa</strong>. Terceiro, as palavras são representadas por vetores que dependem do contexto (Goldstein <em>et al.</em>, 2022).</p>
+<figure>
+<img src="img/aula14/goldstein.png" alt="Figura 4. Esquema temporal do que se vê no cérebro em torno do início de cada palavra (linha vertical): informação sobre a palavra que vai vir já antes de ela começar (azul) e um sinal de surpresa depois que ela chega (vermelho). As curvas são ilustrativas, não os dados do artigo. Fonte: elaborada para o curso a partir de Goldstein et al. (2022)." />
+<figcaption aria-hidden="true"><strong>Figura 4.</strong> Esquema temporal do que se vê no cérebro em torno do início de cada palavra (linha vertical): informação sobre a palavra que vai vir já antes de ela começar (azul) e um sinal de surpresa depois que ela chega (vermelho). As curvas são ilustrativas, não os dados do artigo. Fonte: elaborada para o curso a partir de Goldstein <em>et al.</em> (2022).</figcaption>
+</figure>
+<p><strong>Previsões em vários níveis.</strong> Heilbron e colegas usaram um modelo de linguagem (o GPT-2) para calcular, palavra por palavra, o quanto cada palavra de um audiolivro era previsível, e registraram o cérebro de quem ouvia. As respostas às palavras eram moduladas por previsões o tempo todo. Havia assinaturas separadas para previsões da classe da palavra (substantivo, verbo…), do significado e dos sons (fonemas), e as previsões de nível mais alto informavam as de nível mais baixo (Heilbron <em>et al.</em>, 2022).</p>
+<p><strong>Previsões em várias escalas de tempo.</strong> Caucheteux, Gramfort e King analisaram fMRI de 304 pessoas ouvindo histórias. Os vetores do modelo se mapeavam linearmente na atividade cerebral, mas o mapeamento melhorava quando se acrescentavam ao modelo previsões de <strong>várias palavras à frente</strong>, e não só da próxima. Essas previsões se organizavam numa hierarquia: regiões temporais pareciam prever a curto prazo, e regiões frontais e parietais, representações de nível mais alto, de alcance mais longo e mais dependentes do contexto (Caucheteux; Gramfort; King, 2023) (figura 5).</p>
+<figure>
+<img src="img/aula14/hierarquia.png" alt="Figura 5. Hierarquia de previsões. Regiões temporais (azul) ligadas a previsões curtas, das próximas palavras e sons; regiões frontais e parietais (vermelho) ligadas a previsões mais longas e mais abstratas. As regiões são esquemáticas. Fonte: elaborada para o curso a partir de Caucheteux, Gramfort e King (2023)." />
+<figcaption aria-hidden="true"><strong>Figura 5.</strong> Hierarquia de previsões. Regiões temporais (azul) ligadas a previsões curtas, das próximas palavras e sons; regiões frontais e parietais (vermelho) ligadas a previsões mais longas e mais abstratas. As regiões são esquemáticas. Fonte: elaborada para o curso a partir de Caucheteux, Gramfort e King (2023).</figcaption>
+</figure>
+<p>Aqui aparece a primeira lição das <strong>diferenças</strong>: o modelo prevê uma palavra de cada vez; o cérebro parece prever em várias escalas de tempo ao mesmo tempo. A comparação serve para achar semelhanças e também para sugerir como melhorar os modelos.</p>
+<div class="destaque">
+<p><strong>Prever está em toda parte.</strong> Na aula 5, o N400 era maior para palavras pouco esperadas. Na aula 10, vimos que, numa conversa, a resposta costuma vir tão rápido depois do fim do turno do outro que não dá para começar a planejá-la só quando ele termina: é preciso antecipar. Os estudos desta seção sugerem que essa antecipação acontece palavra por palavra, o tempo todo, mesmo quando só ouvimos.</p>
+</div>
+<h2 id="do-modelo-ao-experimento-e-três-cuidados">5. Do modelo ao experimento, e três cuidados</h2>
+<p>Um bom modelo do cérebro permite fazer experimentos novos. Tuckute e colegas registraram com fMRI a resposta da <strong>rede da linguagem</strong> (as regiões frontais e temporais, sobretudo à esquerda, da aula 6) a 1.000 frases variadas. Com esses dados, treinaram um modelo de codificação baseado num modelo de linguagem da família GPT, capaz de prever o quanto a rede responde a cada frase. Depois usaram o modelo para escolher frases novas que deveriam <strong>aumentar</strong> ou <strong>diminuir</strong> a resposta da rede. Em pessoas que nunca tinham participado, as frases fizeram o que o modelo previa. O que mais pesou foi a surpresa da frase e o quanto ela era bem formada (Tuckute <em>et al.</em>, 2024). É uma mudança de patamar: de descrever a resposta do cérebro para controlá-la, de forma não invasiva.</p>
+<p>Três resultados ajudam a não exagerar o que essas comparações dizem.</p>
+<p><strong>Mais significado que sintaxe.</strong> Kauf e colegas usaram fMRI de 627 frases e as manipularam: embaralharam a ordem das palavras, removeram palavras, trocaram frases por outras de sentido mais ou menos parecido. O que mais sustentava a semelhança entre modelo e cérebro era o <strong>conteúdo léxico-semântico</strong>, carregado sobretudo pelas palavras de conteúdo (substantivos, verbos, adjetivos). A forma sintática, como a ordem das palavras e as palavras funcionais (“de”, “que”, “o”), pesava menos (Kauf <em>et al.</em>, 2024). Ou seja, um “brain score” alto não significa que o modelo capturou a sintaxe do jeito que o cérebro a processa.</p>
+<p><strong>Modelos maiores, ajuste maior, mas devagar.</strong> Antonello, Vaidya e Huth testaram modelos de 125 milhões a 30 bilhões de parâmetros. A previsão do cérebro cresceu com o <strong>logaritmo</strong> do tamanho: cada aumento de dez vezes rendeu um ganho parecido, e o ganho total foi de cerca de 15% na correlação, medido em três pessoas. Para algumas regiões, os melhores modelos chegaram perto do limite imposto pelo ruído da medida (Antonello; Vaidya; Huth, 2023).</p>
+<p><strong>Ler o sentido no fMRI.</strong> Tang e colegas construíram um decodificador, isto é, um sistema que faz o caminho inverso: parte da atividade cerebral medida por fMRI e reconstrói sequências de palavras inteligíveis que capturam o sentido de histórias ouvidas, de histórias imaginadas e até de vídeos sem som. O sentido pôde ser decodificado de várias regiões do córtex, de forma independente. O sistema exigiu muitas horas de registro de cada pessoa, e os autores mostraram que ele só funciona com a cooperação dela, tanto para treinar quanto para usar (Tang <em>et al.</em>, 2023). A questão da privacidade é a mesma da pergunta para casa da aula 12. Lembre também do experimento 4 daquela aula: o decodificador simulado errava menos quando um modelo de linguagem ajudava a escolher a frase mais provável.</p>
+<h2 id="onde-modelos-e-pessoas-diferem">6. Onde modelos e pessoas diferem</h2>
+<p>As diferenças ensinam tanto quanto as semelhanças. É a lógica da aula 13: comparar sistemas diferentes para separar o que é necessário do que é acidental. O modelo de linguagem é um terceiro tipo de sistema, nem animal nem humano.</p>
+<h3 id="erros-de-concordância-parecidos-mas-não-pelos-mesmos-motivos">Erros de concordância: parecidos, mas não pelos mesmos motivos</h3>
+<p>Em “A chave dos armários está na mesa”, o verbo concorda com o <strong>núcleo</strong> do sujeito (“chave”), não com a palavra mais próxima (“armários”). Essa palavra intrusa se chama <strong>atrator</strong>, e ela provoca erros de concordância em falantes. Por isso a concordância virou um teste de sensibilidade à estrutura: para acertar, é preciso saber qual palavra manda na frase, e não só a ordem.</p>
+<p>Linzen, Dupoux e Goldberg (2016) testaram redes recorrentes com esse tipo de frase. Treinadas diretamente para escolher o número do verbo, erravam menos de 1% das vezes. Os erros aumentavam quando a ordem e a estrutura apontavam em direções diferentes, como com atratores, e subiam bastante quando as redes eram treinadas só para prever palavras (Linzen; Dupoux; Goldberg, 2016). Linzen e Leonard (2018) compararam então os erros das redes com os de pessoas. As taxas gerais eram parecidas, e havia semelhanças, como os próprios erros de atração. Mas em frases com orações relativas (“a chave que os armários…”) as redes erravam mais, e as pessoas, menos. E vários atratores na mesma frase somavam erros nas redes, mas não nas pessoas. A conclusão dos autores foi que as representações sintáticas das redes eram “fundamentalmente diferentes” das humanas (Linzen; Leonard, 2018).</p>
+<p>Os modelos atuais são muito melhores nessa tarefa do que as redes de 2016. A lição é de método: para comparar com pessoas, é preciso comparar o <strong>padrão</strong> de erros.</p>
+<h3 id="dados-a-criança-aprende-com-muito-menos">Dados: a criança aprende com muito menos</h3>
+<p>Quanto texto uma criança ouve? Michael Frank fez a conta. Uma estimativa generosa é de cerca de 1 milhão de palavras por mês, o que dá cerca de 60 milhões (6 × 10⁷) aos 5 anos e 200 milhões (2 × 10⁸) aos 20. Em ambientes com pouca conversa, a entrada pode ser dez vezes menor. Já o GPT-3, de 2020, foi treinado com cerca de 500 bilhões (5 × 10¹¹) de tokens, e o modelo Chinchilla, de 2022, com cerca de 1 trilhão (10¹²). A diferença chega a “até cinco ordens de grandeza”, ou seja, até cem mil vezes (Frank, 2023) (figura 6). Comparando só a criança de 5 anos com o GPT-3, a razão é de cerca de oito mil vezes (Frank, 2023).</p>
+<figure>
+<img src="img/aula14/dados.png" alt="Figura 6. Palavras ouvidas por uma criança até os 5 e os 20 anos (estimativa máxima), limite do desafio BabyLM e tokens de treino de dois modelos, em escala logarítmica: cada rótulo do eixo vale cem vezes o anterior. Fonte: elaborada para o curso a partir de Frank (2023) e Warstadt et al. (2023)." />
+<figcaption aria-hidden="true"><strong>Figura 6.</strong> Palavras ouvidas por uma criança até os 5 e os 20 anos (estimativa máxima), limite do desafio BabyLM e tokens de treino de dois modelos, em escala logarítmica: cada rótulo do eixo vale cem vezes o anterior. Fonte: elaborada para o curso a partir de Frank (2023) e Warstadt <em>et al.</em> (2023).</figcaption>
+</figure>
+<p>O desafio <strong>BabyLM</strong> tentou diminuir essa distância. Partindo da ideia de que crianças aprendem a língua com menos de 100 milhões de palavras, enquanto os modelos costumam usar de mil a dez mil vezes mais, os organizadores convidaram equipes a treinar modelos com no máximo 10 ou 100 milhões de palavras. Vieram 31 artigos e 162 modelos. Houve progresso, mas uma ideia intuitiva, ensinar “do mais fácil para o mais difícil” como se faz com crianças, foi em grande parte malsucedida (Warstadt <em>et al.</em>, 2023).</p>
+<p>O que a criança tem que o modelo não tem? A aula 11 dá pistas: fala dirigida a ela, atenção conjunta, retorno social, um corpo que age no mundo e a leitura das intenções de quem fala, que na perspectiva de Tomasello é essencial para aprender palavras. Lembre, porém, da seção 3: com uma quantidade de texto da ordem da que a criança ouve, o modelo já prevê bem a resposta do cérebro a frases. Prever o cérebro e aprender a língua inteira não são a mesma coisa.</p>
+<h3 id="maior-nem-sempre-é-mais-humano">Maior nem sempre é mais humano</h3>
+<p>Oh e Schuler (2023) testaram modelos de tamanhos diferentes contra o tempo de leitura de pessoas. Os modelos maiores, que preveem melhor o texto, produziam surpresas que previam <strong>pior</strong> o tempo de leitura humano. Eles subestimavam o esforço de ler nomes próprios e superestimavam o de palavras funcionais. Os autores atribuem isso à tendência dos modelos grandes de “decorar” sequências que uma pessoa não teria como conhecer (Oh; Schuler, 2023). Compare com a seção 5, em que modelos maiores previam melhor o fMRI: a resposta depende da medida.</p>
+<h2 id="forma-função-e-significado-o-debate">7. Forma, função e significado: o debate</h2>
+<h3 id="dominar-a-língua-não-é-o-mesmo-que-pensar">Dominar a língua não é o mesmo que pensar</h3>
+<p>Mahowald e colegas (2024) propuseram separar duas coisas. A <strong>competência linguística formal</strong> é o conhecimento das regras e padrões da língua: sons, palavras, concordância, ordem, frases bem formadas. A <strong>competência linguística funcional</strong> é usar a língua no mundo: raciocinar, saber como as coisas funcionam, entender as pessoas, acompanhar uma situação. No cérebro humano, as duas dependem de mecanismos diferentes: a formal, da rede da linguagem (aula 6); a funcional, de outras capacidades, como o raciocínio e a teoria da mente (aula 10). Os LLMs, segundo os autores, eram “surpreendentemente bons” na forma e irregulares na função, que muitas vezes exigia ajustes especiais ou módulos externos (Mahowald <em>et al.</em>, 2024).</p>
+<p>Essa distinção vem de anos de estudos sobre o cérebro. Fedorenko, Piantadosi e Gibson (2024) revisaram as evidências de dupla dissociação entre linguagem e pensamento, como a de pessoas com afasia grave que continuam raciocinando (aula 12) e a de uma rede da linguagem que quase não responde a tarefas sem linguagem (aula 6). Eles argumentam que a linguagem é antes de tudo uma ferramenta de <strong>comunicação</strong>, poderosa para transmitir conhecimento cultural, e não um pré-requisito para o pensamento complexo (Fedorenko; Piantadosi; Gibson, 2024).</p>
+<div class="destaque">
+<p><strong>Uma lição para os dois lados.</strong> Um texto fluente não prova que há raciocínio por trás, nem num modelo nem numa pessoa. E a falta de fluência não prova a falta de raciocínio: uma pessoa com afasia pode pensar perfeitamente bem.</p>
+</div>
+<p>Um cuidado: os modelos mudam muito rápido. Vários estudos desta aula usaram modelos de 2016 a 2023, e o desempenho funcional melhorou bastante desde então. O que fica é a <strong>distinção</strong> entre forma e função, não um retrato fixo do que os modelos conseguem fazer hoje.</p>
+<h3 id="teoria-da-mente-numa-máquina">Teoria da mente numa máquina?</h3>
+<p>Strachan e colegas (2024) aplicaram a modelos de linguagem e a 1.907 pessoas uma bateria de testes de teoria da mente: crenças falsas (como o teste de Sally e Anne da aula 10), pedidos indiretos, ironia e gafes. O GPT-4 ficou no nível humano, às vezes acima, em pedidos indiretos, crenças falsas e despistamento, mas teve dificuldade com as gafes. A análise sugeriu que isso vinha de uma postura “hiperconservadora”, de evitar tirar conclusões, e não de falha de inferência (Strachan <em>et al.</em>, 2024). Fica a pergunta: um teste criado para crianças mede a mesma coisa quando aplicado a um sistema que leu milhões de textos sobre testes como esse?</p>
+<h3 id="forma-sem-significado">Forma sem significado?</h3>
+<p>Bender e Koller (2020) argumentaram que um sistema treinado <strong>apenas na forma</strong> do texto não tem, a princípio, como aprender <strong>significado</strong>, porque nunca liga as palavras a coisas, ações ou intenções no mundo. Eles criticaram o hábito de dizer que esses modelos “entendem” a língua (Bender; Koller, 2020). Quem discorda responde que muito do significado pode estar refletido no próprio uso das palavras, e que nada impede treinar modelos também com imagens e com interação. Com que dados e com que experiência o significado aparece é uma pergunta aberta.</p>
+<h3 id="teoria-ou-ferramenta">Teoria ou ferramenta?</h3>
+<p>Os <strong>céticos</strong> apontam que os modelos aprendem com dados demais e de outro tipo, erram de jeitos não humanos e, por serem tão opacos quanto o cérebro, preveem sem explicar. Os <strong>entusiastas</strong> lembram que a estrutura gramatical pode ser aprendida só do uso, que os modelos preveem a atividade cerebral melhor do que qualquer teoria anterior e que, ao contrário de pessoas, podem ser abertos, modificados e testados à vontade.</p>
+<p>Futrell e Mahowald (2026, publicado online em 2025) defendem uma posição intermediária. Os modelos de linguagem não substituem a teoria linguística nem a ideia de estrutura, mas contribuem para questões fundamentais sobre estrutura, processamento e aprendizagem. Eles desafiam argumentos estabelecidos e servem como <strong>sistemas-modelo</strong> para abordagens graduais e baseadas no uso (Futrell; Mahowald, 2026). É o mesmo papel que os saguis e as aves tiveram na aula 13: não são humanos, e é justamente por isso que a comparação ensina.</p>
+<h2 id="o-que-o-laboratório-mostrou">8. O que o laboratório mostrou</h2>
+<p><strong>Experimento 1: próxima palavra.</strong> Vocês completaram 16 frases, metade com muito contexto (“Papai…”, “guarda-…”) e metade com pouco (“Na mesa da cozinha havia um…”). O esperado é que quase todos acertem as frases de muito contexto e poucos acertem as abertas. A turma funcionou como um modelo de linguagem coletivo: a proporção de pessoas que escreveu cada palavra é a probabilidade de cloze, e as palavras que quase ninguém previu são as que produziriam um N400 maior (Kutas; Hillyard, 1984).</p>
+<p><strong>Experimento 2: modelo de bolso.</strong> O “modelo” leu um texto de umas 550 palavras e só contava que palavra vinha depois de qual. Com contexto de uma palavra, o esperado é uma sopa de palavras soltas; com duas, pedaços locais fazem sentido; com três, as frases ficam fluentes, mas copiam trechos inteiros do texto, porque o modelo viu poucos exemplos de cada sequência. Os LLMs fazem a mesma tarefa com contexto de milhares de palavras, muito mais texto e, sobretudo, vetores em que palavras parecidas ficam próximas, o que permite generalizar em vez de copiar (seção 2).</p>
+<p><strong>Experimento 3: concordância.</strong> A frase aparecia por 1,5 segundo, e vocês escolhiam “está” ou “estão”. O esperado é mais erros, e respostas mais lentas, quando o atrator tem número diferente do núcleo (“a chave dos armários”), sobretudo com núcleo singular e atrator plural. Quantos erros cada pessoa comete varia muito; com só 12 frases de cada tipo, muita gente pode não errar nenhuma. A comparação com as redes está na seção 6 (Linzen; Dupoux; Goldberg, 2016; Linzen; Leonard, 2018).</p>
+<p><strong>Experimento 4: quanto texto?</strong> As estimativas costumam se espalhar por várias ordens de grandeza, e muita gente subestima a distância entre a criança e o modelo. Pelos valores de referência, a criança ouve cerca de 6 × 10⁷ palavras aos 5 anos e o GPT-3 leu 5 × 10¹¹ tokens, uma razão de cerca de oito mil vezes (Frank, 2023). Vale lembrar que tokens e palavras não são a mesma unidade, então a comparação é aproximada.</p>
+<p><strong>Experimento 5: forma ou função?</strong> Os casos mais fáceis costumam ser os de concordância e ordem das palavras (formais) e o do sorvete que derrete (funcional). Os mais confundidos costumam ser o problema de matemática em palavras, que parece “de linguagem” mas exige raciocínio, e a frase “Ideias verdes incolores dormem furiosamente”, que não tem sentido mas tem a gramática certa. Na pergunta sobre o modelo, a expectativa é que ele vá melhor nos casos formais (Mahowald <em>et al.</em>, 2024); lembre que essa avaliação é de 2024 e que os modelos mudam rápido.</p>
+<div class="conceitos">
+<dl>
+<dt><strong>Modelo de linguagem</strong></dt>
+<dd>
+Programa treinado para dar a probabilidade da próxima palavra (ou token) a partir do texto anterior; os grandes modelos atuais (LLMs) usam a arquitetura transformer (Vaswani <em>et al.</em>, 2017).
+</dd>
+<dt><strong>Token</strong></dt>
+<dd>
+Unidade de texto com que o modelo trabalha: uma palavra curta, um pedaço de palavra ou um sinal de pontuação (Frank, 2023).
+</dd>
+<dt><strong>Probabilidade de cloze</strong></dt>
+<dd>
+Proporção de pessoas que completam uma frase com determinada palavra; quanto menor, maior o N400 (Kutas; Hillyard, 1984).
+</dd>
+<dt><strong>Surpresa</strong></dt>
+<dd>
+Medida do quanto uma palavra era inesperada, calculada como −log da sua probabilidade; o tempo de leitura cresce com ela (Smith; Levy, 2013).
+</dd>
+<dt><strong>Vetor (contextual)</strong></dt>
+<dd>
+Lista de muitos números que representa uma palavra dentro do modelo; nas camadas intermediárias, muda conforme o contexto (Goldstein <em>et al.</em>, 2022).
+</dd>
+<dt><strong>Parâmetro</strong></dt>
+<dd>
+Cada um dos números internos do modelo ajustados durante o treino para errar menos; modelos grandes têm bilhões deles (Antonello; Vaidya; Huth, 2023).
+</dd>
+<dt><strong>Atenção</strong></dt>
+<dd>
+Mecanismo do transformer em que cada palavra combina informação das anteriores, com pesos aprendidos (Vaswani <em>et al.</em>, 2017).
+</dd>
+<dt><strong>Modelo de codificação</strong></dt>
+<dd>
+Ajuste estatístico simples (regressão linear) que usa os vetores de um modelo para prever a resposta do cérebro a frases novas (Jain; Huth, 2018).
+</dd>
+<dt><strong>Brain score</strong></dt>
+<dd>
+Correlação entre a resposta cerebral prevista por um modelo de codificação e a medida, em frases que a regressão não viu (Schrimpf <em>et al.</em>, 2021).
+</dd>
+<dt><strong>Processamento preditivo</strong></dt>
+<dd>
+Ideia de que o cérebro antecipa continuamente o que vem a seguir e compara a previsão com o que chega, em vários níveis e escalas de tempo (Caucheteux; Gramfort; King, 2023).
+</dd>
+<dt><strong>Atração de concordância</strong></dt>
+<dd>
+Erro em que o verbo concorda com uma palavra próxima (o atrator) e não com o núcleo do sujeito, como em “a chave dos armários estão” (Linzen; Dupoux; Goldberg, 2016).
+</dd>
+<dt><strong>Competência formal e funcional</strong></dt>
+<dd>
+Conhecer as regras e padrões da língua (formal) versus usá-la para raciocinar e agir no mundo (funcional); no cérebro, dependem de redes diferentes (Mahowald <em>et al.</em>, 2024).
+</dd>
+</dl>
+</div>
+<h2 id="para-revisar">Para revisar</h2>
+<ol type="1">
+<li><p>Por que a surpresa (−log p) é uma medida melhor do que a própria probabilidade para prever o tempo de leitura?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Porque o tempo de leitura cresce com o logaritmo da previsibilidade, numa faixa enorme de valores. Isso quer dizer que o que importa são as diferenças relativas: passar de 1 em 1.000 para 1 em 10.000 pesa tanto quanto passar de 1 em 10 para 1 em 100. A surpresa captura exatamente isso.</p>
+</details></li>
+<li><p>Um modelo de codificação com um modelo de linguagem prevê bem a atividade da rede da linguagem. Por que isso não prova que o cérebro funciona como o modelo?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>O resultado mostra que a informação usada pelo cérebro está presente nos vetores do modelo, a ponto de uma regressão simples recuperá-la. Mas sistemas muito diferentes podem conter a mesma informação. Além disso, Kauf e colegas mostraram que a semelhança vem sobretudo do significado das palavras, e não da sintaxe.</p>
+</details></li>
+<li><p>Que achado do estudo de Schrimpf e colegas liga os modelos à ideia de que o cérebro prevê?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>O ajuste dos modelos ao cérebro acompanhava o desempenho deles em prever a próxima palavra, e não em outras tarefas linguísticas. Se o que torna um modelo parecido com o cérebro é prever bem, uma interpretação natural é que o cérebro também está prevendo.</p>
+</details></li>
+<li><p>Descreva os três princípios que Goldstein e colegas acharam em comum entre cérebro e modelos. Que ligação há com a troca de turnos da aula 10?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>O cérebro carrega informação sobre a próxima palavra antes de ela começar, calcula a surpresa depois que ela chega e representa as palavras por vetores que dependem do contexto. Na conversa, responder quase sem pausa exige antecipar o que o outro vai dizer e quando vai terminar; prever palavras é parte disso.</p>
+</details></li>
+<li><p>Redes treinadas para prever palavras também erram a concordância com atratores, como as pessoas. Por que Linzen e Leonard concluíram que elas processam a concordância de outro jeito?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Porque o padrão de erros era diferente. Com orações relativas, as redes erravam mais e as pessoas, menos; e vários atratores somavam erros nas redes, mas não nas pessoas. Taxas de erro parecidas não bastam: é preciso comparar onde e por que cada sistema erra.</p>
+</details></li>
+<li><p>Uma criança de 5 anos ouviu talvez 60 milhões de palavras; o GPT-3 leu cerca de 500 bilhões de tokens. Cite duas coisas que a criança tem e o modelo de texto não tem, segundo a aula 11.</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Por exemplo: fala dirigida a ela e retorno social contingente dos adultos; atenção conjunta e leitura das intenções de quem fala; um corpo que vê, toca e age no mundo em que as palavras são usadas. Essas fontes de informação podem compensar parte da diferença de quantidade de dados.</p>
+</details></li>
+<li><p>Um modelo escreve um texto fluente sobre dor de dente. Use a distinção entre competência formal e funcional e um dado da aula 12 para discutir se isso mostra que ele entende o que é ter dor de dente.</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Fluência é competência formal, que no cérebro depende da rede da linguagem; entender, raciocinar e ter experiência do mundo são competências funcionais, que dependem de outras redes. Na afasia, a forma se perde e o pensamento continua, o que mostra que uma não é a outra. Por isso a fluência sozinha não prova entendimento, e, segundo Bender e Koller, um sistema que só vê texto talvez nem tenha como ligar as palavras à experiência.</p>
+</details></li>
+<li><p>Por que Futrell e Mahowald comparam os modelos de linguagem a sistemas-modelo, como os saguis e as aves da aula 13?</p>
+<details>
+<summary>
+<p>Resposta</p>
+</summary>
+<p>Porque são sistemas diferentes de nós que compartilham alguns componentes da linguagem. Comparar o que eles conseguem e como erram ajuda a testar ideias sobre o que é necessário para aprender e processar a língua. E, ao contrário de pessoas, os modelos podem ser modificados à vontade, o que permite experimentos impossíveis com humanos.</p>
+</details></li>
+</ol>
+<h2 id="para-saber-mais">Para saber mais</h2>
+<ul>
+<li><strong>King, Caucheteux, Desbordes e Défossez, “Meta IA estuda formas de fazer com que Inteligência Artificial pense como humanos”, <em>Startupi</em>, 29 abr. 2022.</strong> Texto acessível, em português, sobre a comparação entre modelos de linguagem e o cérebro e a ideia de que o cérebro prevê a longo prazo. Assinado pelos autores de dois estudos desta aula; é comunicação de uma empresa, não jornalismo independente. Acesso aberto: https://startupi.com.br/meta-ia-estuda-formas-de-fazer-com-que-inteligencia-artificial-pense-como-humanos/.</li>
+<li><strong>Tedeschi, “O cérebro humano processa a linguagem como a IA? Entenda a semelhança”, <em>Fast Company Brasil</em>, 22 jan. 2026.</strong> Matéria jornalística em português sobre registros de ECoG em pessoas ouvindo um podcast comparados com as camadas de modelos de linguagem. Atenção: o estudo de 2026 descrito na matéria não foi conferido na fonte original para este material; o estudo de 2022 da mesma equipe é o da seção 4. Acesso aberto: https://fastcompanybrasil.com/ia/o-cerebro-humano-processa-a-linguagem-como-a-ia-entenda-a-semelhanca/.</li>
+<li><strong>Schrimpf <em>et al.</em>, na <em>PNAS</em>, 2021.</strong> O estudo que popularizou o “brain score” e a ligação entre prever palavras e prever o cérebro. Avançado, em inglês, de acesso aberto: https://doi.org/10.1073/pnas.2105646118 (também em PMC8694052).</li>
+<li><strong>Mahowald <em>et al.</em>, na <em>Trends in Cognitive Sciences</em>, 2024.</strong> A distinção entre competência formal e funcional, com muitos exemplos. Nível intermediário, em inglês. DOI: https://doi.org/10.1016/j.tics.2024.01.011.</li>
+</ul>
+<h2 id="referências">Referências</h2><div class="refs">
+<p>ANTONELLO, R.; VAIDYA, A.; HUTH, A. Scaling laws for language encoding models in fMRI. In: ADVANCES IN NEURAL INFORMATION PROCESSING SYSTEMS 36 (NeurIPS 2023), 2023. <strong>Proceedings</strong> […]. 2023. p. 21895-21907. Disponível em: https://papers.nips.cc/paper_files/paper/2023/hash/4533e4a352440a32558c1c227602c323-Abstract-Conference.html.</p>
+<p>BENDER, E. M.; KOLLER, A. Climbing towards NLU: on meaning, form, and understanding in the age of data. In: ANNUAL MEETING OF THE ASSOCIATION FOR COMPUTATIONAL LINGUISTICS, 58., 2020, Online. <strong>Proceedings</strong> […]. [S. l.]: Association for Computational Linguistics, 2020. p. 5185-5198. DOI: https://doi.org/10.18653/v1/2020.acl-main.463.</p>
+<p>CAUCHETEUX, C.; GRAMFORT, A.; KING, J.-R. Evidence of a predictive coding hierarchy in the human brain listening to speech. <strong>Nature Human Behaviour</strong>, v. 7, n. 3, p. 430-441, 2023. DOI: https://doi.org/10.1038/s41562-022-01516-2.</p>
+<p>CAUCHETEUX, C.; KING, J.-R. Brains and algorithms partially converge in natural language processing. <strong>Communications Biology</strong>, v. 5, art. 134, 2022. DOI: https://doi.org/10.1038/s42003-022-03036-1.</p>
+<p>FEDORENKO, E.; PIANTADOSI, S. T.; GIBSON, E. A. F. Language is primarily a tool for communication rather than thought. <strong>Nature</strong>, v. 630, n. 8017, p. 575-586, 2024. DOI: https://doi.org/10.1038/s41586-024-07522-w.</p>
+<p>FRANK, M. C. Bridging the data gap between children and large language models. <strong>Trends in Cognitive Sciences</strong>, v. 27, n. 11, p. 990-992, 2023. DOI: https://doi.org/10.1016/j.tics.2023.08.007.</p>
+<p>FUTRELL, R.; MAHOWALD, K. How linguistics learned to stop worrying and love the language models. <strong>Behavioral and Brain Sciences</strong>, v. 49, e198, 2026. DOI: https://doi.org/10.1017/S0140525X2510112X.</p>
+<p>GOLDSTEIN, A. <em>et al.</em> Shared computational principles for language processing in humans and deep language models. <strong>Nature Neuroscience</strong>, v. 25, n. 3, p. 369-380, 2022. DOI: https://doi.org/10.1038/s41593-022-01026-4.</p>
+<p>HEILBRON, M. <em>et al.</em> A hierarchy of linguistic predictions during natural language comprehension. <strong>Proceedings of the National Academy of Sciences of the United States of America</strong>, v. 119, n. 32, e2201968119, 2022. DOI: https://doi.org/10.1073/pnas.2201968119.</p>
+<p>HOSSEINI, E. A. <em>et al.</em> Artificial neural network language models predict human brain responses to language even after a developmentally realistic amount of training. <strong>Neurobiology of Language</strong>, v. 5, n. 1, p. 43-63, 2024. DOI: https://doi.org/10.1162/nol_a_00137.</p>
+<p>JAIN, S.; HUTH, A. G. Incorporating context into language encoding models for fMRI. In: ADVANCES IN NEURAL INFORMATION PROCESSING SYSTEMS 31 (NeurIPS 2018), 2018. <strong>Proceedings</strong> […]. 2018. p. 6628-6637. Disponível em: https://proceedings.neurips.cc/paper_files/paper/2018/hash/f471223d1a1614b58a7dc45c9d01df19-Abstract.html.</p>
+<p>KAUF, C. <em>et al.</em> Lexical-semantic content, not syntactic structure, is the main contributor to ANN-brain similarity of fMRI responses in the language network. <strong>Neurobiology of Language</strong>, v. 5, n. 1, p. 7-42, 2024. DOI: https://doi.org/10.1162/nol_a_00116.</p>
+<p>KUTAS, M.; HILLYARD, S. A. Brain potentials during reading reflect word expectancy and semantic association. <strong>Nature</strong>, v. 307, n. 5947, p. 161-163, 1984. DOI: https://doi.org/10.1038/307161a0.</p>
+<p>LINZEN, T.; DUPOUX, E.; GOLDBERG, Y. Assessing the ability of LSTMs to learn syntax-sensitive dependencies. <strong>Transactions of the Association for Computational Linguistics</strong>, v. 4, p. 521-535, 2016. DOI: https://doi.org/10.1162/tacl_a_00115.</p>
+<p>LINZEN, T.; LEONARD, B. Distinct patterns of syntactic agreement errors in recurrent networks and humans. In: ANNUAL MEETING OF THE COGNITIVE SCIENCE SOCIETY, 40., 2018. <strong>Proceedings of the Annual Meeting of the Cognitive Science Society</strong>, v. 40, 2018. Disponível em: https://escholarship.org/uc/item/0623d3bt.</p>
+<p>MAHOWALD, K. <em>et al.</em> Dissociating language and thought in large language models. <strong>Trends in Cognitive Sciences</strong>, v. 28, n. 6, p. 517-540, 2024. DOI: https://doi.org/10.1016/j.tics.2024.01.011.</p>
+<p>MANNING, C. D. <em>et al.</em> Emergent linguistic structure in artificial neural networks trained by self-supervision. <strong>Proceedings of the National Academy of Sciences of the United States of America</strong>, v. 117, n. 48, p. 30046-30054, 2020. DOI: https://doi.org/10.1073/pnas.1907367117.</p>
+<p>OH, B.-D.; SCHULER, W. Why does surprisal from larger transformer-based language models provide a poorer fit to human reading times? <strong>Transactions of the Association for Computational Linguistics</strong>, v. 11, p. 336-350, 2023. DOI: https://doi.org/10.1162/tacl_a_00548.</p>
+<p>SCHRIMPF, M. <em>et al.</em> The neural architecture of language: integrative modeling converges on predictive processing. <strong>Proceedings of the National Academy of Sciences of the United States of America</strong>, v. 118, n. 45, e2105646118, 2021. DOI: https://doi.org/10.1073/pnas.2105646118.</p>
+<p>SMITH, N. J.; LEVY, R. The effect of word predictability on reading time is logarithmic. <strong>Cognition</strong>, v. 128, n. 3, p. 302-319, 2013. DOI: https://doi.org/10.1016/j.cognition.2013.02.013.</p>
+<p>STRACHAN, J. W. A. <em>et al.</em> Testing theory of mind in large language models and humans. <strong>Nature Human Behaviour</strong>, v. 8, n. 7, p. 1285-1295, 2024. DOI: https://doi.org/10.1038/s41562-024-01882-z.</p>
+<p>TANG, J. <em>et al.</em> Semantic reconstruction of continuous language from non-invasive brain recordings. <strong>Nature Neuroscience</strong>, v. 26, n. 5, p. 858-866, 2023. DOI: https://doi.org/10.1038/s41593-023-01304-9.</p>
+<p>TUCKUTE, G. <em>et al.</em> Driving and suppressing the human language network using large language models. <strong>Nature Human Behaviour</strong>, v. 8, n. 3, p. 544-561, 2024. DOI: https://doi.org/10.1038/s41562-023-01783-7.</p>
+<p>VASWANI, A. <em>et al.</em> Attention is all you need. In: ADVANCES IN NEURAL INFORMATION PROCESSING SYSTEMS 30 (NIPS 2017), 2017. <strong>Proceedings</strong> […]. 2017. Disponível em: https://proceedings.neurips.cc/paper/7181-attention-is-all.</p>
+<p>WARSTADT, A. <em>et al.</em> Findings of the BabyLM Challenge: sample-efficient pretraining on developmentally plausible corpora. In: BABYLM CHALLENGE AT THE CONFERENCE ON COMPUTATIONAL NATURAL LANGUAGE LEARNING, 27., 2023, Singapore. <strong>Proceedings</strong> […]. Singapore: Association for Computational Linguistics, 2023. p. 1-34. DOI: https://doi.org/10.18653/v1/2023.conll-babylm.1.</p>
+</div>
+<p class="rodape">Material de estudo da disciplina Bases neurais da comunicação humana (UFRN), Prof. Daniel Y. Takahashi. Texto e figuras elaborados para o curso; as fontes estão nas Referências.</p>
+</div>
