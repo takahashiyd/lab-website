@@ -255,7 +255,8 @@
 <nav class="tabs">
   <div class="tab sv active" data-tab="sv">1 · Supervisionado: o classificador</div>
   <div class="tab ns" data-tab="ns">2 · Não-supervisionado: k-means</div>
-  <div class="tab rl" data-tab="rl">3 · Por reforço: Q-Learning no gridworld</div>
+  <div class="tab rl" data-tab="rw">3 · Por reforço: Rescorla–Wagner e dopamina</div>
+  <div class="tab rl" data-tab="rl">4 · Para ir além: Q-learning</div>
 </nav>
 
 <!-- ============================================================ -->
@@ -377,8 +378,82 @@
 <!-- ============================================================ -->
 <!-- TAB 3 — REFORÇO -->
 <!-- ============================================================ -->
+<section class="panel" id="panel-rw">
+  <h2 class="rl">3 · Por reforço: aprender com a surpresa</h2>
+  <p class="desc">
+    Um animal ouve um som (S) e às vezes recebe comida. Ninguém lhe diz a “resposta certa”: ele só compara o que
+    <b>esperava</b> com o que <b>aconteceu</b>. A previsão <b>V</b> (0 = não espera nada, 1 = tem certeza) muda a cada ensaio pela regra de
+    Rescorla e Wagner (1972): <b>V novo = V + α × (λ − V)</b>, onde λ é o que aconteceu (1 = comida, 0 = nada) e α é o passo.
+    Com dois sinais juntos (luz A e som B), a previsão é a <b>soma</b> V_A + V_B, e os dois aprendem com a mesma surpresa.
+  </p>
+  <div class="lab">
+    <div class="canvas-wrap">
+      <canvas id="canvas-rw" width="700" height="360"></canvas>
+      <div class="legend">Roxo: V_A (luz ou som único) · Âmbar: V_B (segundo sinal) · Linha tracejada: troca de fase · Barras cinzas embaixo: tamanho da surpresa em cada ensaio</div>
+    </div>
+    <div class="controls">
+      <h3>Protocolo</h3>
+      <div class="group">
+        <select id="rw-proto" style="width:100%;padding:6px;font-size:13px">
+          <option value="acq">Aquisição e extinção (um sinal)</option>
+          <option value="blk">Bloqueio (Kamin): A+ depois AB+</option>
+          <option value="ctl">Controle: AB+ desde o início</option>
+          <option value="ovs">Sobressombreamento: AB+, A mais chamativo</option>
+        </select>
+      </div>
+      <div class="group">
+        <label>Passo de A (α_A) <span class="val" id="rw-aA-val">0.30</span></label>
+        <input type="range" id="rw-aA" min="0.05" max="1" step="0.05" value="0.30">
+      </div>
+      <div class="group">
+        <label>Passo de B (α_B) <span class="val" id="rw-aB-val">0.30</span></label>
+        <input type="range" id="rw-aB" min="0.05" max="1" step="0.05" value="0.30">
+      </div>
+      <div class="group">
+        <label>Ensaios mostrados <span class="val" id="rw-n-val">30</span></label>
+        <input type="range" id="rw-n" min="1" max="30" step="1" value="30">
+      </div>
+      <div class="stats" id="rw-stats"></div>
+    </div>
+  </div>
+  <div class="ped rl">
+    <strong>Como ler:</strong> arraste “Ensaios mostrados” de 1 a 30 e veja a previsão crescer ensaio a ensaio. (i) <b>Aquisição</b>: os passos encolhem porque a surpresa encolhe.
+    (ii) <b>Extinção</b>: sem comida, λ = 0, a surpresa fica negativa e V cai pela mesma regra. (iii) <b>Bloqueio</b>: depois que a luz já prevê a comida,
+    a surpresa é zero e o som não aprende nada, mesmo sempre pareado com a comida. Parear não basta: é preciso surpresa.
+    (iv) <b>Sobressombreamento</b>: aprendendo juntos, o sinal com α maior (mais chamativo) fica com a maior parte da previsão.
+  </div>
+
+  <h2 class="rl" style="margin-top:28px">A mesma surpresa no tempo: o neurônio de dopamina</h2>
+  <p class="desc">
+    Agora o ensaio tem tempo: uma luz acende no passo 3 e o suco chega no passo 9. A cada passo, o modelo de diferença temporal (TD) calcula
+    a surpresa <b>δ = r + V(próximo) − V(agora)</b>: recompensa agora mais o que espero a partir do próximo passo, menos o que eu esperava.
+    É o que Schultz, Dayan e Montague (1997) compararam com o disparo dos neurônios de dopamina.
+  </p>
+  <div class="lab">
+    <div class="canvas-wrap">
+      <canvas id="canvas-td" width="700" height="300"></canvas>
+      <div class="legend">Azul: δ positivo (surto de disparo) · Vermelho: δ negativo (pausa) · α = 0,3</div>
+    </div>
+    <div class="controls">
+      <h3>Controles</h3>
+      <div class="group">
+        <label>Ensaio nº <span class="val" id="td-n-val">1</span></label>
+        <input type="range" id="td-n" min="1" max="60" step="1" value="1">
+      </div>
+      <div class="group"><label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="td-omit"> sem suco neste ensaio</label></div>
+      <div class="stats" id="td-stats"></div>
+    </div>
+  </div>
+  <div class="ped rl">
+    <strong>Como ler:</strong> no ensaio 1, só o suco surpreende (barra azul no suco). Arraste o ensaio: a barra azul “anda para trás” até a luz,
+    que passa a ser a notícia boa. Depois do aprendizado, o suco previsto não gera nada, e o suco que falta gera uma barra vermelha (pausa).
+    A dopamina sinaliza a surpresa, não o prazer.
+  </div>
+</section>
+
 <section class="panel" id="panel-rl">
-  <h2 class="rl">3 · Aprendizado por reforço: Q-Learning no gridworld</h2>
+  <h2 class="rl">4 · Para ir além: um agente que age (Q-learning)</h2>
+  <p class="desc"><b>Opcional.</b> Este é o tema das aulas 10 e 11. Aqui o agente não só prevê recompensas (como na aba 3): ele escolhe ações e aprende o valor de cada ação em cada lugar.</p>
   <p class="desc">
     O agente parte do canto inferior esquerdo (azul) e precisa chegar ao objetivo (amarelo, +1)
     evitando o buraco (vermelho, −1). Cada passo custa −0.04. O algoritmo Q-Learning aprende o valor
@@ -1204,6 +1279,71 @@ const C = {
   });
 
   draw(); updateStats();
+})();
+
+// ============================================================
+// TAB 3 — RESCORLA–WAGNER E TD
+// ============================================================
+(function () {
+  const cv = document.getElementById('canvas-rw'), g = cv.getContext('2d'), W = cv.width, H = cv.height;
+  const $id = (i) => document.getElementById(i);
+  function sim(P, aA, aB, N) {
+    let vA = 0, vB = 0; const A = [0], B = [0], E = [];
+    for (let t = 1; t <= N; t++) {
+      let e;
+      if (P === 'acq') { const lam = t <= 15 ? 1 : 0; e = lam - vA; vA += aA * e; }
+      else if (P === 'blk' && t <= 15) { e = 1 - vA; vA += aA * e; }
+      else { e = 1 - (vA + vB); vA += aA * e; vB += aB * e; }
+      A.push(vA); B.push(vB); E.push(e);
+    }
+    return { A, B, E };
+  }
+  function draw() {
+    const P = $id('rw-proto').value, aA = +$id('rw-aA').value, aB = +$id('rw-aB').value, n = +$id('rw-n').value;
+    $id('rw-aA-val').textContent = aA.toFixed(2); $id('rw-aB-val').textContent = aB.toFixed(2); $id('rw-n-val').textContent = n;
+    const { A, B, E } = sim(P, aA, aB, 30);
+    g.clearRect(0, 0, W, H); g.fillStyle = '#fff'; g.fillRect(0, 0, W, H);
+    const X = (t) => 50 + (W - 70) * t / 30, Y = (v) => 250 - v * 210, YE = (e) => 320 - e * 30;
+    g.strokeStyle = '#CBD5E1'; g.lineWidth = 1; g.font = '12px sans-serif'; g.fillStyle = '#64748B';
+    [0, 0.5, 1].forEach(v => { g.beginPath(); g.moveTo(50, Y(v)); g.lineTo(W - 20, Y(v)); g.stroke(); g.fillText(String(v).replace('.', ','), 18, Y(v) + 4); });
+    g.fillText('previsão V', 50, 24); g.fillText('surpresa', 2, 322); g.fillText('ensaio', W - 60, H - 4);
+    g.beginPath(); g.moveTo(50, YE(0)); g.lineTo(W - 20, YE(0)); g.stroke();
+    if (P === 'acq' || P === 'blk') { g.setLineDash([4, 4]); g.strokeStyle = '#94A3B8'; g.beginPath(); g.moveTo(X(15), 30); g.lineTo(X(15), H - 10); g.stroke(); g.setLineDash([]);
+      g.fillText(P === 'acq' ? 'sem comida →' : 'luz + som →', X(15) + 6, 272); }
+    for (let t = 1; t <= n; t++) { const e = E[t - 1]; g.fillStyle = e >= 0 ? '#94A3B8' : '#F87171'; g.fillRect(X(t) - 5, Math.min(YE(0), YE(e)), 10, Math.abs(YE(e) - YE(0))); }
+    const line = (V, col) => { g.strokeStyle = col; g.fillStyle = col; g.lineWidth = 2.5; g.beginPath(); for (let t = 0; t <= n; t++) t ? g.lineTo(X(t), Y(V[t])) : g.moveTo(X(t), Y(V[t])); g.stroke(); for (let t = 0; t <= n; t++) { g.beginPath(); g.arc(X(t), Y(V[t]), 3, 0, 7); g.fill(); } };
+    line(A, '#6D28D9'); if (P !== 'acq') line(B, '#B45309');
+    const f = (x) => x.toFixed(3).replace('.', ',');
+    const tlast = n, e = E[tlast - 1];
+    $id('rw-stats').innerHTML = `<div class="row"><span class="k">ensaio</span><span>${tlast}</span></div>
+      <div class="row"><span class="k">surpresa neste ensaio</span><span>${f(e)}</span></div>
+      <div class="row"><span class="k">V_A depois</span><span>${f(A[tlast])}</span></div>` + (P !== 'acq' ? `<div class="row"><span class="k">V_B depois</span><span>${f(B[tlast])}</span></div>` : '');
+  }
+  ['rw-proto', 'rw-aA', 'rw-aB', 'rw-n'].forEach(i => $id(i).addEventListener('input', draw));
+  $id('rw-proto').addEventListener('change', () => { if ($id('rw-proto').value === 'ovs') { $id('rw-aA').value = 0.5; $id('rw-aB').value = 0.1; } else { $id('rw-aA').value = 0.3; $id('rw-aB').value = 0.3; } draw(); });
+  draw();
+
+  const tv = document.getElementById('canvas-td'), tg = tv.getContext('2d'), TW = tv.width, TH = tv.height;
+  function tdTrial(n, omit) {
+    const T = 12, cs = 3, rw = 9, al = 0.3; const V = Array(T + 1).fill(0); let d = [];
+    for (let k = 1; k <= n; k++) { d = Array(T).fill(0);
+      for (let t = 0; t < T - 1; t++) { const r = (t + 1 === rw && !(omit && k === n)) ? 1 : 0;
+        const vn = t >= cs ? V[t] : 0, vx = (t + 1 >= cs && t + 1 <= rw - 1) ? V[t + 1] : 0;
+        d[t + 1] = r + vx - vn; if (t >= cs) V[t] += al * d[t + 1]; } }
+    return d;
+  }
+  function tdDraw() {
+    const n = +$id('td-n').value, om = $id('td-omit').checked; $id('td-n-val').textContent = n; const d = tdTrial(n, om);
+    tg.clearRect(0, 0, TW, TH); tg.fillStyle = '#fff'; tg.fillRect(0, 0, TW, TH);
+    const X = (t) => 40 + (TW - 60) * (t + 0.5) / 12, Y = (v) => TH / 2 - v * (TH * 0.36);
+    tg.strokeStyle = '#CBD5E1'; tg.lineWidth = 1; tg.beginPath(); tg.moveTo(30, Y(0)); tg.lineTo(TW - 16, Y(0)); tg.stroke();
+    [[3, 'luz', '#0D9488'], [9, 'suco', '#B45309']].forEach(([t, l, c]) => { tg.strokeStyle = c; tg.setLineDash([4, 4]); tg.beginPath(); tg.moveTo(X(t), 18); tg.lineTo(X(t), TH - 10); tg.stroke(); tg.setLineDash([]); tg.fillStyle = c; tg.font = '13px sans-serif'; tg.fillText(l, X(t) + 4, 16); });
+    d.forEach((v, t) => { tg.fillStyle = v >= 0 ? '#1A56DB' : '#DC2626'; tg.fillRect(X(t) - 14, Math.min(Y(0), Y(v)), 28, Math.abs(Y(v) - Y(0))); });
+    tg.fillStyle = '#64748B'; tg.font = '12px sans-serif'; tg.fillText('+1', 6, Y(1) + 4); tg.fillText('−1', 6, Y(-1) + 4); tg.fillText('tempo →', TW - 60, TH - 4);
+    const f = (x) => x.toFixed(2).replace('.', ',');
+    $id('td-stats').innerHTML = `<div class="row"><span class="k">δ na luz</span><span>${f(d[3])}</span></div><div class="row"><span class="k">δ no suco</span><span>${f(d[9])}</span></div>`;
+  }
+  $id('td-n').addEventListener('input', tdDraw); $id('td-omit').addEventListener('change', tdDraw); tdDraw();
 })();
 </script>
 

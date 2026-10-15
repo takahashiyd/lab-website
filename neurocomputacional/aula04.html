@@ -178,6 +178,29 @@ select.wrong{border-color:var(--warn);background:var(--nobg)}
 .bandit{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .bandit button{min-height:64px;font-size:17px}
 .bandit button.hit{outline:3px solid var(--ok)} .bandit button.miss{outline:3px solid var(--warn)}
+.intro{border-color:var(--accent)}
+.rule{font:700 17px/1.4 var(--mono);color:var(--accent);background:var(--soft);border-radius:10px;padding:12px 14px;text-align:center;max-width:none}
+.tri{display:grid;gap:8px}
+@media (min-width:560px){.tri{grid-template-columns:repeat(3,1fr)}}
+.tri span{border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:15px;background:var(--bg)}
+.tri b{font:700 18px var(--display);color:var(--you);margin-right:6px}
+.story{border-left:4px solid var(--you);padding:4px 0 4px 14px}
+.gloss{display:grid;gap:8px}
+.gloss div{display:grid;grid-template-columns:64px 1fr;gap:10px;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:8px}
+.gloss b{font:700 18px var(--mono);color:var(--accent)}
+.worked{display:grid;gap:10px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px}
+.take{background:var(--okbg);border-radius:10px;padding:12px 14px;max-width:none}
+.rwbox{display:grid;gap:12px;padding-top:14px}
+.rwb{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center}
+.rwb .lbl{font:600 13px var(--mono);color:var(--muted)}
+.rwb .v{font:700 18px var(--mono);color:#6d28d9;min-width:4.5em;text-align:right}
+.rwb .trk{position:relative;height:30px;background:var(--bg);border:1px solid var(--line);border-radius:6px}
+.rwb .fill{position:absolute;left:0;top:0;bottom:0;background:#6d28d9;border-radius:5px;transition:width .35s}
+.rwb .lam{position:absolute;top:-6px;bottom:-6px;border-left:3px dashed var(--you)}
+.rwb .lam i{position:absolute;top:-20px;font:600 12px var(--mono);color:var(--you);font-style:normal;white-space:nowrap}
+.rwmsg{font-size:14px;color:var(--muted)}
+table.sum{font-family:var(--body);text-align:left;font-size:15px}
+table.sum td,table.sum th{padding:8px}
 .kpi{display:flex;flex-wrap:wrap;gap:8px 16px;font:600 15px/1.4 var(--mono);color:var(--accent)}
 </style>
 
@@ -189,7 +212,7 @@ select.wrong{border-color:var(--warn);background:var(--nobg)}
 </header>
 
 <nav aria-label="Atividades">
-  <a href="#a1">1 · Tipos</a><a href="#a2">2 · Sobreajuste</a><a href="#a3">3 · k-means</a><a href="#a4">4 · Rescorla–Wagner</a><a href="#a5">5 · Dopamina</a><a href="#a6">6 · Bandido</a><a href="#a7">7 · Marr</a>
+  <a href="#a1">1 · Tipos</a><a href="#a2">2 · Sobreajuste</a><a href="#a3">3 · k-means</a><a href="#rl-intro">Reforço: a ideia</a><a href="#a4">4 · Rescorla–Wagner</a><a href="#a5">5 · Dopamina</a><a href="#a6">6 · Bandido</a><a href="#a7">7 · Marr</a>
 </nav>
 
 <!-- ============ ATIVIDADE 1 ============ -->
@@ -244,71 +267,151 @@ select.wrong{border-color:var(--warn);background:var(--nobg)}
   <div class="fb" data-fb="a3" hidden></div>
 </section>
 
+<!-- ============ PARTE 3 · REFORÇO ============ -->
+<section class="exp intro" id="rl-intro">
+  <div><p class="num">Parte 3 · Aprendizado por reforço</p><h2>Uma ideia só: aprender com a surpresa</h2></div>
+  <p>Nas atividades 4, 5 e 6 aparece a mesma regra, em três roupas diferentes. Guarde esta frase:</p>
+  <p class="rule">nova previsão = previsão antiga + passo × (o que aconteceu − o que eu previa)</p>
+  <p>O termo entre parênteses é o <b>erro de predição</b>: quanto o mundo me surpreendeu. Se o que aconteceu é exatamente o que eu previa, o erro é zero e eu não mudo nada. Ninguém diz ao animal a “resposta certa”: ele só compara o que esperava com o que veio.</p>
+  <div class="tri"><span><b>4</b> Rescorla–Wagner: quanto um sinal prevê comida</span><span><b>5</b> Dopamina: a mesma surpresa, momento a momento</span><span><b>6</b> Bandido: quanto vale cada escolha</span></div>
+</section>
+
 <!-- ============ ATIVIDADE 4 ============ -->
-<section class="exp" id="a4" data-titulo="Rescorla–Wagner à mão">
-  <div><p class="num">Atividade 4 · 7 min · individual, com calculadora</p><h2>Rescorla–Wagner à mão</h2></div>
-  <p><span class="badge">V ← V + α·(λ − V)</span>, com α = 0,5. Com vários estímulos, o erro usa a <b>soma</b> dos V dos estímulos presentes, e cada um muda α × erro.</p>
-  <div class="q"><p class="qt"><i>a</i>Aquisição (λ = 1), começando de V = 0: calcule V depois dos ensaios 1, 2 e 3.</p>
+<section class="exp" id="a4" data-titulo="Rescorla–Wagner passo a passo">
+  <div><p class="num">Atividade 4 · 12 min · individual, com calculadora</p><h2>Rescorla–Wagner, passo a passo</h2></div>
+
+  <div class="story"><p><b>A situação.</b> O cão de Pavlov ouve uma campainha e, logo depois, recebe comida. No começo, a campainha não significa nada. Depois de alguns pares campainha → comida, ele saliva ao ouvir a campainha, antes da comida chegar. O que ele aprendeu foi uma <b>previsão</b>: “depois da campainha vem comida”.</p></div>
+
+  <p>Rescorla e Wagner (1972) escreveram essa previsão como um número e disseram como ele muda a cada ensaio (um ensaio = uma vez campainha + o que vier depois).</p>
+  <div class="gloss">
+    <div><b>V</b><span>quanto o animal <b>espera</b> comida ao ouvir a campainha. 0 = não espera nada; 1 = tem certeza.</span></div>
+    <div><b>λ</b><span>o que <b>de fato</b> aconteceu no ensaio: 1 se veio comida, 0 se não veio. (Lê-se “lambda”.)</span></div>
+    <div><b>λ − V</b><span>o <b>erro de predição</b>, a surpresa. Positivo: veio mais do que eu esperava. Negativo: veio menos.</span></div>
+    <div><b>α</b><span>o <b>passo</b>: que fração da surpresa eu corrijo em cada ensaio (entre 0 e 1). Um som alto e chamativo tem α maior.</span></div>
+  </div>
+  <p class="rule">V novo = V + α × (λ − V)</p>
+  <p>Em palavras: <b>ande uma fração α da distância entre o que você esperava e o que aconteceu</b>.</p>
+
+  <div class="worked"><p class="meta">Exemplo resolvido · ensaio 1, com α = 0,5</p>
+    <table class="dec"><tr><th>V antes</th><th>λ (veio comida)</th><th>erro = λ − V</th><th>mudança = α × erro</th><th>V depois</th></tr>
+    <tr><td>0</td><td>1</td><td>1 − 0 = 1</td><td>0,5 × 1 = 0,5</td><td class="hi">0,5</td></tr></table>
+    <p>O cão ainda não esperava nada (V = 0); a comida veio (λ = 1); a surpresa foi máxima (1) e ele corrigiu metade dela.</p></div>
+
+  <p class="meta">Experimente: cada toque é um ensaio</p>
+  <div class="rwbox">
+    <div class="rwbars" id="rwBars"></div>
+    <div class="btns"><button type="button" id="rwFood">Campainha + comida</button><button type="button" class="ghost" id="rwNone">Campainha sem comida</button><button type="button" class="ghost" id="rwReset">Recomeçar</button></div>
+    <div class="ctl"><label>α (passo) = <span id="rwAv">0,5</span><input type="range" id="rwA" min="0.1" max="1" step="0.1" value="0.5"></label></div>
+    <div class="tablewrap"><table class="log" id="rwLog"><tr><th>ensaio</th><th>V antes</th><th>λ</th><th>erro</th><th>α × erro</th><th>V depois</th></tr></table></div>
+  </div>
+
+  <div class="q"><p class="qt"><i>a</i>Aquisição. Continue o exemplo (α = 0,5, comida em todos os ensaios, V começa em 0). Quanto vale V depois dos ensaios 1, 2 e 3?</p>
     <div class="trio"><label>ensaio 1<input type="text" inputmode="decimal" name="a4a1"></label><label>ensaio 2<input type="text" inputmode="decimal" name="a4a2"></label><label>ensaio 3<input type="text" inputmode="decimal" name="a4a3"></label></div></div>
-  <div class="q"><p class="qt"><i>b</i>Partindo de V = 0,875, um ensaio de extinção (λ = 0). Quanto fica V?</p>
+  <div class="q"><p class="qt"><i>b</i>Os passos ficaram 0,5, depois 0,25, depois 0,125. Por que o aprendizado <b>desacelera</b>?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a4w" value="cansaço">o animal se cansa e presta menos atenção</label><label class="opt"><input type="radio" name="a4w" value="surpresa">a surpresa (λ − V) fica menor a cada ensaio</label><label class="opt"><input type="radio" name="a4w" value="alfa">o valor de α diminui com o tempo</label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Extinção. Depois de muitos ensaios, V = 0,875. Agora a campainha toca e a comida <b>não vem</b> (λ = 0). Quanto fica V?</p>
     <div class="inline"><label>V<input type="text" inputmode="decimal" name="a4b"></label></div></div>
-  <div class="q"><p class="qt"><i>c</i>Bloqueio: na fase 1, A + comida até V_A = 1. Na fase 2, AB + comida. Quanto vale V_B depois do 1º ensaio AB?</p>
-    <div class="inline"><label>V_B<input type="text" inputmode="decimal" name="a4c"></label></div></div>
-  <div class="q"><p class="qt"><i>d</i>Controle: só AB + comida desde o início (V_A = V_B = 0). Quanto vale V_B depois do 1º ensaio?</p>
-    <div class="inline"><label>V_B<input type="text" inputmode="decimal" name="a4d"></label></div></div>
-  <p class="meta">Simulador</p>
-  <canvas class="plot" id="rwC" width="600" height="300" aria-label="Valor previsto V ao longo dos ensaios"></canvas>
-  <div class="inline"><label style="flex:1 1 100%">protocolo<select id="rwP"><option value="acq">aquisição (1–10) e extinção (11–20)</option><option value="blk">bloqueio: A+ (1–10), AB+ (11–20)</option><option value="ctl">controle: AB+ (1–20)</option></select></label></div>
-  <div class="ctl"><label>α = <span id="rwAv">0,5</span><input type="range" id="rwA" min="0.05" max="1" step="0.05" value="0.5"></label></div>
+
+  <div class="story"><p><b>Dois sinais juntos.</b> Agora há uma luz (A) e um som (B). Quando os dois aparecem juntos, o animal soma as previsões: espera <b>V_A + V_B</b>. A surpresa é uma só, λ − (V_A + V_B), e <b>cada sinal presente</b> muda α × essa surpresa.</p></div>
+  <div class="worked"><p class="meta">O experimento do bloqueio (Kamin, 1969)</p>
+    <p><b>Fase 1:</b> só a luz A + comida, muitas vezes, até V_A = 1. <b>Fase 2:</b> luz A e som B juntos + comida. O som B foi pareado com a comida tantas vezes quanto quiser. Ele vai virar uma previsão?</p></div>
+  <div class="q"><p class="qt"><i>d</i>Antes de calcular: na fase 2, o som B vai ser aprendido?</p>
+    <div class="opts"><label class="opt"><input type="radio" name="a4p" value="sim">sim: B sempre vem com comida</label><label class="opt"><input type="radio" name="a4p" value="não">não: a comida já era prevista pela luz</label></div></div>
+  <div class="q"><p class="qt"><i>e</i>Agora calcule (α = 0,5). <b>Bloqueio:</b> V_A = 1 e V_B = 0 no início da fase 2. Quanto vale V_B depois do 1º ensaio luz + som + comida? <b>Controle:</b> outro grupo recebe só luz + som + comida desde o início (V_A = V_B = 0). Quanto vale V_B depois do 1º ensaio?</p>
+    <div class="pair"><label>V_B bloqueio<input type="text" inputmode="decimal" name="a4c"></label><label>V_B controle<input type="text" inputmode="decimal" name="a4d"></label></div></div>
+
+  <p class="meta">Simulador: 20 ensaios de cada protocolo</p>
+  <canvas class="plot" id="rwC" width="600" height="300" aria-label="Previsão V ao longo dos ensaios"></canvas>
+  <div class="inline"><label style="flex:1 1 100%">protocolo<select id="rwP"><option value="acq">aquisição (ensaios 1–10) e extinção (11–20)</option><option value="blk">bloqueio: luz + comida (1–10), luz e som + comida (11–20)</option><option value="ctl">controle: luz e som + comida (1–20)</option></select></label></div>
   <p class="readout" id="rwR"></p>
+  <p class="take"><b>A lição:</b> parear não basta. O animal só aprende quando é <b>surpreendido</b>. O som B foi pareado com a comida, mas não trazia informação nova, e por isso não foi aprendido.</p>
   <div class="send"><button data-send="a4">Enviar</button><span class="sent" data-status="a4"></span></div>
   <div class="fb" data-fb="a4" hidden></div>
 </section>
 
 <!-- ============ ATIVIDADE 5 ============ -->
-<section class="exp" id="a5" data-titulo="Erro de predição e dopamina">
-  <div><p class="num">Atividade 5 · 6 min · individual</p><h2>Erro de predição e dopamina</h2></div>
-  <p>Cadeia: <b>luz (s₀) → espera (s₁) → suco, r = 1</b>. <span class="badge">δ = r + γ·V(s′) − V(s)</span> e <span class="badge">V(s) ← V(s) + α·δ</span>, com γ = 1, α = 0,5 e V(s₀) = V(s₁) = 0 no início. A luz chega sem aviso: o valor antes dela é 0. Depois do suco, o valor é 0.</p>
-  <div class="q"><p class="qt"><i>a</i>Ensaio 1: δ na chegada do suco e o novo V(s₁).</p>
-    <div class="pair"><label>δ (suco)<input type="text" inputmode="decimal" name="a5a1"></label><label>V(s₁)<input type="text" inputmode="decimal" name="a5a2"></label></div></div>
-  <div class="q"><p class="qt"><i>b</i>Ensaio 2: δ na passagem s₀ → s₁ e δ na chegada do suco.</p>
-    <div class="pair"><label>δ (s₀ → s₁)<input type="text" inputmode="decimal" name="a5b1"></label><label>δ (suco)<input type="text" inputmode="decimal" name="a5b2"></label></div></div>
-  <div class="q"><p class="qt"><i>c</i>Depois de muitos ensaios, V(s₀) = V(s₁) = 1. Calcule δ quando a luz aparece, quando o suco chega e quando o suco falta.</p>
-    <div class="trio"><label>luz<input type="text" inputmode="decimal" name="a5c1"></label><label>suco<input type="text" inputmode="decimal" name="a5c2"></label><label>sem suco<input type="text" inputmode="decimal" name="a5c3"></label></div></div>
-  <div class="q"><p class="qt"><i>d</i>O que faz o neurônio de dopamina em cada momento (depois do aprendizado)?</p>
+<section class="exp" id="a5" data-titulo="Da surpresa à dopamina">
+  <div><p class="num">Atividade 5 · 10 min · individual</p><h2>Da surpresa à dopamina</h2></div>
+
+  <div class="story"><p><b>O experimento.</b> Schultz e colegas registraram neurônios de dopamina de macacos (no mesencéfalo, área tegmentar ventral e substância negra). Uma luz acende e, cerca de um segundo depois, o macaco recebe uma gota de suco.</p></div>
+  <figure><img src="img/aula04/f16_10_rpe.png" alt="Rasters e histogramas de um neurônio de dopamina: disparo na recompensa inesperada, disparo na pista quando a recompensa é prevista, e pausa quando a recompensa prevista não vem." loading="lazy" style="max-width:320px"><figcaption>De cima para baixo: suco sem aviso; luz e suco depois do aprendizado; luz e suco que não vem. Rolls (2023, Fig. 16.10), orig. Schultz (1998).</figcaption></figure>
+
+  <div class="q"><p class="qt"><i>a</i>Use a ideia de surpresa da atividade 4. O que o neurônio de dopamina faz em cada momento, <b>depois</b> que o macaco aprendeu?</p>
     <div class="match" id="daMatch"></div></div>
-  <p class="meta">Simulação: o erro δ ao longo de um ensaio (pista no passo 3, suco no passo 9, α = 0,3)</p>
+
+  <p>Rescorla–Wagner olha o ensaio inteiro como um bloco. Mas a dopamina responde <b>no tempo</b>: na luz, no suco, na falta do suco. O <b>aprendizado por diferença temporal</b> (TD) faz a mesma conta da atividade 4 a cada momento do ensaio.</p>
+  <div class="gloss">
+    <div><b>V(agora)</b><span>quanto suco eu espero receber daqui até o fim do ensaio, neste momento.</span></div>
+    <div><b>r</b><span>o suco que chegou agora (1 ou 0).</span></div>
+    <div><b>δ</b><span>a surpresa deste momento: (suco agora + o que espero a partir do próximo momento) − o que eu esperava antes.</span></div>
+  </div>
+  <p class="rule">δ = r + V(próximo) − V(agora) &nbsp; e &nbsp; V(agora) ← V(agora) + α × δ</p>
+  <p>Compare com Rescorla–Wagner: “o que aconteceu” agora é <b>r + V(próximo)</b>. Se nada mudou na minha previsão e não veio suco, δ = 0.</p>
+
+  <div class="worked"><p class="meta">Um ensaio em três momentos · α = 0,5 · no início, V(luz) = V(espera) = 0</p>
+    <p>Momentos: <b>antes da luz</b> (a luz vem sem aviso: a previsão é sempre 0) → <b>luz</b> → <b>espera</b> → <b>suco</b> → fim (depois do suco, a previsão é 0).</p>
+    <div class="tablewrap"><table class="dec"><tr><th>passagem</th><th>r</th><th>V(próximo) − V(agora)</th><th>δ no ensaio 1</th></tr>
+    <tr><td>antes → luz</td><td>0</td><td>V(luz) − 0 = 0</td><td>0</td></tr>
+    <tr><td>luz → espera</td><td>0</td><td>V(espera) − V(luz) = 0</td><td>0</td></tr>
+    <tr><td>espera → suco</td><td>1</td><td>0 − V(espera) = 0</td><td class="hi">1</td></tr></table></div>
+    <p>No ensaio 1 só o suco surpreende: δ = 1 na chegada do suco, como no neurônio antes do aprendizado. Então V(espera) sobe para 0 + 0,5 × 1 = 0,5.</p></div>
+
+  <div class="q"><p class="qt"><i>b</i>Ensaio 2 (agora V(espera) = 0,5 e V(luz) = 0). Calcule δ na passagem luz → espera e na chegada do suco.</p>
+    <div class="pair"><label>δ luz → espera<input type="text" inputmode="decimal" name="a5b1"></label><label>δ suco<input type="text" inputmode="decimal" name="a5b2"></label></div></div>
+  <div class="q"><p class="qt"><i>c</i>Depois de muitos ensaios, V(luz) = V(espera) = 1. Calcule δ quando a luz acende (antes → luz), quando o suco chega e quando o suco <b>falta</b>.</p>
+    <div class="trio"><label>luz<input type="text" inputmode="decimal" name="a5c1"></label><label>suco<input type="text" inputmode="decimal" name="a5c2"></label><label>sem suco<input type="text" inputmode="decimal" name="a5c3"></label></div></div>
+
+  <p class="meta">Simulação: a surpresa δ em cada momento de um ensaio (luz no passo 3, suco no passo 9, α = 0,3). Azul = δ positivo (surto de dopamina); vermelho = δ negativo (pausa).</p>
   <canvas class="plot" id="tdC" width="600" height="280" aria-label="Erro de predição em cada instante do ensaio escolhido"></canvas>
   <div class="ctl"><label>ensaio nº <span id="tdNv">1</span><input type="range" id="tdN" min="1" max="60" step="1" value="1"></label>
     <label style="display:flex;gap:8px;align-items:center;font:600 14px var(--body)"><input type="checkbox" id="tdO" style="width:22px;height:22px;accent-color:var(--accent)">sem suco neste ensaio</label></div>
+  <p class="meta">Arraste o ensaio de 1 a 60: a barra azul sai do suco e “anda para trás” até a luz. Depois marque “sem suco”.</p>
+  <p class="take"><b>A lição:</b> a dopamina não sinaliza o prazer do suco, e sim a <b>surpresa</b>: melhor que o esperado (surto), igual (nada), pior (pausa). É o mesmo erro de predição de Rescorla–Wagner, calculado momento a momento.</p>
   <div class="send"><button data-send="a5">Enviar</button><span class="sent" data-status="a5"></span></div>
   <div class="fb" data-fb="a5" hidden></div>
 </section>
 
 <!-- ============ ATIVIDADE 6 ============ -->
 <section class="exp" id="a6" data-titulo="O dilema do bandido">
-  <div><p class="num">Atividade 6 · 5 min · individual · opcional</p><h2>O dilema do bandido</h2></div>
-  <p>Antes das contas, jogue: cada máquina paga 1 ponto com uma probabilidade fixa que você não conhece. Você tem 20 jogadas.</p>
+  <div><p class="num">Atividade 6 · 8 min · individual</p><h2>Agir: explorar ou aproveitar?</h2></div>
+  <p>Nas atividades 4 e 5 o animal só <b>observava</b>. Agora ele <b>escolhe</b>, e a recompensa depende da escolha. Jogue: cada máquina paga 1 ponto com uma probabilidade fixa que você não conhece. Você tem 20 jogadas.</p>
   <div class="bandit"><button type="button" class="ghost" id="bL">Máquina esquerda</button><button type="button" class="ghost" id="bR">Máquina direita</button></div>
   <p class="kpi" id="bK"></p>
   <div class="btns"><button type="button" class="ghost" id="bReset">Jogar de novo</button></div>
+  <p>Como você decidiu? Para escolher bem, é preciso <b>estimar quanto vale cada máquina</b> (Q) e, ao mesmo tempo, <b>continuar testando</b> a que parece pior, porque a estimativa pode estar errada. É o dilema entre <b>aproveitar</b> (escolher a que parece melhor) e <b>explorar</b> (testar a outra).</p>
+  <div class="gloss">
+    <div><b>Q</b><span>o valor estimado de uma máquina: a média do que ela pagou até agora.</span></div>
+    <div><b>guloso</b><span>sempre escolhe a máquina de maior Q.</span></div>
+    <div><b>ε-guloso</b><span>na maior parte das vezes é guloso, mas em uma fração ε das jogadas escolhe ao acaso, para explorar.</span></div>
+  </div>
+  <p>Atualizar uma média é a mesma regra das atividades 4 e 5, com passo 1/n (n = vezes que jogou naquela máquina): <span class="badge">Q ← Q + (1/n)·(r − Q)</span>.</p>
   <p>Agora as contas: a máquina <b>A</b> paga 1 com probabilidade <b>0,8</b>; a <b>B</b>, com <b>0,4</b>.</p>
   <div class="q"><p class="qt"><i>a</i>Escolhendo sempre ao acaso, qual a recompensa média por jogada?</p>
     <div class="inline"><label>recompensa média<input type="text" inputmode="decimal" name="a6a"></label></div></div>
-  <div class="q"><p class="qt"><i>b</i>Um agente ε-guloso com ε = 0,1 já sabe que A é melhor (ao explorar, escolhe A ou B com chance igual). Qual a recompensa média?</p>
+  <div class="q"><p class="qt"><i>b</i>Um agente ε-guloso com ε = 0,1 já sabe que A é melhor. Em 90% das jogadas ele escolhe A; nos outros 10% sorteia entre A e B. Qual a recompensa média?</p>
     <div class="inline"><label>recompensa média<input type="text" inputmode="decimal" name="a6b"></label></div></div>
-  <div class="q"><p class="qt"><i>c</i>Na primeira jogada em cada máquina, A deu 0 e B deu 1. O guloso puro (ε = 0) estima o valor de cada uma pela média do que recebeu. O que ele faz daí em diante, e quanto ganha por jogada?</p>
+  <div class="q"><p class="qt"><i>c</i>Na primeira jogada em cada máquina, A deu 0 e B deu 1. O guloso puro (ε = 0) estima cada máquina pela média do que recebeu. O que ele faz daí em diante, e quanto ganha por jogada?</p>
     <div class="opts"><label class="opt"><input type="radio" name="a6c" value="B para sempre">fica em B para sempre</label><label class="opt"><input type="radio" name="a6c" value="volta para A">logo volta para A</label><label class="opt"><input type="radio" name="a6c" value="alterna">alterna entre as duas</label></div>
     <div class="inline"><label>ganho por jogada<input type="text" inputmode="decimal" name="a6c2"></label></div></div>
-  <div class="q"><p class="qt"><i>d</i>Com Q_B = 1 depois de 1 jogada, a 2ª jogada em B dá 0. Pela média incremental <span class="badge">Q ← Q + (1/n)·(r − Q)</span>, quanto fica Q_B?</p>
+  <div class="q"><p class="qt"><i>d</i>Depois de 1 jogada, Q_B = 1. A 2ª jogada em B dá 0 (n = 2). Quanto fica Q_B?</p>
     <div class="inline"><label>Q_B<input type="text" inputmode="decimal" name="a6d"></label></div></div>
   <p class="meta">Agente ε-guloso: 300 jogadas, média de 200 repetições</p>
   <canvas class="plot" id="egC" width="600" height="260" aria-label="Recompensa média do agente ao longo das jogadas"></canvas>
   <div class="ctl"><label>ε = <span id="egEv">0,1</span><input type="range" id="egE" min="0" max="1" step="0.05" value="0.1"></label></div>
   <div class="btns"><button type="button" class="ghost" id="egRun">Rodar o agente</button></div>
   <p class="readout" id="egR"></p>
+  <p class="meta">Teste ε = 0 (nunca explora), ε = 0,1 e ε = 0,5 (explora demais).</p>
   <div class="send"><button data-send="a6">Enviar</button><span class="sent" data-status="a6"></span></div>
   <div class="fb" data-fb="a6" hidden></div>
+</section>
+
+<section class="exp intro" id="rl-resumo">
+  <div><p class="num">Resumo da parte 3</p><h2>Uma regra, três usos</h2></div>
+  <div class="tablewrap"><table class="dec sum"><tr><th></th><th>o que se estima</th><th>a surpresa</th><th>o passo</th></tr>
+  <tr><td><b>Rescorla–Wagner</b></td><td>quanto um sinal prevê de recompensa (V)</td><td>λ − (soma dos V presentes)</td><td>α</td></tr>
+  <tr><td><b>TD e dopamina</b></td><td>quanto ainda vem, em cada momento (V)</td><td>r + V(próximo) − V(agora)</td><td>α</td></tr>
+  <tr><td><b>Bandido</b></td><td>quanto vale cada escolha (Q)</td><td>r − Q</td><td>1/n</td></tr></table></div>
+  <p>O sinal de ensino nos três casos é um <b>número só</b>, melhor ou pior que o esperado. É isso que distingue o aprendizado por reforço do supervisionado, em que cada saída recebe sua resposta certa.</p>
 </section>
 
 <!-- ============ ATIVIDADE 7 ============ -->
@@ -415,9 +518,28 @@ $('#kmA').addEventListener('click', kmAssign); $('#kmU').addEventListener('click
 $('#kmN').addEventListener('click', kmNew); $('#kmK').addEventListener('input', kmInit); kmNew();
 
 /* ---------- Atividade 4: Rescorla–Wagner ---------- */
+/* passo a passo: cada toque é um ensaio */
+let rwV = 0, rwT = 0;
+function rwBars(lam) {
+  const pct = (x) => Math.max(0, Math.min(100, 100 * x));
+  $('#rwBars').innerHTML = `<div class="rwb"><span class="lbl">previsão V</span><div class="trk"><div class="fill" style="width:${pct(rwV)}%"></div>${lam === null ? '' : `<div class="lam" style="left:${pct(lam)}%"><i style="${lam ? 'right:4px;left:auto' : 'left:4px'}">λ = ${lam}</i></div>`}</div><span class="v">${f2(rwV, 3)}</span></div>
+    <p class="rwmsg">${rwT === 0 ? 'Ensaio 0: o cão ainda não espera nada (V = 0). Toque em um botão.' : lam === null ? '' : `A distância entre V e λ antes do ensaio era a surpresa; a barra andou uma fração α dela.`}</p>`;
+}
+function rwStep(lam) {
+  const a = +$('#rwA').value, v0 = rwV, e = lam - v0, dv = a * e; rwV = v0 + dv; rwT++;
+  const tr = document.createElement('tr'); tr.innerHTML = `<td>${rwT}</td><td>${f2(v0, 3)}</td><td>${lam}</td><td>${f2(e, 3)}</td><td>${f2(dv, 3)}</td><td><b>${f2(rwV, 3)}</b></td>`;
+  $('#rwLog').appendChild(tr); rwBars(lam);
+}
+function rwRestart() { rwV = 0; rwT = 0; $$('#rwLog tr').slice(1).forEach(r => r.remove()); rwBars(null); }
+$('#rwFood').addEventListener('click', () => rwStep(1)); $('#rwNone').addEventListener('click', () => rwStep(0));
+$('#rwReset').addEventListener('click', rwRestart);
+$('#rwA').addEventListener('input', () => { $('#rwAv').textContent = f2(+$('#rwA').value, 1); });
+rwRestart();
+
+/* simulador de protocolos (α fixo = 0,5) */
 const RW = setupCanvas($('#rwC'));
 function rwDraw() {
-  const P = $('#rwP').value, a = +$('#rwA').value; $('#rwAv').textContent = f2(a, 2).replace(/0$/, '');
+  const P = $('#rwP').value, a = 0.5;
   let vA = 0, vB = 0; const A = [0], B = [0];
   for (let t = 1; t <= 20; t++) {
     if (P === 'acq') { const lam = t <= 10 ? 1 : 0; vA += a * (lam - vA); }
@@ -428,18 +550,20 @@ function rwDraw() {
   const { g, w, h } = RW; g.clearRect(0, 0, w, h); const X = (t) => 40 + (w - 60) * t / 20, Y = (v) => h - 30 - v * (h - 60);
   g.strokeStyle = css('--line'); g.lineWidth = 1; [0, 0.5, 1].forEach(v => { g.beginPath(); g.moveTo(40, Y(v)); g.lineTo(w - 20, Y(v)); g.stroke(); });
   g.fillStyle = css('--muted'); g.font = '19px ui-monospace,monospace'; g.fillText('1', 20, Y(1) + 6); g.fillText('0,5', 2, Y(0.5) + 6); g.fillText('0', 20, Y(0) + 6); g.fillText('ensaio', w - 80, h - 6);
-  g.beginPath(); g.moveTo(X(10), 10); g.lineTo(X(10), h - 30); g.stroke();
+  if (P !== 'ctl') { g.setLineDash([4, 4]); g.beginPath(); g.moveTo(X(10), 10); g.lineTo(X(10), h - 30); g.stroke(); g.setLineDash([]);
+    g.fillText(P === 'acq' ? 'sem comida →' : 'luz + som →', X(10) + 6, h - 40); }
   const line = (V, col) => { g.strokeStyle = col; g.fillStyle = col; g.lineWidth = 2.5; g.beginPath(); V.forEach((v, t) => t ? g.lineTo(X(t), Y(v)) : g.moveTo(X(t), Y(v))); g.stroke(); V.forEach((v, t) => { g.beginPath(); g.arc(X(t), Y(v), 3, 0, 7); g.fill(); }); };
   line(A, '#6d28d9'); if (P !== 'acq') line(B, '#b45309');
-  g.font = '22px ui-monospace,monospace'; g.fillStyle = '#6d28d9'; g.fillText(P === 'acq' ? 'V' : 'V_A', X(1), 22); if (P !== 'acq') { g.fillStyle = '#b45309'; g.fillText('V_B', X(1) + 80, 22); }
-  $('#rwR').textContent = P === 'acq' ? `V após os ensaios 1, 2, 3: ${f2(A[1], 3)}; ${f2(A[2], 3)}; ${f2(A[3], 3)} · 1º ensaio de extinção (partindo de V ≈ 1): ${f2(A[11], 3)}` :
-    `no fim: V_A = ${f2(vA)} · V_B = ${f2(vB)}`;
+  g.font = '22px ui-monospace,monospace'; g.fillStyle = '#6d28d9'; g.fillText(P === 'acq' ? 'V (campainha)' : 'V_A (luz)', X(1), 24); if (P !== 'acq') { g.fillStyle = '#b45309'; g.fillText('V_B (som)', X(1) + 150, 24); }
+  $('#rwR').textContent = P === 'acq' ? 'Subida rápida no começo, depois cada vez mais lenta: a surpresa diminui. Sem comida (ensaio 11 em diante), V cai do mesmo jeito.' :
+    P === 'blk' ? `No fim: V_A = ${f2(vA)} e V_B = ${f2(vB)}. O som nunca foi aprendido: a luz já previa a comida.` :
+    `No fim: V_A = ${f2(vA)} e V_B = ${f2(vB)}. Juntos desde o início, luz e som dividem a previsão.`;
 }
-$('#rwP').addEventListener('change', rwDraw); $('#rwA').addEventListener('input', rwDraw); rwDraw();
+$('#rwP').addEventListener('change', rwDraw); rwDraw();
 
 /* ---------- Atividade 5: TD ---------- */
 const DA = ['surto de disparo', 'nada muda', 'pausa abaixo da linha de base'];
-const DAQ = [['quando a luz aparece', 'surto de disparo'], ['quando o suco chega', 'nada muda'], ['quando o suco falta', 'pausa abaixo da linha de base']];
+const DAQ = [['quando a luz acende', 'surto de disparo'], ['quando o suco previsto chega', 'nada muda'], ['quando o suco previsto falta', 'pausa abaixo da linha de base']];
 $('#daMatch').innerHTML = DAQ.map(([t], k) => `<div class="m"><span>${t}</span>${selHTML('da' + k, DA)}</div>`).join('');
 const TD = setupCanvas($('#tdC'));
 function tdTrial(n, omit) {
@@ -458,7 +582,7 @@ function tdDraw() {
   const n = +$('#tdN').value; $('#tdNv').textContent = n; const d = tdTrial(n, $('#tdO').checked);
   const { g, w, h } = TD; g.clearRect(0, 0, w, h); const X = (t) => 30 + (w - 50) * (t + 0.5) / 12, Y = (v) => h / 2 - v * (h * 0.36);
   g.strokeStyle = css('--line'); g.lineWidth = 1; g.beginPath(); g.moveTo(24, Y(0)); g.lineTo(w - 16, Y(0)); g.stroke();
-  [[3, 'pista', '#0d9488'], [9, 'suco', '#b45309']].forEach(([t, l, c]) => { g.strokeStyle = c; g.setLineDash([4, 4]); g.beginPath(); g.moveTo(X(t), 16); g.lineTo(X(t), h - 10); g.stroke(); g.setLineDash([]); g.fillStyle = c; g.font = '20px ui-monospace,monospace'; g.fillText(l, X(t) + 4, 16); });
+  [[3, 'luz', '#0d9488'], [9, 'suco', '#b45309']].forEach(([t, l, c]) => { g.strokeStyle = c; g.setLineDash([4, 4]); g.beginPath(); g.moveTo(X(t), 16); g.lineTo(X(t), h - 10); g.stroke(); g.setLineDash([]); g.fillStyle = c; g.font = '20px ui-monospace,monospace'; g.fillText(l, X(t) + 4, 16); });
   d.forEach((v, t) => { g.fillStyle = v >= 0 ? '#1a56db' : '#dc2626'; const y0 = Y(0), y1 = Y(v); g.fillRect(X(t) - 12, Math.min(y0, y1), 24, Math.abs(y1 - y0)); });
   g.fillStyle = css('--muted'); g.font = '19px ui-monospace,monospace'; g.fillText('+1', 2, Y(1) + 6); g.fillText('−1', 2, Y(-1) + 6); g.fillText('tempo →', w - 100, h - 6);
 }
@@ -484,7 +608,7 @@ function egRun() {
   const sm = avg.map((_, t) => { const a = Math.max(0, t - 9); let s = 0; for (let k = a; k <= t; k++) s += avg[k]; return s / (t - a + 1); });
   g.strokeStyle = css('--accent'); g.lineWidth = 2.5; g.beginPath(); sm.forEach((v, t) => t ? g.lineTo(X(t), Y(v)) : g.moveTo(X(t), Y(v))); g.stroke();
   const last = avg.slice(-50).reduce((s, v) => s + v, 0) / 50;
-  $('#egR').textContent = `ε = ${f2(eps)} · recompensa média nas últimas 50 jogadas = ${f2(last)} · presos no braço pior: ${Math.round(100 * stuck / R)}% das repetições`;
+  $('#egR').textContent = `ε = ${f2(eps)} · recompensa média nas últimas 50 jogadas = ${f2(last)} · presos na máquina pior: ${Math.round(100 * stuck / R)}% das repetições`;
 }
 $('#egE').addEventListener('input', () => { $('#egEv').textContent = f2(+$('#egE').value).replace(/0$/, ''); });
 $('#egRun').addEventListener('click', egRun); egRun();
@@ -547,29 +671,32 @@ const ACT = {
   },
   a4() {
     const oa = okNum('a4a1', 0.5, 0.005) & okNum('a4a2', 0.75, 0.005) & okNum('a4a3', 0.875, 0.006);
-    const ob = okNum('a4b', 0.4375, 0.01), oc = okNum('a4c', 0, 0.001), od = okNum('a4d', 0.5, 0.005);
-    const s = !!oa + ob + oc + od;
-    return { score: `${s}/4`, resp: `V1-3=${['a4a1', 'a4a2', 'a4a3'].map(n => num(n) ?? '—').join(', ')} | ext=${num('a4b') ?? '—'} | bloq V_B=${num('a4c') ?? '—'} | ctrl V_B=${num('a4d') ?? '—'}`,
-      fb: `<p class="score">${s} de 4</p><ul>
-      <li>${tag(oa)} <b>0,5 → 0,75 → 0,875</b>: erros 1; 0,5; 0,25 — cada ensaio fecha metade da distância até λ.</li>
-      <li>${tag(ob)} 0,875 + 0,5 × (0 − 0,875) = <b>0,4375 ≈ 0,44</b>.</li>
-      <li>${tag(oc)} Erro = 1 − (V_A + V_B) = 1 − 1 = 0 → <b>V_B = 0</b>: bloqueio.</li>
-      <li>${tag(od)} Erro = 1 − 0 = 1 → <b>V_B = 0,5</b> (e V_A = 0,5): A e B dividem o valor.</li></ul>
+    const w = val('a4w'); markRadio('a4w', 'surpresa'); const ow = w === 'surpresa';
+    const ob = okNum('a4b', 0.4375, 0.01);
+    const pr = val('a4p'); markRadio('a4p', 'não'); const op = pr === 'não';
+    const oc = okNum('a4c', 0, 0.001) & okNum('a4d', 0.5, 0.005);
+    const s = !!oa + ow + ob + op + !!oc;
+    return { score: `${s}/5`, resp: `V1-3=${['a4a1', 'a4a2', 'a4a3'].map(n => num(n) ?? '—').join(', ')} | desacelera: ${w || '—'} | ext=${num('a4b') ?? '—'} | previsão bloqueio: ${pr || '—'} | V_B bloq=${num('a4c') ?? '—'} ctrl=${num('a4d') ?? '—'}`,
+      fb: `<p class="score">${s} de 5</p><ul>
+      <li>${tag(oa)} Ensaio 1: 0 + 0,5 × (1 − 0) = <b>0,5</b>. Ensaio 2: 0,5 + 0,5 × (1 − 0,5) = <b>0,75</b>. Ensaio 3: 0,75 + 0,5 × (1 − 0,75) = <b>0,875</b>.</li>
+      <li>${tag(ow)} A <b>surpresa diminui</b>: 1, depois 0,5, depois 0,25. Como o passo é sempre metade da surpresa, os passos encolhem. α não muda e nada no modelo representa cansaço.</li>
+      <li>${tag(ob)} Erro = 0 − 0,875 = −0,875 (surpresa negativa: veio menos que o esperado). V = 0,875 + 0,5 × (−0,875) = <b>0,4375 ≈ 0,44</b>. A extinção é a mesma regra com λ = 0.</li>
+      <li>${tag(op)} <b>Não</b>: na fase 2 a comida já era prevista pela luz.</li>
+      <li>${tag(!!oc)} Bloqueio: surpresa = 1 − (V_A + V_B) = 1 − (1 + 0) = 0 → V_B = 0 + 0,5 × 0 = <b>0</b>. Controle: surpresa = 1 − (0 + 0) = 1 → V_B = <b>0,5</b> (e V_A também 0,5: os dois dividem).</li></ul>
       <figure><img src="img/aula04/g7_rw.png" alt="Curva de aquisição e extinção do valor previsto, e barras mostrando V_B igual a zero no bloqueio e 0,5 no controle." loading="lazy"></figure>
-      <p>Waelti, Dickinson & Schultz (2001): neurônios de dopamina também mostram bloqueio.</p>` };
+      <p>Bloqueio é o resultado que tornou o modelo famoso: uma regra de associação por simples coocorrência (como a de Hebb) previa que B seria aprendido. Waelti, Dickinson & Schultz (2001) mostraram que os neurônios de dopamina também “bloqueiam”: quase não respondem ao estímulo bloqueado.</p>` };
   },
   a5() {
-    const oa = okNum('a5a1', 1, 0.01) & okNum('a5a2', 0.5, 0.01), ob = okNum('a5b1', 0.5, 0.01) & okNum('a5b2', 0.5, 0.01);
-    const oc = okNum('a5c1', 1, 0.01) & okNum('a5c2', 0, 0.01) & okNum('a5c3', -1, 0.01);
     let odn = 0; DAQ.forEach(([, c], k) => { const e = $(`[name="da${k}"]`); const ok = e.value === c; markEl(e, ok); odn += ok; });
-    const s = !!oa + !!ob + !!oc + (odn === 3);
-    return { score: `${s}/4`, resp: `e1: δ=${num('a5a1') ?? '—'} V1=${num('a5a2') ?? '—'} | e2: ${num('a5b1') ?? '—'}, ${num('a5b2') ?? '—'} | final: ${['a5c1', 'a5c2', 'a5c3'].map(n => num(n) ?? '—').join(', ')} | DA: ${DAQ.map((_, k) => $(`[name="da${k}"]`).value || '—').join(' / ')}`,
-      fb: `<p class="score">${s} de 4</p><ul>
-      <li>${tag(oa)} Ensaio 1: δ = 1 + 0 − 0 = <b>1</b>; V(s₁) = 0 + 0,5 × 1 = <b>0,5</b>.</li>
-      <li>${tag(ob)} Ensaio 2: s₀ → s₁: δ = 0 + 0,5 − 0 = <b>0,5</b>; suco: δ = 1 − 0,5 = <b>0,5</b>. O valor passa para trás, um passo por ensaio.</li>
-      <li>${tag(oc)} Depois do aprendizado: luz <b>+1</b> (= V(s₀) − 0); suco <b>0</b> (1 + 0 − 1); sem suco <b>−1</b> (0 + 0 − 1).</li>
-      <li>${tag(odn === 3)} <b>Surto</b> na luz · <b>nada</b> no suco previsto · <b>pausa</b> quando o suco falta — o que Schultz registrou.</li></ul>
-      <figure><img src="img/aula04/f16_10_rpe.png" alt="Rasters e histogramas de um neurônio de dopamina: disparo na recompensa inesperada, disparo na pista quando a recompensa é prevista, e pausa quando a recompensa prevista não vem." loading="lazy" style="max-width:320px"><figcaption>Rolls (2023, Fig. 16.10), orig. Schultz (1998).</figcaption></figure>` };
+    const ob = okNum('a5b1', 0.5, 0.01) & okNum('a5b2', 0.5, 0.01);
+    const oc = okNum('a5c1', 1, 0.01) & okNum('a5c2', 0, 0.01) & okNum('a5c3', -1, 0.01);
+    const s = (odn === 3) + !!ob + !!oc;
+    return { score: `${s}/3`, resp: `DA: ${DAQ.map((_, k) => $(`[name="da${k}"]`).value || '—').join(' / ')} | e2: ${num('a5b1') ?? '—'}, ${num('a5b2') ?? '—'} | final: ${['a5c1', 'a5c2', 'a5c3'].map(n => num(n) ?? '—').join(', ')}`,
+      fb: `<p class="score">${s} de 3</p><ul>
+      <li>${tag(odn === 3)} <b>Surto</b> quando a luz acende (ela agora traz a notícia boa, sem aviso) · <b>nada</b> quando o suco previsto chega (sem surpresa) · <b>pausa</b> quando o suco falta (pior que o esperado). É o que Schultz registrou.</li>
+      <li>${tag(ob)} Luz → espera: δ = 0 + V(espera) − V(luz) = 0 + 0,5 − 0 = <b>0,5</b>. Suco: δ = 1 + 0 − V(espera) = 1 − 0,5 = <b>0,5</b>. A surpresa começou a “passar para trás”: parte dela agora aparece antes do suco.</li>
+      <li>${tag(oc)} Luz: δ = 0 + V(luz) − 0 = <b>+1</b> (antes da luz nada era previsto). Suco: δ = 1 + 0 − V(espera) = 1 − 1 = <b>0</b>. Sem suco: δ = 0 + 0 − 1 = <b>−1</b>.</li></ul>
+      <p>Schultz, Dayan & Montague (1997) mostraram que esse δ do aprendizado por diferença temporal descreve os três padrões do neurônio de dopamina. Detalhes do TD (desconto γ, valores de ações) ficam para as aulas de reforço.</p>` };
   },
   a6() {
     const oa = okNum('a6a', 0.6, 0.01), ob = okNum('a6b', 0.78, 0.01);
@@ -577,10 +704,10 @@ const ACT = {
     const s = oa + ob + (c === 'B para sempre') + oc2 + od;
     return { score: `${s}/5`, resp: `acaso=${num('a6a') ?? '—'} | ε0,1=${num('a6b') ?? '—'} | guloso: ${c || '—'}, ${num('a6c2') ?? '—'} | Q_B=${num('a6d') ?? '—'} | jogo: ${band.tot}/${band.n}`,
       fb: `<p class="score">${s} de 5</p><ul>
-      <li>${tag(oa)} Ao acaso: (0,8 + 0,4)/2 = <b>0,6</b>.</li>
-      <li>${tag(ob)} P(A) = 0,9 + 0,05 = 0,95 → 0,95 × 0,8 + 0,05 × 0,4 = <b>0,78</b>.</li>
-      <li>${tag(c === 'B para sempre' && oc2)} <b>Fica em B para sempre</b> e ganha <b>0,4</b>: Q_B (a média de B, que inclui aquele 1) nunca chega a 0 = Q_A, e A nunca mais é testada.</li>
-      <li>${tag(od)} Q_B = 1 + ½ × (0 − 1) = <b>0,5</b> — a média de 1 e 0.</li></ul>
+      <li>${tag(oa)} Ao acaso, metade das vezes em cada: (0,8 + 0,4)/2 = <b>0,6</b>.</li>
+      <li>${tag(ob)} A é escolhida em 90% + metade dos 10% = 95% das jogadas: 0,95 × 0,8 + 0,05 × 0,4 = <b>0,78</b>. Explorar custa pouco (0,02 a menos que o ideal, 0,8).</li>
+      <li>${tag(c === 'B para sempre' && oc2)} Q_A = 0 e Q_B = 1: ele escolhe B. Q_B, a média de B, sempre inclui aquele primeiro 1 e nunca chega a 0. Então A nunca mais é testada: <b>fica em B para sempre</b> e ganha <b>0,4</b>. Sem explorar, um azar no início vira um erro permanente.</li>
+      <li>${tag(od)} Q_B = 1 + ½ × (0 − 1) = <b>0,5</b>, a média de 1 e 0. É a regra de Rescorla–Wagner com passo 1/n.</li></ul>
       <figure><img src="img/aula04/g9_bandit.png" alt="Recompensa média e porcentagem de escolhas do braço melhor para epsilon 0, 0,1 e 0,5: o guloso puro fica preso no braço pior em cerca de um terço das vezes." loading="lazy"></figure>` };
   },
   a7() {
