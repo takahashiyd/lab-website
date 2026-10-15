@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Retorno auditivo atrasado</title>
+<meta name="description" content="Demonstração de retorno auditivo atrasado (DAF): o microfone volta pelos fones com o atraso escolhido.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#142033; --muted:#5b6879; --line:#d8dee6;
+  --accent:#0e7c86; --accent-ink:#ffffff; --you:#c9771a; --soft:#e5f1f2; --warn:#a33a2a; --warnsoft:#fbeae6;
+  --display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --warnsoft:#3a1f1a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --warnsoft:#3a1f1a; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:17px/1.5 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 64px;display:grid;gap:20px}
+header{display:grid;gap:8px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(32px,8vw,50px)/1 var(--display);font-stretch:118%;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font:750 22px/1.15 var(--display);font-stretch:108%;margin:0}
+p{margin:0;max-width:65ch}
+.lead{color:var(--muted)}
+.top{display:flex;flex-wrap:wrap;gap:6px 16px;font:600 14px/1.4 var(--body)}
+.top a{color:var(--accent)}
+.warn{background:var(--warnsoft);border-radius:10px;padding:12px 14px;font-size:15px;display:grid;gap:4px}
+.warn b{color:var(--warn)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:16px;min-width:0}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+button{font:700 16px/1 var(--display);border:0;border-radius:10px;padding:14px 18px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px}
+button.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+button.ghost.on{border-color:var(--accent);color:var(--accent);background:var(--soft)}
+button.big{width:100%;font-size:22px;padding:20px;font-stretch:110%}
+button.stop{background:var(--warn);color:#fff}
+button:disabled{opacity:.4;cursor:default}
+button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.delay{display:grid;gap:8px}
+.delay .val{font:800 clamp(48px,14vw,80px)/1 var(--display);font-stretch:112%;color:var(--you);font-variant-numeric:tabular-nums}
+.delay .val small{font:600 20px var(--mono);color:var(--muted);margin-left:6px}
+label{font:600 14px/1.2 var(--mono);color:var(--muted)}
+input[type=range]{width:100%;accent-color:var(--accent);height:32px}
+.presets{flex-wrap:nowrap}.presets button{flex:1 1 0;min-width:0;padding:12px 4px;font-size:15px}
+.meter{height:12px;background:var(--bg);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:var(--accent);transition:width .05s}
+.readout{font:500 14px/1.45 var(--mono);color:var(--muted)}
+.ab{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ab button{font-size:18px;padding:18px 8px}
+.texto{font:600 clamp(20px,5vw,26px)/1.45 var(--body);background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:18px}
+ol{margin:0;padding-left:22px;display:grid;gap:6px;max-width:65ch}
+footer{font-size:13px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <nav class="top"><a href="aula04.html#e4">← Laboratório da aula 4</a><a href="estudo/aula04.html">Material de estudo</a></nav>
+    <span class="eyebrow">Bases neurais da comunicação humana · Aula 4</span>
+    <h1>Retorno auditivo atrasado</h1>
+    <p class="lead">O microfone capta sua voz e ela volta pelos fones alguns milissegundos depois. Com cerca de 200 ms, muita gente fluente passa a falar mais devagar, mais alto e com repetições (Lee, 1951).</p>
+    <div class="warn">
+      <span><b>Use fones com fio.</b> Fones Bluetooth acrescentam o próprio atraso (150–250 ms) e o valor na tela deixa de valer.</span>
+      <span>Sem fones, o som do alto-falante volta para o microfone e vira microfonia. Comece com o volume baixo.</span>
+    </div>
+  </header>
+
+  <section class="card">
+    <button class="big" id="go">Ligar o microfone</button>
+    <p class="readout" id="msg">O navegador vai pedir permissão para usar o microfone. Nada é gravado nem enviado: o som só passa pelo aparelho.</p>
+
+    <div class="delay">
+      <label for="d">Atraso</label>
+      <div class="val"><span id="dv">200</span><small>ms</small></div>
+      <input type="range" id="d" min="0" max="500" step="10" value="200">
+      <div class="row presets" role="group" aria-label="Atrasos prontos">
+        <button class="ghost" data-ms="0">0</button>
+        <button class="ghost" data-ms="100">100</button>
+        <button class="ghost on" data-ms="200">200</button>
+        <button class="ghost" data-ms="300">300</button>
+        <button class="ghost" data-ms="400">400</button>
+      </div>
+    </div>
+
+    <div class="ab" role="group" aria-label="Comparar com e sem atraso">
+      <button class="ghost" id="off">Sem atraso</button>
+      <button class="ghost on" id="on">Com atraso</button>
+    </div>
+
+    <div class="delay">
+      <label for="vol">Volume nos fones</label>
+      <input type="range" id="vol" min="0" max="3" step="0.05" value="1">
+      <label>Nível do microfone</label>
+      <div class="meter" aria-hidden="true"><i id="lvl"></i></div>
+    </div>
+    <p class="readout" id="lat"></p>
+  </section>
+
+  <section class="card">
+    <h2>Texto para ler em voz alta</h2>
+    <p class="texto">Numa manhã de chuva, a feira da praça abriu mais tarde. Os vendedores cobriram as bancas de lona azul, e o cheiro de café e tapioca tomou conta da rua. Uma menina contava as laranjas em voz alta, duas a duas, enquanto o avô pesava o feijão e conversava com cada freguês que passava.</p>
+    <ol>
+      <li>Coloque os fones no voluntário e ligue o microfone.</li>
+      <li>Peça que leia o texto <b>sem atraso</b>, depois <b>com 200 ms</b>. Cronometre as duas leituras.</li>
+      <li>Compare 100, 200 e 400 ms. O efeito costuma ser maior perto de 200 ms, a duração de uma sílaba: o retorno chega quando a próxima sílaba já está sendo planejada.</li>
+      <li>A turma observa: velocidade, volume, repetições e prolongamentos.</li>
+    </ol>
+  </section>
+
+  <footer>Material da disciplina Bases neurais da comunicação humana (UFRN), Prof. Daniel Y. Takahashi. Funciona melhor no Chrome ou Safari atualizados; no celular, a latência do próprio aparelho soma de 10 a 80 ms ao atraso escolhido.</footer>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let ctx = null, stream = null, src = null, delay = null, gain = null, an = null, raf = 0;
+let target = 200, active = true;
+
+function ms() { return active ? target : 0; }
+function apply() {
+  $('dv').textContent = target;
+  $('d').value = target;
+  document.querySelectorAll('.presets button').forEach(b => b.classList.toggle('on', +b.dataset.ms === target));
+  $('on').classList.toggle('on', active); $('off').classList.toggle('on', !active);
+  if (delay) delay.delayTime.setTargetAtTime(ms() / 1000, ctx.currentTime, 0.01);
+  showLat();
+}
+function showLat() {
+  if (!ctx) { $('lat').textContent = ''; return; }
+  const sys = 1000 * ((ctx.baseLatency || 0) + (ctx.outputLatency || 0));
+  $('lat').textContent = sys > 0
+    ? `Latência do aparelho ≈ ${Math.round(sys)} ms · atraso total ≈ ${Math.round(ms() + sys)} ms`
+    : 'O navegador não informa a latência do aparelho; some cerca de 10 a 80 ms ao valor escolhido.';
+}
+function meter() {
+  const buf = new Float32Array(an.fftSize);
+  const loop = () => {
+    an.getFloatTimeDomainData(buf);
+    let s = 0; for (const v of buf) s += v * v;
+    const db = 20 * Math.log10(Math.sqrt(s / buf.length) + 1e-6);
+    $('lvl').style.width = Math.max(0, Math.min(100, (db + 60) * 100 / 60)) + '%';
+    raf = requestAnimationFrame(loop);
+  };
+  loop();
+}
+async function start() {
+  $('go').disabled = true;
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
+    ctx = new (window.AudioContext || window.webkitAudioContext)({ latencyHint: 'interactive' });
+    await ctx.resume();
+    src = ctx.createMediaStreamSource(stream);
+    delay = ctx.createDelay(1.0); delay.delayTime.value = ms() / 1000;
+    gain = ctx.createGain(); gain.gain.value = +$('vol').value;
+    an = ctx.createAnalyser(); an.fftSize = 1024;
+    src.connect(an); src.connect(delay); delay.connect(gain); gain.connect(ctx.destination);
+    meter(); showLat();
+    $('go').textContent = 'Desligar'; $('go').classList.add('stop'); $('go').disabled = false;
+    $('msg').textContent = 'Microfone ligado. Fale e ouça nos fones.';
+  } catch (e) {
+    $('go').disabled = false;
+    $('msg').textContent = location.protocol === 'file:' || !navigator.mediaDevices
+      ? 'Este navegador não liberou o microfone. Abra a página pelo site (https) num navegador atualizado.'
+      : 'Não foi possível usar o microfone. Verifique a permissão do navegador para este site e tente de novo.';
+  }
+}
+function stop() {
+  cancelAnimationFrame(raf); $('lvl').style.width = '0';
+  if (stream) stream.getTracks().forEach(t => t.stop());
+  if (ctx) ctx.close();
+  ctx = stream = src = delay = gain = an = null;
+  $('go').textContent = 'Ligar o microfone'; $('go').classList.remove('stop');
+  $('msg').textContent = 'Microfone desligado.'; showLat();
+}
+$('go').addEventListener('click', () => ctx ? stop() : start());
+$('d').addEventListener('input', e => { target = +e.target.value; active = true; apply(); });
+document.querySelectorAll('.presets button').forEach(b => b.addEventListener('click', () => { target = +b.dataset.ms; active = true; apply(); }));
+$('on').addEventListener('click', () => { active = true; apply(); });
+$('off').addEventListener('click', () => { active = false; apply(); });
+$('vol').addEventListener('input', e => { if (gain) gain.gain.setTargetAtTime(+e.target.value, ctx.currentTime, 0.02); });
+apply();
+</script>
