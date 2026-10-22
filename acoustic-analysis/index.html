@@ -179,11 +179,12 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--line);
   <ul>
     <li>The puzzle: one phee, one instant, three different spectra (1, 4 and 50 ms pieces: peaks 2000, 500 and 42 Hz wide).</li>
     <li>Resolution: telling two frequencies apart takes time (beats), Δf = 1/T. Real case: two infants phee-ing 484 Hz apart blur into one band at 4 ms and separate at 20 ms.</li>
-    <li>Leakage from the probe test: on a piece with a non-whole number of cycles the products no longer cancel, so probes find energy the sound does not have. The same thing as seams (the DFT repeats the piece) and as cutting = multiplying by a rectangle, whose spectrum (main lobe, side lobes) is copied onto every frequency.</li>
+    <li>Leakage from the probe test: on a piece with a non-whole number of cycles the products no longer cancel, so probes find energy the sound does not have. The same thing as seams (the DFT repeats the piece).</li>
+    <li>Convolution as a sliding weighted average (smoothing), and the Fourier pair: convolving in time = multiplying in frequency, and vice versa (shown on a smoothed phee envelope). So cutting = multiplying by a window = convolving the spectrum with the window's spectrum: every line of the call gets a copy of it (main lobe = blur, side lobes = leakage).</li>
     <li>Real case: a phee's harmonic, 45 dB below the fundamental, is buried by leakage without a window and stands out with Hann.</li>
     <li>Windows: the remedy and its price (wider peak, ≈ 3/T to separate two tones); rectangular, Hann, Hamming, Blackman compared; use Hann by default.</li>
   </ul>
-  <div class="blk"><span class="tag lab">Notebook Part A · 40 min</span> Beats; the probe test on a 2 ms piece (whole vs 4.5 cycles); seams and window spectra; the hidden harmonic of a real phee found again with a window; two tones; mix two real phees and find the shortest window that separates them.</div>
+  <div class="blk"><span class="tag lab">Notebook Part A · 40 min</span> Beats; the probe test on a 2 ms piece (whole vs 4.5 cycles); seams; convolution by hand and checked against the FFT product; window spectra; the hidden harmonic of a real phee found again with a window; two tones; mix two real phees and find the shortest window that separates them.</div>
   <p style="margin-top:12px"><span class="tag concept">Slides 2 · 45 min</span></p>
   <ul>
     <li>Bins: the picket fence and scalloping (a call between bins reads up to 1.4 dB low with Hann); zero-padding adds points, not resolution.</li>
