@@ -109,12 +109,12 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--line);
 </div>
 <nav class="overview" aria-label="Days">
   <a href="#d1" style="--c:var(--p1)" title="From sound to spectrogram">1</a>
-  <a href="#d2" style="--c:var(--p1)" title="Acquisition I">2</a>
-  <a href="#d3" style="--c:var(--p1)" title="Quality control in practice">3</a>
-  <a href="#d4" style="--c:var(--p2)" title="Envelopes and modulation">4</a>
-  <a href="#d5" style="--c:var(--p2)" title="Spectral estimation in depth">5</a>
-  <a href="#d6" style="--c:var(--p2)" title="Advanced time-frequency">6</a>
-  <a href="#d7" style="--c:var(--p3)" title="Noise & filtering">7</a>
+  <a href="#d2" style="--c:var(--p1)" title="Acquisition">2</a>
+  <a href="#d3" style="--c:var(--p1)" title="A finite piece of sound">3</a>
+  <a href="#d4" style="--c:var(--p2)" title="Filters & noise">4</a>
+  <a href="#d5" style="--c:var(--p2)" title="Envelopes and modulation">5</a>
+  <a href="#d6" style="--c:var(--p2)" title="Spectral estimation in depth">6</a>
+  <a href="#d7" style="--c:var(--p2)" title="Advanced time-frequency">7</a>
   <a href="#d8" style="--c:var(--p3)" title="Detection & segmentation">8</a>
   <a href="#d9" style="--c:var(--p3)" title="Automatic labelling">9</a>
   <a href="#d10" style="--c:var(--p4)" title="Frequency contours">10</a>
@@ -128,10 +128,10 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--line);
 <div class="table-wrap"><table>
   <thead><tr><th>Set</th><th>What it is</th><th>Days</th></tr></thead>
   <tbody>
-    <tr><td><code>audio/multimic/</code></td><td>The <strong>same 2-min block</strong> recorded at once on 4 Zoom H4n channels + 6 webcam audio channels (+ video)</td><td>1, 2, 3</td></tr>
-    <tr><td><code>audio/development/</code></td><td>Block I (infant alone, silent) at 10 ages for Pink3A and Blue3A</td><td>1, 4, 10, 12</td></tr>
-    <tr><td><code>audio/full_session/</code></td><td>One full recording day (7 blocks, including the two playback blocks)</td><td>3, 7, 8</td></tr>
-    <tr><td><code>clips/</code></td><td>15 clean examples per call type + "pitfall" clips (overlapping calls, classifier mistakes, noise)</td><td>1, 5, 6, 9</td></tr>
+    <tr><td><code>audio/multimic/</code></td><td>The <strong>same 2-min block</strong> recorded at once on 4 Zoom H4n channels + 6 webcam audio channels (+ video)</td><td>1, 2</td></tr>
+    <tr><td><code>audio/development/</code></td><td>Block I (infant alone, silent) at 10 ages for Pink3A and Blue3A</td><td>1, 5, 10, 12</td></tr>
+    <tr><td><code>audio/full_session/</code></td><td>One full recording day (7 blocks, including the two playback blocks)</td><td>4, 8</td></tr>
+    <tr><td><code>clips/</code></td><td>15 clean examples per call type + "pitfall" clips (overlapping calls, classifier mistakes, noise)</td><td>1, 3, 6, 7, 9</td></tr>
     <tr><td><code>tables/</code></td><td>Classifier annotations, the 36-feature table, saved contours, call- and session-level tables</td><td>8–12</td></tr>
   </tbody>
 </table></div>
@@ -143,81 +143,101 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--line);
 
 <article class="day" id="d1">
   <h3><span class="num">Day 1</span> From sound to spectrogram</h3>
-  <p>Students already use spectrograms; today they learn what happens inside one and build one themselves. Two slide blocks, each followed by a notebook block.</p>
-  <p><span class="tag concept">Slides 1 · 40 min</span></p>
+  <p>Students already use spectrograms; today they learn what is underneath one: how sound becomes numbers, and how the Fourier transform turns numbers into frequencies. Short "check your understanding" slides (2–3 minutes, in pairs) close each topic; their answers are in the speaker notes. The finite piece and the spectrogram itself follow on Day 3.</p>
+  <p><span class="tag concept">Slides 1 · 55 min</span></p>
   <ul>
     <li>The measurement chain: pressure → microphone → preamp → anti-alias filter → ADC.</li>
     <li>Sampling and the Nyquist limit; aliasing (f_alias = |f − k·fs|), shown on a real twitter; the file header is not the bandwidth (webcam vs Zoom).</li>
     <li>Quantisation and bit depth (≈ 6 dB per bit); dBFS and clipping.</li>
-    <li>Fourier: any sound is a sum of sinusoids; the DFT as "multiply by a probe and sum"; bins and resolution (Δf = fs/N = 1/T); magnitude, power, dB; leakage and windows.</li>
+    <li>The Fourier transform, built step by step: a sinusoid's three numbers (amplitude, frequency, phase); building any shape from sinusoids (square wave); the probe test and orthogonality; why two probes (cosine and sine) are needed, and why spectra are complex numbers (length = amplitude, angle = phase); analysis and synthesis (nothing is lost); from the continuous transform to the DFT (sampling makes the spectrum repeat; a finite piece gives bins); magnitude, power, dB.</li>
+    <li>The idea of the FFT: split into even and odd samples, solve each half, combine; N² becomes N·log₂N.</li>
   </ul>
-  <div class="blk"><span class="tag lab">Notebook Part A · 45 min</span> Inspect a real recording in dBFS. Make a 40 kHz tone alias to 8 kHz, alias a twitter and then prevent it. Requantise a phee to 8 and 4 bits and measure the noise. <strong>Write the DFT as a loop</strong> and check it matches <code>np.fft</code>. See resolution and leakage.</div>
-  <p style="margin-top:12px"><span class="tag concept">Slides 2 · 30 min</span></p>
-  <ul>
-    <li>The STFT recipe: frame → window → FFT → power → dB → hop.</li>
-    <li>The five settings (window length, shape, overlap, NFFT, colour range) and what each really changes.</li>
-    <li>The time–frequency trade-off on a real trill; choosing the window from the biology (trill FM cycle ≈ 43 ms → 4 ms window).</li>
-    <li>What one pixel means; why colour scales mislead.</li>
-  </ul>
-  <div class="blk"><span class="tag lab">Notebook Part B · 45 min</span> <strong>Build <code>my_spectrogram()</code> from scratch</strong>, one step per cell, and verify it against SciPy. Apply it to real calls with 1, 4 and 20 ms windows; measure a trill's modulation period. Show that overlap and NFFT don't add resolution. Compare spectrograms on a common dB scale.</div>
-  <div class="blk"><span class="tag ex">Homework</span> Characterise one of your own recordings: fs, bit depth, levels, true bandwidth, and the spectrogram settings of your usual software. Optional: the self-study notebook (listening tour of the repertoire and the course data).</div>
+  <div class="blk"><span class="tag lab">Notebook Part A · 35 min</span> Inspect a real recording in dBFS. Make a 40 kHz tone alias to 8 kHz, alias a twitter and then prevent it. Requantise a phee to 8 and 4 bits and measure the noise. Build the Fourier transform by hand: assemble a square wave, sweep a probe to draw a spectrum, recover amplitude and phase with two probes, rebuild a phee exactly from its spectrum and hear what scrambling the phase does. Then <strong>write the DFT as a loop and a 10-line recursive FFT</strong>, and check both match <code>np.fft</code>.</div>
+  <div class="blk"><span class="tag ex">Homework</span> Characterise one of your own recordings: fs, bit depth, levels, true bandwidth, and write down the spectrogram settings of your usual software (judged on Day 3). Optional: the self-study notebook (listening tour of the repertoire and the course data).</div>
 </article>
 
 <article class="day" id="d2">
-  <h3><span class="num">Day 2</span> Acquisition I — microphones, recorders, and the room</h3>
+  <h3><span class="num">Day 2</span> Acquisition — microphones, recorders, and the room</h3>
   <p><span class="tag concept">Concepts</span></p>
   <ul>
-    <li>Microphone types (condenser vs dynamic, measurement vs recording mics), polar patterns, frequency response, sensitivity, self-noise.</li>
-    <li>Recorders and preamps; gain staging; why <strong>distance</strong> dominates level (inverse-square law, ≈ −6 dB per doubling of distance).</li>
-    <li>Room acoustics: reflections, reverberation in a small box, background noise (HVAC, cage, people, low-frequency rumble). Loudspeakers for playback: their frequency response limits what the animal actually hears.</li>
-    <li>The lab's setup: two platforms, two Zoom H4n recorders, monitoring webcam, JBL speaker, and the closed-loop trigger (energy at 5–10 kHz plus a duration window).</li>
+    <li>Microphone types (condenser vs dynamic, measurement vs recording mics), polar patterns, sensitivity, self-noise. Frequency response: what the Zoom H4n Pro, smartphones and our webcams do to a call (measured webcam vs Zoom), and how to measure a response by substitution.</li>
+    <li>Recorders and preamps; gain staging; why <strong>distance</strong> dominates level (inverse-square law, ≈ −6 dB per doubling of distance). Air absorption: it grows with frequency and depends on temperature and humidity (ISO 9613-1), so a call's spectrum changes with distance; the speed of sound changes with temperature. What to log in the field.</li>
+    <li>Wavelength and head size: the marmoset head (≈ 25 mm wide in infants, 30–35 mm in adults) casts a sound shadow above ≈ 3–4 kHz; why small heads localise with level differences and hear high frequencies.</li>
+    <li>Room acoustics: reflections, reverberation in a small box, echoes that turn frequency sweeps into amplitude modulation, background noise (HVAC, cage, people, low-frequency rumble). Loudspeakers for playback: response, beaming (a 40 mm driver beams above ≈ 3 kHz), level calibration with a sound level meter, the playback chain (software, Bluetooth delay, speaker, room), preparing stimulus files, and pseudoreplication.</li>
+    <li>The lab's setup: two platforms joined by a 42 cm bridge, two Zoom H4n Pro recorders, three webcams, a JBL Go 2 speaker, and the closed-loop trigger (a separate trigger mic; calls of 150–500 ms are answered with a parent's trill, calls of 1–10 s with a phee).</li>
+    <li>Timing: speed of sound (34 cm per ms), cross-correlation, and checking every delay against the geometry.</li>
   </ul>
-  <div class="blk"><span class="tag lab">Lab (multimic)</span> Load all synchronised channels of one block and compare RMS and peak levels. <code>Audio-01/02</code> are on the infant's platform and <code>Audio-03/04</code> on the adult's platform, ≈ 22 dB lower for infant calls. How much of that is distance? Find one call on every channel and compare spectra, noise floors and bandwidth. Estimate the time delay between platforms by cross-correlation.</div>
+  <div class="blk"><span class="tag lab">Lab A (multimic, block I)</span> Load the four Zoom channels of one block. Measure levels per channel, broadband and in the call band, and meet the 11 Hz rumble. Infant calls are ≈ 21 dB weaker on the adult platform's mic: what distance ratio would that be? Measure noise floors and the SNR of every call. Simulate a phee recorded with too little and too much gain.</div>
+  <div class="blk"><span class="tag lab">Lab B (multimic, block III)</span> Find every playback trill from the level difference between platforms, measure the trigger latency (≈ 0.4 s), and flag the detections that are really the speaker. Write a cross-correlation, test it on a planted delay, then measure the delay between platforms and check it against the geometry. Compare echo tails near and far, and the bandwidth of the three webcams. Audit the playbacks: level consistency, level at the infant, repeated stimuli, clicks. Test whether amplitude modulation comes from the animal or from echoes by comparing the same calls on four mics.</div>
   <div class="blk"><span class="tag ex">Exercise</span> Draft a recording-session checklist for your own setup.</div>
 </article>
 
 <article class="day" id="d3">
-  <h3><span class="num">Day 3</span> Acquisition II — quality control in practice</h3>
-  <p><span class="tag concept">Concepts</span></p>
+  <h3><span class="num">Day 3</span> A finite piece of sound — from the Fourier transform to the spectrogram</h3>
+  <p>One idea for the whole day: <b>we only ever analyse a finite piece of sound</b>, often 4 ms. Every property of real spectra follows from it, and each one is derived from the probe test of Day 1, with real calls as examples.</p>
+  <p><span class="tag concept">Slides 1 · 55 min</span></p>
   <ul>
-    <li>What can go wrong in a real data set: clipping, DC offset, dropouts, gain changes between sessions, wrong sample rates, compressed files, missing files.</li>
-    <li>Calibration: recording a reference tone; what you can and cannot say without one (dBFS ≠ dB SPL).</li>
-    <li>File formats, metadata and naming conventions; why a consistent naming scheme saves months.</li>
+    <li>The puzzle: one phee, one instant, three different spectra (1, 4 and 50 ms pieces: peaks 2000, 500 and 42 Hz wide).</li>
+    <li>Resolution: telling two frequencies apart takes time (beats), Δf = 1/T. Real case: two infants phee-ing 484 Hz apart blur into one band at 4 ms and separate at 20 ms.</li>
+    <li>Leakage from the probe test: on a piece with a non-whole number of cycles the products no longer cancel, so probes find energy the sound does not have. The same thing as seams (the DFT repeats the piece) and as cutting = multiplying by a rectangle, whose spectrum (main lobe, side lobes) is copied onto every frequency.</li>
+    <li>Real case: a phee's harmonic, 45 dB below the fundamental, is buried by leakage without a window and stands out with Hann.</li>
+    <li>Windows: the remedy and its price (wider peak, ≈ 3/T to separate two tones); rectangular, Hann, Hamming, Blackman compared; use Hann by default.</li>
   </ul>
-  <div class="blk"><span class="tag lab">Lab</span> Build an automatic quality-control report that runs over a whole folder of WAVs: sample rate, bit depth, duration, % clipped samples, DC offset, peak and RMS level, <strong>true bandwidth</strong> (where the spectrum reaches the noise floor), and low-frequency rumble. Run it on the course data and on your own recordings; flag the outliers.</div>
-  <div class="blk"><span class="tag ex">Deliverable</span> Your QC report function, reused on every new data set.</div>
+  <div class="blk"><span class="tag lab">Notebook Part A · 40 min</span> Beats; the probe test on a 2 ms piece (whole vs 4.5 cycles); seams and window spectra; the hidden harmonic of a real phee found again with a window; two tones; mix two real phees and find the shortest window that separates them.</div>
+  <p style="margin-top:12px"><span class="tag concept">Slides 2 · 45 min</span></p>
+  <ul>
+    <li>Bins: the picket fence and scalloping (a call between bins reads up to 1.4 dB low with Hann); zero-padding adds points, not resolution.</li>
+    <li>The uncertainty principle, σt·σf ≥ 1/(4π), for windows and for sounds themselves: a 0.5 ms sound is 4 kHz wide, so a click is broadband because it is short.</li>
+    <li>The spectrogram built frame by frame on a real trill (cut, window, Fourier transform, stack); the five settings and what each really changes; choosing the window from the biology (trill FM cycle ≈ 43 ms → 4 ms window); colour scales.</li>
+    <li>Read along a row, a spectrogram is a bank of band-pass filters shaped like the window's spectrum: the bridge to Day 4.</li>
+  </ul>
+  <div class="blk"><span class="tag lab">Notebook Part B · 40 min</span> Picket fence and scalloping for three windows; zero-padding; <strong>measuring σt·σf</strong>; short sounds are broad. Then <strong>build <code>my_spectrogram()</code> from scratch</strong>, one step per cell, and verify it against SciPy. Apply it to a trill with 1, 4 and 20 ms windows and measure its modulation period; overlap and colour range; show that one spectrogram row equals the output of a band-pass filter.</div>
+  <div class="blk"><span class="tag ex">Homework</span> (1) Judge the spectrogram settings of your usual software (Δf, time step). (2) <strong>Quality-control report</strong> (graded): a function that checks a whole folder of WAVs for sample rate, bit depth, duration, clipping, DC offset, dropouts, level, true bandwidth and low-frequency rumble, run on the course data and on your own recordings.</div>
 </article>
 </section>
 
 <!-- PART II -->
 <section class="part" style="--c:var(--p2)">
 <h2>Part II — Deeper signal analysis</h2>
-<p class="sub">Days 4–6</p>
+<p class="sub">Days 4–7</p>
 
 <article class="day" id="d4">
-  <h3><span class="num">Day 4</span> The signal in time — envelopes and modulation</h3>
+  <h3><span class="num">Day 4</span> Filters and noise</h3>
+  <p><span class="tag concept">Concepts</span></p>
+  <ul>
+    <li>From Day 3: each spectrogram row is already a band-pass filter. A filter changes each frequency's amplitude and phase.</li>
+    <li>Characterising noise: PSD of silent stretches; stationary vs transient noise; the 11 Hz rumble.</li>
+    <li>Filters: high-, low- and band-pass; FIR vs IIR; order and steepness; phase distortion and zero-phase filtering (<code>filtfilt</code>); ringing (a sharp filter rings long: the uncertainty principle again); edge effects. What filtering can and cannot fix (noise inside the call band, echoes).</li>
+    <li>Signal-to-noise ratio: definitions and estimation. How the upstream classifier picked the better microphone for each detection by SNR.</li>
+    <li>Playback blocks: the speaker's sound also reaches the infant's microphone. Spotting and handling playback leakage.</li>
+  </ul>
+  <div class="blk"><span class="tag lab">Lab (full session)</span> Compute the noise PSD for each block. Design the high-pass that removes the rumble and a band-pass for marmoset calls, and check what each removes. Estimate the SNR of each call and compare it with <code>snr_conjunto_*</code>. Find the playback events in blocks III and VI.</div>
+</article>
+
+<article class="day" id="d5">
+  <h3><span class="num">Day 5</span> The signal in time — envelopes and modulation</h3>
   <p><span class="tag concept">Concepts</span></p>
   <ul>
     <li>Instantaneous amplitude: rectify-and-smooth, RMS, and the analytic signal (Hilbert transform); instantaneous frequency.</li>
     <li>Amplitude and frequency modulation; the modulation spectrum.</li>
     <li>Temporal measures: duration, onset/offset, rise and decay time, inter-call interval (ICI), and how thresholds change them.</li>
   </ul>
-  <div class="blk"><span class="tag lab">Lab</span> Compute envelopes of a 2-min Block I recording with three methods and compare them. Measure durations and ICIs; see how the threshold changes the numbers. Measure the AM and FM rates of trills and twitters with the Hilbert transform, and compare with the spectrogram-based estimate from Day 1.</div>
+  <div class="blk"><span class="tag lab">Lab</span> Compute envelopes of a 2-min Block I recording with three methods and compare them. Measure durations and ICIs; see how the threshold changes the numbers. Measure the AM and FM rates of trills and twitters with the Hilbert transform, and compare with the spectrogram-based estimate from Day 3. Tell modulation made by the animal from modulation made by the room (Day 2).</div>
 </article>
 
-<article class="day" id="d5">
-  <h3><span class="num">Day 5</span> Spectral estimation in depth</h3>
+<article class="day" id="d6">
+  <h3><span class="num">Day 6</span> Spectral estimation in depth</h3>
   <p><span class="tag concept">Concepts</span></p>
   <ul>
-    <li>Window families (rectangular, Hann, Hamming, Blackman, Kaiser): main-lobe width vs side-lobe level, and how to choose.</li>
+    <li>Window families beyond Day 3 (Kaiser, DPSS tapers): choosing the trade-off between main-lobe width and side-lobe level on purpose.</li>
     <li>A spectrum from noisy data is itself noisy: averaging (Welch), the bias–variance trade-off, multitaper estimates.</li>
     <li>Harmonic structure: the cepstrum, and why it underlies harmonic-to-noise ratio (HNR) and cepstral peak prominence (CPP).</li>
   </ul>
   <div class="blk"><span class="tag lab">Lab</span> Compare windows on a weak harmonic next to a strong fundamental. Estimate the background-noise spectrum of a silent stretch with a single FFT, with Welch, and with multitaper. Compute the cepstrum of a phee and find its fundamental.</div>
 </article>
 
-<article class="day" id="d6">
-  <h3><span class="num">Day 6</span> Advanced time–frequency analysis</h3>
+<article class="day" id="d7">
+  <h3><span class="num">Day 7</span> Advanced time–frequency analysis</h3>
   <p><span class="tag concept">Concepts</span></p>
   <ul>
     <li>Beyond the standard STFT: multitaper spectrograms, reassigned spectrograms, and a brief look at wavelets and constant-Q transforms.</li>
@@ -231,22 +251,10 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--line);
 <!-- PART III -->
 <section class="part" style="--c:var(--p3)">
 <h2>Part III — Preparing the data</h2>
-<p class="sub">Days 7–9</p>
-
-<article class="day" id="d7">
-  <h3><span class="num">Day 7</span> Pre-processing I — noise and filtering</h3>
-  <p><span class="tag concept">Concepts</span></p>
-  <ul>
-    <li>Characterising noise: PSD of silent stretches; stationary vs transient noise.</li>
-    <li>Filters: high-, low- and band-pass; FIR vs IIR; phase distortion and zero-phase filtering (<code>filtfilt</code>); edge effects. What filtering can and cannot fix.</li>
-    <li>Signal-to-noise ratio: definitions and estimation. How the upstream classifier picked the better microphone for each detection by SNR.</li>
-    <li>Playback blocks: the speaker's sound also reaches the infant's microphone. Spotting and handling playback leakage.</li>
-  </ul>
-  <div class="blk"><span class="tag lab">Lab (full session)</span> Compute the noise PSD for each block. Design a band-pass filter for marmoset calls and check what it removes. Estimate the SNR of each call and compare it with <code>snr_conjunto_*</code>. Find the playback events in blocks III and VI.</div>
-</article>
+<p class="sub">Days 8–9</p>
 
 <article class="day" id="d8">
-  <h3><span class="num">Day 8</span> Pre-processing II — detection and segmentation</h3>
+  <h3><span class="num">Day 8</span> Pre-processing — detection and segmentation</h3>
   <p><span class="tag concept">Concepts</span></p>
   <ul>
     <li>Energy-based detection within a frequency band; thresholds relative to the noise floor; hysteresis, minimum duration, gap merging.</li>
@@ -319,7 +327,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--line);
   <thead><tr><th>Component</th><th>Weight</th></tr></thead>
   <tbody>
     <tr><td>Daily short exercises</td><td>40 %</td></tr>
-    <tr><td>QC report function (Day 3) + detector evaluation (Day 8)</td><td>20 %</td></tr>
+    <tr><td>QC report function (homework after Day 3) + detector evaluation (Day 8)</td><td>20 %</td></tr>
     <tr><td>Mini-project: question → pipeline → validated result, presented on Day 13 with code</td><td>40 %</td></tr>
   </tbody>
 </table></div>
