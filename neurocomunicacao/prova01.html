@@ -415,7 +415,7 @@ $('e3go').onclick=async()=>{const acc=await blocoFrases('e3',2,'fSem');$('e3s').
   $('e4go').disabled=false;$('e4s').innerHTML='<span class="hint">toque em Começar</span>';$('e4').scrollIntoView({behavior:'smooth',block:'start'});};
 $('e4go').onclick=async()=>{const acc=await blocoFrases('e4',3,'fGra');$('e4s').innerHTML='<span class="hint">fim do experimento</span>';
   $('e4rep').innerHTML=`Concordância certa: <b>${fmt(run.fGraOk)} ms</b> · erro de concordância: <b>${fmt(run.fGra)} ms</b>. Acertos: ${acc.ok}/6 certas, ${acc.v}/6 erros.`;$('e4res').hidden=false;
-  run.quando=agora();S.r=run;S.tentativas=(S.tentativas||0)+1;save();mostraResultados();$('res').scrollIntoView({behavior:'smooth',block:'start'});};
+  run.quando=agora();S.r=run;S.tentativas=(S.tentativas||0)+1;save();backupExp(run);mostraResultados();$('res').scrollIntoView({behavior:'smooth',block:'start'});};
 
 $('refazer').onclick=()=>{if(!window.confirm('Refazer apaga os resultados atuais e as respostas das perguntas 1 a 20, que dependem deles (as respostas 21 a 50 ficam). O número de tentativas vai impresso no PDF. Continuar?'))return;
   S.r=null;FRsorteio=null;for(let i=1;i<=20;i++)delete S.resp[i];save();['e1','e2','e3','e4'].forEach(k=>{$(k+'res').hidden=true;$(k+'p').textContent='';});
@@ -795,16 +795,19 @@ function podeGerar(btn,acao){const f=faltas();if(f.length){$('pdferr').textConte
 /* Ao gerar a folha, um resumo (acertos, código, respostas) é enviado ao registro do curso, o mesmo dos laboratórios.
    Se falhar, nada muda para o aluno: a entrega continua sendo o PDF no SIGAA. */
 const REG_URL="https://script.google.com/macros/s/AKfycbxPdN7I5iVopC5_oCXR7HJqUihIIGYfEVWykaLR0uh7mHHl7RmhpjJuwCQ1_ZafRak/exec";
-function backup(cod,certas,resp,resumo){try{const a=S.aluno;const url=(window.REGISTRO_URL||REG_URL);if(!url||!a)return;
-  const rs=[];for(let i=1;i<=50;i++){const x=S.resp[i];rs.push(x?(x.ok?'1':'0'):'-');}
-  const ev={ts:agora(),data:agora().slice(0,10),aula:100,tipo:'prova',exp:'p1',titulo:'Prova 1 · folha gerada',matricula:a.m,nome:a.n,
-    destaques:`acertos ${certas}/50 · respondidas ${resp} · código ${cod} · tentativas ${S.tentativas}`,resposta:`${rs.join('')} · ${resumo} · início ${S.inicio}`,disp:'prova'};
+function envia(ev){try{const a=S.aluno;const url=(window.REGISTRO_URL||REG_URL);if(!url||!a)return;
+  Object.assign(ev,{ts:agora(),data:agora().slice(0,10),aula:100,tipo:'prova',matricula:a.m,nome:a.n,disp:'prova'});
   fetch(url,{method:'POST',mode:'no-cors',keepalive:true,headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({v:1,eventos:[ev]})}).catch(()=>{});}catch(e){}}
+const resumoR=r=>`s=${fmt(r.simples)};rel=${fmt(r.rel)};unr=${fmt(r.unr)};nw=${fmt(r.nw)};b3ok=${fmt(r.fSemOk)};sem=${fmt(r.fSem)};b4ok=${fmt(r.fGraOk)};gra=${fmt(r.fGra)};acc3=${r.accfSemOk}/${r.accfSem};acc4=${r.accfGraOk}/${r.accfGra};err=${r.errRel+r.errUnr}/${r.errNw}`;
+function backup(cod,certas,resp,resumo){const rs=[];for(let i=1;i<=50;i++){const x=S.resp[i];rs.push(x?(x.ok?'1':'0'):'-');}
+  envia({exp:'p1',titulo:'Prova 1 · folha gerada',destaques:`acertos ${certas}/50 · respondidas ${resp} · código ${cod} · tentativas ${S.tentativas}`,resposta:`${rs.join('')} · ${resumo} · início ${S.inicio}`});}
+/* também ao concluir o experimento, para o caso de o aluno nunca gerar a folha */
+function backupExp(r){envia({exp:'exp',titulo:'Prova 1 · experimento concluído',destaques:`tentativa ${S.tentativas}`,resposta:resumoR(r)});}
 async function montaFolha(){const r=S.r,a=S.aluno;if(!S.fim)S.fim=agora();save();
   const dados={m:a.m,n:a.n,inicio:S.inicio,fim:S.fim,tent:S.tentativas,r:r,resp:S.resp};
   const cod=await sha(JSON.stringify(dados));
   const dur=Math.round((new Date(S.fim)-new Date(S.inicio))/60000);
-  const resumo=`s=${fmt(r.simples)};rel=${fmt(r.rel)};unr=${fmt(r.unr)};nw=${fmt(r.nw)};b3ok=${fmt(r.fSemOk)};sem=${fmt(r.fSem)};b4ok=${fmt(r.fGraOk)};gra=${fmt(r.fGra)};acc3=${r.accfSemOk}/${r.accfSem};acc4=${r.accfGraOk}/${r.accfGra};err=${r.errRel+r.errUnr}/${r.errNw}`;
+  const resumo=resumoR(r);
   const P=PERG(r);const certas=nCertas(),resp=nResp();const nota=(certas*0.2).toFixed(1).replace('.',',');
   const porAula={};P.forEach((p,i)=>{const k=p.aula;porAula[k]=porAula[k]||[0,0];porAula[k][1]++;if(S.resp[i+1]&&S.resp[i+1].ok)porAula[k][0]++;});
   const c1=P.slice(0,20).filter((p,i)=>S.resp[i+1]&&S.resp[i+1].ok).length,c2=certas-c1;
