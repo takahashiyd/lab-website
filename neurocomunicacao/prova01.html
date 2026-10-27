@@ -1,0 +1,840 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prova 1 · Laboratório de Avaliação</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Mesmo caderno de laboratório das aulas: uma coluna, cartões numerados. No fim, uma "folha" de impressão para o PDF do SIGAA. */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#142033; --muted:#5b6879; --line:#d8dee6;
+  --accent:#0e7c86; --accent-ink:#ffffff; --you:#c9771a; --soft:#e5f1f2; --warn:#a33a2a;
+  --stage:#1b2433; --stage-fg:#f2f5f7;
+  --display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73;
+  --stage:#0a0f17; --stage-fg:#f2f5f7; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73;
+  --stage:#0a0f17; --stage-fg:#f2f5f7; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:17px/1.5 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-inline:18px;padding-block:28px 64px;display:grid;gap:22px}
+header{display:grid;gap:8px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(34px,8vw,54px)/1 var(--display);font-stretch:118%;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font:750 24px/1.15 var(--display);font-stretch:108%;margin:0;text-wrap:balance}
+h3{font:700 16px/1.2 var(--display);margin:0}
+p{margin:0;max-width:65ch}
+.lead{color:var(--muted)}
+.phones{display:flex;gap:10px;align-items:flex-start;background:var(--soft);border-radius:10px;padding:12px 14px;font-size:15px}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{font:600 14px/1 var(--body);color:var(--fg);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:var(--surface)}
+nav a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.exp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:14px;min-width:0}
+.num{font:600 13px/1 var(--mono);color:var(--muted)}
+.tag{display:inline-block;font:600 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 7px;border-radius:5px;background:var(--soft);color:var(--accent)}
+.tag.aula{background:transparent;border:1px solid var(--line);color:var(--muted)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+button{font:700 16px/1 var(--display);border:0;border-radius:10px;padding:14px 18px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px;touch-action:manipulation}
+button.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+button.big{flex:1 1 120px;font-size:22px;padding:22px 10px;font-stretch:112%}
+button:disabled{opacity:.4;cursor:default}
+.readout{font:500 15px/1.4 var(--mono);color:var(--muted)}
+.result{border-top:1px dashed var(--line);padding-top:14px;display:grid;gap:10px}
+.report{background:var(--soft);border-radius:10px;padding:12px 14px;font-size:16px}
+.report b{font:700 22px/1 var(--display);color:var(--you)}
+.why{font-size:15px;color:var(--muted)}
+.err{color:var(--warn);font-size:15px;min-height:1em}
+.chart{width:100%;max-width:600px;height:auto;display:block}
+.chart text{fill:var(--muted);font:19px var(--mono)}
+.chart .ax{stroke:var(--line)}
+.chart .lbl{fill:var(--fg);font:600 19px var(--mono)}
+footer{font-size:13px;color:var(--muted)}
+.stage{background:var(--stage);color:var(--stage-fg);border-radius:12px;min-height:150px;display:grid;place-items:center;padding:16px;text-align:center;user-select:none;-webkit-user-select:none}
+.stage .w{font:800 clamp(28px,9vw,46px)/1.1 var(--display);font-stretch:110%;letter-spacing:.02em;overflow-wrap:anywhere}
+.stage .w.prime{font-weight:500;font-size:clamp(22px,7vw,32px);letter-spacing:0;opacity:.85}
+.stage .fix{font:500 40px/1 var(--mono);opacity:.7}
+.stage .hint{font:500 14px/1.3 var(--mono);opacity:.7}
+.stage.fb-ok{box-shadow:inset 0 0 0 4px #2bb673}
+.stage.fb-err{box-shadow:inset 0 0 0 4px #e5533d}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.choices button{font-size:19px;padding:20px 8px}
+button.tapbtn{width:100%;font-size:26px;padding:34px 10px}
+/* identificação */
+.id{display:grid;gap:10px;grid-template-columns:1fr}
+@media (min-width:560px){.id{grid-template-columns:1fr 1.6fr}}
+label{display:grid;gap:4px;font:600 14px/1.2 var(--body)}
+input,textarea{font:17px/1.45 var(--body);padding:12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input{min-height:48px}
+textarea{min-height:150px;resize:vertical}
+.who{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:15px;background:var(--soft);border-radius:10px;padding:10px 14px}
+.link{background:none!important;border:0!important;color:var(--accent)!important;font:600 14px var(--body)!important;padding:4px 0!important;min-height:0!important;text-decoration:underline}
+/* tabela de resultados */
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 12px/1.2 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+td.n{font:600 16px var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+td.ok{color:#1f9a5a;font-weight:600}td.dif{color:var(--you);font-weight:600}
+/* no celular, cada linha da tabela vira um cartão */
+@media (max-width:600px){
+  #tab tr:first-child{display:none}
+  #tab tr{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:9px 0;border-bottom:1px solid var(--line)}
+  #tab td{border:0;padding:0}
+  #tab td:first-child{grid-column:1/-1;font-weight:600}
+  #tab td:nth-child(3){font-size:14px;color:var(--muted)}
+  #tab td:nth-child(3)::before{content:"típico: "}
+  #tab td:nth-child(4){grid-column:1/-1;font-size:14px}
+  #tab td:nth-child(4):empty{display:none}
+}
+/* perguntas */
+.q{display:grid;gap:10px}
+.q .texto{font-size:17px}
+.q .texto b{color:var(--you)}
+.count{font:500 13px var(--mono);color:var(--muted);text-align:right}
+/* alternativas */
+.opts{display:grid;gap:8px}
+.opts button{display:flex;gap:10px;align-items:flex-start;text-align:left;font:400 16px/1.4 var(--body);background:var(--surface);color:var(--fg);border:1.5px solid var(--line);padding:12px 14px;min-height:48px}
+.opts button .l{font:700 13px/22px var(--mono);min-width:24px;height:24px;border-radius:50%;background:var(--soft);color:var(--accent);text-align:center;flex:none}
+.opts button:disabled{opacity:1;cursor:default}
+.opts button.certa{border-color:#1f9a5a;background:color-mix(in srgb,#1f9a5a 10%,var(--surface))}
+.opts button.certa .l{background:#1f9a5a;color:#fff}
+.opts button.errada{border-color:var(--warn);background:color-mix(in srgb,var(--warn) 10%,var(--surface))}
+.opts button.errada .l{background:var(--warn);color:#fff}
+.opts button.apagada{opacity:.55}
+.exp-box{border-left:3px solid var(--accent);padding:8px 12px;font-size:15px;background:var(--soft);border-radius:0 10px 10px 0}
+.exp-box b{color:var(--you)}
+.exp-box.ok b{color:#1f9a5a}
+.progress{flex:1 1 220px}
+.progress span{width:12px;height:8px}
+.progress span.ok{background:#1f9a5a}.progress span.err{background:var(--warn)}
+.sec-h{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);border-top:1px dashed var(--line);padding-top:16px}
+.folha .qp .op{font-size:12.5px;color:#111}
+.folha .qp .op.ok{color:#1f7a48}.folha .qp .op.err{color:#a33a2a}
+.folha .nota{font:700 20px var(--display);color:#111}
+.folha .mini{font-size:11.5px;color:#555}
+.ajuda{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ajuda span{font:600 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.ajuda a{font:600 14px/1.2 var(--body);text-decoration:none;color:var(--accent);border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 13px;min-height:36px;display:inline-flex;align-items:center}
+.ajuda a:hover{border-color:var(--accent)}
+.count.ok{color:#1f9a5a}
+.progress{display:flex;gap:4px;flex-wrap:wrap}
+.progress span{width:26px;height:8px;border-radius:4px;background:var(--line)}
+.progress span.done{background:var(--accent)}
+.steps{display:grid;gap:8px;font-size:15px;counter-reset:s}
+.steps div{display:flex;gap:10px}
+.steps div::before{counter-increment:s;content:counter(s);font:700 13px/22px var(--mono);min-width:22px;height:22px;text-align:center;border-radius:50%;background:var(--soft);color:var(--accent)}
+.bloqueio{background:var(--soft);border-radius:10px;padding:12px 14px;font-size:15px}
+/* ---------- folha para impressão / PDF ---------- */
+#folha{display:none}
+body.imprimindo #student{display:none}
+body.imprimindo #folha{display:block;max-width:760px;margin:0 auto;padding:24px 18px 64px}
+.folha{background:#fff;color:#111;font:13.5px/1.45 var(--body);display:grid;gap:14px}
+.folha h1{font-size:26px;color:#111}
+.folha h2{font-size:17px;border-bottom:1.5px solid #ccc;padding-bottom:4px;margin-top:6px}
+.folha .cab{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;font-size:13.5px;border:1px solid #ccc;border-radius:8px;padding:10px 12px}
+.folha .cab b{display:block;font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:#555}
+.folha table{font-size:12.5px}
+.folha th,.folha td{border-bottom:1px solid #ddd;padding:4px 6px;color:#111}
+.folha th{color:#555}
+.folha td.ok{color:#1f7a48}.folha td.dif{color:#a85f0c}
+.folha .chart{max-width:480px}
+.folha .chart text{fill:#555}.folha .chart .ax{stroke:#ccc}.folha .chart .lbl{fill:#111}
+.folha .qp{break-inside:avoid;page-break-inside:avoid;display:grid;gap:4px;padding:8px 0;border-bottom:1px dashed #ddd}
+.folha .qp .enun{color:#444;font-size:12.5px}
+.folha .qp .enun b{color:#a85f0c}
+.folha .qp .resp{white-space:pre-wrap;font-size:13.5px;min-height:1.4em}
+.folha .qp .resp.vazia{color:#a33a2a;font-style:italic}
+.folha .rod{font:11px/1.4 var(--mono);color:#555;border-top:1px solid #ccc;padding-top:8px;word-break:break-all}
+.folha .cod{font:700 20px var(--mono);color:#111;letter-spacing:.08em}
+.barra{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0;display:flex;gap:10px;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--line);margin-bottom:10px}
+@media print{
+  @page{margin:14mm 12mm}
+  body{background:#fff}
+  #student,.barra{display:none!important}
+  #folha{display:block!important;max-width:none;padding:0}
+  .folha{color:#000}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap" id="student">
+  <header>
+    <span class="eyebrow">Bases neurais da comunicação humana · Prova 1 · Aulas 1 a 6</span>
+    <h1>Laboratório de Avaliação</h1>
+    <p class="lead">Nesta prova você é o participante. Primeiro você faz um experimento de quatro blocos curtos no celular; depois compara seus resultados com os valores típicos e responde a <b>50 perguntas de múltipla escolha</b>: 20 sobre os seus resultados e 30 sobre as aulas 1 a 6, com resposta e explicação na hora e um link para o material de estudo. No fim, gera um PDF e envia no SIGAA.</p>
+    <div class="phones"><span>Resultados diferentes do esperado <b>não valem menos</b>: as perguntas pedem que você explique o que encontrou, seja o padrão típico ou não. O que vale é o raciocínio com os conceitos das aulas. Suas respostas ficam guardadas neste navegador até você gerar o PDF.</span></div>
+    <nav aria-label="Partes"><a href="#id">Identificação</a><a href="#e1">Experimento</a><a href="#res">Resultados</a><a href="#perg">Perguntas</a><a href="#pdf">PDF e envio</a></nav>
+  </header>
+
+  <!-- Identificação -->
+  <section class="exp" id="id">
+    <div class="row"><span class="num">ANTES DE COMEÇAR</span></div>
+    <h2>Quem é você?</h2>
+    <div class="idform">
+      <p>Sua matrícula e seu nome vão impressos no PDF que você entrega no SIGAA.</p>
+      <div class="id" style="margin-top:10px">
+        <label>Matrícula<input id="idm" inputmode="numeric" autocomplete="off" maxlength="16" placeholder="só números"></label>
+        <label>Nome completo<input id="idn" autocomplete="name" maxlength="80"></label>
+      </div>
+      <p class="err" id="iderr" role="alert"></p>
+      <div class="row"><button id="idok">Começar a prova</button></div>
+    </div>
+    <p class="readout" id="check" style="margin-top:4px"></p>
+    <div class="who" hidden>
+      <span>✓ Prova iniciada</span><span><b id="whon"></b> · <span id="whom"></span></span><span class="readout" id="whot"></span>
+      <button class="link" id="idtroca">Não sou eu</button>
+    </div>
+  </section>
+
+  <!-- Experimento: bloco 1 -->
+  <section class="exp" id="e1">
+    <div class="row"><span class="num">EXPERIMENTO · BLOCO 1</span><span class="tag">≈ 1 min · 12 tentativas</span></div>
+    <h2>Tempo de reação simples</h2>
+    <p>Segure o celular com as duas mãos. Um sinal (<b>●</b>) vai aparecer no quadro escuro depois de uma espera variável. Toque no botão grande <b>assim que ele aparecer</b>. Se tocar antes, a tentativa é repetida.</p>
+    <div class="stage" id="e1s"><span class="hint">toque em Começar</span></div>
+    <button class="tapbtn" id="e1tap" hidden>TOQUE</button>
+    <div class="row"><button id="e1go">Começar</button><span class="readout" id="e1p"></span></div>
+    <div class="result" id="e1res" hidden><div class="report" id="e1rep"></div></div>
+  </section>
+
+  <!-- bloco 2 -->
+  <section class="exp" id="e2">
+    <div class="row"><span class="num">EXPERIMENTO · BLOCO 2</span><span class="tag">≈ 4 min · 40 tentativas</span></div>
+    <h2>Palavra ou não? Decisão lexical com priming</h2>
+    <p>Aparece uma palavra pequena em minúsculas (só leia) e logo depois uma sequência em MAIÚSCULAS. Decida, <b>o mais rápido que puder sem errar</b>, se a sequência em maiúsculas é uma palavra do português. As 4 primeiras tentativas são treino.</p>
+    <div class="stage" id="e2s"><span class="hint">faça o bloco 1 primeiro</span></div>
+    <div class="choices" id="e2btn" hidden><button class="big" data-r="w">PALAVRA</button><button class="big ghost" data-r="n">NÃO É</button></div>
+    <div class="row"><button id="e2go" disabled>Começar</button><span class="readout" id="e2p"></span></div>
+    <div class="result" id="e2res" hidden><div class="report" id="e2rep"></div></div>
+  </section>
+
+  <!-- bloco 3 -->
+  <section class="exp" id="e3">
+    <div class="row"><span class="num">EXPERIMENTO · BLOCO 3</span><span class="tag">≈ 2 min · 12 frases</span></div>
+    <h2>Faz sentido?</h2>
+    <p>O começo da frase aparece inteiro; leia. Depois a <b>última palavra</b> aparece em destaque. Decida o mais rápido possível: a frase <b>faz sentido</b> ou <b>não faz sentido</b>? Neste bloco não há erros de gramática, só finais que combinam ou não com o significado.</p>
+    <div class="stage" id="e3s"><span class="hint">faça o bloco 2 primeiro</span></div>
+    <div class="choices" id="e3btn" hidden><button class="big" data-r="c">faz sentido</button><button class="big ghost" data-r="e">não faz sentido</button></div>
+    <div class="row"><button id="e3go" disabled>Começar</button><span class="readout" id="e3p"></span></div>
+    <div class="result" id="e3res" hidden><div class="report" id="e3rep"></div></div>
+  </section>
+
+  <!-- bloco 4 -->
+  <section class="exp" id="e4">
+    <div class="row"><span class="num">EXPERIMENTO · BLOCO 4</span><span class="tag">≈ 2 min · 12 frases</span></div>
+    <h2>A gramática está certa?</h2>
+    <p>Mesmo formato. Agora todas as frases fazem sentido; decida o mais rápido possível se a última palavra <b>concorda</b> com o resto da frase (gênero e número) ou se há <b>erro de concordância</b>.</p>
+    <div class="stage" id="e4s"><span class="hint">faça o bloco 3 primeiro</span></div>
+    <div class="choices" id="e4btn" hidden><button class="big" data-r="c">certa</button><button class="big ghost" data-r="e">erro de concordância</button></div>
+    <div class="row"><button id="e4go" disabled>Começar</button><span class="readout" id="e4p"></span></div>
+    <div class="result" id="e4res" hidden><div class="report" id="e4rep"></div></div>
+  </section>
+
+  <!-- Resultados -->
+  <section class="exp" id="res">
+    <div class="row"><span class="num">SEUS RESULTADOS</span><span class="tag">comparação com valores típicos</span></div>
+    <h2>Seus números ao lado dos valores típicos</h2>
+    <div class="bloqueio" id="resvazio">A tabela aparece quando os quatro blocos estiverem concluídos.</div>
+    <div id="rescheio" hidden style="display:grid;gap:14px">
+      <svg class="chart" id="chart" viewBox="0 0 560 280" role="img" aria-label="Suas medianas por condição"></svg>
+      <div style="overflow-x:auto"><table id="tab"></table></div>
+      <p class="why">“Típico” é o que a literatura e turmas anteriores costumam mostrar <i>na média de muitas pessoas</i>. Um resultado individual, com poucas tentativas, pode ficar fora dessa faixa sem que nada esteja errado. As perguntas abaixo usam os <b>seus</b> números; explique-os como eles são.</p>
+      <div class="row"><button class="ghost" id="refazer">Refazer o experimento</button><span class="readout" id="refazerMsg"></span></div>
+    </div>
+  </section>
+
+  <!-- Perguntas -->
+  <section class="exp" id="perg">
+    <div class="row"><span class="num">PERGUNTAS</span><span class="tag">50 · múltipla escolha</span></div>
+    <h2>Interprete seus resultados e o que vimos nas aulas</h2>
+    <p class="lead">As perguntas 1 a 20 usam os <b>seus</b> números; as 21 a 50 são sobre as aulas 1 a 6. Toque na alternativa que considera correta: a resposta trava e aparece uma explicação curta. Cada pergunta vale 0,2 ponto e traz um link para a seção do material de estudo que ajuda a respondê-la. Um resultado “diferente do esperado” não tira pontos: a pergunta pede a interpretação mais defensável para o que você encontrou.</p>
+    <div class="row"><div class="progress" id="prog" aria-label="Perguntas respondidas"></div><span class="readout" id="placar"></span></div>
+    <div class="bloqueio" id="pergvazio">As perguntas aparecem quando os quatro blocos estiverem concluídos, porque as 20 primeiras usam os seus resultados.</div>
+    <div id="perguntas" style="display:grid;gap:26px"></div>
+  </section>
+
+  <!-- PDF -->
+  <section class="exp" id="pdf">
+    <div class="row"><span class="num">ENTREGA</span><span class="tag">PDF → SIGAA</span></div>
+    <h2>Gerar o PDF e enviar no SIGAA</h2>
+    <p>O PDF reúne sua identificação, seus resultados, suas 50 respostas com a pontuação e um código de verificação. <b>Só o arquivo enviado no SIGAA conta como prova entregue.</b> Você não precisa responder a todas as perguntas para gerar a folha: as que ficarem em branco contam como erradas. Depois de gerar, ainda dá para voltar, responder mais e gerar de novo; envie no SIGAA a versão final.</p>
+    <div class="steps">
+      <div><span>Toque em <b>Ver a folha da prova</b> e confira se está tudo lá.</span></div>
+      <div><span>Toque em <b>Imprimir / salvar PDF</b>. No <b>Android</b>, escolha a impressora “Salvar como PDF”. No <b>iPhone</b>, toque em Compartilhar (ícone da seta) → <i>Opções</i> → <i>PDF</i>, ou faça o gesto de pinça na prévia para abrir o PDF, e salve em <i>Arquivos</i>. No <b>computador</b>, escolha “Salvar como PDF” como destino.</span></div>
+      <div><span>Entre no SIGAA, abra a tarefa <b>Prova 1</b> da disciplina e anexe o PDF. Confira o envio.</span></div>
+    </div>
+    <p class="err" id="pdferr" role="alert"></p>
+    <div class="row"><button id="verfolha" data-t="Ver a folha da prova">Ver a folha da prova</button><button class="ghost" id="baixar" data-t="Baixar cópia (.html)">Baixar cópia (.html)</button></div>
+    <p class="why">Se o PDF não sair no celular, a cópia .html guarda tudo: abra-a em um computador e imprima em PDF de lá. Nenhuma resposta sai deste aparelho até você enviar o arquivo.</p>
+  </section>
+
+  <footer>Tudo roda no seu aparelho. Suas respostas e seus resultados ficam guardados neste navegador até você gerar o PDF; a entrega é o arquivo enviado no SIGAA.</footer>
+</div>
+
+<!-- Folha para impressão -->
+<div id="folha">
+  <div class="barra"><button id="imprimir">Imprimir / salvar PDF</button><button class="ghost" id="voltar">Voltar e editar</button><span class="readout">Confira a folha antes de salvar.</span></div>
+  <div class="folha" id="folhaconteudo"></div>
+</div>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const median=a=>{if(!a.length)return NaN;const s=[...a].sort((x,y)=>x-y),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2;};
+const fmt=v=>(v==null||isNaN(v))?'—':Math.round(v).toLocaleString('pt-BR');
+const sgn=v=>(v==null||isNaN(v))?'—':(v>0?'+':v<0?'−':'')+fmt(Math.abs(v));
+const frame=()=>new Promise(r=>requestAnimationFrame(()=>r(performance.now())));
+async function show(stage,html){stage.innerHTML=html;return frame();}
+function waitChoice(box){return new Promise(res=>{const bs=[...box.querySelectorAll('button')];bs.forEach(b=>b.disabled=false);
+  const h=e=>{const t=performance.now();e.preventDefault();bs.forEach(b=>{b.disabled=true;b.removeEventListener('pointerdown',h);});res({r:e.currentTarget.dataset.r,t});};
+  bs.forEach(b=>b.addEventListener('pointerdown',h));});}
+async function feedback(stage,ok){stage.classList.add(ok?'fb-ok':'fb-err');await sleep(ok?150:400);stage.classList.remove('fb-ok','fb-err');}
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const agora=()=>new Date().toISOString();
+const fmtData=iso=>iso?new Date(iso).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}):'—';
+
+/* ---------- estado guardado no navegador ---------- */
+const K='nc-prova1';
+let S={aluno:null,inicio:null,tentativas:0,r:null,resp:{},fim:null};
+try{const v=localStorage.getItem(K);if(v)S=Object.assign(S,JSON.parse(v));}catch(e){}
+if(!S.aluno){try{const a=JSON.parse(localStorage.getItem('nc-aluno')||'null');if(a&&a.m&&a.n){$('idm').value=a.m;$('idn').value=a.n;}}catch(e){}}
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(S));}catch(e){}};
+
+
+/* ---------- verificação do aparelho ---------- */
+(function(){const el=$('check');const probs=[];let mem=false;
+  try{localStorage.setItem('nc-teste','1');mem=localStorage.getItem('nc-teste')==='1';localStorage.removeItem('nc-teste');}catch(e){}
+  if(!mem)probs.push('este navegador não guarda suas respostas (modo anônimo ou arquivo aberto em um visualizador): se a página recarregar, você perde tudo');
+  if(location.protocol==='file:')probs.push('você abriu o arquivo baixado; se algo falhar, use o link da prova no navegador (Chrome ou Safari)');
+  if(!(window.crypto&&crypto.subtle))probs.push('o código de verificação não vai funcionar neste navegador; use Chrome ou Safari');
+  el.innerHTML=probs.length?'<span style="color:var(--warn)">Atenção: '+probs.join('; ')+'.</span>':'✓ Aparelho verificado: suas respostas ficam guardadas neste navegador.';})();
+
+/* ---------- identificação ---------- */
+function desenhaId(){const tem=!!S.aluno;document.querySelector('.idform').hidden=tem;document.querySelector('.who').hidden=!tem;
+  if(tem){$('whon').textContent=S.aluno.n;$('whom').textContent=S.aluno.m;$('whot').textContent='início: '+fmtData(S.inicio);}
+  $('e1go').disabled=!tem;$('e1s').innerHTML=`<span class="hint">${tem?'toque em Começar':'identifique-se acima'}</span>`;}
+$('idok').onclick=()=>{const m=$('idm').value.replace(/\D/g,''),n=$('idn').value.replace(/\s+/g,' ').trim();
+  if(m.length<6){$('iderr').textContent='Confira a matrícula (só números, pelo menos 6 dígitos).';$('idm').focus();return;}
+  if(n.length<5||n.split(' ').length<2){$('iderr').textContent='Escreva nome e sobrenome.';$('idn').focus();return;}
+  $('iderr').textContent='';S.aluno={m,n};if(!S.inicio)S.inicio=agora();save();desenhaId();
+  try{localStorage.setItem('nc-aluno',JSON.stringify({m,n}));}catch(e){}
+  $('e1').scrollIntoView({behavior:'smooth',block:'start'});};
+$('idn').addEventListener('keydown',e=>{if(e.key==='Enter')$('idok').click();});
+$('idtroca').onclick=()=>{if(S.r||Object.keys(S.resp).length){if(!window.confirm('Trocar de pessoa apaga o experimento e as respostas guardadas neste navegador. Continuar?'))return;}
+  S={aluno:null,inicio:null,tentativas:0,r:null,resp:{},fim:null};save();$('idm').value='';$('idn').value='';location.reload();};
+
+/* ---------- experimento ---------- */
+let run={};// resultados da tentativa em andamento
+/* Bloco 1: tempo de reação simples */
+$('e1go').onclick=async()=>{const st=$('e1s'),tap=$('e1tap');$('e1go').disabled=true;$('e1res').hidden=true;tap.hidden=false;
+  run={};const rts=[];let falsos=0,i=0;
+  while(rts.length<12){i++;$('e1p').textContent=`${rts.length+1} / 12`;
+    await show(st,'<span class="fix">+</span>');
+    let cedo=false;const early=e=>{e.preventDefault();cedo=true;};tap.addEventListener('pointerdown',early);
+    const espera=700+Math.random()*1300;const t0w=performance.now();
+    while(performance.now()-t0w<espera&&!cedo)await sleep(20);
+    tap.removeEventListener('pointerdown',early);
+    if(cedo){falsos++;await show(st,'<span class="hint">cedo demais, de novo</span>');await sleep(700);continue;}
+    const t0=await show(st,'<span class="w" style="font-size:64px">●</span>');
+    const rt=await new Promise(res=>{const h=e=>{e.preventDefault();tap.removeEventListener('pointerdown',h);res(performance.now()-t0);};tap.addEventListener('pointerdown',h);});
+    st.innerHTML='';
+    if(rt<120){falsos++;await show(st,'<span class="hint">cedo demais, de novo</span>');await sleep(700);continue;}
+    if(rt<1500)rts.push(rt);
+    await sleep(300);}
+  tap.hidden=true;st.innerHTML='<span class="hint">fim do bloco 1</span>';$('e1p').textContent='Concluído.';
+  run.simples=median(rts);run.simplesN=rts.length;run.falsos=falsos;
+  $('e1rep').innerHTML=`Tempo de reação simples: <b>${fmt(run.simples)} ms</b> (mediana de ${rts.length} toques). Toques antecipados: ${falsos}.`;$('e1res').hidden=false;
+  $('e2go').disabled=false;$('e2s').innerHTML='<span class="hint">toque em Começar</span>';$('e2').scrollIntoView({behavior:'smooth',block:'start'});};
+
+/* Bloco 2: decisão lexical com priming */
+const PAIRS=[['chave','FECHADURA'],['dente','ESCOVA'],['lápis','BORRACHA'],['peixe','AQUÁRIO'],['cama','TRAVESSEIRO'],['porta','JANELA'],['pé','SAPATO'],['bola','GOL'],['arroz','FEIJÃO'],['avião','PILOTO'],['igreja','PADRE'],['banana','MACACO'],
+  ['relógio','HORA'],['barco','REMO'],['foto','CÂMERA'],['pente','CABELO'],['nuvem','CHUVA'],['copo','ÁGUA'],['mar','ONDA'],['vela','FÓSFORO'],['pizza','FORNO'],['vaca','LEITE'],['flor','JARDIM'],['rua','CARRO']];
+const NEUTROS=['tambor','gaveta','pijama','tinta','ilha','moeda','joelho','camisa','pedra','trator','lagarto','ferrugem'];
+const NONW=['BALPETO','MORDILHA','TUSFENA','CRAVILO','PENOSCA','LIMBARTE','SOGUEIRA','FRETIMO','DALUCRO','VINTORA','GOLPESA','RAMBITE'];
+const NWPRIME=['sofá','corda','nariz','vidro','tomate','escada','bicicleta','sal','farol','ovelha','cinto','rádio'];
+$('e2go').onclick=async()=>{const st=$('e2s');$('e2go').disabled=true;$('e2res').hidden=true;$('e2btn').hidden=false;
+  const p=shuffle(PAIRS.map(x=>x.slice()));const rel=p.slice(0,12),unr=p.slice(12);const neu=shuffle(NEUTROS.slice());
+  let trials=rel.map(([a,b])=>({prime:a,target:b,cond:'rel',word:true}))
+    .concat(unr.map(([a,b],i)=>({prime:neu[i],target:b,cond:'unr',word:true})))
+    .concat(NONW.map((w,i)=>({prime:NWPRIME[i],target:w,cond:'nw',word:false})));
+  trials=shuffle(trials);
+  const practice=[{prime:'mão',target:'DEDO',cond:'pr',word:true},{prime:'bolo',target:'FAMPERO',cond:'pr',word:false},{prime:'noite',target:'ESTRELA',cond:'pr',word:true},{prime:'lua',target:'TRINELA',cond:'pr',word:false}];
+  const all=practice.concat(trials);const data={rel:[],unr:[],nw:[]},err={rel:0,unr:0,nw:0};
+  for(let i=0;i<all.length;i++){const t=all[i];$('e2p').textContent=i<4?`treino ${i+1} / 4`:`${i-3} / ${trials.length}`;
+    await show(st,'<span class="fix">+</span>');await sleep(500);
+    await show(st,`<span class="w prime">${t.prime}</span>`);await sleep(250);
+    await show(st,'');await sleep(100);
+    const t0=await show(st,`<span class="w">${t.target}</span>`);
+    const a=await waitChoice($('e2btn'));const rt=a.t-t0;const ok=(a.r==='w')===t.word;
+    st.innerHTML='';await feedback(st,ok);
+    if(t.cond!=='pr'){if(!ok)err[t.cond]++;else if(rt>200&&rt<2500)data[t.cond].push(rt);}
+    await sleep(300);}
+  $('e2btn').hidden=true;st.innerHTML='<span class="hint">fim do bloco 2</span>';$('e2p').textContent='Concluído.';
+  run.rel=median(data.rel);run.unr=median(data.unr);run.nw=median(data.nw);run.pal=median(data.rel.concat(data.unr));
+  run.errRel=err.rel;run.errUnr=err.unr;run.errNw=err.nw;run.priming=run.unr-run.rel;
+  $('e2rep').innerHTML=`Relacionada: <b>${fmt(run.rel)} ms</b> · não relacionada: <b>${fmt(run.unr)} ms</b> · não-palavra: <b>${fmt(run.nw)} ms</b>. Efeito de priming: <b>${sgn(run.priming)} ms</b>. Erros: ${err.rel+err.unr} em 24 palavras, ${err.nw} em 12 não-palavras.`;$('e2res').hidden=false;
+  $('e3go').disabled=false;$('e3s').innerHTML='<span class="hint">toque em Começar</span>';$('e3').scrollIntoView({behavior:'smooth',block:'start'});};
+
+/* Blocos 3 e 4: frases. Cada moldura tem [início, final certo, anomalia de significado, erro de concordância].
+   As 24 molduras são sorteadas: 12 vão para o bloco 3 (6 certas + 6 anomalias) e 12 para o bloco 4 (6 certas + 6 erros de concordância). */
+const FR=[['Depois da chuva, a rua ficou','molhada','sonolenta','molhado'],['No inverno, as noites são','longas','quadradas','longa'],['O bolo da vovó estava','delicioso','furioso','deliciosa'],
+ ['As crianças chegaram da escola','cansadas','líquidas','cansados'],['O leão do zoológico parecia','faminto','alfabetizado','faminta'],['Minha avó comprou uma casa','nova','ácida','novo'],
+ ['O café que ele fez estava','forte','tímido','fortes'],['A professora entrou na sala','sorridente','fervente','sorridentes'],['Os sapatos novos ficaram','apertados','melancólicos','apertado'],
+ ['A água do mar estava','gelada','bilíngue','gelado'],['O menino ganhou um cachorro','pequeno','retangular','pequena'],['As flores do jardim são','amarelas','pontuais','amarela'],
+ ['O ônibus da manhã estava','lotado','grávido','lotada'],['A viagem de ônibus foi','longa','arborizada','longo'],['Os pães da padaria saíram','quentes','assustados','quente'],
+ ['O filme de ontem foi','divertido','crocante','divertida'],['A comida do restaurante estava','salgada','covarde','salgado'],['Os alunos da turma estavam','atentos','quadrados','atento'],
+ ['O carteiro entregou uma carta','pesada','sonora','pesado'],['As janelas da casa estavam','abertas','orgulhosas','aberta'],['O trem da tarde chegou','atrasado','doce','atrasada'],
+ ['A sopa de legumes ficou','gostosa','elétrica','gostoso'],['Os meninos voltaram do jogo','suados','retangulares','suado'],['A estrada para a praia é','longa','pensativa','longo']];
+let FRsorteio=null;
+function sorteiaFrases(){const f=shuffle(FR.map(x=>x.slice()));FRsorteio={b3:f.slice(0,12),b4:f.slice(12)};}
+/* roda um bloco de 12 frases: viol = índice do final violado (2 = significado, 3 = concordância) */
+async function blocoFrases(k,viol,chave){const st=$(k+'s'),btn=$(k+'btn');$(k+'go').disabled=true;$(k+'res').hidden=true;btn.hidden=false;
+  if(!FRsorteio)sorteiaFrases();const fr=FRsorteio[k==='e3'?'b3':'b4'];
+  const conds=shuffle([].concat(Array(6).fill('ok'),Array(6).fill('v')));const data={ok:[],v:[]},acc={ok:0,v:0};
+  for(let i=0;i<fr.length;i++){const f=fr[i],c=conds[i];const end=c==='ok'?f[1]:f[viol];$(k+'p').textContent=`${i+1} / ${fr.length}`;
+    await show(st,'<span class="fix">+</span>');await sleep(500);
+    await show(st,`<span class="w prime">${f[0]}</span>`);await sleep(Math.max(1400,f[0].split(' ').length*320));
+    const t0=await show(st,`<span class="w prime" style="font-size:19px;margin-bottom:10px">${f[0]}</span><span class="w">${end}.</span>`);
+    const r=await waitChoice(btn);const rt=r.t-t0;
+    const certo=(c==='ok')?r.r==='c':r.r==='e';if(certo){acc[c]++;if(rt>200&&rt<3500)data[c].push(rt);}
+    st.innerHTML='';await sleep(400);}
+  btn.hidden=true;$(k+'p').textContent='Concluído.';
+  run[chave+'Ok']=median(data.ok);run[chave]=median(data.v);run['acc'+chave+'Ok']=acc.ok;run['acc'+chave]=acc.v;return acc;}
+$('e3go').onclick=async()=>{const acc=await blocoFrases('e3',2,'fSem');$('e3s').innerHTML='<span class="hint">fim do bloco 3</span>';
+  $('e3rep').innerHTML=`Final que faz sentido: <b>${fmt(run.fSemOk)} ms</b> · anomalia de significado: <b>${fmt(run.fSem)} ms</b>. Acertos: ${acc.ok}/6 com sentido, ${acc.v}/6 anomalias.`;$('e3res').hidden=false;
+  $('e4go').disabled=false;$('e4s').innerHTML='<span class="hint">toque em Começar</span>';$('e4').scrollIntoView({behavior:'smooth',block:'start'});};
+$('e4go').onclick=async()=>{const acc=await blocoFrases('e4',3,'fGra');$('e4s').innerHTML='<span class="hint">fim do experimento</span>';
+  $('e4rep').innerHTML=`Concordância certa: <b>${fmt(run.fGraOk)} ms</b> · erro de concordância: <b>${fmt(run.fGra)} ms</b>. Acertos: ${acc.ok}/6 certas, ${acc.v}/6 erros.`;$('e4res').hidden=false;
+  run.quando=agora();S.r=run;S.tentativas=(S.tentativas||0)+1;save();mostraResultados();$('res').scrollIntoView({behavior:'smooth',block:'start'});};
+
+$('refazer').onclick=()=>{if(!window.confirm('Refazer apaga os resultados atuais e as respostas das perguntas 1 a 20, que dependem deles (as respostas 21 a 50 ficam). O número de tentativas vai impresso no PDF. Continuar?'))return;
+  S.r=null;FRsorteio=null;for(let i=1;i<=20;i++)delete S.resp[i];save();['e1','e2','e3','e4'].forEach(k=>{$(k+'res').hidden=true;$(k+'p').textContent='';});
+  $('e1go').disabled=false;$('e2go').disabled=true;$('e3go').disabled=true;$('e4go').disabled=true;$('e1s').innerHTML='<span class="hint">toque em Começar</span>';
+  $('e2s').innerHTML='<span class="hint">faça o bloco 1 primeiro</span>';$('e3s').innerHTML='<span class="hint">faça o bloco 2 primeiro</span>';$('e4s').innerHTML='<span class="hint">faça o bloco 3 primeiro</span>';
+  mostraResultados();$('e1').scrollIntoView({behavior:'smooth',block:'start'});};
+
+/* ---------- resultados e comparação ---------- */
+function bars(svg,items,unit,note,print){const W=560,H=280,L=66,R=10,T=34,B=84;const max=Math.max(...items.map(i=>isNaN(i.value)?0:i.value))*1.15||1;
+  const bw=Math.min(70,(W-L-R)/items.length*0.62);let g='';const step=max>1500?500:max>600?200:100;
+  for(let v=0;v<=max;v+=step){const y=T+(1-v/max)*(H-T-B);g+=`<line class="ax" x1="${L}" y1="${y}" x2="${W-R}" y2="${y}"/><text x="${L-8}" y="${y+4}" text-anchor="end" style="font-size:15px">${v}</text>`;}
+  items.forEach((it,i)=>{const cx=L+(i+.5)*(W-L-R)/items.length;const v=isNaN(it.value)?0:it.value;const y=T+(1-v/max)*(H-T-B);
+    g+=`<rect x="${cx-bw/2}" y="${y}" width="${bw}" height="${H-B-y}" rx="4" style="fill:${print?it.pc:it.color}"/>`;
+    g+=`<text class="lbl" x="${cx}" y="${y-7}" text-anchor="middle" style="font-size:15px">${fmt(it.value)}</text>`;
+    it.label.split('|').forEach((l,k)=>{g+=`<text x="${cx}" y="${H-B+22+k*16}" text-anchor="middle" style="font-size:13px">${l}</text>`;});});
+  if(note)g+=`<text x="${(L+W-R)/2}" y="${H-6}" text-anchor="middle" style="font-size:13px">${note}</text>`;
+  svg.innerHTML=g;}
+const C1='var(--accent)',C2='var(--you)',C3='var(--muted)';
+function itensGrafico(r){return[
+ {label:'RT|simples',value:r.simples,color:C3,pc:'#777'},{label:'relac.',value:r.rel,color:C1,pc:'#0e7c86'},{label:'não|relac.',value:r.unr,color:C1,pc:'#0e7c86'},{label:'não-|palavra',value:r.nw,color:C1,pc:'#0e7c86'},
+ {label:'faz|sentido',value:r.fSemOk,color:C2,pc:'#c9771a'},{label:'anom.|signif.',value:r.fSem,color:C2,pc:'#c9771a'},{label:'conc.|certa',value:r.fGraOk,color:C3,pc:'#777'},{label:'erro|conc.',value:r.fGra,color:C3,pc:'#777'}];}
+/* linhas da tabela: [medida, valor, típico, sentido esperado?] */
+function linhas(r){const dond=r.pal-r.simples,dnw=r.nw-r.pal,dsem=r.fSem-r.fSemOk,dgra=r.fGra-r.fGraOk;
+  const ok=(c)=>c?['no sentido esperado','ok']:['diferente do esperado','dif'];
+  return[
+   ['Tempo de reação simples (bloco 1)',fmt(r.simples)+' ms','≈ 250–350 ms no celular',null],
+   ['Decisão lexical, palavras (bloco 2)',fmt(r.pal)+' ms','≈ 500–700 ms',null],
+   ['Diferença decisão − simples (Donders)',sgn(dond)+' ms','≈ +200 a +400 ms',ok(dond>100)],
+   ['Efeito de priming (não rel. − relacionada)',sgn(r.priming)+' ms','≈ +30 a +85 ms',ok(r.priming>0)],
+   ['Não-palavra − palavra',sgn(dnw)+' ms','≈ +50 a +150 ms',ok(dnw>0)],
+   ['Erros: palavras / não-palavras',`${r.errRel+r.errUnr} de 24 / ${r.errNw} de 12`,'poucos (≤ 2 em cada)',null],
+   ['Frase que faz sentido (bloco 3)',fmt(r.fSemOk)+' ms','≈ 600–900 ms',null],
+   ['Anomalia de significado − faz sentido',sgn(dsem)+' ms','≈ +50 a +200 ms',ok(dsem>0)],
+   ['Acertos no bloco 3: com sentido / anomalias',`${r.accfSemOk}/6 · ${r.accfSem}/6`,'≥ 5 de 6 em cada',null],
+   ['Concordância certa (bloco 4)',fmt(r.fGraOk)+' ms','≈ 600–900 ms',null],
+   ['Erro de concordância − certa',sgn(dgra)+' ms','≈ 0 a +200 ms',ok(dgra>0)],
+   ['Acertos no bloco 4: certas / erros',`${r.accfGraOk}/6 · ${r.accfGra}/6`,'≥ 5 de 6 em cada',null]];}
+function tabela(el,r){let h='<tr><th>Medida</th><th>Seu valor</th><th>Típico</th><th>Seu padrão</th></tr>';
+  linhas(r).forEach(([a,b,c,d])=>{h+=`<tr><td>${a}</td><td class="n">${b}</td><td>${c}</td><td class="${d?d[1]:''}">${d?d[0]:''}</td></tr>`;});el.innerHTML=h;}
+function mostraResultados(){const r=S.r;$('resvazio').hidden=!!r;$('rescheio').hidden=!r;$('pergvazio').hidden=!!r;$('perguntas').hidden=!r;
+  if(!r)return;bars($('chart'),itensGrafico(r),'ms','medianas em ms, respostas certas');tabela($('tab'),r);montaPerguntas();}
+
+/* ---------- perguntas ---------- */
+/* dicas: seções do material de estudo online */
+const EST='https://takahashiyd.github.io/lab-website/neurocomunicacao/estudo/';
+const D=(aula,anc,t)=>({u:`${EST}aula0${aula}.html#${anc}`,t:`Aula ${aula} · ${t}`});
+/* cada pergunta: {aula, t, q, o:[alternativas], c: índice da correta (na lista original), e: explicação, d: dicas} */
+const Q=(aula,t,q,o,c,e,d)=>({aula,t,q,o,c,e,d});
+const n0=v=>(v==null||isNaN(v))?0:v;
+
+/* 20 perguntas que usam os resultados do aluno (a alternativa correta depende do que ele encontrou) */
+function PERG_RES(r){
+  const rs=n0(r.simples),pal=n0(r.pal),dond=pal-rs,prim=n0(r.priming),nw=n0(r.nw),dnw=nw-pal,errT=r.errRel+r.errUnr+r.errNw;
+  const dsem=n0(r.fSem)-n0(r.fSemOk),dgra=n0(r.fGra)-n0(r.fGraOk);
+  const asem=r.accfSem,agra=r.accfGra,falsos=(6-r.accfSemOk)+(6-r.accfGraOk);
+  const L=[];
+  /* bloco 1 */
+  L.push(Q('Aula 1','Quanto é só condução',
+    `Seu tempo de reação simples foi <b>${fmt(rs)} ms</b>. O caminho olho → cérebro → mão tem cerca de 1 metro, e um axônio mielinizado conduz a cerca de 100 m/s. Só a condução pelos axônios leva, portanto, cerca de:`,
+    ['1 ms','10 ms','100 ms',`${fmt(rs)} ms, o tempo inteiro`],1,
+    `1 m ÷ 100 m/s = 0,01 s = 10 ms. Quase todo o resto do seu tempo não é “fio”: é retina, sinapses, decisão e músculo.`,
+    [D(1,'mielina-e-velocidade','Mielina e velocidade')]));
+  L.push(Q('Aula 1','Onde o tempo é gasto',
+    `Se a condução leva só ~10 ms, a maior parte dos seus <b>${fmt(rs)} ms</b> é gasta em:`,
+    ['na velocidade do som até o ouvido','nas sinapses (≈ 1 ms cada, em muitas camadas), na retina, na decisão e na contração do músculo','no corpo caloso, que a luz precisa atravessar','só na tela do celular, que sozinha explica tudo'],1,
+    `Entre a luz chegar à retina e o dedo tocar passam a retina (lenta), tálamo, córtex visual, áreas de decisão, córtex motor, medula e músculo; cada sinapse custa ≈ 1 ms. A tela e o toque do celular somam só 30–80 ms.`,
+    [D(1,'sinapses','Sinapses'),D(1,'o-potencial-de-ação','O potencial de ação')]));
+  if(rs<200)L.push(Q('Aula 2','Seu valor abaixo da faixa',
+    `Seu tempo simples (<b>${fmt(rs)} ms</b>) ficou abaixo da faixa típica no celular (250–350 ms). A explicação mais plausível é:`,
+    ['seus axônios conduzem mais rápido que o normal','você antecipou o sinal em parte das tentativas, tocando pelo ritmo da espera e não em resposta ao sinal','a tela do seu celular é mais rápida que a luz','a retina responde em menos de 1 ms'],1,
+    `Toques abaixo de ~120 ms são repetidos, mas um toque “no palpite certo” a 150–190 ms ainda entra na mediana. Antecipação encurta o tempo medido sem encurtar o processamento.`,
+    [D(2,'a-subtração-de-donders','A subtração de Donders')]));
+  else if(rs<=400)L.push(Q('Aula 2','Seu valor na faixa típica',
+    `Seu tempo simples (<b>${fmt(rs)} ms</b>) está na faixa típica. Esse valor corresponde a:`,
+    ['perceber o sinal, decidir que ele apareceu e mover o dedo, mais o atraso do aparelho','só o tempo de condução nos nervos','o tempo de identificar a palavra e escolher a resposta','o tempo de uma única sinapse'],0,
+    `A tarefa simples contém só perceber e mover (Donders); identificar e escolher só entram na tarefa de escolha do bloco 2.`,
+    [D(2,'a-subtração-de-donders','A subtração de Donders')]));
+  else L.push(Q('Aula 2','Seu valor acima da faixa',
+    `Seu tempo simples (<b>${fmt(rs)} ms</b>) ficou acima da faixa típica no celular (250–350 ms). A explicação mais plausível é:`,
+    ['falta de mielina nos seus nervos','atenção dividida, cautela para não tocar antes da hora ou um aparelho lento; nada disso muda o que a subtração de Donders pode fazer depois','a retina só funciona depois de 400 ms','o sinal não passou pelo tálamo'],1,
+    `Tempos simples mais longos costumam vir de atenção e estratégia (medo de antecipar) ou do aparelho. A subtração continua válida se o mesmo fator afetar os dois blocos.`,
+    [D(2,'a-subtração-de-donders','A subtração de Donders')]));
+  L.push(Q('Aula 2','Toques antecipados',
+    `Você teve <b>${r.falsos}</b> toque(s) antecipado(s) (antes do sinal ou com menos de 120 ms), e a página repetiu essas tentativas. Por quê?`,
+    ['um toque tão cedo não pode ser resposta ao sinal: é um palpite sobre quando ele viria','toques rápidos valem menos pontos','o celular travou nessas tentativas','a retina não funciona nos primeiros 120 ms'],0,
+    `O caminho mínimo retina → córtex → músculo leva mais de 120 ms. Um toque mais cedo foi iniciado antes do sinal, e por isso não mede o tempo de reação.`,
+    [D(1,'sinapses','Sinapses')]));
+  /* bloco 2 */
+  L.push(Q('Aula 2','O que a subtração estima',
+    `Decisão lexical (palavras): <b>${fmt(pal)} ms</b>. Reação simples: <b>${fmt(rs)} ms</b>. Diferença: <b>${sgn(dond)} ms</b>. Pela lógica de Donders, essa diferença estima:`,
+    ['o tempo de mover o dedo','o tempo de identificar o estímulo (reconhecer a palavra) e escolher a resposta','o tempo de condução nos nervos','o atraso da tela do celular'],1,
+    `A tarefa de escolha tem tudo o que a simples tem (perceber e mover) mais identificar e escolher. Subtraindo, sobra o tempo dessas etapas. A mesma lógica (tarefa − controle) é usada nas imagens do cérebro.`,
+    [D(2,'a-subtração-de-donders','A subtração de Donders')]));
+  if(dond>100)L.push(Q('Aula 2','A suposição de Donders',
+    `Sua diferença (<b>${sgn(dond)} ms</b>) é positiva e grande. Para interpretá-la como “tempo de decisão”, é preciso aceitar que:`,
+    ['acrescentar a etapa de decisão não muda a duração das outras etapas (inserção pura)','as duas tarefas usam dedos diferentes','a decisão acontece antes da percepção','o tempo simples é sempre zero'],0,
+    `É a suposição de inserção pura, que nem sempre é verdade: ao acrescentar uma decisão, a pessoa pode também mudar o modo de perceber ou de responder.`,
+    [D(2,'a-subtração-de-donders','A subtração de Donders')]));
+  else L.push(Q('Aula 2','Uma diferença pequena',
+    `Sua diferença (<b>${sgn(dond)} ms</b>) ficou pequena ou negativa. A interpretação mais defensável é:`,
+    ['você decide em menos de 0 ms','a decisão lexical não exige identificar a palavra','a subtração supõe que as outras etapas não mudam; se você antecipou no bloco 1 ou mudou de estratégia, a diferença não mede só a decisão','o celular inverteu os blocos'],2,
+    `A subtração só funciona se perceber e mover custarem o mesmo nos dois blocos. Antecipações no bloco 1 (tempo simples curto demais) ou respostas apressadas no bloco 2 quebram essa suposição.`,
+    [D(2,'a-subtração-de-donders','A subtração de Donders')]));
+  if(prim>=25)L.push(Q('Aula 5','Seu priming',
+    `Seu efeito de priming foi <b>${sgn(prim)} ms</b> (não relacionada − relacionada). O mecanismo que explica esse ganho é:`,
+    ['a palavra relacionada é sempre mais curta','ler “chave” espalha ativação pela rede semântica e deixa “fechadura” pré-ativada, mais perto do limiar de reconhecimento','as palavras relacionadas aparecem em letras maiores','o prime é lido depois do alvo'],1,
+    `É a propagação da ativação (Collins & Loftus): acessar uma palavra “aquece” as vizinhas. Meyer & Schvaneveldt (1971) mediram cerca de 85 ms; com intervalo curto, só a parte rápida e automática aparece.`,
+    [D(5,'palavras-vivem-em-rede','Palavras vivem em rede')]));
+  else L.push(Q('Aula 5','Seu priming',
+    `Seu efeito de priming foi <b>${sgn(prim)} ms</b>, menor que o típico (30 a 85 ms). A conclusão mais defensável é:`,
+    ['o priming semântico não existe','palavras relacionadas inibem uma à outra','com 12 tentativas por condição, um efeito de dezenas de ms pode ficar escondido no ruído de ±100 ms entre toques; não dá para concluir que o efeito não existe em você','você não leu os primes, o que prova que são inúteis'],2,
+    `O efeito esperado (30–85 ms) é menor que a variação natural entre toques. Com poucas tentativas, a mediana de cada condição oscila dezenas de ms por acaso, e a diferença pode sair em qualquer direção.`,
+    [D(5,'palavras-vivem-em-rede','Palavras vivem em rede'),D(2,'o-eeg-e-os-potenciais-relacionados-a-eventos','O EEG e os potenciais relacionados a eventos')]));
+  L.push(Q('Aula 5','O priming no EEG',
+    `Se o mesmo experimento fosse feito com EEG, a palavra-alvo precedida por um prime relacionado deveria mostrar:`,
+    ['um N400 maior','um N400 menor, no mesmo momento','um P600 maior','nenhuma onda, porque o priming é só motor'],1,
+    `Priming, repetição e contexto mudam a amplitude do N400, não o seu tempo: quanto mais pré-ativada a palavra, menor o N400.`,
+    [D(5,'o-n400-mede-expectativa-não-erro','O N400 mede expectativa, não erro')]));
+  if(dnw>0)L.push(Q('Aula 5','Não-palavras mais lentas',
+    `Suas não-palavras levaram <b>${fmt(nw)} ms</b>, contra <b>${fmt(pal)} ms</b> para as palavras. Por que rejeitar uma não-palavra costuma demorar mais?`,
+    ['as não-palavras têm mais letras','a resposta “não é” usa o dedo mais lento','nenhuma entrada do léxico atinge o limiar; o sistema precisa esperar até concluir que não há candidata que combine','o cérebro precisa pronunciar a não-palavra em voz alta'],2,
+    `Uma palavra é aceita assim que sua entrada vence a competição. Para uma não-palavra, as candidatas ativadas pelo começo vão sendo eliminadas e nenhuma sobra; só então o sistema responde “não”.`,
+    [D(5,'ouvir-é-eliminar-candidatas','Ouvir é eliminar candidatas')]));
+  else L.push(Q('Aula 5','Não-palavras rápidas',
+    `Suas não-palavras (<b>${fmt(nw)} ms</b>) foram tão rápidas quanto ou mais rápidas que as palavras (<b>${fmt(pal)} ms</b>), o contrário do típico. A explicação mais plausível é:`,
+    ['as não-palavras estão guardadas no léxico','você as rejeitou pela aparência, antes de uma busca completa, ou adotou “não é” como resposta rápida padrão','o priming inverteu a tarefa','isso prova que não existe competição entre candidatas'],1,
+    `Não-palavras pouco parecidas com palavras reais podem ser rejeitadas por pistas superficiais; e um viés de resposta (“não é” rápido) encurta esse tempo. O padrão típico aparece quando as não-palavras são “bem formadas”.`,
+    [D(5,'ouvir-é-eliminar-candidatas','Ouvir é eliminar candidatas')]));
+  if(errT<=2)L.push(Q('Aula 2','Poucos erros',
+    `Você errou <b>${errT}</b> de 36 no bloco 2. Com tão poucos erros, suas medianas:`,
+    ['são uma medida razoável de velocidade, porque você não trocou precisão por velocidade','não valem nada, porque faltam erros para comparar','medem só o movimento do dedo','medem a condução nos nervos'],0,
+    `Tempo e precisão são um compromisso: muitos erros indicariam respostas apressadas. Com poucos erros, as medianas (calculadas só sobre acertos) refletem o processamento.`,
+    [D(2,'a-subtração-de-donders','A subtração de Donders')]));
+  else L.push(Q('Aula 2','Vários erros',
+    `Você errou <b>${errT}</b> de 36 no bloco 2. Isso sugere que:`,
+    ['seu léxico perdeu palavras','houve um compromisso velocidade–precisão: respostas rápidas demais aumentam os erros, e as medianas (só de acertos) subestimam o custo real','as não-palavras eram palavras','o celular registrou toques fantasmas'],1,
+    `Quando a pessoa prioriza velocidade, erra mais; como os erros saem da mediana, os tempos ficam “bonitos” mas incompletos. Por isso tempo e erros são analisados juntos.`,
+    [D(2,'a-subtração-de-donders','A subtração de Donders')]));
+  L.push(Q('Aula 2','Por que a mediana',
+    `A página usa a <b>mediana</b> dos seus tempos, e não a média. Qual é a vantagem?`,
+    ['a mediana é sempre menor que a média','a mediana é pouco afetada por um ou dois toques muito lentos (uma distração), que puxariam a média para cima','a mediana ignora as respostas certas','a mediana mede o atraso do celular'],1,
+    `Tempos de reação têm cauda longa: toques ocasionais muito lentos distorcem a média. A mediana resiste a esses valores extremos.`,
+    [D(2,'o-eeg-e-os-potenciais-relacionados-a-eventos','O EEG e os potenciais relacionados a eventos')]));
+  L.push(Q('Aula 2','Treino',
+    `As 4 primeiras tentativas do bloco 2 foram treino e ficaram fora das medianas porque:`,
+    ['nas primeiras tentativas a pessoa ainda aprende a tarefa, e os tempos são mais lentos e variáveis','o celular precisa aquecer','o priming só funciona depois de 4 palavras','as palavras de treino não existem em português'],0,
+    `Tentativas de familiarização evitam que o aprendizado da tarefa se misture ao efeito que queremos medir.`,
+    [D(2,'a-subtração-de-donders','A subtração de Donders')]));
+  /* blocos 3 e 4 */
+  if(dsem>0)L.push(Q('Aula 6','Custo da anomalia',
+    `No bloco 3, a anomalia de significado custou <b>${sgn(dsem)} ms</b> em relação às frases com sentido. No EEG, a onda ligada a esse tipo de violação é:`,
+    ['o P600, uma positividade tardia ligada à reanálise da estrutura','o N400, uma negatividade por volta de 400 ms ligada ao significado e à expectativa','a ELAN, entre 150 e 250 ms, ligada à estrutura local','a onda positiva que aparece para letras maiores'],1,
+    `Kutas & Hillyard (1980): a palavra que não faz sentido no contexto gera o N400; quanto menos previsível a palavra, maior a onda.`,
+    [D(6,'n400-o-significado-não-encaixa','N400: o significado não encaixa')]));
+  else L.push(Q('Aula 6','Anomalia sem custo',
+    `No bloco 3, a anomalia de significado <b>não</b> custou tempo (<b>${sgn(dsem)} ms</b>). A interpretação mais defensável é:`,
+    ['o N400 não existe em português','o julgamento “não faz sentido” pode ser dado assim que a palavra não combina, enquanto “faz sentido” exige integrar a palavra até o fim; o tempo de toque não é o N400','você não leu as frases','as anomalias são processadas no tálamo antes das frases normais'],1,
+    `O tempo do dedo mede uma decisão explícita, que depende do critério da tarefa; o N400 aparece no EEG mesmo quando o toque não mostra diferença.`,
+    [D(6,'n400-o-significado-não-encaixa','N400: o significado não encaixa'),D(6,'dois-tipos-de-erro-duas-ondas-n400-e-p600','Dois tipos de erro, duas ondas')]));
+  if(dgra>0)L.push(Q('Aula 6','Custo da concordância',
+    `No bloco 4, o erro de concordância custou <b>${sgn(dgra)} ms</b> em relação às frases corretas. No EEG, a onda ligada a esse tipo de violação é:`,
+    ['o N400, por volta de 400 ms','o P600, uma positividade tardia (500–800 ms) ligada à reanálise da estrutura','a N1 visual','a fundamental ausente'],1,
+    `Osterhout & Holcomb (1992): palavras que não cabem na estrutura esperada produzem o P600; erros de concordância também geram a LAN.`,
+    [D(6,'p600-a-estrutura-precisa-ser-refeita','P600: a estrutura precisa ser refeita')]));
+  else L.push(Q('Aula 6','Concordância sem custo',
+    `No bloco 4, o erro de concordância <b>não</b> custou tempo (<b>${sgn(dgra)} ms</b>). A interpretação mais defensável é:`,
+    ['a concordância é processada pelo hemisfério direito','um erro numa letra final (gostoso/gostosa) é “consertado” quase automaticamente, numa leitura boa o suficiente; o custo pode aparecer no EEG (P600) sem aparecer no toque','a gramática não é processada em tarefas rápidas','o P600 impede o movimento do dedo'],1,
+    `O leitor constrói a estrutura de forma incremental e tolera pequenos erros; detectar a violação de propósito, numa decisão explícita, é outra tarefa, com outro tempo.`,
+    [D(6,'a-primeira-leitura-não-some','A primeira leitura não some'),D(6,'p600-a-estrutura-precisa-ser-refeita','P600: a estrutura precisa ser refeita')]));
+  L.push(Q('Aula 6','Dedo e EEG',
+    `No EEG, o N400 (≈ 400 ms) vem antes do P600 (≈ 600 ms). Seus tempos de toque foram <b>${fmt(r.fSem)} ms</b> para anomalias e <b>${fmt(r.fGra)} ms</b> para erros de concordância. Por que os toques não precisam seguir a ordem das ondas?`,
+    ['porque o toque acontece depois das duas ondas e inclui decisão e movimento, e o critério de cada bloco era diferente','porque o EEG mede o dedo, não o cérebro','porque o P600 acontece antes do N400 em português','porque as ondas só existem com eletrodos'],0,
+    `As ondas marcam quando o cérebro reage; o toque é uma resposta explícita tomada depois, com um critério definido pela tarefa. Os dois podem discordar sem contradição.`,
+    [D(6,'dois-tipos-de-erro-duas-ondas-n400-e-p600','Dois tipos de erro, duas ondas: N400 e P600')]));
+  if(asem>agra)L.push(Q('Aula 6','O erro mais fácil de ver',
+    `Você detectou <b>${asem} de 6</b> anomalias de significado e <b>${agra} de 6</b> erros de concordância. A explicação coerente com o material é:`,
+    ['a gramática é processada no hemisfério direito, mais lento','o leitor prevê fortemente o significado da próxima palavra; já um erro de concordância numa letra final pode ser “consertado” sem que você note (processamento bom o suficiente)','erros de concordância são anomalias de significado','o N400 bloqueia o P600'],1,
+    `Christianson e colegas mostraram que a primeira leitura não some: o sistema se contenta com uma interpretação aproximada. Uma anomalia de significado, ao contrário, viola a previsão e salta aos olhos.`,
+    [D(6,'a-primeira-leitura-não-some','A primeira leitura não some')]));
+  else if(agra>asem)L.push(Q('Aula 6','O erro mais fácil de ver',
+    `Você detectou <b>${agra} de 6</b> erros de concordância e <b>${asem} de 6</b> anomalias de significado. A explicação mais plausível é:`,
+    ['a concordância é uma pista explícita e binária (gênero/número), enquanto várias anomalias admitem leitura figurada (“uma noite quadrada”) e podem ter sido aceitas como metáfora','o significado não é processado em tarefas rápidas','o P600 é mais rápido que o N400','as anomalias não geram N400 em português'],0,
+    `Julgar “faz sentido” depende de quanto o leitor tolera usos figurados; a concordância, uma vez notada, não admite dúvida. O critério da tarefa muda a taxa de detecção.`,
+    [D(6,'a-concordância-liga-palavras-distantes','A concordância liga palavras distantes')]));
+  else L.push(Q('Aula 6','Dois erros, mesma detecção',
+    `Você detectou o mesmo número de anomalias de significado e de erros de concordância (<b>${asem} de 6</b> cada). O que isso mostra?`,
+    ['que os dois erros são processados pelo mesmo mecanismo','que, numa tarefa com resposta explícita, os dois tipos de violação podem chegar ao mesmo nível de acerto, mesmo sendo detectados por processos diferentes (N400 e P600)','que o N400 e o P600 são a mesma onda','que a concordância é uma anomalia de significado'],1,
+    `Taxa de acerto igual não implica mecanismo igual: no EEG, os dois tipos de erro produzem ondas diferentes.`,
+    [D(6,'dois-tipos-de-erro-duas-ondas-n400-e-p600','Dois tipos de erro, duas ondas')]));
+  if(falsos>=3)L.push(Q('Aula 2','Frases corretas rejeitadas',
+    `Você rejeitou <b>${falsos}</b> frases que estavam certas (blocos 3 e 4). Isso sugere:`,
+    ['um critério liberal para “errada”: velocidade trocada por precisão, ou expectativa de que a maioria das frases tivesse erro','que as frases certas tinham erros escondidos','que o hemisfério direito julga frases','que o N400 apareceu nas frases certas'],0,
+    `Com metade das frases violadas, há um viés para “errada”; respostas rápidas aumentam esses falsos alarmes. Por isso os tempos são calculados só sobre os julgamentos coerentes.`,
+    [D(2,'a-subtração-de-donders','A subtração de Donders')]));
+  else L.push(Q('Aula 2','Frases corretas aceitas',
+    `Você aceitou quase todas as frases certas (rejeitou só <b>${falsos}</b>). O que isso garante para a interpretação dos seus acertos nas violações?`,
+    ['que seus acertos refletem detecção, e não um hábito de responder “errada” a tudo','que você leu mais devagar que a turma','que o P600 foi maior','que não houve priming'],0,
+    `Para interpretar a detecção de erros, é preciso saber a taxa de falsos alarmes: quem rejeita tudo “acerta” todas as violações sem detectar nada.`,
+    [D(2,'a-lógica-do-método-de-lesão-e-seus-limites','A lógica do método de lesão e seus limites')]));
+  L.push(Q('Aula 2','Por que separar os blocos',
+    `No bloco 4 todas as frases faziam sentido e só a concordância variava. Esse desenho serve para:`,
+    ['isolar a violação sintática: qualquer diferença de tempo se deve à concordância, não ao significado (lógica tarefa − controle)','deixar o experimento mais curto','evitar o N400, que atrapalha o P600','testar o hemisfério direito'],0,
+    `É a mesma lógica da subtração: as condições diferem por um único fator. Misturar os dois erros num bloco só confundiria o critério de resposta.`,
+    [D(2,'a-subtração-de-donders','A subtração de Donders')]));
+  L.push(Q('Aula 2','O atraso do aparelho',
+    `O celular acrescenta cerca de 30 a 80 ms entre a tela mudar e o toque ser registrado. Para as <b>diferenças</b> entre condições (por exemplo, não relacionada − relacionada), esse atraso:`,
+    ['invalida a comparação','soma a todas as condições e se cancela na diferença; só altera os valores absolutos','dobra o efeito de priming','só afeta as não-palavras'],1,
+    `Um atraso constante entra nas duas condições e desaparece na subtração. É por isso que o tempo simples parece alto no celular, mas os efeitos (diferenças) continuam interpretáveis.`,
+    [D(2,'a-subtração-de-donders','A subtração de Donders')]));
+  L.push(Q('Aulas 2 e 5','A turma inteira',
+    `Suponha que metade da turma mostrou priming positivo e metade mostrou zero ou negativo. A conclusão correta é:`,
+    ['o efeito não existe','metade da turma não tem rede semântica','isso é compatível com um efeito real e pequeno: ao combinar muitas pessoas o ruído cai (com a raiz de N) e o sinal se mantém; é preciso olhar a média da turma e sua variabilidade','a mediana deveria ter sido a média'],2,
+    `É a lógica do ERP: uma tentativa (ou uma pessoa) é dominada pelo ruído; na média de N, o ruído cai com √N enquanto o sinal fica. Um efeito de 30 ms com ruído de 100 ms “some” em metade das pessoas.`,
+    [D(2,'o-eeg-e-os-potenciais-relacionados-a-eventos','O EEG e os potenciais relacionados a eventos')]));
+  return L;}
+
+/* 30 perguntas sobre as aulas 1 a 6 (5 por aula) */
+const PERG_AULAS=[
+ Q('Aula 1','O que é comunicar','Segundo o material do curso, comunicar é:',
+   ['transmitir fala de uma pessoa a outra','usar um sinal, com um código compartilhado, para mudar o que o outro sabe ou faz','copiar uma mensagem sem perdas, como numa fotocópia','usar palavras para descrever o mundo'],1,
+   'As três peças são sinal (algo físico que viaja), código compartilhado (a regra que liga sinal e significado) e receptor, que interpreta com o que já sabe, no seu mundo sensorial.',
+   [D(1,'o-que-é-comunicar-sinal-código-e-receptor','O que é comunicar: sinal, código e receptor')]),
+ Q('Aula 1','Os alarmes dos vervets','Seyfarth, Cheney e Marler tocaram, num alto-falante, gravações dos alarmes dos macacos-vervet sem nenhum predador por perto. O resultado mostrou que:',
+   ['os macacos ignoram sons gravados','o som sozinho carrega informação sobre a categoria de perigo: os macacos deram a fuga certa para cada alarme (comunicação referencial)','os alarmes são aprendidos palavra por palavra, como numa língua','os alarmes expressam só o susto de quem grita'],1,
+   'Alarme de leopardo → sobem em árvores; de águia → olham o céu; de cobra → olham o chão. O uso melhora com a idade, mas a forma dos chamados é pouco flexível, o que os afasta dos símbolos humanos.',
+   [D(1,'os-vervets-e-seus-três-alarmes','Os vervets e seus três alarmes')]),
+ Q('Aula 1','Linguagem sem fala','Qual exemplo é linguagem sem fala?',
+   ['o papagaio que diz “bom dia”','o semáforo','a Libras, língua natural completa com gramática própria, em canal visual-motor','o choro do bebê'],2,
+   'Fala é só um canal da linguagem. O papagaio é fala (e talvez comunicação) sem linguagem; o semáforo e o choro são comunicação sem linguagem.',
+   [D(1,'linguagem-sem-fala-as-línguas-de-sinais','Linguagem sem fala: as línguas de sinais')]),
+ Q('Aula 1','Traços de Hockett','“Dizer coisas que nunca foram ditas e ainda assim ser entendido” corresponde ao traço de desenho chamado:',
+   ['arbitrariedade','deslocamento','produtividade','dualidade de padrões'],2,
+   'Arbitrariedade: o sinal não se parece com o que significa. Deslocamento: falar do que está longe no espaço ou no tempo. Dualidade: unidades com sentido feitas de unidades sem sentido.',
+   [D(1,'os-traços-de-hockett','Os traços de Hockett')]),
+ Q('Aula 1','Sinalizantes surdos','Hickok, Bellugi e Klima estudaram 23 sinalizantes surdos com lesão em um só hemisfério. A conclusão foi que:',
+   ['a língua de sinais depende do hemisfério direito, por ser visual e espacial','a linguagem de sinais depende do hemisfério esquerdo, como a falada: a especialização é para a linguagem, não para o som','as línguas de sinais não usam o córtex','lesões no hemisfério direito causam afasia de sinais'],1,
+   'Lesões à direita podem atrapalhar habilidades visuoespaciais, mas não produzem afasia de sinais.',
+   [D(1,'linguagem-sem-fala-as-línguas-de-sinais','Linguagem sem fala: as línguas de sinais'),D(1,'o-lado-esquerdo-pesa-mais-mas-não-sozinho','O lado esquerdo pesa mais, mas não sozinho')]),
+ Q('Aula 2','Afasia de Wernicke','Na afasia de Wernicke, descrita em 1874, a fala é:',
+   ['escassa, lenta, com esforço e telegráfica, com compreensão relativamente preservada','fluente e sem esforço, mas cheia de palavras trocadas e quase sem sentido, com compreensão ruim','normal, mas a pessoa não consegue repetir o que ouve','ausente: a pessoa só diz uma sílaba'],1,
+   'A lesão fica na parte posterior do giro temporal superior esquerdo. O quadro quase oposto, da afasia de Broca, tem fala escassa e compreensão relativamente preservada.',
+   [D(2,'wernicke-e-a-compreensão','Wernicke e a compreensão')]),
+ Q('Aula 2','Dissociação dupla','Por que a dissociação dupla é uma evidência mais forte que a simples?',
+   ['porque usa dois pacientes em vez de um','porque afasta a explicação de que uma tarefa é só mais difícil que a outra: cada paciente falha na tarefa em que o outro vai bem','porque mostra que as duas funções estão na mesma região','porque dispensa a autópsia'],1,
+   'Com um paciente só (A vai mal, B vai bem), a tarefa A pode ser só mais difícil. Com o padrão inverso em outro paciente, as funções dependem, ao menos em parte, de sistemas diferentes.',
+   [D(2,'dissociação-simples-e-dissociação-dupla','Dissociação simples e dissociação dupla')]),
+ Q('Aula 2','Participar ou ser necessário','Que métodos mostram que uma região é <b>necessária</b> para uma função, e não só que participa dela?',
+   ['fMRI e PET','EEG e MEG','lesão e TMS','espectrograma e ECoG'],2,
+   'Métodos que medem atividade (EEG, fMRI) mostram participação; uma região pode se ativar sem ser indispensável. Lesão e a “lesão virtual” da TMS testam necessidade.',
+   [D(2,'a-lógica-do-método-de-lesão-e-seus-limites','A lógica do método de lesão e seus limites'),D(2,'estimulação-magnética-transcraniana-tms','TMS')]),
+ Q('Aula 2','Tempo e lugar','Qual par método–ponto forte está correto?',
+   ['EEG: onde (1–2 mm); fMRI: quando (milissegundos)','EEG: quando (milissegundos); fMRI: onde (1–2 mm), mas de forma indireta e lenta','PET: milissegundos e sem radiação','TMS: localiza estruturas profundas com precisão'],1,
+   'O EEG tem resolução de milissegundos, mas não diz bem de onde vem o sinal; a fMRI localiza bem (sinal BOLD), mas a resposta aparece segundos depois. A TMS só alcança a superfície do córtex.',
+   [D(2,'medir-o-lugar-pet-e-fmri','Medir o lugar: PET e fMRI'),D(2,'o-eeg-e-os-potenciais-relacionados-a-eventos','O EEG e os ERPs')]),
+ Q('Aula 2','Mohr e a área de Broca','Mohr e colegas (1978) analisaram 20 casos e concluíram que um infarto restrito à área de Broca causa:',
+   ['afasia de Broca grave e permanente','mutismo seguido de melhora rápida; a afasia de Broca duradoura exige uma lesão bem maior, incluindo a ínsula e regiões vizinhas','afasia de Wernicke','nenhum sintoma'],1,
+   'É uma das razões de o modelo clássico ser considerado simples demais: a área de Broca não basta para a afasia de Broca, e a região também participa de outras funções.',
+   [D(2,'por-que-o-modelo-clássico-é-simples-demais','Por que o modelo clássico é simples demais')]),
+ Q('Aula 3','Tonotopia na cóclea','Na membrana basilar da cóclea, as frequências agudas fazem vibrar mais:',
+   ['o ápice, na ponta da espiral','a base, perto da janela oval','toda a membrana por igual','o ouvido médio'],1,
+   'Agudos na base, graves no ápice, em escala aproximadamente logarítmica. Esse mapa de frequências, a tonotopia, se mantém até o córtex auditivo.',
+   [D(3,'do-ar-à-cóclea-o-ouvido-decompõe-o-som-em-frequências','Do ar à cóclea')]),
+ Q('Aula 3','A fundamental ausente','Um som feito só de harmônicos de 400 a 1.200 Hz, sem energia em 200 Hz, é ouvido com a altura de um tom de 200 Hz porque:',
+   ['o ouvido médio acrescenta a fundamental','o cérebro deduz a fundamental pelo espaçamento regular dos harmônicos','a cóclea não distingue 200 de 400 Hz','o som passa pelo corpo caloso'],1,
+   'É a fundamental ausente: a altura é uma construção do cérebro. É assim que uma voz grave continua grave no telefone, que corta as frequências baixas.',
+   [D(3,'a-nota-fantasma-a-altura-é-uma-construção-do-cérebro','A nota fantasma')]),
+ Q('Aula 3','Percepção categórica','Na percepção categórica dos fonemas:',
+   ['ouvimos uma mudança gradual entre “ba” e “da” quando o som muda em passos iguais','distinguimos mal dois sons da mesma categoria e bem dois sons separados pela mesma distância física, mas de categorias diferentes','todas as diferenças acústicas são ouvidas igualmente','só falantes de inglês ouvem categorias'],1,
+   'As fronteiras dependem da língua aprendida na infância, mas chinchilas também mostram fronteiras parecidas, o que sugere que parte do fenômeno aproveita a audição geral dos mamíferos.',
+   [D(3,'percepção-categórica','Percepção categórica')]),
+ Q('Aula 3','O problema da invariância','Não existe um pedaço do sinal acústico que seja “o /d/” em todos os contextos porque:',
+   ['o /d/ só existe na escrita','pela coarticulação, a língua já se prepara para a vogal seguinte, e as transições de formantes mudam: F2 sobe em “di” e desce em “du”','o /d/ é sempre surdo','o ouvido não capta consoantes'],1,
+   'Além do contexto, o falante muda os valores absolutos dos formantes. Uma pista mais estável parece ser a razão entre os formantes, não seu valor absoluto.',
+   [D(3,'o-problema-da-invariância','O problema da invariância')]),
+ Q('Aula 3','Duas vias','No modelo de duas vias do processamento da fala:',
+   ['a via ventral liga o som ao significado (“o quê”) e a via dorsal liga o som à articulação (“como”)','a via dorsal liga o som ao significado e a ventral à articulação','as duas vias fazem a mesma coisa em hemisférios diferentes','só a via dorsal existe em humanos'],0,
+   'A via dorsal (com a área Spt e o fascículo arqueado) é fortemente lateralizada à esquerda; a ventral é mais bilateral.',
+   [D(3,'o-modelo-de-duas-vias','O modelo de duas vias')]),
+ Q('Aula 4','Fonte e filtro','No modelo fonte–filtro, o que define a <b>vogal</b> que ouvimos?',
+   ['a frequência fundamental das pregas vocais','o filtro: a forma do trato vocal, que decide os formantes F1 e F2','a pressão dos pulmões','a velocidade da fala'],1,
+   'A fonte (pregas vocais) define a altura e a qualidade da voz; o filtro define a vogal. Por isso o mesmo “a” é reconhecido em voz grave, aguda ou sussurrada.',
+   [D(4,'fonte-e-filtro','Fonte e filtro')]),
+ Q('Aula 4','O lema','No modelo de Levelt, o lema de uma palavra contém:',
+   ['a sequência de fonemas organizada em sílabas','a palavra escolhida com suas propriedades gramaticais (classe, gênero), ainda sem nada sobre a pronúncia','os movimentos de lábios e língua','a ideia a expressar, antes de qualquer palavra'],1,
+   'Conceito → lema → forma sonora → articulação. O ponto central do modelo é a separação entre o lema (sentido e gramática) e a forma (os sons).',
+   [D(4,'da-ideia-ao-plano-o-modelo-de-levelt','Da ideia ao plano: o modelo de Levelt')]),
+ Q('Aula 4','Ponta da língua','O estado de “ponta da língua” apoia o modelo de duas etapas porque a pessoa:',
+   ['não sabe o significado da palavra','já encontrou o lema (sabe o sentido e, em italiano, até o gênero), mas a forma sonora chegou incompleta (algumas letras, o número de sílabas)','pronuncia a palavra sem saber o que ela significa','esquece a palavra para sempre'],1,
+   'Brown & McNeill (1966) provocaram o estado com definições de palavras raras; Vigliocco e colegas mostraram que falantes de italiano sabem o gênero da palavra que não sai.',
+   [D(4,'a-palavra-na-ponta-da-língua','A palavra na ponta da língua')]),
+ Q('Aula 4','Tipos de lapso','Dizer “gama de cato” em vez de “cama de gato” é um erro de:',
+   ['palavra (lema): troca de duas palavras de sentido próximo','som (forma): troca de fonemas entre palavras próximas, respeitando a posição na sílaba','conceito: a pessoa pensou em outro animal','articulação: os músculos falharam'],1,
+   'Erros de palavra trocam unidades inteiras e mantêm a classe gramatical; erros de som trocam fonemas de posições equivalentes. Os dois grupos correspondem às duas etapas do modelo.',
+   [D(4,'o-que-os-erros-revelam','O que os erros revelam')]),
+ Q('Aula 4','Retorno auditivo','Houde e Jordan alteraram, em tempo real, a vogal que os participantes ouviam da própria voz. Os falantes:',
+   ['pararam de falar','ajustaram a produção para compensar a alteração, de forma automática e em grande parte inconsciente','passaram a gritar','não perceberam e não mudaram nada'],1,
+   'É o controle por retorno do modelo DIVA: o cérebro compara o som previsto com o que chega, e um sinal de erro corrige o comando motor. Atrasar o retorno produz lentidão e disfluências.',
+   [D(4,'quando-a-voz-que-você-ouve-não-é-a-sua','Quando a voz que você ouve não é a sua'),D(4,'o-modelo-diva','O modelo DIVA')]),
+ Q('Aula 5','Os níveis de uma entrada','Na compreensão de uma palavra lida, o caminho pelos níveis da entrada lexical é:',
+   ['conceito → lema → forma','forma → lema → conceito','lema → forma → conceito','conceito → forma → lema'],1,
+   'Na produção (aula 4) o falante vai do conceito à forma; na compreensão fazemos o caminho inverso, da forma (letras ou sons) ao conceito.',
+   [D(5,'o-que-é-saber-uma-palavra','O que é saber uma palavra')]),
+ Q('Aula 5','Ponto de unicidade','Na teoria de coorte, o ponto de unicidade é:',
+   ['o início da palavra','o momento em que só resta uma candidata compatível com os sons ouvidos até ali','o fim da frase','o momento em que o N400 aparece'],1,
+   'O começo da palavra ativa uma coorte de candidatas; as que deixam de combinar com os sons seguintes saem, até sobrar uma. Palavras com muitas vizinhas exigem mais trabalho.',
+   [D(5,'ouvir-é-eliminar-candidatas','Ouvir é eliminar candidatas')]),
+ Q('Aula 5','Demência semântica','A demência semântica apoia a ideia de um “hub” no lobo temporal anterior porque:',
+   ['os pacientes perdem só os nomes dos animais','a perda atinge todas as categorias e todas as modalidades (figura, palavra, som), com atrofia temporal anterior e sem lesão das regiões sensoriais e motoras','os pacientes perdem a gramática antes do significado','a fMRI comum mostra o lobo temporal anterior com facilidade'],1,
+   'Se o significado morasse só nas regiões de cada modalidade, uma perda tão uniforme exigiria lesões nelas, e elas estão preservadas. A TMS no lobo temporal anterior de pessoas saudáveis também atrasa tarefas de significado.',
+   [D(5,'a-demência-semântica','A demência semântica')]),
+ Q('Aula 5','Significado no corpo','Hauk, Johnsrude e Pulvermüller mostraram com fMRI que ler “chutar” ativa o córtex motor da perna. O que essa evidência <b>não</b> mostra sozinha?',
+   ['que a região participa da tarefa','que a ativação segue o mapa do corpo','que a ativação motora é necessária para entender a palavra; para isso o grupo usou TMS','que verbos de rosto ativam a área do rosto'],2,
+   'Uma ativação na fMRI é correlação. Pulsos de TMS sobre as áreas do braço e da perna afetaram de forma diferente a decisão lexical para palavras de braço e de perna, um teste de causalidade. O debate sobre a semântica incorporada continua.',
+   [D(5,'parte-do-significado-mora-no-corpo','Parte do significado mora no corpo')]),
+ Q('Aula 5','O que o N400 mede','Kutas e Hillyard (1984) mostraram que a amplitude do N400 diminui quando:',
+   ['a palavra é escrita em letras maiores','a palavra é mais previsível no contexto (maior probabilidade cloze), mesmo que a frase faça sentido','a frase tem erro de concordância','a palavra é a última da frase'],1,
+   'O N400 mede expectativa, não erro: “biscoito” em “café com leite e…” faz sentido, mas é menos previsível que “açúcar” e gera N400 maior. Palavras relacionadas à esperada custam menos.',
+   [D(5,'o-n400-mede-expectativa-não-erro','O N400 mede expectativa, não erro')]),
+ Q('Aula 6','Frases reversíveis','Pessoas com afasia de Broca erram com frequência frases como “O menino foi empurrado pela menina” porque:',
+   ['não conhecem as palavras “menino” e “menina”','a frase é reversível e não canônica: só a gramática diz quem fez o quê, e o mundo não ajuda','não conseguem ouvir verbos','a frase é muito longa'],1,
+   'Em “O menino comeu a maçã” o mundo resolve os papéis. Daí veio a ideia da área de Broca como “centro da sintaxe”, hoje vista como simplificação.',
+   [D(6,'frases-reversíveis-quando-o-mundo-não-ajuda','Frases reversíveis')]),
+ Q('Aula 6','Frase labirinto','Em “Enquanto os caçadores comiam o coelho fugiu da toca”, a dificuldade aparece em “fugiu” porque:',
+   ['“fugiu” é uma palavra rara','a interpretação é construída palavra por palavra: “o coelho” foi ligado a “comiam” como objeto, e em “fugiu” essa árvore precisa ser refeita (reanálise)','o cérebro espera o fim da frase para começar a analisar','a frase não tem verbo'],1,
+   'Uma vírgula (“comiam, o coelho”) desfaz o labirinto. No EEG, o ponto de virada produz um P600.',
+   [D(6,'a-frase-se-monta-palavra-por-palavra-e-às-vezes-desmorona','A frase se monta palavra por palavra')]),
+ Q('Aula 6','Frases encaixadas','“O rato que o gato que o cachorro perseguiu pegou fugiu” é gramatical, mas quase ninguém entende de primeira. A explicação do material é:',
+   ['a frase viola a gramática do português','a memória de trabalho transborda: três sujeitos ficam incompletos esperando seus verbos (custos de armazenamento e integração, Gibson)','o cérebro só processa frases curtas','frases com “que” são sempre impossíveis'],1,
+   'Encaixar à direita (“o menino chamou o cachorro que mordeu o carteiro que…”) é fácil. A gramática permite encaixar sem limite; a memória, não. Frases assim recrutam a BA 44, no giro frontal inferior esquerdo.',
+   [D(6,'frases-encaixadas-a-gramática-permite-a-memória-não','Frases encaixadas')]),
+ Q('Aula 6','P600 além da sintaxe','Frases gramaticais com papéis temáticos invertidos, como “as fartas refeições estavam devorando…”, produzem P600 e não N400. Isso sugere que:',
+   ['o P600 reflete a necessidade de revisar a análise da frase, e não a sintaxe em si','o N400 não existe','erros de significado nunca geram ondas','a frase está gramaticalmente errada'],0,
+   'A ideia “uma onda, um domínio” foi abalada: erros de ortografia também podem gerar P600. O debate entre modelos em série (Friederici) e interativos (Hagoort) continua.',
+   [D(6,'uma-divisão-de-trabalho-mas-não-tão-simples','Uma divisão de trabalho, mas não tão simples')]),
+ Q('Aula 6','As vias de Friederici','No modelo de Friederici, a via dorsal D2 liga a BA 44 ao giro temporal superior posterior pelo fascículo arqueado. O que o desenvolvimento mostra sobre ela?',
+   ['está pronta ao nascer','amadurece tarde, e seu grau de mielinização acompanha o desempenho das crianças em frases não canônicas','não existe em humanos','liga o cerebelo ao tálamo'],1,
+   'Recém-nascidos só têm a via D1 (pré-motor ↔ temporal posterior). A D2 serve às frases sintaticamente complexas; as vias ventrais V1 e V2 associam-se ao significado e à estrutura local.',
+   [D(6,'as-vias-de-friederici','As vias de Friederici')])];
+
+function PERG(r){return PERG_RES(r).concat(PERG_AULAS);}
+/* ordem das alternativas: embaralhada por pergunta, mas fixa para o aluno (semente = matrícula) */
+function rng(seed){let h=2166136261;for(const c of String(seed)){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return()=>{h+=0x6D2B79F5;let t=Math.imul(h^(h>>>15),1|h);t^=t+Math.imul(t^(t>>>7),61|t);return((t^(t>>>14))>>>0)/4294967296;};}
+function ordem(i,n){const g=rng((S.aluno?S.aluno.m:'x')+'-'+i);const a=[...Array(n).keys()];for(let k=n-1;k>0;k--){const j=Math.floor(g()*(k+1));[a[k],a[j]]=[a[j],a[k]];}return a;}
+const LETRAS='ABCD';
+const dicasHtml=p=>`<div class="ajuda"><span>Dica · material de estudo</span>${p.d.map(d=>`<a href="${d.u}" target="_blank" rel="noopener">${d.t}</a>`).join('')}</div>`;
+const nResp=()=>Object.keys(S.resp).length;
+const nCertas=()=>Object.values(S.resp).filter(x=>x&&x.ok).length;
+function montaPerguntas(){const host=$('perguntas');host.innerHTML='';host.dataset.pronto='1';
+  PERG(S.r).forEach((p,i)=>{const n=i+1;const d=document.createElement('div');d.className='q';d.id='q'+n;
+    const ord=ordem(n,p.o.length);
+    let h=`<div class="row"><span class="num">PERGUNTA ${n}</span><span class="tag aula">${p.aula}</span></div><h3>${p.t}</h3><p class="texto">${p.q}</p>${dicasHtml(p)}<div class="opts">`;
+    ord.forEach((oi,k)=>{h+=`<button data-o="${oi}"><span class="l">${LETRAS[k]}</span><span>${p.o[oi]}</span></button>`;});
+    h+=`</div><div class="exp-box" hidden></div>`;d.innerHTML=h;
+    if(n===1)d.insertAdjacentHTML('afterbegin','<div class="sec-h">Parte 1 · seus resultados (perguntas 1 a 20)</div>');
+    if(n===21)d.insertAdjacentHTML('afterbegin','<div class="sec-h">Parte 2 · as aulas 1 a 6 (perguntas 21 a 50)</div>');
+    host.appendChild(d);
+    const bs=[...d.querySelectorAll('.opts button')],box=d.querySelector('.exp-box');
+    const mostra=(esc_)=>{bs.forEach(b=>{b.disabled=true;const oi=+b.dataset.o;if(oi===p.c)b.classList.add('certa');else if(oi===esc_)b.classList.add('errada');else b.classList.add('apagada');});
+      const ok=esc_===p.c;box.hidden=false;box.classList.toggle('ok',ok);box.innerHTML=`<b>${ok?'Certo.':'Não é essa.'}</b> ${p.e}`;};
+    if(S.resp[n])mostra(S.resp[n].o);
+    bs.forEach(b=>b.onclick=()=>{if(S.resp[n])return;const oi=+b.dataset.o;S.resp[n]={o:oi,ok:oi===p.c};save();mostra(oi);progresso();});});
+  progresso();}
+function progresso(){const el=$('prog');el.innerHTML='';for(let i=1;i<=50;i++){const s=document.createElement('span');const r=S.resp[i];if(r)s.className=r.ok?'ok':'err';el.appendChild(s);}
+  const n=nResp();$('placar').textContent=n?`${n}/50 respondidas · ${nCertas()} certas`:'';}
+
+/* ---------- folha / PDF ---------- */
+async function sha(s){if(!(window.crypto&&crypto.subtle))return'n/d';const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,'0')).join('').slice(0,12).toUpperCase();}
+function faltas(){const f=[];if(!S.aluno)f.push('identifique-se');if(!S.r)f.push('conclua o experimento');return f;}
+const pendentes=()=>{let n=0;for(let i=1;i<=50;i++)if(!S.resp[i])n++;return n;};
+/* a folha pode ser gerada com perguntas em branco: o aluno pode entregar uma prova parcial. Pede uma confirmação (segundo toque). */
+let confirmado=null;
+function podeGerar(btn,acao){const f=faltas();if(f.length){$('pdferr').textContent='Antes de '+acao+': '+f.join('; ')+'.';return false;}
+  const n=pendentes();if(n&&confirmado!==btn.id){confirmado=btn.id;$('pdferr').textContent=`${n} pergunta${n>1?'s':''} sem resposta (conta${n>1?'m':''} como errada${n>1?'s':''}). Você pode voltar e responder, ou tocar de novo no botão para gerar assim mesmo.`;btn.textContent=btn.dataset.t+' assim mesmo';return false;}
+  $('pdferr').textContent='';return true;}
+
+/* ---------- cópia de segurança (silenciosa) ---------- */
+/* Ao gerar a folha, um resumo (acertos, código, respostas) é enviado ao registro do curso, o mesmo dos laboratórios.
+   Se falhar, nada muda para o aluno: a entrega continua sendo o PDF no SIGAA. */
+const REG_URL="https://script.google.com/macros/s/AKfycbxPdN7I5iVopC5_oCXR7HJqUihIIGYfEVWykaLR0uh7mHHl7RmhpjJuwCQ1_ZafRak/exec";
+function backup(cod,certas,resp,resumo){try{const a=S.aluno;const url=(window.REGISTRO_URL||REG_URL);if(!url||!a)return;
+  const rs=[];for(let i=1;i<=50;i++){const x=S.resp[i];rs.push(x?(x.ok?'1':'0'):'-');}
+  const ev={ts:agora(),data:agora().slice(0,10),aula:100,tipo:'prova',exp:'p1',titulo:'Prova 1 · folha gerada',matricula:a.m,nome:a.n,
+    destaques:`acertos ${certas}/50 · respondidas ${resp} · código ${cod} · tentativas ${S.tentativas}`,resposta:`${rs.join('')} · ${resumo} · início ${S.inicio}`,disp:'prova'};
+  fetch(url,{method:'POST',mode:'no-cors',keepalive:true,headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({v:1,eventos:[ev]})}).catch(()=>{});}catch(e){}}
+async function montaFolha(){const r=S.r,a=S.aluno;if(!S.fim)S.fim=agora();save();
+  const dados={m:a.m,n:a.n,inicio:S.inicio,fim:S.fim,tent:S.tentativas,r:r,resp:S.resp};
+  const cod=await sha(JSON.stringify(dados));
+  const dur=Math.round((new Date(S.fim)-new Date(S.inicio))/60000);
+  const resumo=`s=${fmt(r.simples)};rel=${fmt(r.rel)};unr=${fmt(r.unr)};nw=${fmt(r.nw)};b3ok=${fmt(r.fSemOk)};sem=${fmt(r.fSem)};b4ok=${fmt(r.fGraOk)};gra=${fmt(r.fGra)};acc3=${r.accfSemOk}/${r.accfSem};acc4=${r.accfGraOk}/${r.accfGra};err=${r.errRel+r.errUnr}/${r.errNw}`;
+  const P=PERG(r);const certas=nCertas(),resp=nResp();const nota=(certas*0.2).toFixed(1).replace('.',',');
+  const porAula={};P.forEach((p,i)=>{const k=p.aula;porAula[k]=porAula[k]||[0,0];porAula[k][1]++;if(S.resp[i+1]&&S.resp[i+1].ok)porAula[k][0]++;});
+  const c1=P.slice(0,20).filter((p,i)=>S.resp[i+1]&&S.resp[i+1].ok).length,c2=certas-c1;
+  let h=`<span class="eyebrow">Bases neurais da comunicação humana · UFRN · Prova 1 (aulas 1 a 6)</span><h1>Laboratório de Avaliação</h1>
+   <div class="cab"><div><b>Nome</b>${esc(a.n)}</div><div><b>Matrícula</b>${esc(a.m)}</div><div><b>Início</b>${fmtData(S.inicio)}</div><div><b>Folha gerada</b>${fmtData(S.fim)} (${dur} min)</div><div><b>Experimento concluído</b>${fmtData(r.quando)}</div><div><b>Tentativas do experimento</b>${S.tentativas}</div>
+   <div><b>Acertos</b><span class="nota">${certas} de 50</span> (${resp} respondidas) · nota ${nota}</div><div><b>Por parte</b>resultados ${c1}/20 · aulas ${c2}/30<br><span class="mini">${Object.entries(porAula).map(([k,v])=>`${k}: ${v[0]}/${v[1]}`).join(' · ')}</span></div></div>
+   <h2>Resultados do experimento</h2><svg class="chart" viewBox="0 0 560 280" id="fchart"></svg><table id="ftab"></table>
+   <h2>Respostas</h2>`;
+  P.forEach((p,i)=>{const n=i+1,rr=S.resp[n];const ord=ordem(n,p.o.length);const letra=oi=>LETRAS[ord.indexOf(oi)];
+    h+=`<div class="qp"><div class="row"><span class="num">${n} · ${p.aula} · ${esc(p.t)}${rr?(rr.ok?' · ✓':' · ✗'):' · sem resposta'}</span></div><div class="enun">${p.q}</div>`;
+    if(rr){h+=`<div class="op ${rr.ok?'ok':'err'}">Resposta: ${letra(rr.o)}) ${p.o[rr.o]}</div>`;if(!rr.ok)h+=`<div class="op ok">Correta: ${letra(p.c)}) ${p.o[p.c]}</div>`;}
+    else h+=`<div class="resp vazia">(sem resposta)</div>`;h+='</div>';});
+  h+=`<div class="rod">Código de verificação: <span class="cod">${cod}</span><br>${resumo}<br>acertos=${certas}/50 · Gerado em ${fmtData(S.fim)} · prova01 · entregue via SIGAA</div>`;
+  $('folhaconteudo').innerHTML=h;bars($('fchart'),itensGrafico(r),'ms','medianas em ms, respostas certas',true);tabela($('ftab'),r);backup(cod,certas,resp,resumo);}
+$('verfolha').onclick=async()=>{if(!podeGerar($('verfolha'),'gerar a folha'))return;await montaFolha();document.body.classList.add('imprimindo');window.scrollTo(0,0);};
+$('voltar').onclick=()=>{confirmado=null;['verfolha','baixar'].forEach(i=>$(i).textContent=$(i).dataset.t);document.body.classList.remove('imprimindo');$('pdf').scrollIntoView();};
+$('imprimir').onclick=()=>window.print();
+$('baixar').onclick=async()=>{if(!podeGerar($('baixar'),'baixar'))return;await montaFolha();
+  const css=document.querySelector('style').textContent;
+  const doc=`<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Prova 1 · ${esc(S.aluno.n)}</title><style>${css} #folha{display:block;max-width:760px;margin:0 auto;padding:24px 18px}.barra{display:none}</style><body class="imprimindo"><div id="folha"><div class="folha">${$('folhaconteudo').innerHTML}</div></div></body></html>`;
+  const blob=new Blob([doc],{type:'text/html;charset=utf-8'});const u=URL.createObjectURL(blob);const el=document.createElement('a');el.href=u;el.download=`prova1_${S.aluno.m}.html`;document.body.appendChild(el);el.click();el.remove();setTimeout(()=>URL.revokeObjectURL(u),5000);};
+window.addEventListener('afterprint',()=>{/* fica na folha para o aluno conferir; Voltar e editar leva de volta */});
+
+/* ---------- início ---------- */
+desenhaId();
+if(S.r){/* experimento já feito: mostra os relatórios e libera só o refazer */
+  const r=S.r;$('e1rep').innerHTML=`Tempo de reação simples: <b>${fmt(r.simples)} ms</b>.`;$('e2rep').innerHTML=`Priming: <b>${sgn(r.priming)} ms</b>.`;
+  $('e3rep').innerHTML=`Faz sentido <b>${fmt(r.fSemOk)}</b> · anomalia <b>${fmt(r.fSem)}</b> ms.`;$('e4rep').innerHTML=`Concordância certa <b>${fmt(r.fGraOk)}</b> · erro <b>${fmt(r.fGra)}</b> ms.`;
+  ['e1','e2','e3','e4'].forEach(k=>{$(k+'res').hidden=false;$(k+'p').textContent='Concluído.';$(k+'s').innerHTML='<span class="hint">concluído</span>';});
+  $('e1go').disabled=true;$('e2go').disabled=true;$('e3go').disabled=true;$('e4go').disabled=true;}
+mostraResultados();
+})();
+</script>
