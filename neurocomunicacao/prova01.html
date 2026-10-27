@@ -201,8 +201,8 @@ body.imprimindo #folha{display:block;max-width:760px;margin:0 auto;padding:24px 
     <p>Segure o celular com as duas mãos. Um sinal (<b>●</b>) vai aparecer no quadro escuro depois de uma espera variável. Toque no botão grande <b>assim que ele aparecer</b>. Se tocar antes, a tentativa é repetida.</p>
     <div class="stage" id="e1s"><span class="hint">toque em Começar</span></div>
     <button class="tapbtn" id="e1tap" hidden>TOQUE</button>
-    <div class="row"><button id="e1go">Começar</button><span class="readout" id="e1p"></span></div>
-    <div class="result" id="e1res" hidden><div class="report" id="e1rep"></div></div>
+    <div class="row"><button id="e1go">Começar</button><button class="ghost" id="e1stop" hidden>Recomeçar este bloco</button><span class="readout" id="e1p"></span></div>
+    <div class="result" id="e1res" hidden><div class="report" id="e1rep"></div><div class="row"><button class="ghost" id="e1redo">Refazer só este bloco</button></div></div>
   </section>
 
   <!-- bloco 2 -->
@@ -212,8 +212,8 @@ body.imprimindo #folha{display:block;max-width:760px;margin:0 auto;padding:24px 
     <p>Aparece uma palavra pequena em minúsculas (só leia) e logo depois uma sequência em MAIÚSCULAS. Decida, <b>o mais rápido que puder sem errar</b>, se a sequência em maiúsculas é uma palavra do português. As 4 primeiras tentativas são treino.</p>
     <div class="stage" id="e2s"><span class="hint">faça o bloco 1 primeiro</span></div>
     <div class="choices" id="e2btn" hidden><button class="big" data-r="w">PALAVRA</button><button class="big ghost" data-r="n">NÃO É</button></div>
-    <div class="row"><button id="e2go" disabled>Começar</button><span class="readout" id="e2p"></span></div>
-    <div class="result" id="e2res" hidden><div class="report" id="e2rep"></div></div>
+    <div class="row"><button id="e2go" disabled>Começar</button><button class="ghost" id="e2stop" hidden>Recomeçar este bloco</button><span class="readout" id="e2p"></span></div>
+    <div class="result" id="e2res" hidden><div class="report" id="e2rep"></div><div class="row"><button class="ghost" id="e2redo">Refazer só este bloco</button></div></div>
   </section>
 
   <!-- bloco 3 -->
@@ -223,8 +223,8 @@ body.imprimindo #folha{display:block;max-width:760px;margin:0 auto;padding:24px 
     <p>O começo da frase aparece inteiro; leia. Depois a <b>última palavra</b> aparece em destaque. Decida o mais rápido possível: a frase <b>faz sentido</b> ou <b>não faz sentido</b>? Neste bloco não há erros de gramática, só finais que combinam ou não com o significado.</p>
     <div class="stage" id="e3s"><span class="hint">faça o bloco 2 primeiro</span></div>
     <div class="choices" id="e3btn" hidden><button class="big" data-r="c">faz sentido</button><button class="big ghost" data-r="e">não faz sentido</button></div>
-    <div class="row"><button id="e3go" disabled>Começar</button><span class="readout" id="e3p"></span></div>
-    <div class="result" id="e3res" hidden><div class="report" id="e3rep"></div></div>
+    <div class="row"><button id="e3go" disabled>Começar</button><button class="ghost" id="e3stop" hidden>Recomeçar este bloco</button><span class="readout" id="e3p"></span></div>
+    <div class="result" id="e3res" hidden><div class="report" id="e3rep"></div><div class="row"><button class="ghost" id="e3redo">Refazer só este bloco</button></div></div>
   </section>
 
   <!-- bloco 4 -->
@@ -234,8 +234,8 @@ body.imprimindo #folha{display:block;max-width:760px;margin:0 auto;padding:24px 
     <p>Mesmo formato. Agora todas as frases fazem sentido; decida o mais rápido possível se a última palavra <b>concorda</b> com o resto da frase (gênero e número) ou se há <b>erro de concordância</b>.</p>
     <div class="stage" id="e4s"><span class="hint">faça o bloco 3 primeiro</span></div>
     <div class="choices" id="e4btn" hidden><button class="big" data-r="c">certa</button><button class="big ghost" data-r="e">erro de concordância</button></div>
-    <div class="row"><button id="e4go" disabled>Começar</button><span class="readout" id="e4p"></span></div>
-    <div class="result" id="e4res" hidden><div class="report" id="e4rep"></div></div>
+    <div class="row"><button id="e4go" disabled>Começar</button><button class="ghost" id="e4stop" hidden>Recomeçar este bloco</button><span class="readout" id="e4p"></span></div>
+    <div class="result" id="e4res" hidden><div class="report" id="e4rep"></div><div class="row"><button class="ghost" id="e4redo">Refazer só este bloco</button></div></div>
   </section>
 
   <!-- Resultados -->
@@ -334,10 +334,25 @@ $('idtroca').onclick=()=>{if(S.r||Object.keys(S.resp).length){if(!window.confirm
   S={aluno:null,inicio:null,tentativas:0,r:null,resp:{},fim:null};save();$('idm').value='';$('idn').value='';location.reload();};
 
 /* ---------- experimento ---------- */
-let run={};// resultados da tentativa em andamento
+let run=S.parcial||{};// resultados da tentativa em andamento (guardados bloco a bloco)
+const DEP={e1:'simples',e2:'pal',e3:'fSem',e4:'fGra'};const ORD=['e1','e2','e3','e4'];
+const feito=k=>run[DEP[k]]!==undefined;
+/* começo de bloco: mostra "Recomeçar", esconde o resultado anterior */
+function inicioBloco(k){$(k+'go').disabled=true;$(k+'res').hidden=true;$(k+'stop').hidden=false;}
+/* fim de bloco: guarda o progresso e libera o próximo; se o experimento já estava completo, atualiza os resultados e reabre as perguntas 1–20 */
+function fimBloco(k){$(k+'stop').hidden=true;$(k+'p').textContent='Concluído.';$(k+'res').hidden=false;
+  if(S.r){run.quando=agora();S.r=Object.assign({},run);S.tentativas=(S.tentativas||0)+1;for(let i=1;i<=20;i++)delete S.resp[i];S.parcial=null;save();backupExp(S.r);mostraResultados();
+    $('refazerMsg').textContent='Resultados atualizados; as perguntas 1 a 20 foram reabertas.';$('res').scrollIntoView({behavior:'smooth',block:'start'});return;}
+  S.parcial=run;S.frases=FRsorteio;save();
+  const prox=ORD[ORD.indexOf(k)+1];
+  if(prox){$(prox+'go').disabled=false;$(prox+'s').innerHTML='<span class="hint">toque em Começar</span>';$(prox).scrollIntoView({behavior:'smooth',block:'start'});}
+  else{run.quando=agora();S.r=Object.assign({},run);S.tentativas=(S.tentativas||0)+1;S.parcial=null;save();backupExp(S.r);mostraResultados();$('res').scrollIntoView({behavior:'smooth',block:'start'});}}
+/* "Recomeçar este bloco" no meio de um bloco: recarrega a página, que volta ao início deste bloco (os blocos anteriores ficam guardados) */
+ORD.forEach(k=>{$(k+'stop').onclick=()=>{if(window.confirm('Recomeçar este bloco do zero? Os blocos anteriores ficam guardados.'))location.reload();};
+  $(k+'redo').onclick=()=>{if(S.r&&!window.confirm('Refazer este bloco apaga as respostas das perguntas 1 a 20 (que dependem dos números) e conta mais uma tentativa no PDF. Continuar?'))return;$(k).scrollIntoView({behavior:'smooth',block:'start'});$(k+'go').onclick();};});
 /* Bloco 1: tempo de reação simples */
-$('e1go').onclick=async()=>{const st=$('e1s'),tap=$('e1tap');$('e1go').disabled=true;$('e1res').hidden=true;tap.hidden=false;
-  run={};const rts=[];let falsos=0,i=0;
+$('e1go').onclick=async()=>{const st=$('e1s'),tap=$('e1tap');inicioBloco('e1');tap.hidden=false;
+  const rts=[];let falsos=0,i=0;
   while(rts.length<12){i++;$('e1p').textContent=`${rts.length+1} / 12`;
     await show(st,'<span class="fix">+</span>');
     let cedo=false;const early=e=>{e.preventDefault();cedo=true;};tap.addEventListener('pointerdown',early);
@@ -351,10 +366,9 @@ $('e1go').onclick=async()=>{const st=$('e1s'),tap=$('e1tap');$('e1go').disabled=
     if(rt<120){falsos++;await show(st,'<span class="hint">cedo demais, de novo</span>');await sleep(700);continue;}
     if(rt<1500)rts.push(rt);
     await sleep(300);}
-  tap.hidden=true;st.innerHTML='<span class="hint">fim do bloco 1</span>';$('e1p').textContent='Concluído.';
+  tap.hidden=true;st.innerHTML='<span class="hint">fim do bloco 1</span>';
   run.simples=median(rts);run.simplesN=rts.length;run.falsos=falsos;
-  $('e1rep').innerHTML=`Tempo de reação simples: <b>${fmt(run.simples)} ms</b> (mediana de ${rts.length} toques). Toques antecipados: ${falsos}.`;$('e1res').hidden=false;
-  $('e2go').disabled=false;$('e2s').innerHTML='<span class="hint">toque em Começar</span>';$('e2').scrollIntoView({behavior:'smooth',block:'start'});};
+  $('e1rep').innerHTML=`Tempo de reação simples: <b>${fmt(run.simples)} ms</b> (mediana de ${rts.length} toques). Toques antecipados: ${falsos}.`;fimBloco('e1');};
 
 /* Bloco 2: decisão lexical com priming */
 const PAIRS=[['chave','FECHADURA'],['dente','ESCOVA'],['lápis','BORRACHA'],['peixe','AQUÁRIO'],['cama','TRAVESSEIRO'],['porta','JANELA'],['pé','SAPATO'],['bola','GOL'],['arroz','FEIJÃO'],['avião','PILOTO'],['igreja','PADRE'],['banana','MACACO'],
@@ -362,7 +376,7 @@ const PAIRS=[['chave','FECHADURA'],['dente','ESCOVA'],['lápis','BORRACHA'],['pe
 const NEUTROS=['tambor','gaveta','pijama','tinta','ilha','moeda','joelho','camisa','pedra','trator','lagarto','ferrugem'];
 const NONW=['BALPETO','MORDILHA','TUSFENA','CRAVILO','PENOSCA','LIMBARTE','SOGUEIRA','FRETIMO','DALUCRO','VINTORA','GOLPESA','RAMBITE'];
 const NWPRIME=['sofá','corda','nariz','vidro','tomate','escada','bicicleta','sal','farol','ovelha','cinto','rádio'];
-$('e2go').onclick=async()=>{const st=$('e2s');$('e2go').disabled=true;$('e2res').hidden=true;$('e2btn').hidden=false;
+$('e2go').onclick=async()=>{const st=$('e2s');inicioBloco('e2');$('e2btn').hidden=false;
   const p=shuffle(PAIRS.map(x=>x.slice()));const rel=p.slice(0,12),unr=p.slice(12);const neu=shuffle(NEUTROS.slice());
   let trials=rel.map(([a,b])=>({prime:a,target:b,cond:'rel',word:true}))
     .concat(unr.map(([a,b],i)=>({prime:neu[i],target:b,cond:'unr',word:true})))
@@ -379,11 +393,10 @@ $('e2go').onclick=async()=>{const st=$('e2s');$('e2go').disabled=true;$('e2res')
     st.innerHTML='';await feedback(st,ok);
     if(t.cond!=='pr'){if(!ok)err[t.cond]++;else if(rt>200&&rt<2500)data[t.cond].push(rt);}
     await sleep(300);}
-  $('e2btn').hidden=true;st.innerHTML='<span class="hint">fim do bloco 2</span>';$('e2p').textContent='Concluído.';
+  $('e2btn').hidden=true;st.innerHTML='<span class="hint">fim do bloco 2</span>';
   run.rel=median(data.rel);run.unr=median(data.unr);run.nw=median(data.nw);run.pal=median(data.rel.concat(data.unr));
   run.errRel=err.rel;run.errUnr=err.unr;run.errNw=err.nw;run.priming=run.unr-run.rel;
-  $('e2rep').innerHTML=`Relacionada: <b>${fmt(run.rel)} ms</b> · não relacionada: <b>${fmt(run.unr)} ms</b> · não-palavra: <b>${fmt(run.nw)} ms</b>. Efeito de priming: <b>${sgn(run.priming)} ms</b>. Erros: ${err.rel+err.unr} em 24 palavras, ${err.nw} em 12 não-palavras.`;$('e2res').hidden=false;
-  $('e3go').disabled=false;$('e3s').innerHTML='<span class="hint">toque em Começar</span>';$('e3').scrollIntoView({behavior:'smooth',block:'start'});};
+  $('e2rep').innerHTML=`Relacionada: <b>${fmt(run.rel)} ms</b> · não relacionada: <b>${fmt(run.unr)} ms</b> · não-palavra: <b>${fmt(run.nw)} ms</b>. Efeito de priming: <b>${sgn(run.priming)} ms</b>. Erros: ${err.rel+err.unr} em 24 palavras, ${err.nw} em 12 não-palavras.`;fimBloco('e2');};
 
 /* Blocos 3 e 4: frases. Cada moldura tem [início, final certo, anomalia de significado, erro de concordância].
    As 24 molduras são sorteadas: 12 vão para o bloco 3 (6 certas + 6 anomalias) e 12 para o bloco 4 (6 certas + 6 erros de concordância). */
@@ -395,10 +408,10 @@ const FR=[['Depois da chuva, a rua ficou','molhada','sonolenta','molhado'],['No 
  ['O filme de ontem foi','divertido','crocante','divertida'],['A comida do restaurante estava','salgada','covarde','salgado'],['Os alunos da turma estavam','atentos','quadrados','atento'],
  ['O carteiro entregou uma carta','pesada','sonora','pesado'],['As janelas da casa estavam','abertas','orgulhosas','aberta'],['O trem da tarde chegou','atrasado','doce','atrasada'],
  ['A sopa de legumes ficou','gostosa','elétrica','gostoso'],['Os meninos voltaram do jogo','suados','retangulares','suado'],['A estrada para a praia é','longa','pensativa','longo']];
-let FRsorteio=null;
+let FRsorteio=S.frases||null;
 function sorteiaFrases(){const f=shuffle(FR.map(x=>x.slice()));FRsorteio={b3:f.slice(0,12),b4:f.slice(12)};}
 /* roda um bloco de 12 frases: viol = índice do final violado (2 = significado, 3 = concordância) */
-async function blocoFrases(k,viol,chave){const st=$(k+'s'),btn=$(k+'btn');$(k+'go').disabled=true;$(k+'res').hidden=true;btn.hidden=false;
+async function blocoFrases(k,viol,chave){const st=$(k+'s'),btn=$(k+'btn');inicioBloco(k);btn.hidden=false;
   if(!FRsorteio)sorteiaFrases();const fr=FRsorteio[k==='e3'?'b3':'b4'];
   const conds=shuffle([].concat(Array(6).fill('ok'),Array(6).fill('v')));const data={ok:[],v:[]},acc={ok:0,v:0};
   for(let i=0;i<fr.length;i++){const f=fr[i],c=conds[i];const end=c==='ok'?f[1]:f[viol];$(k+'p').textContent=`${i+1} / ${fr.length}`;
@@ -408,17 +421,15 @@ async function blocoFrases(k,viol,chave){const st=$(k+'s'),btn=$(k+'btn');$(k+'g
     const r=await waitChoice(btn);const rt=r.t-t0;
     const certo=(c==='ok')?r.r==='c':r.r==='e';if(certo){acc[c]++;if(rt>200&&rt<3500)data[c].push(rt);}
     st.innerHTML='';await sleep(400);}
-  btn.hidden=true;$(k+'p').textContent='Concluído.';
+  btn.hidden=true;
   run[chave+'Ok']=median(data.ok);run[chave]=median(data.v);run['acc'+chave+'Ok']=acc.ok;run['acc'+chave]=acc.v;return acc;}
 $('e3go').onclick=async()=>{const acc=await blocoFrases('e3',2,'fSem');$('e3s').innerHTML='<span class="hint">fim do bloco 3</span>';
-  $('e3rep').innerHTML=`Final que faz sentido: <b>${fmt(run.fSemOk)} ms</b> · anomalia de significado: <b>${fmt(run.fSem)} ms</b>. Acertos: ${acc.ok}/6 com sentido, ${acc.v}/6 anomalias.`;$('e3res').hidden=false;
-  $('e4go').disabled=false;$('e4s').innerHTML='<span class="hint">toque em Começar</span>';$('e4').scrollIntoView({behavior:'smooth',block:'start'});};
+  $('e3rep').innerHTML=`Final que faz sentido: <b>${fmt(run.fSemOk)} ms</b> · anomalia de significado: <b>${fmt(run.fSem)} ms</b>. Acertos: ${acc.ok}/6 com sentido, ${acc.v}/6 anomalias.`;fimBloco('e3');};
 $('e4go').onclick=async()=>{const acc=await blocoFrases('e4',3,'fGra');$('e4s').innerHTML='<span class="hint">fim do experimento</span>';
-  $('e4rep').innerHTML=`Concordância certa: <b>${fmt(run.fGraOk)} ms</b> · erro de concordância: <b>${fmt(run.fGra)} ms</b>. Acertos: ${acc.ok}/6 certas, ${acc.v}/6 erros.`;$('e4res').hidden=false;
-  run.quando=agora();S.r=run;S.tentativas=(S.tentativas||0)+1;save();backupExp(run);mostraResultados();$('res').scrollIntoView({behavior:'smooth',block:'start'});};
+  $('e4rep').innerHTML=`Concordância certa: <b>${fmt(run.fGraOk)} ms</b> · erro de concordância: <b>${fmt(run.fGra)} ms</b>. Acertos: ${acc.ok}/6 certas, ${acc.v}/6 erros.`;fimBloco('e4');};
 
 $('refazer').onclick=()=>{if(!window.confirm('Refazer apaga os resultados atuais e as respostas das perguntas 1 a 20, que dependem deles (as respostas 21 a 50 ficam). O número de tentativas vai impresso no PDF. Continuar?'))return;
-  S.r=null;FRsorteio=null;for(let i=1;i<=20;i++)delete S.resp[i];save();['e1','e2','e3','e4'].forEach(k=>{$(k+'res').hidden=true;$(k+'p').textContent='';});
+  S.r=null;S.parcial=null;S.frases=null;run={};FRsorteio=null;for(let i=1;i<=20;i++)delete S.resp[i];save();['e1','e2','e3','e4'].forEach(k=>{$(k+'res').hidden=true;$(k+'p').textContent='';});
   $('e1go').disabled=false;$('e2go').disabled=true;$('e3go').disabled=true;$('e4go').disabled=true;$('e1s').innerHTML='<span class="hint">toque em Começar</span>';
   $('e2s').innerHTML='<span class="hint">faça o bloco 1 primeiro</span>';$('e3s').innerHTML='<span class="hint">faça o bloco 2 primeiro</span>';$('e4s').innerHTML='<span class="hint">faça o bloco 3 primeiro</span>';
   mostraResultados();$('e1').scrollIntoView({behavior:'smooth',block:'start'});};
@@ -833,11 +844,13 @@ window.addEventListener('afterprint',()=>{/* fica na folha para o aluno conferir
 
 /* ---------- início ---------- */
 desenhaId();
-if(S.r){/* experimento já feito: mostra os relatórios e libera só o refazer */
-  const r=S.r;$('e1rep').innerHTML=`Tempo de reação simples: <b>${fmt(r.simples)} ms</b>.`;$('e2rep').innerHTML=`Priming: <b>${sgn(r.priming)} ms</b>.`;
-  $('e3rep').innerHTML=`Faz sentido <b>${fmt(r.fSemOk)}</b> · anomalia <b>${fmt(r.fSem)}</b> ms.`;$('e4rep').innerHTML=`Concordância certa <b>${fmt(r.fGraOk)}</b> · erro <b>${fmt(r.fGra)}</b> ms.`;
-  ['e1','e2','e3','e4'].forEach(k=>{$(k+'res').hidden=false;$(k+'p').textContent='Concluído.';$(k+'s').innerHTML='<span class="hint">concluído</span>';});
-  $('e1go').disabled=true;$('e2go').disabled=true;$('e3go').disabled=true;$('e4go').disabled=true;}
+/* ao abrir: restaura os blocos já concluídos (experimento completo ou parcial) e libera o próximo */
+(function(){const r=S.r||S.parcial;if(!r)return;if(S.r)run=Object.assign({},S.r);
+  const rel={e1:()=>`Tempo de reação simples: <b>${fmt(r.simples)} ms</b>.`,e2:()=>`Priming: <b>${sgn(r.priming)} ms</b> (relacionada ${fmt(r.rel)} · não relacionada ${fmt(r.unr)} · não-palavra ${fmt(r.nw)} ms).`,
+    e3:()=>`Faz sentido <b>${fmt(r.fSemOk)}</b> · anomalia <b>${fmt(r.fSem)}</b> ms.`,e4:()=>`Concordância certa <b>${fmt(r.fGraOk)}</b> · erro <b>${fmt(r.fGra)}</b> ms.`};
+  let prox=null;ORD.forEach(k=>{if(feito(k)){$(k+'rep').innerHTML=rel[k]();$(k+'res').hidden=false;$(k+'p').textContent='Concluído.';$(k+'s').innerHTML='<span class="hint">concluído</span>';$(k+'go').disabled=true;}
+    else if(!prox)prox=k;});
+  if(prox&&S.aluno){$(prox+'go').disabled=false;$(prox+'s').innerHTML='<span class="hint">toque em Começar</span>';}})();
 mostraResultados();
 })();
 </script>
