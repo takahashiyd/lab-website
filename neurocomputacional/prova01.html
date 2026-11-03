@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Prova · Aulas 1 a 8 — Neurociência Computacional</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#142033; --muted:#5b6879; --line:#d8dee6;
+  --accent:#0d7377; --accent-ink:#ffffff; --you:#b45309; --soft:#e2f0f0; --hint:#fff6e6; --hintline:#f0c987;
+  --warn:#a33a2a; --ok:#15803d;
+  --display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --hint:#2a2416; --hintline:#6b5526;
+  --warn:#ff8a73; --ok:#5fd08a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --hint:#2a2416; --hintline:#6b5526;
+  --warn:#ff8a73; --ok:#5fd08a; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:17px/1.55 var(--body);margin:0}
+.wrap{max-width:780px;margin:0 auto;padding-inline:16px;padding-block:28px 96px;display:grid;gap:22px}
+header{display:grid;gap:10px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(30px,7.5vw,46px)/1.05 var(--display);font-stretch:112%;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font:750 22px/1.2 var(--display);font-stretch:106%;margin:0;text-wrap:balance}
+h3{font:700 16px/1.3 var(--display);margin:0}
+p{margin:0}
+.lead{color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 18px;display:grid;gap:14px;min-width:0}
+.card>*{min-width:0}
+ol.rules,ol.steps{margin:0;padding-left:22px;display:grid;gap:8px}
+.ident{display:grid;gap:12px}
+@media (min-width:560px){.ident{grid-template-columns:2fr 1fr}}
+label.f{display:grid;gap:5px;font:600 14px/1.2 var(--body)}
+input[type=text]{width:100%;font:500 17px/1.4 var(--body);color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;min-height:48px}
+button{font:700 16px/1 var(--display);border:0;border-radius:10px;padding:14px 18px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px;touch-action:manipulation}
+button.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.progress{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0;display:grid;gap:6px;border-bottom:1px solid var(--line)}
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .25s}
+.ptext{font:600 13px/1 var(--mono);color:var(--muted);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.ptext a{color:var(--accent)}
+.q{scroll-margin-top:64px}
+.qhead{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.qnum{font:700 13px/1 var(--mono);color:var(--you);letter-spacing:.06em;text-transform:uppercase}
+.tag{font:600 12px/1 var(--mono);color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:5px 9px}
+.box{border-left:4px solid var(--accent);background:var(--soft);border-radius:0 10px 10px 0;padding:12px 14px;display:grid;gap:8px}
+.box .lab,.lab{font:700 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;font:500 15px/1.25 var(--body);min-width:100%}
+th,td{border:1px solid var(--line);padding:7px 9px;text-align:center}
+th{background:var(--surface);font-weight:700}
+td.l,th.l{text-align:left}
+.ask{font-weight:700;font-size:18px}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:12px;align-items:flex-start;border:1.5px solid var(--line);border-radius:10px;padding:12px;cursor:pointer;background:var(--bg)}
+.opt input{width:20px;height:20px;accent-color:var(--accent);flex:none;margin-top:3px}
+.opt b{font-family:var(--mono);color:var(--you)}
+.opt:has(input:checked){border-color:var(--accent);background:var(--soft)}
+details.hint{background:var(--hint);border:1px solid var(--hintline);border-radius:10px;padding:0}
+details.hint summary{cursor:pointer;padding:12px 14px;font:700 15px/1.2 var(--display);list-style:none;display:flex;gap:8px;align-items:center}
+details.hint summary::-webkit-details-marker{display:none}
+details.hint summary::before{content:"💡"}
+details.hint[open] summary{border-bottom:1px solid var(--hintline)}
+details.hint .in{padding:12px 14px;display:grid;gap:8px}
+details.hint .ex{background:var(--bg);border:1px dashed var(--hintline);border-radius:8px;padding:10px 12px;display:grid;gap:6px}
+details.hint .ex ol{margin:0;padding-left:22px;display:grid;gap:4px}
+details.hint .ex .lab{font:700 13px/1.2 var(--display);text-transform:uppercase;letter-spacing:.04em;color:var(--you)}
+.mono{font-family:var(--mono);font-size:.92em}
+.status{font:600 14px/1.4 var(--mono)}
+.status.warn{color:var(--warn)} .status.ok{color:var(--ok)}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.sumtable td:nth-child(2){font-family:var(--mono);font-weight:700;color:var(--you)}
+.printhead{display:none}
+footer{color:var(--muted);font-size:14px}
+@media print{
+  body{background:#fff;color:#000;font-size:11.5pt}
+  .wrap{max-width:none;padding:0;gap:10px}
+  .progress,.noprint,details.hint,.intro,.final{display:none!important}
+  .printhead{display:block;border:1.5px solid #000;padding:8px 10px;margin-bottom:6px}
+  .card{border:1px solid #999;break-inside:avoid;padding:10px 12px;gap:8px;background:#fff}
+  .box{background:#f4f4f4;border-left-color:#555}
+  .opt{border:1px solid #bbb;padding:6px 8px;background:#fff}
+  .opt:has(input:checked){border:2.5px solid #000;background:#e8e8e8;font-weight:700}
+  .opt:has(input:checked)::after{content:"  ← resposta marcada";font-weight:700;margin-left:auto;white-space:nowrap}
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+
+<header class="intro">
+  <span class="eyebrow">Neurociência Computacional · 2026 · Prof. Daniel Y. Takahashi</span>
+  <h1>Prova — Aulas 1 a 8</h1>
+  <p class="lead">16 casos, dois de cada aula. Cada caso traz um exemplo concreto: siga o exemplo passo a passo e chegue à conclusão.</p>
+</header>
+
+<section class="card intro">
+  <h2>Como fazer a prova</h2>
+  <ol class="rules">
+    <li><b>Identifique-se</b> abaixo com o seu nome completo e a sua matrícula do SIGAA. Eles vão aparecer na cópia que você vai enviar.</li>
+    <li><b>Leia cada caso inteiro.</b> Primeiro a <b>situação</b>; depois <b>siga o exemplo</b> (os passos numerados) com papel e lápis se quiser; só então leia a <b>pergunta</b>.</li>
+    <li><b>Escolha uma alternativa</b> por questão. Só uma está correta. Você pode trocar a resposta quantas vezes quiser.</li>
+    <li><b>Dica 💡:</b> cada questão tem uma dica com a informação de que você precisa para entender a resposta e um <b>exemplo resolvido</b>: um caso parecido, com outros números, feito passo a passo. Faça o mesmo raciocínio no caso da questão. Abrir a dica <b>não tira ponto</b>. Tente primeiro sem ela; se travar, abra.</li>
+    <li><b>Todas as questões valem o mesmo.</b> Não há desconto por erro: é melhor responder do que deixar em branco.</li>
+    <li>As respostas ficam guardadas <b>neste aparelho e neste navegador</b> enquanto você faz a prova. Se fechar a página, ao voltar elas devem estar lá — mas não troque de aparelho no meio.</li>
+    <li><b>Quando terminar</b>, vá até o fim da página (seção <a href="#entregar">Entregar</a>), gere a sua cópia (<b>PDF</b> ou <b>HTML</b>) e <b>envie o arquivo pelo SIGAA</b>, na tarefa da prova (Turma Virtual → Tarefas), dentro do prazo indicado pelo professor. <b>Só vale o que for enviado pelo SIGAA.</b></li>
+  </ol>
+</section>
+
+<section class="card" id="ident">
+  <h2 class="noprint">Identificação</h2>
+  <div class="ident noprint">
+    <label class="f">Nome completo<input type="text" id="nome" autocomplete="name" placeholder="Ex.: Maria da Silva Souza"></label>
+    <label class="f">Matrícula<input type="text" id="mat" inputmode="numeric" autocomplete="off" placeholder="Ex.: 20250012345"></label>
+  </div>
+  <div class="printhead" id="printhead"></div>
+</section>
+
+<div class="progress noprint" aria-live="polite">
+  <div class="bar"><i id="pbar"></i></div>
+  <div class="ptext"><span id="ptext">0 de 16 respondidas</span><a href="#entregar">ir para a entrega ↓</a></div>
+</div>
+
+<div id="questoes" style="display:grid;gap:22px"></div>
+
+<section class="card final noprint" id="entregar">
+  <h2>Entregar</h2>
+  <p>Confira o resumo. Questões sem resposta aparecem com “—”. Quando achar que está bom, gere a sua cópia e envie pelo SIGAA.</p>
+  <div class="tablewrap"><table class="sumtable"><thead><tr><th>Questão</th><th>Resposta</th><th class="l">Tema</th></tr></thead><tbody id="sumbody"></tbody></table></div>
+  <ol class="steps">
+    <li><b>No computador:</b> toque em <b>Salvar em PDF</b>. Na janela de impressão, em “Destino”, escolha <b>Salvar como PDF</b> e salve.</li>
+    <li><b>No celular</b> (ou se o PDF não funcionar): toque em <b>Baixar cópia (HTML)</b>. O arquivo vai para a pasta de downloads.</li>
+    <li><b>Envie o arquivo pelo SIGAA:</b> Turma Virtual → Tarefas → tarefa da prova → anexar o arquivo → enviar. Confira se o envio foi confirmado.</li>
+  </ol>
+  <div class="actions">
+    <button id="btnPdf">Salvar em PDF</button>
+    <button id="btnHtml" class="ghost">Baixar cópia (HTML)</button>
+  </div>
+  <p class="status" id="status" role="status"></p>
+  <details class="noprint"><summary style="cursor:pointer;color:var(--muted)">Apagar todas as respostas deste aparelho</summary>
+    <p style="margin-top:8px"><button class="ghost" id="btnClear">Apagar respostas e começar de novo</button></p></details>
+</section>
+
+<footer class="noprint">Esta página não envia nada sozinha: a entrega é o arquivo que você manda pelo SIGAA.</footer>
+</main>
+
+<script>
+(() => {
+'use strict';
+// Cada questão: aula, tema, situação, passos do exemplo, pergunta, alternativas (A–D) e dica.
+// O gabarito NÃO está nesta página (fica com o professor).
+const Q = [
+{ aula: 1, tema: 'Ler uma população de neurônios',
+  sit: `<p>Neurônios do córtex temporal inferior (IT) do macaco respondem a rostos, cada um com a sua taxa de disparo. Registramos <b>3 neurônios</b>. Numa calibração, mostramos o rosto A e o rosto B muitas vezes e anotamos a resposta média de cada neurônio (disparos por segundo). Depois, numa <b>tentativa nova</b>, não sabemos qual rosto foi mostrado.</p>
+  <div class="tablewrap"><table><tr><th class="l"></th><th>Neurônio 1</th><th>Neurônio 2</th><th>Neurônio 3</th></tr>
+  <tr><td class="l">Padrão do rosto A</td><td>10</td><td>2</td><td>6</td></tr>
+  <tr><td class="l">Padrão do rosto B</td><td>2</td><td>9</td><td>4</td></tr>
+  <tr><td class="l"><b>Tentativa nova</b></td><td><b>8</b></td><td><b>3</b></td><td><b>5</b></td></tr></table></div>`,
+  passos: [`Compare a tentativa com o padrão de A: multiplique neurônio a neurônio e some (produto escalar): <span class="mono">8·10 + 3·2 + 5·6</span>.`,
+    `Faça o mesmo com o padrão de B: <span class="mono">8·2 + 3·9 + 5·4</span>.`,
+    `O padrão com o <b>maior</b> produto escalar é o mais parecido com a tentativa.`],
+  ask: 'Qual rosto o decodificador escolhe, e por quê?',
+  opts: ['Rosto B, porque o neurônio 2 é o que mais varia entre os dois rostos.',
+    'Rosto A: 116 contra 63 — o padrão da tentativa se parece mais com o de A.',
+    'Nenhum: a tentativa não é idêntica a nenhum padrão, então não dá para decidir.',
+    'Rosto B: 63 é menor, e a menor soma indica o padrão mais próximo.'],
+  dica: `<p>O <b>produto escalar</b> mede semelhança entre duas listas de números: cada neurônio contribui com “resposta na tentativa × resposta no padrão”. Quando os dois são altos no mesmo neurônio, a contribuição é grande. Por isso, quanto <b>maior</b> o produto escalar, mais parecidos os padrões.</p><p>A informação está no <b>padrão da população</b> inteira (código distribuído), não num neurônio só, e o padrão não precisa ser idêntico — basta ser o mais parecido.</p>` },
+
+{ aula: 1, tema: 'Os três níveis de Marr no reflexo do olho',
+  sit: `<p>Quando você vira a cabeça para a direita, os olhos giram para a esquerda na mesma velocidade, e a imagem fica parada na retina: é o <b>reflexo vestíbulo-ocular</b> (VOR). Ganho = velocidade dos olhos ÷ velocidade da cabeça ≈ 1. Com óculos que ampliam a imagem 2×, o ganho certo passa a ser 2, e macacos com esses óculos aumentam o ganho aos poucos (Lisberger &amp; Miles, 1980).</p>
+  <p>Três descrições do mesmo fenômeno:</p>
+  <p>(i) “O objetivo é manter a imagem parada na retina: o ganho certo é 1 sem óculos e 2 com os óculos.”<br>
+  (ii) “A cada escorregão da imagem, o ganho é corrigido um pouco, na direção que diminui o erro.”<br>
+  (iii) “As fibras trepadeiras levam o sinal de erro às células de Purkinje do cerebelo, cujas sinapses mudam.”</p>`,
+  passos: [`Para cada frase, pergunte: ela diz <b>o que</b> precisa ser resolvido e <b>por quê</b>?`,
+    `Ou diz <b>com que procedimento</b> (que passos, que regra) se chega lá?`,
+    `Ou diz <b>com que peças físicas</b> (neurônios, sinapses, fibras) isso é feito?`],
+  ask: 'Qual associação entre as frases e os níveis de Marr está correta?',
+  opts: ['(i) implementação · (ii) computacional · (iii) algorítmico',
+    '(i) algorítmico · (ii) implementação · (iii) computacional',
+    '(i) computacional · (ii) implementação · (iii) algorítmico',
+    '(i) computacional · (ii) algorítmico · (iii) implementação'],
+  dica: `<p>Os três níveis de Marr, com um exemplo de calculadora:</p><p><b>Computacional</b> — qual é o problema e por que resolvê-lo (“somar dois números”). <b>Algorítmico</b> — a representação e a receita passo a passo (“somar coluna por coluna, com ‘vai um’, em base 10”). <b>Implementação</b> — o material físico que executa a receita (“transistores”; no cérebro: neurônios, sinapses, fibras).</p>` },
+
+{ aula: 2, tema: 'Vai disparar? O neurônio integra-e-dispara',
+  sit: `<p>Modelo de um neurônio piramidal de CA1 (hipocampo): resistência de membrana <b>R = 30 MΩ</b>; ele dispara quando a voltagem sobe <b>15 mV</b> acima do repouso. Injetamos uma corrente <b>constante</b> de <b>I = 0,3 nA</b> e esperamos.</p>`,
+  passos: [`Com corrente constante, a membrana carrega e se estabiliza em <span class="mono">ΔV = I · R</span> (lei de Ohm).`,
+    `Calcule: <span class="mono">0,3 nA × 30 MΩ = ? mV</span> (nA × MΩ dá mV).`,
+    `Compare com o limiar de 15 mV.`],
+  ask: 'O que acontece com o neurônio?',
+  opts: ['Não dispara: a voltagem para em 9 mV, abaixo do limiar. Seria preciso pelo menos 0,5 nA (15 mV ÷ 30 MΩ).',
+    'Dispara uma vez e para, porque a corrente é pequena.',
+    'Dispara sem parar, porque toda corrente positiva acaba levando ao limiar se esperarmos o suficiente.',
+    'Dispara 9 vezes por segundo, porque ΔV = 9 mV.'],
+  dica: `<p>No modelo integra-e-dispara, a membrana é um capacitor com uma resistência em paralelo: com corrente constante, a voltagem sobe e <b>para</b> em I · R. Esperar mais não adianta: ela não passa desse valor.</p><p>Só se I · R for maior que o limiar o neurônio dispara (e aí repetidamente). Por isso a curva frequência × corrente (f–I) é <b>zero</b> abaixo de uma corrente mínima, a corrente limiar = limiar ÷ R.</p>` },
+
+{ aula: 2, tema: 'O perceptron aprende a piscar',
+  sit: `<p>Um coelho ouve um tom e, logo depois, recebe um sopro no olho. Modelamos a decisão de piscar com um neurônio de duas entradas: <b>tom</b> (x₁) e <b>luz</b> (x₂), com pesos <b>w₁ = 0,2</b> e <b>w₂ = 0,4</b>. Ele pisca (y = 1) se <span class="mono">w₁x₁ + w₂x₂ ≥ 0,5</span>; senão, y = 0.</p>
+  <p>Tentativa: <b>tom ligado, luz apagada</b> (x₁ = 1, x₂ = 0). O certo seria piscar (alvo t = 1).</p>`,
+  passos: [`Calcule a entrada: <span class="mono">h = 0,2·1 + 0,4·0 = 0,2</span> → abaixo de 0,5 → y = 0 (não piscou).`,
+    `Erro: <span class="mono">t − y = 1 − 0 = 1</span>.`,
+    `Regra delta: <span class="mono">Δwᵢ = η · (t − y) · xᵢ</span>, com η = 0,3. Calcule Δw₁ e Δw₂.`],
+  ask: 'Depois desta tentativa, como ficam os pesos?',
+  opts: ['w₁ = 0,5 e w₂ = 0,7: os dois pesos sobem, porque o erro foi positivo.',
+    'w₁ = 0,2 e w₂ = 0,4: nada muda, porque o neurônio não disparou.',
+    'w₁ = 0,5 e w₂ = 0,4: só o peso do tom muda, porque a luz estava apagada (x₂ = 0). Na próxima vez, só com o tom, h = 0,5 e ele pisca.',
+    'w₁ = −0,1 e w₂ = 0,4: o peso do tom cai, para corrigir o erro.'],
+  dica: `<p>A regra delta muda cada peso em proporção a duas coisas: o <b>erro</b> (t − y) e a <b>própria entrada</b> (xᵢ). Se a entrada estava em zero, aquela sinapse não contribuiu para o erro e <b>não muda</b>.</p><p>Erro positivo (deveria ter respondido e não respondeu) → aumentar os pesos das entradas que estavam ativas.</p>` },
+
+{ aula: 3, tema: 'LTP e o receptor NMDA',
+  sit: `<p>Fatia de hipocampo, sinapse CA3 → CA1. Em três experimentos, estimulamos a via de CA3 com alta frequência:</p>
+  <div class="tablewrap"><table><tr><th>Exp.</th><th class="l">Condição</th><th>Resultado</th></tr>
+  <tr><td>1</td><td class="l">A célula de CA1 é mantida hiperpolarizada (presa em −80 mV) durante a estimulação</td><td>sem LTP</td></tr>
+  <tr><td>2</td><td class="l">A estimulação é pareada com a despolarização da célula de CA1</td><td><b>LTP</b> (sinapse mais forte por horas)</td></tr>
+  <tr><td>3</td><td class="l">Igual ao 2, mas com AP5, que bloqueia o receptor NMDA</td><td>sem LTP</td></tr></table></div>`,
+  passos: [`Entre os experimentos 1 e 2, o que muda? (Só a atividade do neurônio <b>pós</b>-sináptico.)`,
+    `Entre os experimentos 2 e 3, o que muda? (Só o receptor NMDA.)`,
+    `Junte as duas observações numa regra.`],
+  ask: 'Qual é a conclusão?',
+  opts: ['A LTP depende só de o neurônio pré-sináptico disparar muito.',
+    'A LTP exige atividade pré E pós ao mesmo tempo, e o receptor NMDA é quem detecta essa coincidência — é a regra de Hebb.',
+    'A LTP depende só da despolarização da célula pós, com ou sem receptor NMDA.',
+    'O AP5 aumentaria a LTP, porque deixaria entrar mais cálcio.'],
+  dica: `<p>O receptor NMDA só deixa passar cálcio quando <b>duas</b> condições ocorrem juntas: há glutamato liberado pelo neurônio <b>pré</b> e a célula <b>pós</b> está despolarizada (o que tira o íon magnésio que tampa o canal). O cálcio que entra dispara a LTP.</p><p>Regra de Hebb: “células que disparam juntas fortalecem suas conexões” — Δw ∝ pré × pós.</p>` },
+
+{ aula: 3, tema: 'STDP e as células de lugar',
+  sit: `<p>Um rato corre num trilho, sempre no mesmo sentido, passando pelas posições <b>A → B → C</b>. A célula de lugar “A” dispara quando ele está em A; a “B”, quando está em B. Graças à precessão de fase, dentro de cada ciclo teta <b>A dispara uns 10–20 ms antes de B</b>. Existe uma sinapse <b>A → B</b>.</p>
+  <p>Regra STDP: se o pré dispara <b>antes</b> do pós (dentro de algumas dezenas de ms), a sinapse se <b>fortalece</b>; se dispara depois, enfraquece.</p>`,
+  passos: [`Na sinapse A → B, quem é o pré e quem é o pós?`,
+    `Quem dispara primeiro? Então a sinapse A → B fortalece ou enfraquece?`,
+    `Com A → B forte, o que acontece com B quando o rato ainda está em A, chegando a B?`],
+  ask: 'Depois de muitas voltas, o que acontece com o campo de lugar de B?',
+  opts: ['Desloca-se para depois de C, no sentido da corrida.',
+    'Não muda: STDP muda sinapses, não campos de lugar.',
+    'Desaparece, porque a sinapse A → B enfraquece.',
+    'Expande-se para trás (no sentido contrário ao da corrida): B começa a disparar já quando o rato está chegando a B, vindo de A.'],
+  dica: `<p>Na STDP, “o que vem antes passa a ajudar a disparar o que vem depois”. Se A sempre dispara pouco antes de B, a entrada de A em B cresce. Então B passa a receber excitação suficiente para disparar <b>mais cedo</b> — quando o rato ainda está na região de A.</p><p>Esse alargamento do campo para trás foi observado em ratos (Mehta et al., 1997): o hipocampo aprende a <b>antecipar</b> o caminho.</p>` },
+
+{ aula: 4, tema: 'Três maneiras de aprender',
+  sit: `<p>(i) Uma pessoa com óculos de prisma erra o alvo ao arremessar dardos; cada arremesso mostra <b>quanto e para que lado</b> ela errou, e ela corrige (cerebelo).</p>
+  <p>(ii) Filhotes de gato criados vendo só listras verticais acabam com quase nenhum neurônio de V1 que prefira horizontais. Ninguém disse nada a eles (Blakemore &amp; Cooper, 1970).</p>
+  <p>(iii) Um macaco escolhe entre duas alavancas; só depois descobre se ganhou suco ou não (gânglios da base e dopamina).</p>`,
+  passos: [`Em cada caso, há um sinal que diz <b>a resposta certa</b> (e o tamanho e a direção do erro)?`,
+    `Ou há só um sinal de <b>bom/ruim</b> (recompensa), sem dizer qual seria a ação certa?`,
+    `Ou <b>não há sinal nenhum</b>, só a estatística do que chega?`],
+  ask: 'Qual classificação está correta?',
+  opts: ['(i) supervisionado · (ii) não supervisionado · (iii) por reforço',
+    '(i) por reforço · (ii) supervisionado · (iii) não supervisionado',
+    '(i) não supervisionado · (ii) por reforço · (iii) supervisionado',
+    'Os três são por reforço, porque em todos há aprendizado com a experiência.'],
+  dica: `<p><b>Supervisionado</b>: um “professor” diz qual era a resposta certa; o erro tem tamanho e direção. <b>Por reforço</b>: só se recebe uma avaliação (recompensa, ou não), e é preciso descobrir qual ação a causou. <b>Não supervisionado</b>: nenhum sinal de ensino; o sistema se ajusta à estrutura (estatística) das entradas.</p>` },
+
+{ aula: 4, tema: 'Dopamina: o erro de previsão',
+  sit: `<p>Experimento clássico de Schultz: uma luz acende e, 1 segundo depois, o macaco recebe suco. Um neurônio de dopamina:</p>
+  <div class="tablewrap"><table><tr><th class="l"></th><th>Na luz</th><th>No suco</th></tr>
+  <tr><td class="l">Antes do treino</td><td>nada</td><td><b>pico</b></td></tr>
+  <tr><td class="l">Depois do treino</td><td><b>pico</b></td><td>nada</td></tr></table></div>`,
+  passos: [`Erro de previsão = recompensa <b>recebida</b> − recompensa <b>esperada</b>.`,
+    `Antes do treino, o suco não era esperado → erro positivo → pico no suco.`,
+    `Depois do treino, a luz já anuncia o suco → no suco o erro é zero; a surpresa passou para a luz.`],
+  ask: 'Com o macaco treinado, num ensaio a luz acende mas o suco NÃO vem. O que o neurônio faz no momento em que o suco deveria chegar?',
+  opts: ['Dispara um pico, porque a luz acendeu.',
+    'Não muda nada, porque não houve suco.',
+    'Cai abaixo da atividade de base (uma pausa): erro de previsão negativo — recebido 0, esperado 1.',
+    'Dispara um pico maior que o normal, para compensar a falta.'],
+  dica: `<p>O neurônio de dopamina não sinaliza a recompensa em si, mas a <b>diferença</b> entre o que veio e o que se esperava. Positivo → dispara acima da base; zero → fica na base; <b>negativo → fica abaixo da base</b>.</p>` },
+
+{ aula: 5, tema: 'O tamanho do passo (η)',
+  sit: `<p>Modelo da adaptação do VOR com óculos 2×: o ganho <b>g</b> começa em 1 e o alvo é 2. Descendo o gradiente do erro quadrático, a regra fica <span class="mono">g ← g + η · (2 − g)</span>. Dois aprendizes:</p>
+  <div class="tablewrap"><table><tr><th class="l">η</th><th>passo 0</th><th>passo 1</th><th>passo 2</th><th>passo 3</th></tr>
+  <tr><td class="l">0,5</td><td>1</td><td>1,5</td><td>1,75</td><td>1,875</td></tr>
+  <tr><td class="l">2,5</td><td>1</td><td>3,5</td><td><b>?</b></td><td>…</td></tr></table></div>`,
+  passos: [`Confira a primeira linha: <span class="mono">1 + 0,5 · (2 − 1) = 1,5</span>.`,
+    `Na segunda linha, calcule o passo 2 a partir de 3,5: <span class="mono">3,5 + 2,5 · (2 − 3,5) = ?</span>`,
+    `Olhe a <b>distância até o alvo 2</b> em cada passo da segunda linha: 1 → 1,5 → ?`],
+  ask: 'O que o exemplo mostra?',
+  opts: ['η = 2,5 é melhor, porque chega perto de 2 mais rápido.',
+    'Com η = 2,5 o ganho passa do alvo cada vez mais longe (3,5; depois −0,25; …): um passo grande demais faz o aprendizado divergir. Com η = 0,5, ele se aproxima de 2 aos poucos.',
+    'Os dois convergem para 2; η = 2,5 só oscila um pouco antes.',
+    'O valor de η não importa; só a direção do gradiente importa.'],
+  dica: `<p>Chame de erro e = 2 − g. A cada passo, o novo erro é <span class="mono">e · (1 − η)</span>. Se |1 − η| &lt; 1 (isto é, 0 &lt; η &lt; 2), o erro encolhe a cada passo. Se η &gt; 2, |1 − η| &gt; 1: o erro <b>troca de sinal e cresce</b> — o ganho pula de um lado para o outro do alvo, cada vez mais longe.</p>` },
+
+{ aula: 5, tema: 'Por que uma camada oculta',
+  sit: `<p>Padronização negativa no piscar do coelho: <b>tom sozinho → sopro</b>; <b>luz sozinha → sopro</b>; <b>tom + luz juntos → sem sopro</b>. O certo é piscar para o tom, piscar para a luz, mas <b>não</b> piscar para os dois juntos (e não piscar sem estímulo).</p>
+  <p>Tentamos com um único neurônio: <span class="mono">h = w_t·tom + w_l·luz</span>, pisca se h ≥ θ, com θ &gt; 0 (sem estímulo, não pisca).</p>`,
+  passos: [`Para piscar com o tom sozinho, é preciso <span class="mono">w_t ≥ θ</span>.`,
+    `Para piscar com a luz sozinha, é preciso <span class="mono">w_l ≥ θ</span>.`,
+    `Então, com os dois juntos: <span class="mono">h = w_t + w_l ≥ 2θ</span>. Isso é maior ou menor que θ?`],
+  ask: 'O que se conclui?',
+  opts: ['Basta aumentar o limiar θ: assim ele não pisca para os dois juntos.',
+    'Basta treinar por mais tempo com a regra delta.',
+    'Basta usar pesos negativos para os dois estímulos.',
+    'Um neurônio só não resolve: é preciso uma unidade intermediária (oculta) que detecte “tom E luz” e iniba a resposta — e um jeito de ensinar essa unidade (retropropagação do erro).'],
+  dica: `<p>Um único neurônio que soma entradas só separa os casos com uma <b>reta</b> (problema linearmente separável). Aqui, “só tom” e “só luz” precisam ficar de um lado e “tom + luz” do outro — nenhuma reta faz isso (é o mesmo problema do “OU exclusivo”).</p><p>Uma camada oculta cria uma nova característica (“os dois juntos”). A retropropagação diz <b>quanto do erro cabe a cada unidade oculta</b>, que não tem professor próprio.</p>` },
+
+{ aula: 6, tema: 'Quantos pesos? Convolução',
+  sit: `<p>Uma imagem de 100 × 100 fotorreceptores alimenta uma camada de 100 × 100 neurônios “tipo V1”. Três fiações possíveis:</p>
+  <p>(1) <b>Totalmente conectada:</b> cada neurônio recebe de todos os 10 000 pixels.<br>
+  (2) <b>Local:</b> cada neurônio recebe só de um pedaço de 5 × 5 pixels, com pesos próprios.<br>
+  (3) <b>Convolucional:</b> local, e todos os neurônios usam o <b>mesmo</b> filtro de 5 × 5.</p>`,
+  passos: [`(1): <span class="mono">10 000 neurônios × 10 000 entradas = 10⁸ pesos</span>.`,
+    `(2): <span class="mono">10 000 × 25 = 250 000 pesos</span>.`,
+    `(3): um único filtro compartilhado: <span class="mono">25 pesos</span>.`],
+  ask: 'Qual afirmação está correta?',
+  opts: ['A conectividade local é uma invenção da engenharia; no córtex, cada neurônio de V1 recebe de toda a retina.',
+    'A convolução usa 25 pesos, e é isso que o córtex faz: os neurônios de V1 compartilham fisicamente as mesmas sinapses.',
+    'Campos receptivos locais existem no cérebro (cada neurônio de V1 vê um pedacinho da imagem); já o compartilhamento de pesos é uma conveniência da engenharia — cada neurônio real tem as suas próprias sinapses.',
+    'As três fiações têm o mesmo número de pesos; muda só a velocidade.'],
+  dica: `<p><b>Paralelo com a biologia:</b> neurônios de V1 têm campos receptivos pequenos (olham um pedaço do campo visual), e há neurônios com a mesma preferência espalhados por todo o campo visual.</p><p><b>O que não é biológico:</b> na rede convolucional, todos usam literalmente <b>os mesmos números</b> (um filtro copiado). No cérebro não existe esse “copiar e colar”: cada neurônio tem as suas sinapses, que precisam ser aprendidas ou formadas uma a uma.</p>` },
+
+{ aula: 6, tema: 'Memória por recorrência',
+  sit: `<p>Uma unidade com autoexcitação: a cada passo de <b>Δt = 10 ms</b>, <span class="mono">r(t + Δt) = w · r(t) + entrada</span>. Depois de uma entrada breve, a atividade decai com constante de tempo <span class="mono">τ = Δt / (1 − w)</span>.</p>
+  <p>O <b>integrador oculomotor</b> do tronco cerebral mantém os olhos parados numa nova posição por vários segundos depois de um movimento rápido — sem nenhuma entrada nova.</p>`,
+  passos: [`Com w = 0,9: <span class="mono">τ = 10 ms / 0,1 = 100 ms</span>.`,
+    `Com w = 0,99: <span class="mono">τ = 10 ms / 0,01 = ?</span>`,
+    `O que acontece com τ quando w se aproxima de 1?`],
+  ask: 'O que o integrador oculomotor sugere sobre o circuito?',
+  opts: ['Que a realimentação está ajustada quase exatamente para compensar o vazamento (w muito perto de 1); um pequeno desajuste faz o olho escorregar.',
+    'Que w = 0: sem recorrência, a memória dura mais.',
+    'Que w = 2, para a atividade dobrar e ficar estável.',
+    'Que a constante de tempo não depende de w, só de Δt.'],
+  dica: `<p>Com w &lt; 1, a atividade <b>decai</b> (quanto mais perto de 1, mais devagar: w = 0,99 dá τ = 1 s). Com w &gt; 1, ela <b>explode</b>. Só com w = 1 ela fica parada para sempre. Manter uma posição por segundos exige w muito próximo de 1 — um ajuste fino, que o cérebro mantém aprendendo.</p>` },
+
+{ aula: 7, tema: 'PCA de dois fotorreceptores vizinhos',
+  sit: `<p>Duas células vizinhas da retina olham fotos naturais. As respostas foram padronizadas (variância 1 cada) e a correlação entre elas é <b>r = 0,97</b>. A PCA encontra duas direções:</p>
+  <p>• <b>soma</b> (os dois juntos: a luminância local) — variância <span class="mono">1 + r = 1,97</span>;<br>• <b>diferença</b> (um menos o outro: o contraste) — variância <span class="mono">1 − r = 0,03</span>.</p>`,
+  passos: [`Variância total: <span class="mono">1 + 1 = 2</span>.`,
+    `Fração explicada pela soma: <span class="mono">1,97 / 2 ≈ ?</span>`,
+    `Fração explicada pela diferença: <span class="mono">0,03 / 2 ≈ ?</span>`],
+  ask: 'O que a PCA revela sobre os dois vizinhos?',
+  opts: ['Que a diferença (contraste) explica a maior parte da variação.',
+    'Que eles são muito redundantes: um único número, a soma (luminância), explica cerca de 98,5% da variação dos dois.',
+    'Que eles são independentes: cada um explica metade da variação.',
+    'Nada: a PCA precisaria de rótulos (“borda”, “fundo”) para achar essas direções.'],
+  dica: `<p>A PCA não usa rótulos: ela encontra as direções em que os dados mais variam (componentes principais) e diz quanto da variância total cada uma explica. Com r perto de 1, os dois sinais quase sempre sobem e descem juntos — dizem quase a mesma coisa.</p><p>É por isso que a retina não manda os dois valores crus: subtrair os vizinhos (centro–periferia) envia o que é <b>novo</b> e economiza a fibra do nervo óptico.</p>` },
+
+{ aula: 7, tema: 'Rede competitiva e o gato das listras',
+  sit: `<p>Uma rede competitiva tem 3 neurônios cujos pesos preferem <b>0°</b> (horizontal), <b>45°</b> e <b>90°</b> (vertical). A cada borda que chega, vence o neurônio de orientação mais próxima, e <b>só ele</b> se aproxima da borda: <span class="mono">Δw = η · (x − w)</span>.</p>
+  <p>O filhote é criado vendo só bordas entre <b>75° e 105°</b> (quase verticais).</p>`,
+  passos: [`Uma borda de 80°: distâncias até 0°, 45° e 90° = 80°, 35° e 10° → quem vence?`,
+    `Qualquer borda entre 75° e 105° está a no máximo 15° de 90°, e a no mínimo 30° de 45°. Quem vence sempre?`,
+    `Quem nunca vence nunca aprende.`],
+  ask: 'O que acontece com a rede depois de muitas bordas?',
+  opts: ['Os três neurônios acabam preferindo a vertical, porque todos veem as mesmas bordas.',
+    'O neurônio de 0° vira vertical, porque é o mais distante e por isso se move mais.',
+    'Só o neurônio de 90° vence e se ajusta às bordas vistas; os de 0° e 45° nunca vencem e ficam parados (unidades “mortas”): a representação segue a experiência.',
+    'A rede aprende a horizontal mesmo assim, porque ela é geneticamente programada.'],
+  dica: `<p>No aprendizado competitivo, só o <b>vencedor</b> (o protótipo mais parecido com a entrada) é atualizado. Um neurônio que nunca é o mais parecido nunca muda — vira uma “unidade morta”.</p><p>O resultado é que a rede gasta recursos com o que aparece no ambiente, como os gatos de Blakemore &amp; Cooper (1970), que ficaram quase sem neurônios para bordas horizontais.</p>` },
+
+{ aula: 8, tema: 'SOM: por que a vizinhança cria ordem',
+  sit: `<p>Uma cadeia de 5 neurônios do córtex auditivo começa <b>desordenada</b>. Cada um guarda uma frequência preferida w (em oitavas acima de 1 kHz):</p>
+  <div class="tablewrap"><table><tr><th class="l">neurônio</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr>
+  <tr><td class="l">w antes</td><td>0</td><td>3</td><td>1</td><td>4</td><td>2</td></tr></table></div>
+  <p>Chega um tom <b>x = 2,6</b>. Regra do SOM: <span class="mono">Δw = η · h · (x − w)</span>, com η = 0,5; h = 1 para o vencedor, h = 0,5 para os vizinhos <b>na cadeia</b> (imediatamente à esquerda e à direita) e h = 0 para os demais.</p>`,
+  passos: [`Vencedor: quem tem w mais perto de 2,6? (neurônio 2: distância 0,4; neurônio 5: distância 0,6.)`,
+    `Vencedor: <span class="mono">3 + 0,5·1·(2,6 − 3) = 2,8</span>. Vizinho 1: <span class="mono">0 + 0,5·0,5·(2,6 − 0) = 0,65</span>. Vizinho 3: <span class="mono">1 + 0,5·0,5·(2,6 − 1) = 1,4</span>.`,
+    `O neurônio 5 tem w = 2, bem perto do tom, mas não é vizinho do vencedor na cadeia: ele muda?`],
+  ask: 'O que esse passo mostra sobre como o mapa se ordena?',
+  opts: ['Só o vencedor aprende; os vizinhos mudam por acaso.',
+    'O neurônio 5 deveria mudar mais que todos, porque é o segundo mais parecido com o tom.',
+    'Nada: um passo do SOM não muda os pesos, só escolhe o vencedor.',
+    'Vizinhos do vencedor na cadeia são puxados para o mesmo tom, mesmo sem vencer. Repetido com milhares de tons, isso faz vizinhos na cadeia preferirem frequências parecidas: surge um mapa ordenado (tonotopia). Sem vizinhança, só haveria grupos, sem ordem.'],
+  dica: `<p>No SOM, a vizinhança é medida <b>na grade de neurônios</b> (quem está ao lado de quem no córtex), não na semelhança. O vencedor e os seus vizinhos de grade aprendem juntos — no cérebro, isso corresponde a excitação lateral perto e inibição longe (“chapéu mexicano”).</p><p>Como vizinhos de grade são sempre puxados para os mesmos exemplos, acabam parecidos: é daí que vem a <b>ordem</b>. Sem a vizinhança, o resultado é como o da rede competitiva da Aula 7: grupos, mas em “sal e pimenta”.</p>` },
+
+{ aula: 8, tema: 'Usar o SOM: normalizar as colunas',
+  sit: `<p>Queremos um mapa de países com duas colunas: <b>renda per capita</b> (em dólares; vai de uns 1 000 a uns 80 000) e <b>expectativa de vida</b> (em anos; vai de uns 53 a uns 84). Três países fictícios:</p>
+  <div class="tablewrap"><table><tr><th class="l">país</th><th>renda (US$)</th><th>vida (anos)</th></tr>
+  <tr><td class="l">P</td><td>15 000</td><td>75</td></tr><tr><td class="l">Q</td><td>16 000</td><td>60</td></tr><tr><td class="l">R</td><td>25 000</td><td>76</td></tr></table></div>`,
+  passos: [`Distância P–Q (sem normalizar): diferenças de 1 000 na renda e 15 na vida → <span class="mono">√(1 000² + 15²) ≈ 1 000</span>.`,
+    `Distância P–R: diferenças de 10 000 e 1 → <span class="mono">≈ 10 000</span>.`,
+    `Para o SOM, P está mais perto de Q ou de R? Os 15 anos de diferença de vida pesaram?`],
+  ask: 'O que está errado, e como corrigir?',
+  opts: ['Sem normalizar, a coluna com números grandes (renda em dólares) domina a distância: o mapa ordena quase só pela renda e ignora 15 anos de vida. Por isso padronizamos cada coluna (média 0, desvio 1) antes de treinar.',
+    'Nada está errado: renda é mais importante que expectativa de vida, e o SOM descobriu isso sozinho.',
+    'O problema se resolve com um mapa maior.',
+    'O problema se resolve trocando a semente aleatória.'],
+  dica: `<p>O SOM decide quem é parecido pela <b>distância</b> entre as linhas da tabela, e a distância soma as diferenças de todas as colunas na <b>unidade</b> de cada uma. Uma coluna medida em milhares “grita” mais alto que uma medida em dezenas, só por causa da unidade.</p><p>Padronizar (subtrair a média e dividir pelo desvio-padrão de cada coluna) põe todas na mesma escala, e cada coluna passa a pesar de forma parecida.</p>` },
+];
+
+// Exemplo resolvido de cada dica: um caso parecido, com outros números ou outro sistema,
+// resolvido passo a passo. Mostra o raciocínio sem ser a resposta da questão.
+const EX = [
+// 1 — produto escalar
+`<p><b>Caso:</b> 2 neurônios. Padrão do “gato” = (1, 9); padrão do “cachorro” = (8, 2). Tentativa nova = (2, 7).</p>
+<ol><li>Com o gato: <span class="mono">2·1 + 7·9 = 2 + 63 = 65</span>.</li>
+<li>Com o cachorro: <span class="mono">2·8 + 7·2 = 16 + 14 = 30</span>.</li>
+<li>65 &gt; 30.</li></ol>
+<p><b>Conclusão:</b> o decodificador escolhe “gato”. A tentativa não é igual a nenhum padrão, mas é <b>mais parecida</b> com a do gato: o neurônio 2 está alto nas duas.</p>`,
+// 2 — níveis de Marr
+`<p><b>Caso:</b> o termostato de uma sala.</p>
+<ol><li>“Manter a sala em torno de 22 °C, para as pessoas ficarem confortáveis.” Diz <b>o que</b> e <b>por quê</b> → <b>computacional</b>.</li>
+<li>“Se a temperatura cair abaixo de 21 °C, ligar o aquecedor; se passar de 23 °C, desligar.” Diz a <b>receita</b> → <b>algorítmico</b>.</li>
+<li>“Uma lâmina de dois metais que se curva com o calor e fecha um contato elétrico.” Diz as <b>peças físicas</b> → <b>implementação</b>.</li></ol>
+<p><b>Conclusão:</b> o mesmo fenômeno pode ser descrito nos três níveis; cada frase responde a uma pergunta diferente.</p>`,
+// 3 — integra-e-dispara
+`<p><b>Caso:</b> outro neurônio, com <b>R = 100 MΩ</b> e limiar de <b>20 mV</b>.</p>
+<ol><li>Com <span class="mono">I = 0,25 nA</span>: <span class="mono">ΔV = 0,25 × 100 = 25 mV</span>. 25 &gt; 20 → <b>dispara</b>, e continua disparando enquanto a corrente durar.</li>
+<li>Com <span class="mono">I = 0,1 nA</span>: <span class="mono">ΔV = 0,1 × 100 = 10 mV</span>. 10 &lt; 20 → a voltagem para em 10 mV e <b>não dispara</b>, por mais que se espere.</li>
+<li>Corrente mínima: <span class="mono">20 mV ÷ 100 MΩ = 0,2 nA</span>.</li></ol>
+<p><b>Conclusão:</b> o que decide é comparar <span class="mono">I · R</span> com o limiar, não o tempo de espera.</p>`,
+// 4 — regra delta
+`<p><b>Caso:</b> o mesmo tipo de neurônio, agora errando para o outro lado. Pesos <b>w₁ = 0,6</b>, <b>w₂ = 0,3</b>, limiar 0,5, η = 0,2. Entrada x₁ = 1, x₂ = 0; o certo era <b>não</b> piscar (t = 0).</p>
+<ol><li><span class="mono">h = 0,6·1 + 0,3·0 = 0,6 ≥ 0,5</span> → y = 1 (piscou sem dever).</li>
+<li>Erro: <span class="mono">t − y = 0 − 1 = −1</span>.</li>
+<li><span class="mono">Δw₁ = 0,2 · (−1) · 1 = −0,2</span> → w₁ = 0,4. <span class="mono">Δw₂ = 0,2 · (−1) · 0 = 0</span> → w₂ = 0,3.</li></ol>
+<p><b>Conclusão:</b> erro negativo diminui os pesos, mas só das entradas que estavam <b>ligadas</b>. Da próxima vez, h = 0,4 &lt; 0,5: não pisca.</p>`,
+// 5 — experimentos que mudam uma coisa só
+`<p><b>Caso:</b> descobrir do que o carro precisa para ligar.</p>
+<div class="tablewrap"><table><tr><th>Teste</th><th class="l">Condição</th><th>Liga?</th></tr>
+<tr><td>1</td><td class="l">gira a chave, pé fora do freio</td><td>não</td></tr>
+<tr><td>2</td><td class="l">gira a chave, pé no freio</td><td>sim</td></tr>
+<tr><td>3</td><td class="l">igual ao 2, com a bateria desligada</td><td>não</td></tr></table></div>
+<ol><li>1 × 2: só muda o freio → o freio é necessário.</li>
+<li>2 × 3: só muda a bateria → a bateria é necessária.</li>
+<li>Juntando: girar a chave não basta; é preciso o freio <b>ao mesmo tempo</b>, e a bateria é a peça sem a qual nada funciona.</li></ol>
+<p><b>Conclusão:</b> compare pares de experimentos que diferem em <b>uma coisa só</b>; cada par diz o que aquela coisa faz.</p>`,
+// 6 — STDP
+`<p><b>Caso:</b> no mesmo rato, a sinapse no sentido <b>contrário</b>, <b>B → A</b>.</p>
+<ol><li>Pré = B, pós = A.</li>
+<li>A dispara antes de B. Então o <b>pré (B) dispara depois do pós (A)</b> → pela STDP, B → A <b>enfraquece</b>.</li>
+<li>Uma sinapse mais fraca ajuda menos o pós a atingir o limiar: A passa a receber menos “empurrão” de B.</li></ol>
+<p><b>Conclusão:</b> sinapses no sentido da sequência ficam fortes e as do sentido contrário ficam fracas. Uma entrada forte faz o neurônio pós chegar ao limiar <b>mais cedo</b>, quando o pré dispara.</p>`,
+// 7 — três tipos de aprendizado
+`<p><b>Caso:</b> três situações do dia a dia.</p>
+<ol><li>Uma criança diz “tato”, e o pai responde “não é tato, é <b>gato</b>”. Recebe a resposta certa → <b>supervisionado</b>.</li>
+<li>Um cachorro ganha um petisco quando senta. Ninguém diz o que fazer, só “bom” ou nada → <b>por reforço</b>.</li>
+<li>Um bebê ouve a língua materna e, com meses, deixa de distinguir sons que ela não usa. Nenhum sinal de ensino, só a estatística do que ouve → <b>não supervisionado</b>.</li></ol>
+<p><b>Conclusão:</b> o que define o tipo é o <b>sinal de ensino</b>: resposta certa, só recompensa, ou nenhum.</p>`,
+// 8 — erro de previsão
+`<p><b>Caso:</b> o macaco treinado espera <b>1 gota</b> de suco depois da luz.</p>
+<ol><li>Vem 1 gota: <span class="mono">1 − 1 = 0</span> → o neurônio fica na base.</li>
+<li>Vêm 3 gotas: <span class="mono">3 − 1 = +2</span> → pico acima da base (melhor que o esperado).</li>
+<li>Uma gota chega sem a luz, de surpresa: <span class="mono">1 − 0 = +1</span> → pico.</li></ol>
+<p><b>Conclusão:</b> calcule “recebido − esperado” e leia o sinal: positivo → acima da base; zero → base; negativo → abaixo da base.</p>`,
+// 9 — tamanho do passo
+`<p><b>Caso:</b> mesma regra <span class="mono">g ← g + η · (2 − g)</span>, começando em g = 1, com <b>η = 1,5</b>.</p>
+<ol><li>Passo 1: <span class="mono">1 + 1,5 · 1 = 2,5</span> (passou do alvo; distância 0,5).</li>
+<li>Passo 2: <span class="mono">2,5 + 1,5 · (−0,5) = 1,75</span> (distância 0,25).</li>
+<li>Passo 3: <span class="mono">1,75 + 1,5 · 0,25 = 2,125</span> (distância 0,125).</li></ol>
+<p><b>Conclusão:</b> o ganho pula de um lado para o outro do alvo, mas a distância cai pela metade a cada passo (fator 1 − η = −0,5): <b>converge</b>. Para saber se converge, olhe se a distância ao alvo encolhe ou cresce.</p>`,
+// 10 — um neurônio só: escrever as condições
+`<p><b>Caso:</b> outro problema. Piscar só quando tom <b>e</b> luz vêm juntos (“E”).</p>
+<ol><li>Precisamos de: tom só → <span class="mono">w_t &lt; θ</span>; luz só → <span class="mono">w_l &lt; θ</span>; os dois → <span class="mono">w_t + w_l ≥ θ</span>.</li>
+<li>Tente <span class="mono">w_t = w_l = 1</span> e <span class="mono">θ = 1,5</span>: 1 &lt; 1,5 ✓; 1 &lt; 1,5 ✓; 2 ≥ 1,5 ✓.</li>
+<li>As três condições valem ao mesmo tempo.</li></ol>
+<p><b>Conclusão:</b> o “E” é possível com um neurônio só. O método é escrever <b>uma desigualdade para cada caso</b> e ver se dá para satisfazer todas juntas; se elas se contradizem, um neurônio só não resolve.</p>`,
+// 11 — contar pesos; inspiração ≠ cópia
+`<p><b>Caso:</b> uma imagem de 32 × 32 = 1 024 pixels e uma camada de 1 024 neurônios.</p>
+<ol><li>Totalmente conectada: <span class="mono">1 024 × 1 024 ≈ 1 milhão</span> de pesos.</li>
+<li>Local com pedaços 3 × 3, pesos próprios: <span class="mono">1 024 × 9 = 9 216</span>.</li>
+<li>Convolucional (um filtro 3 × 3 para todos): <span class="mono">9</span>.</li></ol>
+<p><b>Para separar biologia de engenharia</b>, pense no avião: tem asas como o pássaro (inspiração biológica), mas não bate as asas (escolha de engenharia). Pergunte de cada ideia: “isso existe no cérebro, ou só facilita o computador?”</p>`,
+// 12 — recorrência
+`<p><b>Caso:</b> siga a atividade depois de uma entrada que a deixa em r = 1 (sem entrada nova).</p>
+<ol><li><span class="mono">w = 0,5</span>: 1 → 0,5 → 0,25 → … some depressa (<span class="mono">τ = 10/0,5 = 20 ms</span>).</li>
+<li><span class="mono">w = 1</span>: 1 → 1 → 1 → … fica parada.</li>
+<li><span class="mono">w = 1,1</span>: 1 → 1,1 → 1,21 → … cresce sem parar.</li></ol>
+<p><b>Conclusão:</b> abaixo de 1 a memória vaza; acima de 1 explode; em 1 se mantém. Quanto mais perto de 1, mais longa a memória.</p>`,
+// 13 — fração de variância
+`<p><b>Caso:</b> dois sinais padronizados com correlação <b>r = 0,5</b>.</p>
+<ol><li>Variância total = 2. Soma: <span class="mono">1 + 0,5 = 1,5</span>; diferença: <span class="mono">1 − 0,5 = 0,5</span>.</li>
+<li>Fração da soma: <span class="mono">1,5 / 2 = 75%</span>. Fração da diferença: <span class="mono">0,5 / 2 = 25%</span>.</li>
+<li>Se fosse r = 0: <span class="mono">1/2 = 50%</span> cada — nenhuma direção é especial.</li></ol>
+<p><b>Conclusão:</b> quanto maior r, mais a primeira componente sozinha resume os dois sinais, ou seja, mais <b>redundantes</b> eles são.</p>`,
+// 14 — quem vence, quem aprende
+`<p><b>Caso:</b> 3 neurônios em <b>20°</b>, <b>60°</b> e <b>100°</b>, com η = 0,5.</p>
+<ol><li>Chega uma borda de 45°: distâncias 25°, 15° e 55° → vence o de 60°. Ele vai para <span class="mono">60 + 0,5 · (45 − 60) = 52,5°</span>. Os outros dois <b>não mudam</b>.</li>
+<li>Chega uma borda de 30°: distâncias 10°, 22,5° e 70° → vence o de 20°. Ele vai para <span class="mono">20 + 0,5 · (30 − 20) = 25°</span>.</li>
+<li>O de 100° não venceu nenhuma vez, então continua em 100°.</li></ol>
+<p><b>Conclusão:</b> para prever a rede, pergunte quem <b>vence</b> cada entrada: só quem vence aprende.</p>`,
+// 15 — um passo do SOM
+`<p><b>Caso:</b> cadeia de 3 neurônios com <b>w = 5, 1, 2</b>. Chega um tom <b>x = 1</b>. η = 0,5; h = 1 (vencedor), 0,5 (vizinhos na cadeia).</p>
+<ol><li>Vencedor: neurônio 2 (w = 1, distância 0). Ele não muda: <span class="mono">1 + 0,5·1·(1 − 1) = 1</span>.</li>
+<li>Vizinho 1: <span class="mono">5 + 0,5·0,5·(1 − 5) = 4</span>. Vizinho 3: <span class="mono">2 + 0,5·0,5·(1 − 2) = 1,75</span>.</li>
+<li>Numa rede competitiva (sem vizinhança), só o vencedor poderia mudar — e aqui nem ele mudaria.</li></ol>
+<p><b>Conclusão:</b> no SOM, os vizinhos <b>na cadeia</b> chegam mais perto do tom do vencedor e, portanto, mais perto uns dos outros.</p>`,
+// 16 — padronizar
+`<p><b>Caso:</b> estudantes com <b>altura</b> (média 170 cm, desvio 10 cm) e <b>idade</b> (média 22 anos, desvio 2 anos). X: 180 cm, 22 anos. Y: 170 cm, 26 anos.</p>
+<ol><li>Sem padronizar: diferenças de 10 (cm) e 4 (anos) → <span class="mono">√(10² + 4²) ≈ 10,8</span>; a altura pesa mais só porque o número é maior.</li>
+<li>Padronizando (<span class="mono">z = (valor − média) / desvio</span>): X = (1; 0), Y = (0; 2).</li>
+<li>Agora as diferenças são 1 e 2: a idade pesa <b>mais</b>, porque 4 anos é muito entre estudantes (2 desvios), e 10 cm é pouco (1 desvio).</li></ol>
+<p><b>Conclusão:</b> padronizar mede cada diferença em “quantos desvios”, e não em cm ou anos; trocar a unidade deixa de mudar o mapa.</p>`,
+];
+Q.forEach((q, i) => { q.ex = EX[i]; });
+
+const L = 'ABCD';
+const KEY = 'nc2026_prova_aulas1-8_v1';
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const strip = h => { const d = document.createElement('div'); d.innerHTML = h; return d.textContent; };
+
+// ---------- montar as questões ----------
+$('#questoes').innerHTML = Q.map((q, i) => `
+<section class="card q" id="q${i + 1}">
+  <div class="qhead"><span class="qnum">Questão ${i + 1}</span><span class="tag">Aula ${q.aula}</span></div>
+  <h2>${q.tema}</h2>
+  <div class="box"><span class="lab">Situação</span>${q.sit}</div>
+  <div class="box" style="border-left-color:var(--you)"><span class="lab" style="color:var(--you)">Siga o exemplo</span>
+    <ol class="steps">${q.passos.map(p => `<li>${p}</li>`).join('')}</ol></div>
+  <p class="ask">${q.ask}</p>
+  <div class="opts" role="radiogroup" aria-label="Alternativas da questão ${i + 1}">
+    ${q.opts.map((o, k) => `<label class="opt"><input type="radio" name="r${i}" value="${L[k]}"><span><b>${L[k]})</b> ${o}</span></label>`).join('')}
+  </div>
+  <details class="hint"><summary>Dica</summary><div class="in">${q.dica}
+    <div class="ex"><span class="lab">Exemplo resolvido</span>${q.ex}</div></div></details>
+</section>`).join('');
+
+// ---------- guardar e restaurar (só neste aparelho) ----------
+function state() {
+  const ans = Q.map((_, i) => { const c = document.querySelector(`[name="r${i}"]:checked`); return c ? c.value : ''; });
+  return { nome: $('#nome').value.trim(), mat: $('#mat').value.trim(), ans };
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state())); } catch (e) {} }
+function load() {
+  try {
+    const s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (!s) return;
+    $('#nome').value = s.nome || ''; $('#mat').value = s.mat || '';
+    (s.ans || []).forEach((a, i) => { if (a) { const el = document.querySelector(`[name="r${i}"][value="${a}"]`); if (el) el.checked = true; } });
+  } catch (e) {}
+}
+function refresh() {
+  const s = state(), n = s.ans.filter(Boolean).length;
+  $('#pbar').style.width = (100 * n / Q.length) + '%';
+  $('#ptext').textContent = `${n} de ${Q.length} respondidas`;
+  $('#sumbody').innerHTML = Q.map((q, i) => `<tr><td><a href="#q${i + 1}">${i + 1}</a></td><td>${s.ans[i] || '—'}</td><td class="l">Aula ${q.aula} · ${q.tema}</td></tr>`).join('');
+}
+document.addEventListener('change', () => { save(); refresh(); });
+document.addEventListener('input', e => { if (e.target.matches('#nome,#mat')) save(); });
+load(); refresh();
+
+// ---------- entrega ----------
+function check() {
+  const s = state(), st = $('#status');
+  if (!s.nome || !s.mat) {
+    st.className = 'status warn'; st.textContent = 'Preencha o nome completo e a matrícula (no topo da página) antes de gerar a cópia.';
+    $('#ident').scrollIntoView({ behavior: 'smooth' }); return null;
+  }
+  const falta = s.ans.map((a, i) => a ? null : i + 1).filter(Boolean);
+  if (falta.length && !confirm(`Questões sem resposta: ${falta.join(', ')}.\nGerar a cópia assim mesmo?`)) return null;
+  return s;
+}
+function stamp() { return new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }); }
+function fname(s, ext) {
+  const nome = s.nome.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9]+/g, '_').replace(/^_|_$/g, '');
+  return `Prova_NC_Aulas1-8_${s.mat.replace(/\D/g, '') || 'sem_matricula'}_${nome}.${ext}`;
+}
+
+$('#btnPdf').addEventListener('click', () => {
+  const s = check(); if (!s) return;
+  $('#printhead').innerHTML = `<b>Neurociência Computacional · Prova — Aulas 1 a 8</b><br>Nome: <b>${esc(s.nome)}</b> · Matrícula: <b>${esc(s.mat)}</b> · Gerado em ${stamp()}<br>Respostas: ${s.ans.map((a, i) => `${i + 1}-${a || '—'}`).join('  ')}`;
+  const t = document.title; document.title = fname(s, 'pdf').replace(/\.pdf$/, '');
+  $('#status').className = 'status ok'; $('#status').textContent = 'Na janela que abriu, escolha “Salvar como PDF”. Depois envie o arquivo pelo SIGAA.';
+  setTimeout(() => { window.print(); document.title = t; }, 50);
+});
+
+$('#btnHtml').addEventListener('click', () => {
+  const s = check(); if (!s) return;
+  const when = stamp();
+  const body = Q.map((q, i) => {
+    const a = s.ans[i];
+    return `<section><h2>Questão ${i + 1} · Aula ${q.aula} — ${esc(q.tema)}</h2><p class="ask">${esc(q.ask)}</p><ol type="A">${q.opts.map((o, k) => {
+      const mine = a === L[k];
+      return `<li class="${mine ? 'mine' : ''}">${o}${mine ? ' <b>← resposta marcada</b>' : ''}</li>`;
+    }).join('')}</ol>${a ? '' : '<p class="none">Sem resposta.</p>'}</section>`;
+  }).join('');
+  const html = `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prova NC Aulas 1-8 — ${esc(s.nome)} (${esc(s.mat)})</title>
+<style>body{font:16px/1.5 system-ui,sans-serif;max-width:760px;margin:24px auto;padding:0 16px;color:#111;background:#fff}
+header{border:2px solid #111;padding:12px 14px;margin-bottom:18px}h1{font-size:22px;margin:0 0 6px}h2{font-size:17px;margin:18px 0 4px}
+table{border-collapse:collapse}td,th{border:1px solid #999;padding:4px 10px;text-align:center}.ask{font-weight:600;margin:4px 0}
+li{margin:4px 0;color:#555}li.mine{color:#000;background:#e6f2f2;font-weight:600}.none{color:#a33}</style></head><body>
+<header><h1>Neurociência Computacional · Prova — Aulas 1 a 8</h1>
+<div>Nome: <b>${esc(s.nome)}</b></div><div>Matrícula: <b>${esc(s.mat)}</b></div><div>Gerado em: ${when}</div></header>
+<h2>Resumo das respostas</h2><table><tr>${Q.map((_, i) => `<th>${i + 1}</th>`).join('')}</tr><tr>${s.ans.map(a => `<td><b>${a || '—'}</b></td>`).join('')}</tr></table>
+${body}</body></html>`;
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob), link = document.createElement('a');
+  link.href = url; link.download = fname(s, 'html'); document.body.appendChild(link); link.click(); link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+  $('#status').className = 'status ok'; $('#status').textContent = `Arquivo “${fname(s, 'html')}” baixado. Agora envie-o pelo SIGAA (Turma Virtual → Tarefas).`;
+});
+
+$('#btnClear').addEventListener('click', () => {
+  if (!confirm('Apagar todas as respostas e a identificação deste aparelho?')) return;
+  try { localStorage.removeItem(KEY); } catch (e) {}
+  document.querySelectorAll('input[type=radio]').forEach(r => { r.checked = false; });
+  $('#nome').value = ''; $('#mat').value = ''; refresh();
+  $('#status').className = 'status'; $('#status').textContent = 'Respostas apagadas.';
+});
+})();
+</script>
+</body>
+</html>
