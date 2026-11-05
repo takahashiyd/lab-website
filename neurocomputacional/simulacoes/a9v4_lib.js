@@ -21,6 +21,32 @@
   // lembra até parar (ou até maxSweeps); devolve o Runner (estado final em R.s, energia em R.E)
   const recall = (W, s, seed, opt) => H.Runner(W, s, Object.assign({ seed: seed * 7919 + 1 }, opt || {})).run((opt && opt.maxSweeps) || 50);
 
+  // ---------- Atividade 2, primeira parte: passo a passo no jogo da velha (9 neurônios, 1–9 em ordem de leitura) ----------
+  // Guardar: w = soma, nas duas memórias, de (estado de i × estado de j), sem dividir; wᵢᵢ = 0 → +2 amigos, −2 rivais, 0 indiferentes.
+  // Lembrar: em ordem de leitura; cada neurônio soma os votos (ligação × estado do outro) e segue o sinal (soma 0 → fica).
+  const VELHA = {
+    X: [1, -1, 1, -1, 1, -1, 1, -1, 1],   // cantos e centro ligados
+    O: [1, 1, 1, 1, -1, 1, 1, 1, 1],      // tudo ligado menos o centro
+    nomes: ['canto de cima à esquerda', 'borda de cima', 'canto de cima à direita', 'borda da esquerda', 'centro',
+      'borda da direita', 'canto de baixo à esquerda', 'borda de baixo', 'canto de baixo à direita'],
+    pistas: {
+      x2: { rot: 'X com dois erros', s: [1, 1, -1, -1, 1, -1, 1, -1, 1] },
+      ocima: { rot: 'Pedaço do O (linha de cima apagada)', s: [-1, -1, -1, 1, -1, 1, 1, 1, 1] },
+      omeio: { rot: 'O com a linha do meio apagada', s: [1, 1, 1, -1, -1, -1, 1, 1, 1] },
+    },
+  };
+  VELHA.W = () => { const P = [VELHA.X, VELHA.O], W = []; for (let i = 0; i < 9; i++) { W.push([]); for (let j = 0; j < 9; j++) W[i].push(i === j ? 0 : P.reduce((a, p) => a + p[i] * p[j], 0)); } return W; };
+  VELHA.E = (W, s) => { let e = 0; for (let i = 0; i < 9; i++) for (let j = 0; j < 9; j++) e += W[i][j] * s[i] * s[j]; return -e / 2; };
+  VELHA.votos = (W, s, i) => s.map((v, j) => (j === i ? null : { j, estado: v, lig: W[i][j], voto: W[i][j] * v })).filter(Boolean);
+  // um passo: o neurônio i vota; devolve { i, soma, antes, depois, E0, E1, votos } e muda s
+  VELHA.passo = (W, s, i) => { const vs = VELHA.votos(W, s, i), soma = vs.reduce((a, v) => a + v.voto, 0), antes = s[i], E0 = VELHA.E(W, s);
+    if (soma !== 0) s[i] = soma > 0 ? 1 : -1; return { i, soma, antes, depois: s[i], E0, E1: VELHA.E(W, s), votos: vs }; };
+  VELHA.nome = (s) => { const eq = (a) => a.every((v, k) => v === s[k]); return eq(VELHA.X) ? 'X' : eq(VELHA.O) ? 'O' : eq(VELHA.X.map(v => -v)) ? 'negativo do X' : eq(VELHA.O.map(v => -v)) ? 'negativo do O' : null; };
+  // lembrar até uma rodada inteira (9 passos seguidos) sem mudança; devolve a lista de passos e o estado final
+  VELHA.lembrar = (s0) => { const W = VELHA.W(), s = s0.slice(), passos = []; let quietos = 0, i = 0;
+    while (quietos < 9 && passos.length < 90) { const p = VELHA.passo(W, s, i); passos.push(p); quietos = p.depois === p.antes ? quietos + 1 : 0; i = (i + 1) % 9; }
+    return { passos, s, nome: VELHA.nome(s), E: VELHA.E(W, s) }; };
+
   // ---------- Atividade 3 (i): lesão de CA3 = todas as ligações recorrentes cortadas ----------
   // ---------- Atividade 3 (ii): caixa que muda de forma (Wills et al., 2005; modelo) ----------
   // 2 mapas de 100 células de lugar (±1 ao acaso, ≈ 1/3 das células trocam entre os mapas).
@@ -95,5 +121,5 @@
   // ---------- extra do projetor: Hopfield moderna / atenção ----------
   const ATT = { nomes: ['casa', 'coracao', 'gato', 'nota', 'sol', 'peixe'] };
 
-  root.A9L = { A2, cue, recall, WILLS, DRM, MIX, buildNet, CASOS, runSide, summary, RING, ATT, pat };
+  root.A9L = { A2, VELHA, cue, recall, WILLS, DRM, MIX, buildNet, CASOS, runSide, summary, RING, ATT, pat };
 })(window);

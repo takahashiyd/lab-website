@@ -121,8 +121,10 @@ footer{font-size:13px;color:var(--muted);display:grid;gap:6px}
 
 <!-- ============ ATIVIDADE 2 ============ -->
 <section class="exp" id="a2" data-titulo="Desenhe e lembre">
-  <div><p class="num">Atividade 2 · 6 min · em duplas</p><h2>Desenhe e lembre</h2></div>
-  <p>Uma rede de 100 neurônios (os pixels de uma grade 10 × 10; escuro = ligado) guardou 3 desenhos: casa, coração e nota musical. Escolha uma pista e toque em <b>Lembrar</b>: cada neurônio, um de cada vez, segue o voto dos outros. Você também pode tocar nos pixels para desenhar a sua pista.</p>
+  <div><p class="num">Atividade 2 · 7 min · em duplas</p><h2>Desenhe e lembre</h2></div>
+  <p><b>Primeiro, passo a passo (jogo da velha).</b> Uma rede de só 9 neurônios guardou duas memórias: o <b>X</b> (cantos e centro ligados) e o <b>O</b> (tudo ligado menos o centro). Ao guardar, quem está igual nas duas memórias vira <b>amigo</b> (+2), quem está diferente nas duas vira <b>rival</b> (−2) e o resto fica <b>indiferente</b> (0). A pista é o X com dois erros. Toque em <b>Próximo neurônio</b>: o neurônio destacado soma os votos dos outros (ligação × estado) e segue o sinal. Antes de cada toque, preveja: liga, desliga ou fica?</p>
+  <div class="sim"><span class="sim-t">Simulação · passo a passo</span><div id="simA2p"></div></div>
+  <p><b>Depois, desenhe e lembre.</b> Uma rede de 100 neurônios (os pixels de uma grade 10 × 10; escuro = ligado) guardou 3 desenhos: casa, coração e nota musical. Escolha uma pista e toque em <b>Lembrar</b>: cada neurônio, um de cada vez, segue o voto dos outros. Você também pode tocar nos pixels para desenhar a sua pista.</p>
   <div class="sim"><span class="sim-t">Simulação · desenhe e lembre</span><div id="simA2"></div></div>
   <div data-qs="a2"></div>
   <div class="send"><button data-send="a2">Enviar</button><span class="sent" data-status="a2"></span></div>
@@ -188,7 +190,7 @@ footer{font-size:13px;color:var(--muted);display:grid;gap:6px}
 </section>
 
 <footer>
-  <p>Materiais: <a href="simulacoes/aula09.html">simulações da Aula 9 para o projetor (desenhe e lembre, hipocampo, memória falsa, quebre a memória, segurar uma informação, atenção)</a> · <a href="index.html">todas as aulas</a></p>
+  <p>Materiais: <a href="simulacoes/aula09.html">simulações da Aula 9 para o projetor (passo a passo, desenhe e lembre, hipocampo, memória falsa, quebre a memória, segurar uma informação, atenção)</a> · <a href="index.html">todas as aulas</a></p>
   <p>Referências: Hopfield (1982); Roediger &amp; McDermott (1995); Stein, Feix &amp; Rohenkohl (2006), lista "Música"; Funahashi, Bruce &amp; Goldman-Rakic (1989); Nakazawa et al. (2002); Gold &amp; Kesner (2005); Wills et al. (2005); Ramsauer et al. (2020). Todos os números das simulações são do modelo.</p>
   <p>Prof. Daniel Y. Takahashi · Instituto do Cérebro, UFRN</p>
 </footer>
@@ -223,6 +225,12 @@ const Q = {
     { t: 'Reconhecer um amigo de máscara, só pelos olhos.', o: A1O, c: 'cont', why: 'Metade do rosto basta para trazer a pessoa inteira: completar a partir de um pedaço.' },
   ],
   a2: [
+    { t: 'Passo a passo, pista = o X com dois erros. A borda de cima (neurônio 2) está ligada, mas as outras três bordas (suas amigas) estão desligadas e o centro (seu rival) está ligado. Quando chegar a vez dela, ela vai…',
+      o: [['fica', 'continuar ligada'], ['desliga', 'desligar'], ['empate', 'ficar como está: os votos empatam']], c: 'desliga',
+      why: 'As três amigas estão desligadas: cada uma vota "desligue". O rival (o centro) está ligado: voto de rival ligado também empurra para desligar. Os cantos são indiferentes (voto 0). Todos os votos apontam para o mesmo lado (soma −8), e ela desliga; a energia cai de −4 para −20.', demo: 'a2p1' },
+    { t: 'Toque em Lembrar tudo. Depois que ninguém mais muda, a rede…',
+      o: [['X', 'parou no X: os dois erros foram corrigidos'], ['O', 'parou no O, a outra memória'], ['nunca', 'nunca para: fica trocando de um desenho para o outro']], c: 'X',
+      why: 'Só dois neurônios mudam: a borda de cima desliga e o canto de cima à direita liga (a energia desce −4 → −20 → −32). Na rodada seguinte ninguém muda: a rede parou no X, o fundo do vale. A pista estava mais perto do X (2 diferenças) do que do O (5).', demo: 'a2p2' },
     { t: 'Escolha a casa, ruído de 20%, e toque em Lembrar. A rede…',
       o: [['volta', 'volta à casa guardada, sem nenhum erro'], ['fica', 'fica parada na pista, cheia de ruído'], ['outro', 'vira o coração ou a nota']], c: 'volta',
       why: 'Cada neurônio segue o voto ponderado dos outros; como a maioria dos pixels ainda é da casa, o voto puxa os 20 pixels trocados de volta. Funciona com os 3 desenhos e com todas as sementes que testamos (modelo).', demo: 'a2a' },
@@ -353,21 +361,23 @@ $('[data-k="a4fim"]').addEventListener('click', () => { $$('[data-qs="a4t"] inpu
 /* ---------- simulações ---------- */
 const U = window.A9UI, SIM = {};
 const need = (k, sel, make) => SIM[k] || (SIM[k] = make($(sel)));
+const passo = () => need('passo', '#simA2p', e => U.StepSim(e, {}));
 const draw = () => need('draw', '#simA2', e => U.DrawSim(e, { seed: 1 }));
 const les = () => need('lesao', '#simA3a', e => U.LesionSim(e, { seed: 1 }));
 const wil = () => need('wills', '#simA3b', e => U.MorphSim(e, { seed: 1 }));
 const que = () => { if (!SIM.quebre) { SIM.quebre = U.BreakSim($('#simA5'), { seed: 1 }); SIM.quebre.show('a'); } return SIM.quebre; };
 const ane = () => need('anel', '#simA6', e => U.RingSim(e, { seed: 1 }));
-U.whenVisible($('#simA2'), draw); U.whenVisible($('#simA3a'), les); U.whenVisible($('#simA3b'), wil); U.whenVisible($('#simA5'), que); U.whenVisible($('#simA6'), ane);
+U.whenVisible($('#simA2p'), passo); U.whenVisible($('#simA2'), draw); U.whenVisible($('#simA3a'), les); U.whenVisible($('#simA3b'), wil); U.whenVisible($('#simA5'), que); U.whenVisible($('#simA6'), ane);
 SIM.lista = U.WordList($('#simA4'), { onEnd: showTest });
 window.A9SIM = SIM;
 const DEMO = {
+  a2p1: () => passo().demo('passo2'), a2p2: () => passo().demo('tudo'),
   a2a: () => draw().demo('ruido20'), a2b: () => draw().demo('metade'), a2d: () => draw().demo('ruido60'), a2e: () => draw().demo('rabisco'),
   a3a: () => les().demo('metade'), a3b: () => les().demo('inteira'), a3c: () => wil().demo(),
   a6a: () => ane().forca('fraca'), a6b: () => ane().forca('medida'), a6c: () => ane().forca('forte'),
 };
 'abcdefg'.split('').forEach(c => { DEMO['a5' + c] = () => que().show(c); });
-const SIMOF = { a2: '#simA2', a3: '#simA3a', a3c: '#simA3b', a5: '#simA5', a6: '#simA6' };
+const SIMOF = { a2p1: '#simA2p', a2p2: '#simA2p', a2: '#simA2', a3: '#simA3a', a3c: '#simA3b', a5: '#simA5', a6: '#simA6' };
 document.addEventListener('click', (e) => { const b = e.target.closest('[data-demo]'); if (!b) return; const k = b.dataset.demo; DEMO[k](); $(SIMOF[k] || SIMOF[k.slice(0, 2)]).closest('.sim').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
 
 /* ---------- envio ---------- */

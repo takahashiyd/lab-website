@@ -51,6 +51,19 @@
 .a9cases button{padding:8px 3px;min-height:52px;font-size:12.5px;line-height:1.15;background:var(--bg);color:var(--fg);border:1.5px solid var(--line)}
 .a9cases button.on{border-color:var(--accent);background:var(--soft);color:var(--accent)}
 .a9word{font:800 clamp(34px,11vw,72px)/1.1 var(--display,inherit);text-align:center;padding:28px 8px;border-radius:12px;background:var(--soft);color:var(--fg);min-height:2.6em;display:grid;place-items:center}
+.a9stepg{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:12px;align-items:start}
+.a9stepc{display:grid;gap:8px;min-width:0}
+.a9sim canvas.g3{max-width:300px}
+.a9pistas{display:flex;flex-wrap:wrap;gap:6px}
+.a9pistas button{padding:8px 10px;min-height:42px;font-size:14px;line-height:1.15}
+.a9pistas button.on{border-color:var(--accent);background:var(--soft);color:var(--accent)}
+.a9tt{margin:0;font:600 14.5px/1.35 var(--body,inherit)}
+.a9tt.dec{font-weight:700;color:var(--you)}
+.a9vt{width:100%;border-collapse:collapse;font:500 13.5px/1.25 var(--body,inherit)}
+.a9vt th{text-align:left;font-weight:700;color:var(--muted);border-bottom:1.5px solid var(--fg);padding:3px 4px}
+.a9vt td{padding:3px 4px;border-bottom:1px solid var(--line)}
+.a9vt td.pos{color:var(--ok)} .a9vt td.neg{color:var(--warn)} .a9vt td.zer{color:var(--muted)}
+.a9vt tr.soma td{border-top:1.5px solid var(--fg);border-bottom:0;font-weight:700}
 .a9word small{display:block;font:600 14px var(--mono,monospace);color:var(--muted)}
 `;
     document.head.appendChild(st);
@@ -87,13 +100,105 @@
     const X = (i) => m.l + i / n * (W - m.l - m.r), Y = (v) => m.t + (hi - v) / ((hi - lo) || 1) * (Hh - m.t - m.b);
     g.strokeStyle = css('--accent'); g.lineWidth = 2; g.beginPath(); ys.forEach((v, i) => i ? g.lineTo(X(i), Y(v)) : g.moveTo(X(i), Y(v))); g.stroke();
     g.fillStyle = css('--accent'); g.beginPath(); g.arc(X(ys.length - 1), Y(ys[ys.length - 1]), 3.5, 0, 7); g.fill();
-    g.textAlign = 'right'; g.fillStyle = css('--fg'); g.fillText(fmt(ys[ys.length - 1], 1), W - m.r, 13); g.textAlign = 'left';
+    g.textAlign = 'right'; g.fillStyle = css('--fg'); g.fillText(fmt(ys[ys.length - 1], opt.d === undefined ? 1 : opt.d), W - m.r, 13); g.textAlign = 'left';
   }
   function whenVisible(el, f) {
     if (!('IntersectionObserver' in root)) { f(); return; }
     const io = new IntersectionObserver((es) => { if (es.some(e => e.isIntersecting)) { io.disconnect(); f(); } }, { rootMargin: '200px' }); io.observe(el);
   }
   const resultText = (c) => c.tipo === 'memoria' ? `✓ lembrou: ${c.nome}` : c.tipo === 'negativo' ? `terminou no negativo (invertido) de: ${c.nome}` : 'terminou numa mistura: não é nenhum desenho guardado';
+
+  // ======================= Atividade 2 (primeira parte) · Passo a passo no jogo da velha =======================
+  function StepSim(host, opt) {
+    opt = Object.assign({ ms: 450, big: false, pista: 'x2' }, opt || {}); const id = 'a9p' + (UID++);
+    const V = L.VELHA, W = V.W(), TIPO = ['canto', 'borda', 'canto', 'borda', 'centro', 'borda', 'canto', 'borda', 'canto'];
+    const sg = (v) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v);
+    const LIG = (w) => w > 0 ? 'amigos +2' : w < 0 ? 'rivais −2' : 'indiferentes 0';
+    host.innerHTML = `<div class="a9sim">
+      <div class="a9mem" data-k="mem"><span>Guardadas:</span></div>
+      ${seg(id + 'm', [['lembrar', 'Lembrar: os votos'], ['guardar', 'Guardar: as ligações']], 'lembrar', 'Mostrar')}
+      <div class="a9stepg"><div class="a9stepc"><canvas class="grid g3" data-k="cv" aria-label="os 9 neurônios do jogo da velha"></canvas>
+        <div class="a9res" data-k="res"></div>
+        <div class="a9btns"><button data-k="next">▶ Próximo neurônio</button><button class="ghost" data-k="all">Lembrar tudo</button><button class="ghost" data-k="reset">Recomeçar</button></div>
+        <div class="a9seg"><span>Pista</span><div class="a9pistas">${Object.entries(V.pistas).map(([k, p]) => `<button class="ghost" data-p="${k}">${esc(p.rot)}</button>`).join('')}</div></div>
+        <p class="a9note" data-k="nota"></p></div>
+        <div class="a9stepc"><div data-k="tab"></div><div class="a9read" data-k="en"></div><canvas data-k="sp" aria-label="energia a cada passo"></canvas></div></div>
+    </div>`;
+    const $ = (k) => host.querySelector(`[data-k="${k}"]`);
+    const S = { mode: 'lembrar', pista: null, cue: null, s: null, i: 0, hist: [], Es: [], quietos: 0, parou: false, last: null, sel: 1, busy: false, nome: null };
+    let timer = null;
+    [['X', V.X], ['O', V.O]].forEach(([n, p]) => { const f = document.createElement('figure'); f.appendChild(thumb(p, 34)); const c = document.createElement('figcaption'); c.textContent = n; f.appendChild(c); $('mem').appendChild(f); });
+    function drawCv() {
+      const { g, W: w } = surface($('cv'), 1), c = w / 3, mono = css('--mono') || 'monospace';
+      for (let k = 0; k < 9; k++) { const r = Math.floor(k / 3), q = k % 3, on = S.s[k] > 0;
+        g.fillStyle = on ? PX_ON : PX_OFF; g.fillRect(q * c, r * c, c, c);
+        g.fillStyle = on ? '#e6ecf3' : '#5b6879'; g.font = `600 ${Math.round(c * 0.17)}px ${mono}`; g.textAlign = 'left'; g.fillText(String(k + 1), q * c + c * 0.08, r * c + c * 0.22); }
+      g.strokeStyle = 'rgba(100,116,139,.55)'; g.lineWidth = 1.5; g.beginPath(); for (let k = 1; k < 3; k++) { g.moveTo(k * c, 0); g.lineTo(k * c, w); g.moveTo(0, k * c); g.lineTo(w, k * c); } g.stroke();
+      let foco = null, lab = null;
+      if (S.mode === 'guardar') { foco = S.sel; lab = (j) => W[foco][j]; }
+      else if (S.last) { foco = S.last.i; const vv = {}; S.last.votos.forEach(v => { vv[v.j] = v.voto; }); lab = (j) => vv[j]; }
+      else if (!S.parou) foco = S.i;
+      if (foco !== null) { const r = Math.floor(foco / 3), q = foco % 3; g.strokeStyle = '#f0a645'; g.lineWidth = Math.max(4, c * 0.07); g.strokeRect(q * c + g.lineWidth / 2, r * c + g.lineWidth / 2, c - g.lineWidth, c - g.lineWidth); }
+      if (lab) for (let j = 0; j < 9; j++) { if (j === foco) continue; const v = lab(j), r = Math.floor(j / 3), q = j % 3, x = q * c + c / 2, y = r * c + c * 0.58;
+        const col = v > 0 ? '#15803d' : v < 0 ? '#dc2626' : '#64748b'; const t = sg(v), fz = Math.round(c * 0.26);
+        g.font = `800 ${fz}px ${mono}`; const tw = g.measureText(t).width + fz * 0.5;
+        g.fillStyle = '#ffffff'; g.strokeStyle = col; g.lineWidth = 2; g.beginPath(); if (g.roundRect) g.roundRect(x - tw / 2, y - fz * 0.68, tw, fz * 1.25, 6); else g.rect(x - tw / 2, y - fz * 0.68, tw, fz * 1.25); g.fill(); g.stroke();
+        g.fillStyle = col; g.textAlign = 'center'; g.fillText(t, x, y + fz * 0.3); }
+      g.textAlign = 'left';
+    }
+    function table() {
+      const est = (v) => v > 0 ? 'ligado (+1)' : 'desligado (−1)', cor = (v) => v > 0 ? 'pos' : v < 0 ? 'neg' : 'zer';
+      if (S.mode === 'guardar') { const i = S.sel;
+        const ig = (p, j) => p[i] === p[j] ? 'iguais' : 'diferentes';
+        return `<p class="a9tt">Ligações do neurônio ${i + 1} (${V.nomes[i]})</p><table class="a9vt"><tr><th>com</th><th>no X</th><th>no O</th><th>ligação</th></tr>` +
+          [...Array(9).keys()].filter(j => j !== i).map(j => `<tr><td>${j + 1} ${TIPO[j]}</td><td>${ig(V.X, j)}</td><td>${ig(V.O, j)}</td><td class="${cor(W[i][j])}">${LIG(W[i][j])}</td></tr>`).join('') + '</table>'; }
+      if (!S.last) return `<p class="a9tt">${S.parou ? 'Parou.' : `Próximo a votar: neurônio ${S.i + 1} (${V.nomes[S.i]}), ${S.s[S.i] > 0 ? 'ligado' : 'desligado'}. Antes de tocar: ele vai ligar, desligar ou ficar como está?`}</p>`;
+      const p = S.last, dec = p.depois !== p.antes ? (p.depois > 0 ? 'liga' : 'desliga') : p.soma === 0 ? 'empate: fica como está' : (p.depois > 0 ? 'fica ligado' : 'fica desligado');
+      return `<p class="a9tt">Neurônio ${p.i + 1} (${V.nomes[p.i]}), estava ${p.antes > 0 ? 'ligado' : 'desligado'}</p><table class="a9vt"><tr><th>de quem</th><th>estado</th><th>ligação</th><th>voto</th></tr>` +
+        p.votos.map(v => `<tr><td>${v.j + 1} ${TIPO[v.j]}</td><td>${est(v.estado)}</td><td class="${cor(v.lig)}">${sg(v.lig)}</td><td class="${cor(v.voto)}"><b>${sg(v.voto)}</b></td></tr>`).join('') +
+        `<tr class="soma"><td colspan="3">soma dos votos</td><td class="${cor(p.soma)}"><b>${sg(p.soma)}</b></td></tr></table><p class="a9tt dec">→ ${dec}</p>`;
+    }
+    function draw() {
+      drawCv(); $('tab').innerHTML = table();
+      if (S.mode === 'guardar') { $('en').textContent = 'cantos amigos entre si · bordas amigas entre si · centro rival das bordas'; }
+      else $('en').textContent = S.last ? `energia: ${sg(S.last.E0)} → ${sg(S.last.E1)}` : `energia: ${sg(S.Es[S.Es.length - 1])}`;
+      sparkline($('sp'), S.Es, { title: 'energia a cada passo', aspect: 0.32, minN: 18, d: 0 });
+      $('nota').textContent = S.mode === 'guardar' ? 'Toque num quadrado para ver as ligações daquele neurônio (verde = amigos, vermelho = rivais, cinza = indiferentes).' : 'Toque nos quadrados para fazer a sua própria pista. Os números nos quadrados são os votos para o neurônio destacado.';
+    }
+    function setCue(k, s, msg) { stopAll(); S.pista = k; S.cue = s.slice(); S.s = s.slice(); S.i = 0; S.hist = []; S.Es = [V.E(W, S.s)]; S.quietos = 0; S.parou = false; S.last = null; S.nome = null;
+      host.querySelectorAll('[data-p]').forEach(b => b.classList.toggle('on', b.dataset.p === k));
+      $('res').className = 'a9res'; $('res').textContent = msg || `Pista: ${V.pistas[k].rot}. Toque em "Próximo neurônio".`; draw(); }
+    function pista(k) { setCue(k, V.pistas[k].s); }
+    function next() {
+      if (S.parou) return null; if (S.mode !== 'lembrar') setMode('lembrar');
+      const p = V.passo(W, S.s, S.i); S.last = p; S.hist.push(p); S.Es.push(p.E1); S.quietos = p.depois === p.antes ? S.quietos + 1 : 0; S.i = (S.i + 1) % 9;
+      const nm = V.nomes[p.i], dec = p.depois !== p.antes ? (p.depois > 0 ? 'liga' : 'desliga') : p.soma === 0 ? 'empate: fica como está' : 'já concorda: fica como está';
+      $('res').className = 'a9res'; $('res').textContent = `Neurônio ${p.i + 1} (${nm}): soma ${sg(p.soma)} → ${dec}.` + (p.E1 !== p.E0 ? ` A energia desceu: ${sg(p.E0)} → ${sg(p.E1)}.` : '');
+      if (S.quietos >= 9) { S.parou = true; S.nome = V.nome(S.s);
+        $('res').className = 'a9res ' + (S.nome === 'X' || S.nome === 'O' ? 'ok' : 'bad');
+        $('res').textContent = `Uma rodada inteira sem ninguém mudar: a rede parou. ${S.nome ? 'É o ' + S.nome : 'Não é nenhuma memória'} (energia ${sg(p.E1)}; ${S.hist.filter(h => h.antes !== h.depois).length} neurônios mudaram em ${S.hist.length} votos).`; }
+      draw(); return p;
+    }
+    function stopAll() { clearTimeout(timer); timer = null; S.busy = false; }
+    function all() { if (S.parou) return; stopAll(); S.busy = true; const go = () => { next(); if (!S.parou) timer = setTimeout(go, opt.ms); else S.busy = false; }; go(); }
+    let saved = null;
+    function setMode(m) { if (m === S.mode) { draw(); return; } const res = $('res');
+      if (m === 'guardar') { saved = [res.className, res.textContent]; res.className = 'a9res'; res.textContent = 'Guardar: em cada par, compare as duas memórias. Iguais nas duas → amigos (+2); diferentes nas duas → rivais (−2); iguais numa e diferentes na outra → indiferentes (0).'; }
+      else if (saved) { res.className = saved[0]; res.textContent = saved[1]; }
+      S.mode = m; const r = host.querySelector(`[name="${id}m"][value="${m}"]`); if (r) r.checked = true; draw(); }
+    host.querySelectorAll(`[name="${id}m"]`).forEach(r => r.addEventListener('change', () => setMode(r.value)));
+    host.querySelectorAll('[data-p]').forEach(b => b.addEventListener('click', () => pista(b.dataset.p)));
+    $('next').addEventListener('click', () => { stopAll(); next(); }); $('all').addEventListener('click', all); $('reset').addEventListener('click', () => setCue(S.pista, S.cue, 'Recomeçou da mesma pista.'));
+    $('cv').addEventListener('pointerdown', (ev) => { const r = ev.target.getBoundingClientRect(), q = Math.floor((ev.clientX - r.left) / r.width * 3), rr = Math.floor((ev.clientY - r.top) / r.height * 3);
+      if (q < 0 || q > 2 || rr < 0 || rr > 2) return; const k = rr * 3 + q;
+      if (S.mode === 'guardar') { S.sel = k; draw(); return; }
+      const s = S.s.slice(); s[k] = -s[k]; setCue(null, s, 'Sua pista. Toque em "Próximo neurônio" (ou continue tocando nos quadrados).'); });
+    root.addEventListener('resize', draw);
+    pista(opt.pista);
+    const api = { S, W, pista, next, all, stop: stopAll, setMode, busy: () => S.busy, guardar: (i) => { S.sel = i; setMode('guardar'); },
+      demo: (k) => { setMode('lembrar'); pista('x2'); if (k === 'passo2') { next(); next(); } else if (k === 'tudo') all(); } };
+    host.sim = api; return api;
+  }
 
   // ======================= Atividade 2 · Desenhe e lembre =======================
   function DrawSim(host, opt) {
@@ -380,5 +485,5 @@
     const api = { S, draw, setBeta: (b) => { S.beta = b; $('beta').value = b; $('bo').textContent = b; draw(); } }; host.sim = api; return api;
   }
 
-  root.A9UI = { DrawSim, LesionSim, MorphSim, WordList, BreakSim, RingSim, AttnSim, whenVisible, drawGrid, thumb, fmt };
+  root.A9UI = { StepSim, DrawSim, LesionSim, MorphSim, WordList, BreakSim, RingSim, AttnSim, whenVisible, drawGrid, thumb, fmt };
 })(window);
