@@ -1,511 +1,879 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Simulações — Aula 9 · Memórias que se completam: redes de atratores, Hopfield e o hipocampo</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulações · Aula 9 (v4) · Memórias que se completam</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
 <style>
-  :root {
-    --teal:#0D7377; --mint:#14B8A6; --xl-teal:#CCFBF1;
-    --blue:#1A56DB; --amber:#B45309; --l-amber:#F59E0B; --xl-amber:#FEF3C7;
-    --violet:#6D28D9; --l-violet:#A78BFA; --xl-violet:#EDE9FE;
-    --green:#15803D; --red:#DC2626; --dark:#1E293B; --dark2:#0F172A;
-    --gray:#64748B; --l-gray:#94A3B8; --xl-gray:#E2E8F0; --bg:#F8FAFC; --white:#FFFFFF;
-  }
-  * { box-sizing:border-box; margin:0; padding:0; }
-  body { font-family:'Segoe UI','Calibri',Arial,sans-serif; background:var(--bg); color:var(--dark); min-height:100vh; }
-  header { background:linear-gradient(135deg,var(--violet),var(--l-violet)); color:var(--white); padding:16px 28px; box-shadow:0 2px 12px rgba(0,0,0,0.15); }
-  header .top { display:flex; justify-content:space-between; align-items:baseline; }
-  header .course { font-size:12px; letter-spacing:3px; text-transform:uppercase; opacity:0.9; }
-  header .author { font-size:11px; opacity:0.9; letter-spacing:2px; }
-  header h1 { font-size:24px; font-weight:700; margin-top:6px; }
-  header .subtitle { font-size:13px; opacity:0.95; margin-top:2px; font-style:italic; }
-  .tabs { background:var(--dark); padding:0 16px; display:flex; gap:4px; border-bottom:4px solid var(--violet); flex-wrap:wrap; }
-  .tab { padding:14px 18px; background:transparent; color:var(--l-gray); border:none; cursor:pointer; font-size:13px; font-weight:600; border-radius:8px 8px 0 0; transition:background .2s,color .2s; letter-spacing:1px; }
-  .tab:hover { background:rgba(255,255,255,0.06); color:var(--white); }
-  .tab.active { background:var(--bg); color:var(--violet); }
-  .panel { display:none; padding:28px; max-width:1300px; margin:0 auto; }
-  .panel.active { display:block; }
-  .panel h2 { color:var(--dark); font-size:22px; margin-bottom:6px; }
-  .panel .lead { color:var(--gray); font-size:14px; margin-bottom:18px; font-style:italic; line-height:1.45; }
-  .layout { display:grid; grid-template-columns:1fr 360px; gap:22px; align-items:start; }
-  .layout.one-col { grid-template-columns:1fr; }
-  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } }
-  canvas { background:var(--white); border:2px solid var(--xl-gray); border-radius:10px; width:100%; height:auto; display:block; }
-  canvas.click { cursor:crosshair; }
-  .side { background:var(--white); border:1px solid var(--xl-gray); border-radius:10px; padding:18px; box-shadow:0 1px 4px rgba(0,0,0,0.04); }
-  .side h3 { color:var(--violet); font-size:12px; letter-spacing:3px; text-transform:uppercase; margin-bottom:14px; }
-  .controls { display:flex; flex-direction:column; gap:12px; }
-  .row { display:flex; align-items:center; gap:10px; }
-  .row label { font-size:13px; color:var(--dark); flex:1; }
-  .row .value { font-weight:700; color:var(--violet); min-width:54px; text-align:right; font-family:'Consolas',monospace; font-size:13px; }
-  input[type=range] { width:100%; accent-color:var(--violet); }
-  select { width:100%; padding:7px; border:1.5px solid var(--xl-gray); border-radius:6px; font-size:13px; color:var(--dark); background:var(--white); }
-  button.btn { background:var(--violet); color:var(--white); border:none; padding:10px 14px; border-radius:6px; font-weight:700; cursor:pointer; font-size:13px; letter-spacing:.5px; transition:background .15s; }
-  button.btn:hover { background:var(--l-violet); }
-  button.btn.secondary { background:var(--gray); }
-  button.btn.secondary:hover { background:var(--l-gray); }
-  button.btn.blue { background:var(--blue); }
-  button.btn.amber { background:var(--amber); }
-  button.btn.green { background:var(--green); }
-  button.btn.red { background:var(--red); }
-  .btns { display:flex; gap:8px; flex-wrap:wrap; }
-  .stat { font-size:12px; color:var(--gray); padding:8px 10px; background:var(--bg); border-radius:6px; border-left:3px solid var(--violet); font-family:'Consolas',monospace; line-height:1.6; }
-  .lesson { background:var(--xl-violet); border-left:4px solid var(--violet); padding:12px 16px; border-radius:0 8px 8px 0; font-size:12.5px; line-height:1.5; color:var(--dark); margin-top:14px; }
-  .lesson strong { color:var(--violet); }
-  .palette { display:flex; gap:6px; flex-wrap:wrap; }
-  .pchip { width:46px; height:46px; border:2px solid var(--xl-gray); border-radius:6px; cursor:pointer; background:var(--white); padding:2px; }
-  .pchip.sel { border-color:var(--violet); box-shadow:0 0 0 2px var(--xl-violet); }
-  /* Quiz */
-  .quiz-q { background:var(--white); border:1px solid var(--xl-gray); border-radius:10px; padding:18px; margin-bottom:14px; }
-  .quiz-q .qnum { color:var(--violet); font-size:12px; font-weight:700; letter-spacing:2px; }
-  .quiz-q .qtxt { margin:8px 0 14px 0; font-size:15px; color:var(--dark); line-height:1.45; }
-  .quiz-opts { display:flex; flex-direction:column; gap:8px; }
-  .quiz-opt { background:var(--bg); border:1.5px solid var(--xl-gray); border-radius:6px; padding:10px 14px; cursor:pointer; font-size:13.5px; color:var(--dark); transition:all .15s; text-align:left; }
-  .quiz-opt:hover { border-color:var(--violet); background:var(--xl-violet); }
-  .quiz-opt.correct { background:#DCFCE7; border-color:var(--green); color:var(--green); font-weight:600; }
-  .quiz-opt.wrong { background:#FEE2E2; border-color:var(--red); color:#991B1B; }
-  .quiz-fb { margin-top:12px; padding:10px 12px; background:var(--bg); border-radius:6px; font-size:13px; color:var(--dark); border-left:3px solid var(--blue); display:none; line-height:1.5; }
-  .quiz-fb.show { display:block; }
-  .score { background:var(--dark); color:var(--white); padding:14px 18px; border-radius:8px; font-size:14px; margin-top:12px; display:flex; justify-content:space-between; align-items:center; }
-  .score .num { font-size:22px; font-weight:700; color:var(--l-violet); }
-  footer { background:var(--dark); color:var(--l-gray); text-align:center; padding:14px; font-size:11px; margin-top:32px; letter-spacing:1px; }
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#142033; --muted:#5b6879; --line:#d8dee6;
+  --accent:#0d7377; --accent-ink:#ffffff; --you:#b45309; --soft:#e2f0f0; --warn:#a33a2a; --ok:#15803d; --okbg:#e3f3e8; --nobg:#fbe9e6; --bar:#142033; --barfg:#e6ecf3;
+  --display:"Archivo","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --ok:#5fd08a; --okbg:#173a28; --nobg:#3d2020; --bar:#0a1019; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1621; --surface:#172132; --fg:#e6ecf3; --muted:#9aa8b9; --line:#2a3850;
+  --accent:#3db4be; --accent-ink:#06222a; --you:#f0a645; --soft:#173740; --warn:#ff8a73; --ok:#5fd08a; --okbg:#173a28; --nobg:#3d2020; --bar:#0a1019; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:18px/1.5 var(--body);overflow-x:hidden}
+header{background:var(--bar);color:var(--barfg);padding:16px 24px 0}
+header .top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;opacity:.85}
+header h1{font:800 28px/1.1 var(--display);font-stretch:112%;margin:8px 0 12px}
+header a{color:inherit}
+.tabs{display:flex;flex-wrap:wrap;gap:4px}
+.tab{font:700 15px/1 var(--display);background:transparent;color:var(--barfg);opacity:.75;border:0;border-radius:10px 10px 0 0;padding:14px 16px;cursor:pointer;min-height:0}
+.tab.active{background:var(--bg);color:var(--accent);opacity:1}
+main{max-width:1240px;margin:0 auto;padding:22px 24px 48px}
+.panel{display:none;gap:16px}
+.panel.active{display:grid}
+.panel h2{font:750 26px/1.15 var(--display);margin:0}
+.panel .lead{color:var(--muted);max-width:90ch;margin:0}
+.lay{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:22px;align-items:start}
+.lay.wide{grid-template-columns:minmax(0,1fr)}
+.lay>.sim{max-width:100%}
+.sim{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;min-width:0}
+.side{display:grid;gap:12px;align-content:start}
+.box{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:12px 14px;font-size:16px}
+.box.bio{border-left-color:var(--you)}
+.box b{color:var(--accent)} .box.bio b{color:var(--you)}
+button{font:700 16px/1 var(--display);border:0;border-radius:10px;padding:12px 16px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:44px}
+button.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+button:disabled{opacity:.45;cursor:default}
+select{font:500 16px var(--body);color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:8px;min-height:44px;width:100%}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media (max-width:980px){.lay{grid-template-columns:minmax(0,1fr)} .fs-lay{grid-template-columns:minmax(0,1fr)!important}}
+footer{font-size:13px;color:var(--muted);text-align:center;padding:18px}
+#tab-desenhe .sim,#tab-quebre .sim{max-width:760px}
+.hip{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}
+.hip h3{margin:0 0 8px;font:700 18px/1.2 var(--display)}
+.reveal{display:grid;gap:8px;font-size:20px}
+.reveal .crit{font:800 34px/1.1 var(--display);color:var(--warn)}
+@media (max-width:980px){.hip{grid-template-columns:minmax(0,1fr)}}
 </style>
 </head>
 <body>
-
 <header>
-  <div class="top">
-    <span class="course">Neurociência Computacional · Aula 9</span>
-    <span class="author">Daniel Y Takahashi · UFRN</span>
-  </div>
-  <h1>Memórias que se completam — Simulações Interativas</h1>
-  <div class="subtitle">Memória associativa ao vivo · Capacidade &amp; catástrofe · Paisagem de energia · Quiz · <a href="../aula09.html" style="color:inherit">atividades da Aula 9</a></div>
+  <div class="top"><span>Neurociência Computacional · Aula 9 (v4)</span><span>Daniel Y. Takahashi · UFRN</span></div>
+  <h1>Memórias que se completam · simulações</h1>
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="desenhe">1 · Desenhe e lembre</button>
+    <button class="tab" data-tab="hipocampo">2 · Hipocampo</button>
+    <button class="tab" data-tab="falsa">3 · Memória falsa</button>
+    <button class="tab" data-tab="quebre">4 · Quebre a memória</button>
+    <button class="tab" data-tab="anel">5 · Segurar uma informação</button>
+    <button class="tab" data-tab="atencao">6 · Extra: atenção</button>
+  </nav>
 </header>
+<main>
 
-<div class="tabs">
-  <button class="tab active" data-tab="recall">1. Memória ao vivo</button>
-  <button class="tab" data-tab="capacity">2. Capacidade &amp; catástrofe</button>
-  <button class="tab" data-tab="energy">3. Paisagem de energia</button>
-  <button class="tab" data-tab="quiz">4. Quiz de Hopfield</button>
-</div>
-
-<!-- ============================ TAB 1 ============================ -->
-<section class="panel active" id="tab-recall">
-  <h2>Memória associativa ao vivo: a rede completa o padrão</h2>
-  <div class="lead">Escolha uma das memórias armazenadas, corrompa-a com ruído (ou desenhe clicando nas células) e clique em <b>Recuperar</b>. Veja a dinâmica assíncrona <i>sᵢ ← sign(Σ wᵢⱼ sⱼ)</i> reconstruir o padrão e a energia descer monotonicamente até um atrator.</div>
-  <div class="layout">
-    <canvas id="cRec" class="click" width="640" height="640"></canvas>
+<section class="panel active" id="tab-desenhe">
+  <h2>Desenhe e lembre</h2>
+  <p class="lead">100 neurônios (grade 10 × 10; escuro = ligado), todos ligados com todos. Guardar: regra de Hebb (neurônios iguais nas memórias ficam ligados). Lembrar: cada neurônio, um de cada vez, segue o voto ponderado dos outros. Memórias: casa, coração e nota musical.</p>
+  <div class="lay"><div class="sim" id="simDesenhe"></div>
     <div class="side">
-      <h3>Controles</h3>
-      <div class="controls">
-        <div class="row"><label>Memórias armazenadas (clique para carregar)</label></div>
-        <div class="palette" id="recPalette"></div>
-        <div class="row"><label>Ruído a aplicar</label><span class="value" id="recNoiseV">25%</span></div>
-        <input type="range" id="recNoise" min="0" max="60" value="25">
-        <div class="btns">
-          <button class="btn amber" id="recCorrupt">⚡ Corromper</button>
-          <button class="btn" id="recRun">▶ Recuperar</button>
-          <button class="btn secondary" id="recStep">↦ 1 passo</button>
-        </div>
-        <div class="stat" id="recStat">iteração = 0<br>energia = 0.000<br>overlap: X=0.00 T=0.00 O=0.00 +=0.00</div>
-        <div class="row"><label>Velocidade da animação</label><span class="value" id="recSpeedV">médio</span></div>
-        <input type="range" id="recSpeed" min="1" max="60" value="20">
-      </div>
-      <div class="lesson">
-        <strong>O que observar:</strong> mesmo com muito ruído, a rede "rola para o vale" mais próximo e recupera a memória. O <strong>overlap</strong> com o padrão certo sobe para 1; a <strong>energia</strong> nunca aumenta (função de Lyapunov). Aplique ruído &gt; 40% e veja a rede às vezes cair na bacia <em>errada</em> ou num estado <em>espúrio</em> (o negativo de um padrão).
-      </div>
-    </div>
-  </div>
+      <div class="box"><b>Pergunte antes de tocar:</b> com 20% de ruído, volta? Com a metade de cima? Com 60%? Com um rabisco?</div>
+      <div class="box"><b>O que observar:</b> 20% e metade de cima → volta ao desenho. A energia só desce. 60% → não volta (em geral, cai no negativo). Rabisco → termina em algum vale: a rede não diz "não sei".</div>
+      <div class="box"><b>Desenhe:</b> toque nos pixels para desenhar uma pista, ou desenhe algo novo e toque em "Guardar este desenho".</div>
+    </div></div>
 </section>
 
-<!-- ============================ TAB 2 ============================ -->
-<section class="panel" id="tab-capacity">
-  <h2>Capacidade de armazenamento e a catástrofe em α ≈ 0,14</h2>
-  <div class="lead">A rede tem <b id="capNlbl">100</b> neurônios. Aumente o número de padrões aleatórios armazenados e meça quantos a rede consegue recuperar a partir de uma pista quase perfeita. Observe o colapso abrupto quando a carga <i>α = P/N</i> passa de ~0,14.</div>
-  <div class="layout">
-    <canvas id="cCap" width="760" height="500"></canvas>
+<section class="panel" id="tab-hipocampo">
+  <h2>O hipocampo faz igual?</h2>
+  <p class="lead">Esquerda: a mesma rede no papel de CA3; a "lesão" corta todas as ligações recorrentes. Direita: 2 mapas de 100 células de lugar (quadrado e círculo); a pista de cada caixa mistura os dois mapas na proporção da forma, com 10% de ruído (modelo).</p>
+  <div class="hip">
+    <div class="sim"><h3>CA3 com lesão</h3><div id="simLesao"></div></div>
+    <div class="sim"><h3>A caixa que muda de forma</h3><div id="simWills"></div></div>
+  </div>
+  <div class="box bio"><b>Biologia:</b> Gold &amp; Kesner (2005): com lesão de CA3, quanto menos marcos, mais erros. Nakazawa et al. (2002): sem receptores NMDA em CA3, a lembrança com pista parcial falha. Wills et al. (2005): em caixas intermediárias, as células de lugar do hipocampo trocam de mapa de uma vez, não aos poucos. Em CA3, as colaterais recorrentes ligam cada célula a muitas outras.</div>
+</section>
+
+<section class="panel" id="tab-falsa">
+  <h2>Memória falsa ao vivo</h2>
+  <p class="lead">Lista "Música" das normas brasileiras de Stein, Feix &amp; Rohenkohl (2006): 15 palavras, 1,5 s cada. Os alunos fazem o teste no celular (Atividade 4). Só depois revele.</p>
+  <div class="lay"><div class="sim" id="simFalsa"></div>
     <div class="side">
-      <h3>Controles</h3>
-      <div class="controls">
-        <div class="row"><label>N (neurônios)</label><span class="value" id="capNV">100</span></div>
-        <input type="range" id="capN" min="40" max="200" value="100" step="10">
-        <div class="row"><label>Padrões armazenados P</label><span class="value" id="capPV">14</span></div>
-        <input type="range" id="capP" min="1" max="60" value="14">
-        <div class="btns">
-          <button class="btn" id="capTest">▶ Testar este P</button>
-          <button class="btn green" id="capSweep">📈 Varrer todos os P</button>
-          <button class="btn secondary" id="capClear">↺ Limpar</button>
-        </div>
-        <div class="stat" id="capStat">α = 0.140 · P = 14 / N = 100<br>recuperação = —</div>
-      </div>
-      <div class="lesson">
-        <strong>O que observar:</strong> a curva fica perto de 100% enquanto <strong>α &lt; 0,14</strong> e despenca logo depois — a <strong>catástrofe da capacidade</strong>. A linha vermelha marca o limite teórico <strong>α<sub>c</sub> ≈ 0,138</strong> de Amit, Gutfreund &amp; Sompolinsky (1985). Aumente N: o número absoluto de memórias cresce, mas a razão crítica continua ~0,14.
-      </div>
-    </div>
-  </div>
+      <div class="box reveal" id="revelar"><button data-k="rev">Revelar</button></div>
+      <div class="box"><b>Na rede:</b> memórias parecidas cavam um vale no meio, que ninguém guardou (estado espúrio). É uma analogia.</div>
+    </div></div>
 </section>
 
-<!-- ============================ TAB 3 ============================ -->
-<section class="panel" id="tab-energy">
-  <h2>Paisagem de energia: a memória é um vale</h2>
-  <div class="lead">Cada passo da rede só pode <b>descer</b> na paisagem de energia. Solte a "bola" (estado inicial) em diferentes pontos e veja para qual atrator ela rola. Bacias diferentes levam a memórias diferentes — e existem mínimos <b>espúrios</b>.</div>
-  <div class="layout">
-    <canvas id="cEn" class="click" width="760" height="460"></canvas>
+<section class="panel" id="tab-quebre">
+  <h2>Quebre a memória</h2>
+  <p class="lead">Sete casos. Para cada um, peça a previsão da turma antes de tocar no botão. Esquerda: a rede boa; direita: a quebrada (mesma semente).</p>
+  <div class="lay"><div class="sim" id="simQuebre"></div>
     <div class="side">
-      <h3>Controles</h3>
-      <div class="controls">
-        <div class="row"><label>Clique na paisagem para soltar a bola</label></div>
-        <div class="btns">
-          <button class="btn" id="enDrop">⬇ Soltar no aleatório</button>
-          <button class="btn secondary" id="enReset">↺ Reiniciar</button>
-        </div>
-        <div class="row"><label>Atrito (suavidade da descida)</label><span class="value" id="enFricV">0.80</span></div>
-        <input type="range" id="enFric" min="50" max="97" value="80">
-        <div class="stat" id="enStat">energia = —<br>destino = —</div>
-      </div>
-      <div class="lesson">
-        <strong>Analogia da bola:</strong> o estado da rede é uma bola numa paisagem <i>E(s)</i>. A atualização assíncrona equivale a rolar ladeira abaixo até parar num <strong>mínimo local</strong>. Mínimos profundos (azul/âmbar/violeta) são as <strong>memórias</strong>; o mínimo cinza é um <strong>estado espúrio</strong>. A região em volta de cada mínimo é sua <strong>bacia de atração</strong>.
-      </div>
-    </div>
-  </div>
+      <div class="box"><b>a</b> 25 memórias em 100 neurônios: borrão (limite ≈ 0,14 × N, modelo). <b>b</b> coração, gato e peixe: o gato vira mistura. <b>c</b> maioria dos 3: para numa mistura. <b>d</b> ligações assimétricas: não para. <b>e</b> metade das ligações apagada: ainda lembra. <b>f</b> ruído alto: não se fixa. <b>g</b> pouco ruído: sai da mistura.</div>
+    </div></div>
 </section>
 
-<!-- ============================ TAB 4 ============================ -->
-<section class="panel" id="tab-quiz">
-  <h2>Quiz de Hopfield</h2>
-  <div class="lead">Dez perguntas para fixar os conceitos centrais. Escolha uma resposta e leia o feedback. Boa sorte!</div>
-  <div id="quizBox" class="layout one-col"></div>
-  <div class="score">Pontuação: <span><span class="num" id="quizScore">0</span> / <span id="quizTotal">10</span></span></div>
+<section class="panel" id="tab-anel">
+  <h2>Segurar uma informação: memória de trabalho</h2>
+  <p class="lead">48 neurônios num anel: excitação entre vizinhos, inibição de todos com todos, atividade limitada entre 0 e 1. Um ponto aparece numa de 8 posições por 0,4 s e some; atraso de 3 s (modelo).</p>
+  <div class="lay"><div class="sim" id="simAnel"></div>
+    <div class="side">
+      <div class="box"><b>O que observar:</b> fraca → a atividade some; na medida → uma bolha fica no lugar do ponto; forte demais → o anel inteiro acende e a posição se perde.</div>
+      <div class="box bio"><b>Biologia:</b> Funahashi, Bruce &amp; Goldman-Rakic (1989): neurônios do pré-frontal dorsolateral do macaco continuam disparando durante o atraso, e muitos "preferem" certas direções (8 posições, como aqui).</div>
+    </div></div>
 </section>
 
-<footer>Neurociência Computacional · Aula 9 — Modelos Conexionistas: Redes de Hopfield · Daniel Y Takahashi · Instituto do Cérebro · UFRN · 2026</footer>
+<section class="panel" id="tab-atencao">
+  <h2>Extra: a Hopfield moderna e a atenção</h2>
+  <p class="lead">Uma consulta puxa a memória mais parecida. Cada memória recebe um peso pela semelhança com a consulta (softmax); a saída é a média ponderada. Com nitidez baixa, sai uma média borrada; com nitidez alta, sai a memória mais parecida, limpa.</p>
+  <div class="lay"><div class="sim" id="simAtencao"></div>
+    <div class="side">
+      <div class="box"><b>Na IA de hoje:</b> a camada de atenção dos Transformers pode ser lida como um passo de lembrança de uma Hopfield moderna (Ramsauer et al., 2020).</div>
+    </div></div>
+</section>
 
-<script>
-/* ===================== util ===================== */
-function $(id){return document.getElementById(id);}
-document.querySelectorAll('.tab').forEach(t=>{
-  t.addEventListener('click',()=>{
-    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
-    t.classList.add('active');
-    $('tab-'+t.dataset.tab).classList.add('active');
-  });
-});
+</main>
+<footer>Hopfield (1982) · Roediger &amp; McDermott (1995) · Stein, Feix &amp; Rohenkohl (2006) · Funahashi et al. (1989) · Nakazawa et al. (2002) · Gold &amp; Kesner (2005) · Wills et al. (2005) · Ramsauer et al. (2020). Números das simulações: modelo. · <a href="../aula09.html">atividades no celular</a></footer>
 
-/* ===================== padrões (12x12) ===================== */
-const G=12, N=G*G;
-function mk(rows){ // rows: array of strings using '#'
-  const s=new Int8Array(N);
-  for(let r=0;r<G;r++)for(let c=0;c<G;c++){ s[r*G+c]= (rows[r] && rows[r][c]==='#')?1:-1; }
-  return s;
-}
-const PAT = {
-  X: mk(["#..........#","##........##",".##......##.","..##....##..","...##..##...","....####....","....####....","...##..##...","..##....##..",".##......##.","##........##","#..........#"]),
-  T: mk(["############","############",".....##.....",".....##.....",".....##.....",".....##.....",".....##.....",".....##.....",".....##.....",".....##.....",".....##.....",".....##....."]),
-  O: mk(["..######....","..########..",".##......##.","##........##","##........##","##........##","##........##","##........##","##........##",".##......##.","..########..","....######.."]),
-  H: mk(["##........##","##........##","##........##","##........##","##........##","############","############","##........##","##........##","##........##","##........##","##........##"]),
-};
-const PNAMES=Object.keys(PAT);        // ['X','T','O','H']
-const PATS=PNAMES.map(k=>PAT[k]);
+<script>/* hop_core.js */
+// Aula 9 (v4) — núcleo das simulações: rede de Hopfield (±1), anel de memória de trabalho e Hopfield moderna.
+// Sem dependências; funciona no navegador (window.HOP) e no Node (module.exports).
+(function (root) {
+  'use strict';
 
-/* ===================== rede de Hopfield ===================== */
-function buildW(pats){
-  const W=new Float32Array(N*N);
-  for(const p of pats){
-    for(let i=0;i<N;i++){ const pi=p[i];
-      for(let j=0;j<N;j++){ W[i*N+j]+= pi*p[j]; }
-    }
+  // ---------- sorteio com semente (mulberry32) ----------
+  function rng(seed) {
+    let a = (seed >>> 0) || 1;
+    return function () { a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
   }
-  for(let i=0;i<N;i++){ for(let j=0;j<N;j++){ W[i*N+j]/=N; } W[i*N+i]=0; }
-  return W;
-}
-function energy(W,s){
-  let e=0;
-  for(let i=0;i<N;i++){ let h=0; const row=i*N; for(let j=0;j<N;j++) h+=W[row+j]*s[j]; e-=0.5*h*s[i]; }
-  return e;
-}
-function overlap(s,p){ let o=0; for(let i=0;i<N;i++) o+=s[i]*p[i]; return o/N; }
-const Wrec=buildW(PATS);
+  function gauss(rnd) { let u = 0, v = 0; while (!u) u = rnd(); while (!v) v = rnd(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+  function perm(n, rnd) { const a = []; for (let i = 0; i < n; i++) a.push(i); for (let i = n - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function randPat(n, rnd) { const p = new Array(n); for (let i = 0; i < n; i++) p[i] = rnd() < 0.5 ? 1 : -1; return p; }
 
-/* ===================== TAB 1: recall ao vivo ===================== */
-(function(){
-  const cv=$('cRec'),ctx=cv.getContext('2d');
-  const cell=cv.width/G;
-  let state=Int8Array.from(PAT.X);
-  let target='X', iter=0, anim=null, order=[];
-  const COLG={X:'#1A56DB',T:'#B45309',O:'#6D28D9',H:'#15803D'};
-
-  function draw(){
-    ctx.clearRect(0,0,cv.width,cv.height);
-    for(let r=0;r<G;r++)for(let c=0;c<G;c++){
-      const v=state[r*G+c];
-      ctx.fillStyle = v>0 ? '#1E293B' : '#FFFFFF';
-      ctx.fillRect(c*cell,r*cell,cell,cell);
-      ctx.strokeStyle='#E2E8F0'; ctx.lineWidth=1;
-      ctx.strokeRect(c*cell,r*cell,cell,cell);
-    }
-  }
-  function stat(){
-    const e=energy(Wrec,state);
-    const ov=PNAMES.map(k=>overlap(state,PAT[k]).toFixed(2));
-    $('recStat').innerHTML=`iteração = ${iter}<br>energia = ${e.toFixed(3)}<br>overlap: X=${ov[0]} T=${ov[1]} O=${ov[2]} H=${ov[3]}`;
-  }
-  function load(name){
-    target=name; state=Int8Array.from(PAT[name]); iter=0;
-    document.querySelectorAll('#recPalette .pchip').forEach(ch=>ch.classList.toggle('sel',ch.dataset.k===name));
-    draw(); stat();
-  }
-  function corrupt(){
-    const frac=+$('recNoise').value/100;
-    const k=Math.round(frac*N);
-    const idx=[...Array(N).keys()]; for(let i=N-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
-    for(let i=0;i<k;i++) state[idx[i]]*=-1;
-    iter=0; draw(); stat();
-  }
-  function stepOnce(){
-    // uma varredura assíncrona completa em ordem aleatória
-    const idx=[...Array(N).keys()]; for(let i=N-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
-    let changed=0;
-    for(const i of idx){ let h=0; const row=i*N; for(let j=0;j<N;j++) h+=Wrec[row+j]*state[j];
-      const ns=h>=0?1:-1; if(ns!==state[i]){state[i]=ns;changed++;} }
-    iter++; draw(); stat();
-    return changed;
-  }
-  function run(){
-    if(anim) return;
-    const speed=+$('recSpeed').value;
-    const loop=()=>{ const ch=stepOnce(); if(ch===0||iter>40){ anim=null; return; }
-      anim=setTimeout(()=>requestAnimationFrame(loop), 320-5*speed); };
-    loop();
-  }
-  // palette chips
-  const pal=$('recPalette');
-  PNAMES.forEach(name=>{
-    const c=document.createElement('canvas'); c.width=c.height=42; c.className='pchip'; c.dataset.k=name;
-    const cc=c.getContext('2d'); const cs=42/G;
-    for(let r=0;r<G;r++)for(let c2=0;c2<G;c2++){ cc.fillStyle=PAT[name][r*G+c2]>0?COLG[name]:'#fff'; cc.fillRect(c2*cs,r*cs,cs,cs); }
-    c.addEventListener('click',()=>{ if(anim){clearTimeout(anim);anim=null;} load(name); });
-    pal.appendChild(c);
-  });
-  cv.addEventListener('click',e=>{
-    const rct=cv.getBoundingClientRect();
-    const x=(e.clientX-rct.left)*cv.width/rct.width, y=(e.clientY-rct.top)*cv.height/rct.height;
-    const c=Math.floor(x/cell), r=Math.floor(y/cell);
-    if(r>=0&&r<G&&c>=0&&c<G){ state[r*G+c]*=-1; draw(); stat(); }
-  });
-  $('recNoise').oninput=()=>$('recNoiseV').textContent=$('recNoise').value+'%';
-  $('recSpeed').oninput=()=>{const v=+$('recSpeed').value;$('recSpeedV').textContent=v<20?'lento':v<45?'médio':'rápido';};
-  $('recCorrupt').onclick=corrupt;
-  $('recRun').onclick=run;
-  $('recStep').onclick=()=>{ if(anim){clearTimeout(anim);anim=null;} stepOnce(); };
-  load('X');
-})();
-
-/* ===================== TAB 2: capacidade ===================== */
-(function(){
-  const cv=$('cCap'),ctx=cv.getContext('2d');
-  let results=[]; // {p, acc}
-  function randPat(n){ const s=new Int8Array(n); for(let i=0;i<n;i++)s[i]=Math.random()<0.5?1:-1; return s; }
-  function buildWn(pats,n){
-    const W=new Float32Array(n*n);
-    for(const p of pats) for(let i=0;i<n;i++){const pi=p[i],row=i*n; for(let j=0;j<n;j++) W[row+j]+=pi*p[j];}
-    for(let i=0;i<n;i++){for(let j=0;j<n;j++)W[i*n+j]/=n; W[i*n+i]=0;}
+  // ---------- guardar (Hebb) ----------
+  // w_ij = (1/N) Σ_μ ξ_i^μ ξ_j^μ, w_ii = 0. W é uma matriz N × N em Float64Array (linha i = entradas do neurônio i).
+  function hebb(pats, N) {
+    N = N || pats[0].length; const W = new Float64Array(N * N);
+    pats.forEach(p => { for (let i = 0; i < N; i++) { const pi = p[i] / N, r = i * N; for (let j = 0; j < N; j++) W[r + j] += pi * p[j]; } });
+    for (let i = 0; i < N; i++) W[i * N + i] = 0;
     return W;
   }
-  function recallN(W,s,n,steps){
-    s=Int8Array.from(s);
-    for(let t=0;t<steps;t++){ const idx=[...Array(n).keys()]; for(let i=n-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
-      for(const i of idx){let h=0,row=i*n;for(let j=0;j<n;j++)h+=W[row+j]*s[j]; s[i]=h>=0?1:-1;} }
-    return s;
-  }
-  function testP(n,P,trials){
-    let good=0;
-    for(let t=0;t<trials;t++){
-      const pats=[]; for(let k=0;k<P;k++) pats.push(randPat(n));
-      const W=buildWn(pats,n);
-      const tgt=pats[0]; const s=Int8Array.from(tgt);
-      const flip=Math.round(0.05*n);
-      const idx=[...Array(n).keys()]; for(let i=n-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
-      for(let i=0;i<flip;i++) s[idx[i]]*=-1;
-      const r=recallN(W,s,n,6);
-      let same=0; for(let i=0;i<n;i++) if(r[i]===tgt[i]) same++;
-      if(same/n>0.98) good++;
-    }
-    return good/trials;
-  }
-  function draw(){
-    const W=cv.width,H=cv.height, m={l:60,r:20,t:30,b:50};
-    ctx.clearRect(0,0,W,H);
-    const n=+$('capN').value;
-    const maxP=Math.max(60, Math.round(0.45*n));
-    // axes
-    ctx.strokeStyle='#94A3B8'; ctx.lineWidth=1.5;
-    ctx.beginPath(); ctx.moveTo(m.l,m.t); ctx.lineTo(m.l,H-m.b); ctx.lineTo(W-m.r,H-m.b); ctx.stroke();
-    const X=p=>m.l+(p/maxP)*(W-m.l-m.r);
-    const Y=a=>H-m.b-a*(H-m.t-m.b);
-    // gridlines + labels y
-    ctx.fillStyle='#64748B'; ctx.font='11px Consolas'; ctx.textAlign='right';
-    for(let a=0;a<=1.0001;a+=0.25){ ctx.strokeStyle='#E2E8F0'; ctx.beginPath(); ctx.moveTo(m.l,Y(a)); ctx.lineTo(W-m.r,Y(a)); ctx.stroke();
-      ctx.fillStyle='#64748B'; ctx.fillText((a*100).toFixed(0)+'%',m.l-6,Y(a)+4); }
-    // alpha_c line
-    const pc=0.138*n;
-    ctx.strokeStyle='#DC2626'; ctx.setLineDash([6,4]); ctx.lineWidth=2;
-    ctx.beginPath(); ctx.moveTo(X(pc),m.t); ctx.lineTo(X(pc),H-m.b); ctx.stroke(); ctx.setLineDash([]);
-    ctx.fillStyle='#DC2626'; ctx.textAlign='left'; ctx.font='bold 12px Segoe UI';
-    ctx.fillText('αc ≈ 0,14  (P='+pc.toFixed(0)+')', X(pc)+6, m.t+14);
-    // x labels
-    ctx.fillStyle='#64748B'; ctx.font='11px Consolas'; ctx.textAlign='center';
-    for(let p=0;p<=maxP;p+=Math.round(maxP/6)){ ctx.fillText(p, X(p), H-m.b+16); }
-    ctx.fillStyle='#1E293B'; ctx.font='13px Segoe UI';
-    ctx.fillText('Padrões armazenados  P', (m.l+W-m.r)/2, H-12);
-    ctx.save(); ctx.translate(16,(m.t+H-m.b)/2); ctx.rotate(-Math.PI/2); ctx.fillText('Fração recuperada',0,0); ctx.restore();
-    // results
-    if(results.length){
-      ctx.strokeStyle='#6D28D9'; ctx.lineWidth=2.5; ctx.beginPath();
-      results.forEach((d,i)=>{ const x=X(d.p),y=Y(d.acc); if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y); });
-      ctx.stroke();
-      results.forEach(d=>{ ctx.fillStyle = d.p/n<=0.138?'#15803D':'#DC2626'; ctx.beginPath(); ctx.arc(X(d.p),Y(d.acc),4,0,7); ctx.fill(); });
-    } else {
-      ctx.fillStyle='#94A3B8'; ctx.font='14px Segoe UI'; ctx.textAlign='center';
-      ctx.fillText('Clique em "Testar este P" ou "Varrer todos os P" para gerar a curva.', W/2, H/2);
-    }
-  }
-  function syncLbls(){ const n=+$('capN').value,P=+$('capP').value;
-    $('capNV').textContent=n; $('capPV').textContent=P; $('capNlbl').textContent=n;
-    $('capStat').innerHTML=`α = ${(P/n).toFixed(3)} · P = ${P} / N = ${n}<br>recuperação = —`; }
-  $('capN').oninput=()=>{ results=[]; $('capP').max=Math.max(60,Math.round(0.45*+$('capN').value)); syncLbls(); draw(); };
-  $('capP').oninput=()=>{ const n=+$('capN').value,P=+$('capP').value;
-    $('capPV').textContent=P; $('capStat').innerHTML=`α = ${(P/n).toFixed(3)} · P = ${P} / N = ${n}<br>recuperação = —`; };
-  $('capTest').onclick=()=>{ const n=+$('capN').value,P=+$('capP').value; const acc=testP(n,P,30);
-    results=results.filter(d=>d.p!==P); results.push({p:P,acc}); results.sort((a,b)=>a.p-b.p);
-    $('capStat').innerHTML=`α = ${(P/n).toFixed(3)} · P = ${P} / N = ${n}<br>recuperação = ${(acc*100).toFixed(0)}%`; draw(); };
-  $('capSweep').onclick=()=>{ const n=+$('capN').value; const maxP=Math.max(60,Math.round(0.45*n));
-    results=[]; for(let P=1;P<=maxP;P+=Math.max(1,Math.round(maxP/24))){ results.push({p:P,acc:testP(n,P,18)}); } draw(); };
-  $('capClear').onclick=()=>{ results=[]; syncLbls(); draw(); };
-  syncLbls(); draw();
-})();
+  const size = (W) => Math.round(Math.sqrt(W.length));
+  function field(W, s, i) { const N = s.length, r = i * N; let h = 0; for (let j = 0; j < N; j++) h += W[r + j] * s[j]; return h; }
+  function energy(W, s) { const N = s.length; let e = 0; for (let i = 0; i < N; i++) e += s[i] * field(W, s, i); return -0.5 * e; }
+  function overlap(a, b) { let o = 0; for (let i = 0; i < a.length; i++) o += a[i] * b[i]; return o / a.length; }
+  function corr(a, b) { const n = a.length; let ma = 0, mb = 0; for (let i = 0; i < n; i++) { ma += a[i]; mb += b[i]; } ma /= n; mb /= n;
+    let s = 0, sa = 0, sb = 0; for (let i = 0; i < n; i++) { s += (a[i] - ma) * (b[i] - mb); sa += (a[i] - ma) ** 2; sb += (b[i] - mb) ** 2; } return sa && sb ? s / Math.sqrt(sa * sb) : 0; }
+  const same = (a, b) => a.every((v, i) => v === b[i]);
 
-/* ===================== TAB 3: paisagem de energia ===================== */
-(function(){
-  const cv=$('cEn'),ctx=cv.getContext('2d');
-  const W=cv.width,H=cv.height, m={l:40,r:20,t:20,b:40};
-  // mínimos: x0 (posição), prof (profundidade), largura, cor, rótulo
-  const wells=[
-    {x:0.16,d:2.4,w:0.06,c:'#1A56DB',lbl:"memória 'X'"},
-    {x:0.40,d:1.4,w:0.05,c:'#64748B',lbl:'espúrio'},
-    {x:0.62,d:2.6,w:0.06,c:'#B45309',lbl:"memória 'T'"},
-    {x:0.86,d:2.2,w:0.05,c:'#6D28D9',lbl:"memória 'O'"},
-  ];
-  function E(t){ let e=0.6*(t-0.5)*(t-0.5); for(const w of wells) e-=w.d*Math.exp(-((t-w.x)**2)/(2*w.w*w.w)); return e; }
-  function dE(t){ const h=1e-3; return (E(t+h)-E(t-h))/(2*h); }
-  let emin=1e9,emax=-1e9; for(let i=0;i<=400;i++){const t=i/400;const e=E(t);emin=Math.min(emin,e);emax=Math.max(emax,e);}
-  const X=t=>m.l+t*(W-m.l-m.r);
-  const Y=e=>m.t+(e-emin)/(emax-emin+0.5)*(H-m.t-m.b);
-  let ball=null, vel=0, anim=null, dest='—';
+  // ---------- pistas ----------
+  function flip(p, frac, rnd) { const s = p.slice(), k = Math.round(frac * p.length); perm(p.length, rnd).slice(0, k).forEach(i => { s[i] = -s[i]; }); return s; }
+  // metade apagada: os pixels apagados ficam 0 ("não sei"), desenhados em cinza
+  function erase(p, part) { const n = p.length, w = Math.round(Math.sqrt(n)); return p.map((v, i) => { const r = Math.floor(i / w), c = i % w;
+    const keep = part === 'cima' ? r < w / 2 : part === 'baixo' ? r >= w / 2 : part === 'esq' ? c < w / 2 : c >= w / 2; return keep ? v : 0; }); }
 
-  function drawCurve(){
-    ctx.clearRect(0,0,W,H);
-    // fill under
-    ctx.beginPath(); ctx.moveTo(X(0),Y(E(0)));
-    for(let i=0;i<=400;i++){const t=i/400; ctx.lineTo(X(t),Y(E(t)));}
-    ctx.lineTo(X(1),H-m.b); ctx.lineTo(X(0),H-m.b); ctx.closePath();
-    ctx.fillStyle='#F1F5F9'; ctx.fill();
-    // curve
-    ctx.beginPath(); ctx.moveTo(X(0),Y(E(0)));
-    for(let i=0;i<=400;i++){const t=i/400; ctx.lineTo(X(t),Y(E(t)));}
-    ctx.strokeStyle='#1E293B'; ctx.lineWidth=2.5; ctx.stroke();
-    // wells markers
-    wells.forEach(w=>{ ctx.fillStyle=w.c; ctx.beginPath(); ctx.arc(X(w.x),Y(E(w.x)),7,0,7); ctx.fill();
-      ctx.fillStyle=w.c; ctx.font='bold 11px Segoe UI'; ctx.textAlign='center'; ctx.fillText(w.lbl,X(w.x),Y(E(w.x))+24); });
-    // axes labels
-    ctx.fillStyle='#1E293B'; ctx.font='13px Segoe UI'; ctx.textAlign='center';
-    ctx.fillText('Estado da rede  (espaço de configurações)', W/2, H-10);
-    ctx.save(); ctx.translate(14,H/2); ctx.rotate(-Math.PI/2); ctx.fillText('Energia E', 0,0); ctx.restore();
-    // ball
-    if(ball!==null){ ctx.fillStyle='#0F172A'; ctx.beginPath(); ctx.arc(X(ball),Y(E(ball))-8,10,0,7); ctx.fill();
-      ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.stroke(); }
-  }
-  function nearest(t){ let best=wells[0],bd=9; for(const w of wells){const d=Math.abs(w.x-t); if(d<bd){bd=d;best=w;}} return best; }
-  function roll(){
-    if(anim) cancelAnimationFrame(anim);
-    const fric=+$('enFric').value/100;
-    vel=0;
-    const loop=()=>{
-      // descida de gradiente com momento (atrito):
-      vel = vel*fric - 0.025*dE(ball);
-      ball+=vel; if(ball<0.01){ball=0.01;vel*=-0.3;} if(ball>0.99){ball=0.99;vel*=-0.3;}
-      drawCurve();
-      $('enStat').innerHTML=`energia = ${E(ball).toFixed(3)}<br>destino = ${dest}`;
-      if(Math.abs(vel)<1e-4 && Math.abs(dE(ball))<0.02){ const w=nearest(ball); dest=w.lbl;
-        $('enStat').innerHTML=`energia = ${E(ball).toFixed(3)}<br>destino = <b style="color:${w.c}">${w.lbl}</b>`; drawCurve(); return; }
-      anim=requestAnimationFrame(loop);
+  // ---------- modificações das ligações (Atividade 5) ----------
+  // dilui: zera ao acaso a fração f dos pares (i, j), mantendo a simetria
+  function dilute(W, f, rnd) { const N = size(W), V = Float64Array.from(W);
+    for (let i = 0; i < N; i++) for (let j = i + 1; j < N; j++) if (rnd() < f) { V[i * N + j] = 0; V[j * N + i] = 0; } return V; }
+  // assimetria: soma uma parte antissimétrica ao acaso (a_ij = −a_ji), de tamanho k (em unidades de 1/√N)
+  function asym(W, k, rnd) { const N = size(W), V = Float64Array.from(W), sc = k / Math.sqrt(N);
+    for (let i = 0; i < N; i++) for (let j = i + 1; j < N; j++) { const a = gauss(rnd) * sc; V[i * N + j] += a; V[j * N + i] -= a; } return V; }
+  const zeros = (N) => new Float64Array(N * N);
+
+  // ---------- lembrar ----------
+  // Runner: atualização assíncrona (um neurônio por vez, ordem sorteada a cada varredura) ou síncrona (todos juntos),
+  // com temperatura opcional (regra de Glauber: P(+1) = 1 / (1 + e^(−2h/T))). Regra determinística: h > 0 → +1, h < 0 → −1, h = 0 → mantém.
+  function Runner(W, s0, opt) {
+    opt = opt || {};
+    const N = s0.length, rnd = opt.rnd || rng(opt.seed || 1), T = opt.T || 0, sync = !!opt.sync;
+    const R = { s: s0.slice(), t: 0, sweeps: 0, changesInSweep: 0, lastChanged: -1, E: [energy(W, s0)], hist: [s0.slice()], stableSweeps: 0 };
+    let order = perm(N, rnd), k = 0;
+    const decide = (h, cur) => { if (T > 0) return rnd() < 1 / (1 + Math.exp(-2 * h / T)) ? 1 : -1; return h > 0 ? 1 : h < 0 ? -1 : cur; };
+    R.step = function () { // um neurônio (assíncrona) ou uma rodada inteira (síncrona)
+      if (sync) { const h = R.s.map((_, i) => field(W, R.s, i)), ns = h.map((v, i) => decide(v, R.s[i]));
+        const ch = ns.reduce((a, v, i) => a + (v !== R.s[i]), 0); R.s = ns; R.t += N; R.sweeps++; R.lastChanged = ch; R.stableSweeps = ch ? 0 : R.stableSweeps + 1;
+        R.E.push(energy(W, R.s)); R.hist.push(R.s.slice()); return ch > 0; }
+      const i = order[k++]; const v = decide(field(W, R.s, i), R.s[i]); const ch = v !== R.s[i]; R.s[i] = v; R.t++; R.lastChanged = ch ? i : -1;
+      if (ch) R.changesInSweep++;
+      if (k >= N) { R.sweeps++; R.stableSweeps = R.changesInSweep ? 0 : R.stableSweeps + 1; R.changesInSweep = 0; k = 0; order = perm(N, rnd); R.hist.push(R.s.slice()); }
+      R.E.push(energy(W, R.s)); return ch;
     };
-    loop();
+    R.sweep = function () { if (sync) return R.step(); const s0 = R.sweeps; while (R.sweeps === s0) R.step(); return R.stableSweeps === 0; };
+    R.stable = function () { if (T > 0) return false; for (let i = 0; i < N; i++) { const h = field(W, R.s, i); const v = h > 0 ? 1 : h < 0 ? -1 : R.s[i]; if (v !== R.s[i]) return false; } return true; };
+    R.run = function (maxSweeps) { maxSweeps = maxSweeps || 50; while (R.sweeps < maxSweeps) { R.sweep(); if (T === 0 && R.stable() && !R.s.includes(0)) break; } return R; };
+    return R;
   }
-  cv.addEventListener('click',e=>{ const r=cv.getBoundingClientRect();
-    const x=(e.clientX-r.left)*cv.width/r.width; ball=Math.min(0.99,Math.max(0.01,(x-m.l)/(W-m.l-m.r))); dest='rolando…'; drawCurve(); roll(); });
-  $('enDrop').onclick=()=>{ ball=0.03+Math.random()*0.94; dest='rolando…'; drawCurve(); roll(); };
-  $('enReset').onclick=()=>{ if(anim)cancelAnimationFrame(anim); ball=null; dest='—'; $('enStat').innerHTML='energia = —<br>destino = —'; drawCurve(); };
-  $('enFric').oninput=()=>$('enFricV').textContent=(+$('enFric').value/100).toFixed(2);
-  drawCurve();
-})();
+  function settle(W, s, opt) { return Runner(W, s, opt).run((opt && opt.maxSweeps) || 50); }
 
-/* ===================== TAB 4: quiz ===================== */
-(function(){
-  const Q=[
-    {q:"O que torna a rede de Hopfield uma memória 'endereçada por conteúdo'?",
-     o:["Cada memória tem um endereço numérico único","Uma pista parcial ou ruidosa recupera o padrão completo","Os pesos guardam os índices dos padrões","Ela usa uma tabela hash interna"],
-     a:1,f:"Diferente da RAM (endereço por posição), a rede recupera o padrão inteiro a partir de um fragmento — isso é endereçamento por conteúdo."},
-    {q:"Qual condição sobre os pesos garante a existência de uma função de energia?",
-     o:["wᵢⱼ ≥ 0 (pesos positivos)","wᵢⱼ = wⱼᵢ (simetria)","Σⱼ wᵢⱼ = 1 (normalização)","wᵢᵢ = 1 (auto-conexão)"],
-     a:1,f:"A simetria wᵢⱼ = wⱼᵢ é o que permite construir a função de energia de Lyapunov E = −½ Σ wᵢⱼ sᵢ sⱼ."},
-    {q:"Como os padrões são armazenados na rede de Hopfield clássica?",
-     o:["Por retropropagação iterativa do erro","Por gradiente descendente com mini-lotes","Pela regra Hebbiana: W = (1/N) Σ ξξᵀ (one-shot)","Por k-means sobre os padrões"],
-     a:2,f:"O armazenamento é Hebbiano e instantâneo: cada padrão contribui com seu produto externo ξξᵀ, sem iteração."},
-    {q:"Durante a recuperação assíncrona, o que acontece com a energia?",
-     o:["Pode subir ou descer aleatoriamente","Nunca aumenta (ΔE ≤ 0)","Aumenta até estabilizar","Permanece constante"],
-     a:1,f:"Atualizando um neurônio por vez, cada mudança só reduz (ou mantém) a energia. Como E é limitada por baixo, a rede converge."},
-    {q:"O que é um atrator na rede de Hopfield?",
-     o:["Um neurônio com peso máximo","Um mínimo local da energia para onde o estado converge","O padrão com maior overlap inicial","A taxa de aprendizado ótima"],
-     a:1,f:"Cada memória é um mínimo de energia (atrator) com uma bacia de atração ao seu redor."},
-    {q:"Qual é a capacidade aproximada de armazenamento de uma rede de Hopfield com N neurônios?",
-     o:["~N² padrões","~N padrões","~0,14 N padrões","~log N padrões"],
-     a:2,f:"O resultado de Amit, Gutfreund & Sompolinsky (1985): a capacidade crítica é αc ≈ 0,138, ou seja ~0,14 N padrões."},
-    {q:"O que é a 'catástrofe da capacidade'?",
-     o:["A rede esquece o padrão mais antigo a cada novo","Acima de α ≈ 0,14 a recuperação colapsa abruptamente","Os pesos divergem para infinito","A energia deixa de ser limitada"],
-     a:1,f:"Quando a carga ultrapassa ~0,14, os estados espúrios (frustrados) dominam e a recuperação despenca de forma abrupta."},
-    {q:"Um 'estado espúrio' é:",
-     o:["Um padrão de treino corrompido","Um mínimo de energia que não corresponde a nenhuma memória armazenada","Um neurônio com wᵢᵢ ≠ 0","O estado de energia máxima"],
-     a:1,f:"Estados espúrios são mínimos indesejados — complementos (−ξ), misturas de padrões ou estados frustrados da interferência."},
-    {q:"O que a Boltzmann Machine acrescenta à rede de Hopfield?",
-     o:["Neurônios estocásticos controlados por temperatura T","Pesos assimétricos","Camadas convolucionais","Conexões de auto-reforço"],
-     a:0,f:"A Boltzmann Machine torna os neurônios estocásticos (probabilidade sigmoide com temperatura T), permitindo escapar de mínimos locais."},
-    {q:"Por que a região CA3 do hipocampo é associada à rede de Hopfield?",
-     o:["Por ter poucos neurônios","Por suas extensas conexões recorrentes entre neurônios","Por não ter plasticidade","Por processar apenas estímulos visuais"],
-     a:1,f:"CA3 tem um sistema de colaterais recorrentes muito desenvolvido, que forma uma única rede (Rolls, 2023, seção 9.1.2) — a arquitetura de Hopfield. Marr (1971) já propunha que uma rede assim completasse padrões (pattern completion)."},
-  ];
-  const box=$('quizBox'); let score=0; const answered=new Array(Q.length).fill(false);
-  $('quizTotal').textContent=Q.length;
-  Q.forEach((item,qi)=>{
-    const d=document.createElement('div'); d.className='quiz-q';
-    d.innerHTML=`<div class="qnum">PERGUNTA ${qi+1}</div><div class="qtxt">${item.q}</div>`;
-    const opts=document.createElement('div'); opts.className='quiz-opts';
-    item.o.forEach((opt,oi)=>{
-      const b=document.createElement('button'); b.className='quiz-opt'; b.textContent=opt;
-      b.onclick=()=>{
-        if(answered[qi]) return; answered[qi]=true;
-        const all=opts.querySelectorAll('.quiz-opt');
-        all[item.a].classList.add('correct');
-        if(oi!==item.a) b.classList.add('wrong'); else score++;
-        $('quizScore').textContent=score;
-        fb.classList.add('show');
-      };
-      opts.appendChild(b);
-    });
-    const fb=document.createElement('div'); fb.className='quiz-fb'; fb.textContent='💡 '+item.f;
-    d.appendChild(opts); d.appendChild(fb); box.appendChild(d);
-  });
+  // classifica o estado final em relação às memórias guardadas
+  function classify(s, pats, names) {
+    const ms = pats.map(p => overlap(s, p)); let best = 0; ms.forEach((m, i) => { if (Math.abs(m) > Math.abs(ms[best])) best = i; });
+    const m = ms[best], nm = names ? names[best] : String(best);
+    if (m >= 0.98) return { tipo: 'memoria', idx: best, nome: nm, m, ms };
+    if (m <= -0.98) return { tipo: 'negativo', idx: best, nome: nm, m, ms };
+    return { tipo: 'mistura', idx: best, nome: nm, m, ms };
+  }
+
+  // ---------- anel de memória de trabalho (Atividade 6) ----------
+  // n neurônios de taxa num anel; excitação local (gaussiana, largura sig) com ganho g; inibição global fixa;
+  // r = f(entrada) com f saturando em 1. Estímulo: um "ponto" numa de 8 posições durante cueT; depois some (atraso).
+  function Ring(opt) {
+    opt = Object.assign({ n: 48, g: 1, sig: 0.35, inh: 0.55, tau: 10, dt: 1, noise: 0.03, seed: 1, theta: 0.3, cueAmp: 1.2 }, opt || {});
+    const n = opt.n, rnd = rng(opt.seed), K = new Float64Array(n * n);
+    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) { if (i === j) continue; let d = Math.abs(i - j); d = Math.min(d, n - d) * 2 * Math.PI / n;
+      K[i * n + j] = Math.exp(-d * d / (2 * opt.sig * opt.sig)); }
+    const ksum = K.slice(0, n).reduce((a, b) => a + b, 0);
+    const R = { n, r: new Float64Array(n), t: 0, opt, hist: [] };
+    const f = (x) => x <= 0 ? 0 : Math.min(1, x); // linear com limiar e saturação
+    R.posAngle = (p) => p / 8 * 2 * Math.PI;
+    R.step = function (cuePos) {
+      const r = R.r, out = new Float64Array(n), tot = r.reduce((a, b) => a + b, 0);
+      for (let i = 0; i < n; i++) {
+        let e = 0; for (let j = 0; j < n; j++) e += K[i * n + j] * r[j];
+        let I = opt.g * e / ksum * 4 - opt.inh * tot / n * 4 - opt.theta;
+        if (cuePos !== null && cuePos !== undefined) { const th = 2 * Math.PI * i / n, c = R.posAngle(cuePos); let d = Math.abs(th - c); d = Math.min(d, 2 * Math.PI - d); I += opt.cueAmp * Math.exp(-d * d / (2 * 0.25 * 0.25)); }
+        I += opt.noise * gauss(rnd);
+        out[i] = r[i] + opt.dt / opt.tau * (-r[i] + f(I));
+      }
+      R.r = out; R.t++; R.hist.push(Float64Array.from(out)); return out;
+    };
+    // decodifica a posição pelo vetor de população; devolve {pos (0–8, contínua), amp (atividade média), width (fração ativa)}
+    R.read = function () { let x = 0, y = 0, s = 0, act = 0; for (let i = 0; i < n; i++) { const th = 2 * Math.PI * i / n; x += R.r[i] * Math.cos(th); y += R.r[i] * Math.sin(th); s += R.r[i]; if (R.r[i] > 0.5) act++; }
+      let a = Math.atan2(y, x); if (a < 0) a += 2 * Math.PI; return { pos: a / (2 * Math.PI) * 8, amp: s / n, frac: act / n, conc: s ? Math.hypot(x, y) / s : 0 }; };
+    return R;
+  }
+  // um ensaio completo: pré (pre passos) → ponto (cue passos) → atraso (delay passos)
+  function ringTrial(opt, pos, T) { T = Object.assign({ pre: 20, cue: 40, delay: 300 }, T || {}); const R = Ring(opt);
+    for (let t = 0; t < T.pre; t++) R.step(null); for (let t = 0; t < T.cue; t++) R.step(pos); const endCue = R.read();
+    for (let t = 0; t < T.delay; t++) R.step(null); return { R, endCue, end: R.read() }; }
+  const posErr = (a, b) => { let d = Math.abs(a - b) % 8; return Math.min(d, 8 - d); };
+
+  // ---------- Hopfield moderna / atenção (extra do projetor) ----------
+  // nova consulta = Σ_μ softmax(β · semelhança)_μ · ξ^μ (semelhança = sobreposição com cada memória)
+  function softmax(z, beta) { const m = Math.max(...z.map(v => beta * v)); const e = z.map(v => Math.exp(beta * v - m)); const s = e.reduce((a, b) => a + b, 0); return e.map(v => v / s); }
+  function modern(pats, q, beta) { const sim = pats.map(p => overlap(q, p)), w = softmax(sim, beta), N = q.length, out = new Array(N).fill(0);
+    pats.forEach((p, k) => { for (let i = 0; i < N; i++) out[i] += w[k] * p[i]; }); return { sim, w, out }; }
+
+  const HOP = { rng, gauss, perm, randPat, hebb, field, energy, overlap, corr, same, flip, erase, dilute, asym, zeros, Runner, settle, classify, Ring, ringTrial, posErr, softmax, modern };
+  root.HOP = HOP;
+  if (typeof module !== 'undefined') module.exports = HOP;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>/* desenhos.js */
+// Aula 9 (v4) — desenhos 10 × 10 (100 neurônios; '#' = ligado/preto = +1, '.' = desligado/branco = −1).
+// Fonte: fontes/figs_aula9v4/desenhos_10x10.json (o mesmo das figuras dos slides; gerado por make_aula9_v4_figs.py).
+// Cópia idêntica em site_neurocomputacional/simulacoes/desenhos.js. Conferido em fontes/test_a9v4.py:
+// os 3 da Atividade 2 (casa, coração, nota musical) têm |r| ≤ 0,10 entre si; o trio "parecido" da Atividade 5 b
+// é coração, gato e peixe (coração × gato r = 0,60; coração × peixe 0,54; gato × peixe 0,45). Evitar árvore como desenho principal.
+(function (root) {
+  const D = {
+    casa: { nome: 'casa', px: [
+      '....##....',
+      '...####...',
+      '..######..',
+      '.########.',
+      '##########',
+      '.#......#.',
+      '.#.##...#.',
+      '.#.##.#.#.',
+      '.#.##...#.',
+      '.########.'] },
+    coracao: { nome: 'coração', px: [
+      '..........',
+      '.##....##.',
+      '####..####',
+      '##########',
+      '##########',
+      '.########.',
+      '..######..',
+      '...####...',
+      '....##....',
+      '..........'] },
+    arvore: { nome: 'árvore', px: [
+      '....##....',
+      '...####...',
+      '..######..',
+      '.########.',
+      '..######..',
+      '.########.',
+      '##########',
+      '....##....',
+      '....##....',
+      '...####...'] },
+    gato: { nome: 'gato', px: [
+      '.#......#.',
+      '.##....##.',
+      '.########.',
+      '##.####.##',
+      '##########',
+      '###.##.###',
+      '.########.',
+      '..######..',
+      '...#..#...',
+      '..........'] },
+    guarda_chuva: { nome: 'guarda-chuva', px: [
+      '....##....',
+      '..######..',
+      '.########.',
+      '##########',
+      '#.#.##.#.#',
+      '....##....',
+      '....##....',
+      '....##....',
+      '.#..##....',
+      '..##......'] },
+    nota: { nome: 'nota musical', px: [
+      '.....####.',
+      '.....#####',
+      '.....#..##',
+      '.....#....',
+      '.....#....',
+      '.....#....',
+      '..####....',
+      '.#####....',
+      '.#####....',
+      '..###.....'] },
+    sol: { nome: 'sol', px: [
+      '#...##...#',
+      '.#......#.',
+      '...####...',
+      '..######..',
+      '#.######.#',
+      '#.######.#',
+      '..######..',
+      '...####...',
+      '.#......#.',
+      '#...##...#'] },
+    peixe: { nome: 'peixe', px: [
+      '..........',
+      '..####....',
+      '.######..#',
+      '########.#',
+      '##.#######',
+      '##########',
+      '########.#',
+      '.######..#',
+      '..####....',
+      '..........'] },
+  };
+  Object.keys(D).forEach(k => { D[k].id = k; D[k].v = D[k].px.join('').split('').map(c => c === '#' ? 1 : -1); });
+  root.DESENHOS = D;
+  if (typeof module !== 'undefined') module.exports = D;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>/* a9v4_lib.js */
+// Aula 9 (v4) — cenários das atividades (sem desenho na tela). Depende de hop_core.js e desenhos.js.
+// A página do celular, o projetor e o teste (test_a9v4.py) usam estas mesmas funções: o que o teste confere é o que o aluno vê.
+(function (root) {
+  'use strict';
+  const H = root.HOP, D = root.DESENHOS;
+  const pat = (k) => D[k].v.slice();
+
+  // ---------- Atividade 2: as 3 memórias (casa, coração, nota musical: |r| ≤ 0,10 entre si) ----------
+  const A2 = { nomes: ['casa', 'coracao', 'nota'], seed: 1 };
+  A2.pats = () => A2.nomes.map(pat);
+  A2.W = () => H.hebb(A2.pats());
+  // pistas reproduzíveis: o sorteio depende da semente e do tipo de pista
+  const KIND = { ruido: 11, metade: 23, rabisco: 37 };
+  function cue(kind, p, opt, seed) {
+    const rnd = H.rng(seed * 1009 + (KIND[kind] || 1) + Math.round(100 * (opt.frac || 0)));
+    if (kind === 'ruido') return H.flip(p, opt.frac, rnd);
+    if (kind === 'metade') return H.erase(p, 'cima');
+    if (kind === 'rabisco') return H.randPat(p.length, rnd);
+    return p.slice();
+  }
+  // lembra até parar (ou até maxSweeps); devolve o Runner (estado final em R.s, energia em R.E)
+  const recall = (W, s, seed, opt) => H.Runner(W, s, Object.assign({ seed: seed * 7919 + 1 }, opt || {})).run((opt && opt.maxSweeps) || 50);
+
+  // ---------- Atividade 3 (i): lesão de CA3 = todas as ligações recorrentes cortadas ----------
+  // ---------- Atividade 3 (ii): caixa que muda de forma (Wills et al., 2005; modelo) ----------
+  // 2 mapas de 100 células de lugar (±1 ao acaso, ≈ 1/3 das células trocam entre os mapas).
+  // Pista da forma λ (0 = quadrado … 1 = círculo): nas células em que os mapas diferem, cada uma segue o círculo com probabilidade λ; 10% de ruído.
+  const WILLS = { N: 100, seed: 2005, formas: ['quadrado', '', '', 'meio do caminho', '', '', 'círculo'] };
+  WILLS.maps = (seed) => { const r = H.rng(seed || WILLS.seed); const Q = H.randPat(WILLS.N, r), C = Q.map(v => r() < 1 / 3 ? -v : v); return { Q, C, W: H.hebb([Q, C]) }; };
+  WILLS.cue = (M, lam, rnd) => M.Q.map((v, i) => { let x = v === M.C[i] ? v : (rnd() < lam ? M.C[i] : v); return rnd() < 0.1 ? -x : x; });
+  WILLS.trial = (M, j, rnd) => { const lam = j / 6, c = WILLS.cue(M, lam, rnd), R = H.Runner(M.W, c, { rnd }).run(40);
+    const mq = H.overlap(R.s, M.Q), mc = H.overlap(R.s, M.C); return { cue: c, s: R.s, R, cq: H.overlap(c, M.Q), cc: H.overlap(c, M.C), mq, mc, mapa: mq >= 0.98 ? 'Q' : mc >= 0.98 ? 'C' : 'outro' }; };
+  WILLS.sweep = (M, n, seed) => { const rnd = H.rng(seed || 1); const out = []; for (let j = 0; j <= 6; j++) { let q = 0, c = 0, o = 0, cue = 0;
+    for (let t = 0; t < n; t++) { const x = WILLS.trial(M, j, rnd); cue += (1 + x.cq) / 2; if (x.mapa === 'Q') q++; else if (x.mapa === 'C') c++; else o++; }
+    out.push({ j, q: q / n, c: c / n, outro: o / n, cue: cue / n }); } return out; };
+
+  // ---------- Atividade 4: lista DRM (para trocar de lista, troque só este objeto) ----------
+  const DRM = {
+    fonte: 'Lista "Música" das normas brasileiras de Stein, Feix & Rohenkohl (2006), Anexo A (reconhecimento falso de 81% nas normas)',
+    critica: 'música',
+    lista: ['som', 'dança', 'disco', 'ritmo', 'melodia', 'cantor', 'letra', 'rádio', 'violão', 'instrumentos', 'notas', 'harmonia', 'ouvir', 'voz', 'guitarra'],
+    // teste de reconhecimento: s = estudada, x = crítica (não vale ponto), n = não relacionada
+    teste: [['som', 's'], ['janela', 'n'], ['rádio', 's'], ['montanha', 'n'], ['melodia', 's'], ['música', 'x'], ['garfo', 'n'], ['instrumentos', 's'], ['bicicleta', 'n'], ['voz', 's'], ['tesoura', 'n'], ['violão', 's']],
+    ms: 1500, // tempo de cada palavra na tela (1,5 s por palavra)
+  };
+
+  // ---------- Atividade 5: quebre a memória (cada caso: rede boa × quebrada, com a mesma semente) ----------
+  const MIX = () => { const P = A2.pats(); return P[0].map((_, i) => Math.sign(P[0][i] + P[1][i] + P[2][i])); };
+  function buildNet(cfg, seed) {
+    const rnd = H.rng(seed * 104729 + 17);
+    let names = cfg.nomes || A2.nomes, P = names.map(pat), labels = names.map(k => D[k].nome);
+    if (cfg.extra) { for (let k = 0; k < cfg.extra; k++) P.push(H.randPat(100, rnd)); }
+    let W = H.hebb(P);
+    if (cfg.dilui) W = H.dilute(W, cfg.dilui, rnd);
+    if (cfg.assim) W = H.asym(W, cfg.assim, rnd);
+    let s;
+    const alvo = cfg.alvo !== undefined ? cfg.alvo : 0;
+    if (cfg.pista === 'mistura') { s = MIX(); H.perm(100, rnd).slice(0, cfg.trocas || 0).forEach(i => { s[i] = -s[i]; }); }
+    else if (cfg.pista === 'inteira') s = P[alvo].slice();
+    else s = H.flip(P[alvo], cfg.ruido === undefined ? 0.2 : cfg.ruido, rnd);
+    return { P: P.slice(0, names.length), Pall: P, labels, W, s, alvo, cfg, rnd };
+  }
+  const BOA = { nomes: A2.nomes, ruido: 0.2 };
+  const CASOS = {
+    a: { rot: 'Guardar demais', good: BOA, bad: { nomes: A2.nomes, extra: 22, ruido: 0.2 }, gl: '3 memórias', bl: '25 memórias' },
+    b: { rot: 'Desenhos parecidos', good: BOA, bad: { nomes: ['coracao', 'gato', 'peixe'], alvo: 1, ruido: 0.2 }, gl: 'casa, coração, nota', bl: 'coração, gato, peixe' },
+    c: { rot: 'Pista ambígua', good: BOA, bad: { nomes: A2.nomes, pista: 'mistura', trocas: 2 }, gl: 'pista: casa', bl: 'pista: maioria dos 3' },
+    d: { rot: 'Assimétricas', good: BOA, bad: { nomes: A2.nomes, ruido: 0.2, assim: 1 }, gl: 'simétricas', bl: 'assimétricas' },
+    e: { rot: 'Apagar 50%', good: BOA, bad: { nomes: A2.nomes, ruido: 0.2, dilui: 0.5 }, gl: 'todas as ligações', bl: 'metade apagada' },
+    f: { rot: 'Ruído alto', good: { nomes: A2.nomes, pista: 'inteira' }, bad: { nomes: A2.nomes, pista: 'inteira', T: 1.2, sweeps: 40 }, gl: 'sem ruído', bl: 'ruído alto (T = 1,2)' },
+    g: { rot: 'Pouco ruído', good: { nomes: A2.nomes, pista: 'mistura', trocas: 0 }, bad: { nomes: A2.nomes, pista: 'mistura', trocas: 0, T: 0.4, sweeps: 20, esfria: true }, gl: 'sem ruído', bl: 'pouco ruído (T = 0,4), depois sem' },
+  };
+  // roda um lado de um caso até o fim (sem animação); devolve o resumo
+  function runSide(cfg, seed) {
+    const net = buildNet(cfg, seed), R = H.Runner(net.W, net.s, { rnd: net.rnd, T: cfg.T || 0 });
+    if (cfg.T) { for (let k = 0; k < (cfg.sweeps || 40); k++) R.sweep(); }
+    let F = R; if (cfg.esfria) { F = H.Runner(net.W, R.s, { rnd: net.rnd }).run(50); }
+    else if (!cfg.T) R.run(60);
+    return summary(net, F, cfg);
+  }
+  function summary(net, R, cfg) {
+    const c = H.classify(R.s, net.P, net.labels), ms = net.P.map(p => H.overlap(R.s, p));
+    let up = false; for (let i = 1; i < R.E.length; i++) if (R.E[i] > R.E[i - 1] + 1e-9) up = true;
+    const parou = !cfg.T || cfg.esfria ? R.stable() : false;
+    const mix = H.same(R.s, MIX());
+    return { s: R.s, tipo: c.tipo, nome: c.nome, idx: c.idx, m: c.m, ms, parou, sobe: up, mistura3: mix, sweeps: R.sweeps, alvo: net.alvo, mAlvo: ms[net.alvo] };
+  }
+
+  // ---------- Atividade 6: anel de memória de trabalho ----------
+  const RING = { forcas: { fraca: 0.4, medida: 0.7, forte: 2 }, T: { pre: 20, cue: 40, delay: 300 }, msPorPasso: 10 };
+  RING.trial = (forca, pos, seed) => H.ringTrial({ g: RING.forcas[forca], seed }, pos, RING.T);
+  RING.verdict = (rd, pos) => rd.amp < 0.05 ? 'sumiu' : (rd.frac > 0.8 || rd.conc < 0.3) ? 'espalhou' : (H.posErr(rd.pos, pos) <= 0.5 ? 'certo' : 'errado');
+  RING.posOf = (seed) => Math.floor(H.rng(seed * 31 + 5)() * 8);
+
+  // ---------- extra do projetor: Hopfield moderna / atenção ----------
+  const ATT = { nomes: ['casa', 'coracao', 'gato', 'nota', 'sol', 'peixe'] };
+
+  root.A9L = { A2, cue, recall, WILLS, DRM, MIX, buildNet, CASOS, runSide, summary, RING, ATT, pat };
+})(window);
+
+</script>
+<script>/* a9v4_ui.js */
+// Aula 9 (v4) — componentes visuais das simulações (canvas, toque). Depende de hop_core.js, desenhos.js e a9v4_lib.js.
+// Cada componente monta seu próprio HTML dentro de um elemento e devolve um objeto (host.sim) usado pelos botões "ver na simulação" e pelos testes.
+(function (root) {
+  'use strict';
+  const H = root.HOP, L = root.A9L, D = root.DESENHOS;
+  const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  const fmt = (v, d = 2) => Number(v).toFixed(d).replace('.', ',').replace('-', '−');
+  const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const raf = root.requestAnimationFrame ? root.requestAnimationFrame.bind(root) : (f) => setTimeout(f, 16);
+  let UID = 0;
+  const PX_ON = '#142033', PX_OFF = '#f8fafc', PX_GRAY = '#a7b2c0';
+
+  if (!document.getElementById('a9ui-css')) {
+    const st = document.createElement('style'); st.id = 'a9ui-css';
+    st.textContent = `
+.a9sim{display:grid;gap:10px;min-width:0}
+.a9sim>*,.a9pair>div>*{min-width:0}
+.a9sim canvas{width:100%;display:block;border-radius:10px;border:1px solid var(--line);background:var(--bg);touch-action:manipulation}
+.a9sim canvas.grid{max-width:340px;margin:0 auto;background:${PX_OFF}}
+.a9btns{display:flex;flex-wrap:wrap;gap:8px}
+.a9btns button{padding:10px 13px;min-height:44px;font-size:15px}
+.a9seg{display:grid;gap:4px;font:600 13px/1.2 var(--body,inherit)}
+.a9seg>div{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:6px}
+.a9seg label{border:1.5px solid var(--line);border-radius:8px;text-align:center;padding:9px 4px;cursor:pointer;min-height:42px;display:grid;place-items:center;background:var(--bg);font:600 14px/1.15 var(--body,inherit)}
+.a9seg input{position:absolute;opacity:0;pointer-events:none}
+.a9seg label:has(input:checked){border-color:var(--accent);background:var(--soft);color:var(--accent)}
+.a9seg label:focus-within{outline:3px solid var(--accent);outline-offset:1px}
+.a9rng{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 8px;font:600 14px/1.2 var(--body,inherit);align-items:center}
+.a9rng input{grid-column:1/-1;width:100%;accent-color:var(--you);min-height:30px}
+.a9rng output{font:700 14px var(--mono,monospace);color:var(--you)}
+.a9read{font:600 14px/1.45 var(--mono,monospace);color:var(--accent);min-height:1.4em}
+.a9res{font:700 15px/1.35 var(--body,inherit);padding:8px 10px;border-radius:8px;background:var(--soft);min-height:2.6em}
+.a9res.ok{color:var(--ok)} .a9res.bad{color:var(--warn)}
+.a9note{font-size:14px;color:var(--muted)}
+.a9mem{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font:600 13px/1.2 var(--body,inherit);color:var(--muted)}
+.a9mem figure{margin:0;display:grid;gap:2px;justify-items:center;font:500 11.5px/1.1 var(--body,inherit);color:var(--fg)}
+.a9mem canvas{width:44px;height:44px;border-radius:6px;border:1px solid var(--line)}
+.a9bars{display:grid;gap:4px;font:500 13px/1.2 var(--body,inherit)}
+.a9bar{display:grid;grid-template-columns:7.5em minmax(0,1fr) 3.4em;gap:6px;align-items:center}
+.a9bar .tr{height:12px;border-radius:6px;background:var(--bg);border:1px solid var(--line);position:relative;overflow:hidden}
+.a9bar .tr i{position:absolute;top:0;bottom:0;background:var(--accent)}
+.a9bar .tr i.neg{background:var(--warn)}
+.a9bar .tr b{position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--muted)}
+.a9bar span:last-child{font:600 12.5px var(--mono,monospace);text-align:right}
+.a9pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;min-width:0}
+.a9pair>div{display:grid;gap:4px;min-width:0;align-content:start}
+.a9pair h4{margin:0;font:700 13px/1.2 var(--body,inherit);min-height:2.4em;display:flex;align-items:flex-end}
+.a9pair h4.bad{color:var(--warn)} .a9pair h4.good{color:var(--ok)}
+.a9pair .a9res{font-size:13px;min-height:4.2em}
+.a9cases{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.a9cases button{padding:8px 3px;min-height:52px;font-size:12.5px;line-height:1.15;background:var(--bg);color:var(--fg);border:1.5px solid var(--line)}
+.a9cases button.on{border-color:var(--accent);background:var(--soft);color:var(--accent)}
+.a9word{font:800 clamp(34px,11vw,72px)/1.1 var(--display,inherit);text-align:center;padding:28px 8px;border-radius:12px;background:var(--soft);color:var(--fg);min-height:2.6em;display:grid;place-items:center}
+.a9word small{display:block;font:600 14px var(--mono,monospace);color:var(--muted)}
+`;
+    document.head.appendChild(st);
+  }
+
+  // ---------- canvas ----------
+  function surface(cv, aspect) {
+    const dpr = Math.min(2, root.devicePixelRatio || 1);
+    const W = Math.max(120, Math.floor(cv.clientWidth || (cv.parentNode && cv.parentNode.clientWidth) || 300)), Hh = Math.round(W * aspect);
+    if (cv._w !== W || cv._h !== Hh || cv._dpr !== dpr) { cv.width = W * dpr; cv.height = Hh * dpr; cv._w = W; cv._h = Hh; cv._dpr = dpr; cv.style.height = Hh + 'px'; }
+    const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, Hh); return { g, W, H: Hh };
+  }
+  // desenha um estado 10 × 10 (+1 escuro, −1 claro, 0 cinza = apagado); valores contínuos em tons de cinza
+  function drawGrid(g, x0, y0, size, s, opt) {
+    opt = opt || {}; const n = Math.round(Math.sqrt(s.length)), c = size / n;
+    g.fillStyle = PX_OFF; g.fillRect(x0, y0, size, size);
+    for (let k = 0; k < s.length; k++) { const r = Math.floor(k / n), q = k % n, v = s[k];
+      if (opt.cont) { const t = Math.round(248 - (v + 1) / 2 * (248 - 20)); g.fillStyle = `rgb(${t},${t + 2},${Math.min(255, t + 8)})`; }
+      else g.fillStyle = v > 0 ? PX_ON : v < 0 ? PX_OFF : PX_GRAY;
+      g.fillRect(x0 + q * c, y0 + r * c, c, c); }
+    if (!opt.thin) { g.strokeStyle = 'rgba(100,116,139,.35)'; g.lineWidth = 1; g.beginPath(); for (let i = 1; i < n; i++) { g.moveTo(x0 + i * c, y0); g.lineTo(x0 + i * c, y0 + size); g.moveTo(x0, y0 + i * c); g.lineTo(x0 + size, y0 + i * c); } g.stroke(); }
+    if (opt.last >= 0) { const r = Math.floor(opt.last / n), q = opt.last % n; g.strokeStyle = '#f0a645'; g.lineWidth = 3; g.strokeRect(x0 + q * c + 1.5, y0 + r * c + 1.5, c - 3, c - 3); }
+  }
+  function thumb(s, size) { const cv = document.createElement('canvas'); cv.width = cv.height = 2 * (size || 44); const g = cv.getContext('2d'); drawGrid(g, 0, 0, cv.width, s, { thin: true }); return cv; }
+  function bars(el, items) { // items: [{nome, m}]
+    el.innerHTML = items.map(it => { const w = Math.abs(it.m) * 50, l = it.m >= 0 ? 50 : 50 - w;
+      return `<div class="a9bar"><span>${esc(it.nome)}</span><span class="tr"><b></b><i class="${it.m < 0 ? 'neg' : ''}" style="left:${l}%;width:${w}%"></i></span><span>${fmt(it.m)}</span></div>`; }).join('');
+  }
+  function seg(name, opts, val, label) { return `<div class="a9seg">${label ? `<span>${label}</span>` : ''}<div>${opts.map(([v, t]) => `<label><input type="radio" name="${name}" value="${v}"${v === val ? ' checked' : ''}>${t}</label>`).join('')}</div></div>`; }
+  function sparkline(cv, ys, opt) {
+    opt = opt || {}; const { g, W, H: Hh } = surface(cv, opt.aspect || 0.3); const m = { l: 8, r: 8, t: 18, b: 8 };
+    g.fillStyle = css('--muted'); g.font = '600 12px ' + (css('--mono') || 'monospace'); g.fillText(opt.title || '', m.l, 13);
+    if (!ys.length) return; const lo = Math.min(...ys), hi = Math.max(...ys), n = Math.max(ys.length - 1, opt.minN || 100);
+    const X = (i) => m.l + i / n * (W - m.l - m.r), Y = (v) => m.t + (hi - v) / ((hi - lo) || 1) * (Hh - m.t - m.b);
+    g.strokeStyle = css('--accent'); g.lineWidth = 2; g.beginPath(); ys.forEach((v, i) => i ? g.lineTo(X(i), Y(v)) : g.moveTo(X(i), Y(v))); g.stroke();
+    g.fillStyle = css('--accent'); g.beginPath(); g.arc(X(ys.length - 1), Y(ys[ys.length - 1]), 3.5, 0, 7); g.fill();
+    g.textAlign = 'right'; g.fillStyle = css('--fg'); g.fillText(fmt(ys[ys.length - 1], 1), W - m.r, 13); g.textAlign = 'left';
+  }
+  function whenVisible(el, f) {
+    if (!('IntersectionObserver' in root)) { f(); return; }
+    const io = new IntersectionObserver((es) => { if (es.some(e => e.isIntersecting)) { io.disconnect(); f(); } }, { rootMargin: '200px' }); io.observe(el);
+  }
+  const resultText = (c) => c.tipo === 'memoria' ? `✓ lembrou: ${c.nome}` : c.tipo === 'negativo' ? `terminou no negativo (invertido) de: ${c.nome}` : 'terminou numa mistura: não é nenhum desenho guardado';
+
+  // ======================= Atividade 2 · Desenhe e lembre =======================
+  function DrawSim(host, opt) {
+    opt = Object.assign({ seed: L.A2.seed, big: false }, opt || {}); const id = 'a9d' + (UID++);
+    host.innerHTML = `<div class="a9sim">
+      <div class="a9mem" data-k="mem"></div>
+      <canvas class="grid" data-k="cv" aria-label="estado da rede: 100 neurônios"></canvas>
+      <div class="a9res" data-k="res">Escolha uma pista.</div>
+      <canvas data-k="en" aria-label="energia ao longo da lembrança"></canvas>
+      <div class="a9bars" data-k="bars"></div>
+      ${seg(id + 't', L.A2.nomes.map((k, i) => [String(i), D[k].nome]), '0', 'Pista a partir de')}
+      <label class="a9rng">Ruído (pixels trocados) <output data-k="fo">20%</output><input type="range" data-k="frac" min="0" max="100" step="10" value="20"></label>
+      <div class="a9btns"><button class="ghost" data-k="ruido">Pista com ruído</button><button class="ghost" data-k="metade">Metade de cima</button><button class="ghost" data-k="rabisco">Rabisco ao acaso</button></div>
+      <div class="a9btns"><button data-k="run">▶ Lembrar</button><button class="ghost" data-k="semente">Outra semente</button></div>
+      <p class="a9note">Toque nos pixels para desenhar a sua pista. <button class="ghost" data-k="limpar" style="padding:6px 10px;min-height:34px;font-size:13px">Limpar</button> <button class="ghost" data-k="guardar" style="padding:6px 10px;min-height:34px;font-size:13px">Guardar este desenho</button> <span data-k="sd"></span></p>
+    </div>`;
+    const $ = (k) => host.querySelector(`[data-k="${k}"]`);
+    const S = { seed: opt.seed, alvo: 0, frac: 0.2, kind: 'ruido', extras: [], s: null, R: null, busy: false, last: -1, result: null, done: false };
+    let stop = null;
+    const pats = () => L.A2.pats().concat(S.extras.map(e => e.v)), names = () => L.A2.nomes.map(k => D[k].nome).concat(S.extras.map(e => e.nome));
+    let W = H.hebb(pats());
+    function mem() { const box = $('mem'); box.innerHTML = '<span>Guardadas:</span>'; pats().forEach((p, i) => { const f = document.createElement('figure'); f.appendChild(thumb(p)); const c = document.createElement('figcaption'); c.textContent = names()[i]; f.appendChild(c); box.appendChild(f); }); }
+    function draw() {
+      const cv = $('cv'), { g, W: w } = surface(cv, 1); drawGrid(g, 0, 0, w, S.s, { last: S.last });
+      sparkline($('en'), S.R ? S.R.E : [H.energy(W, S.s)], { title: 'energia', aspect: 0.28, minN: 300 });
+      bars($('bars'), pats().map((p, i) => ({ nome: 'parecido c/ ' + names()[i], m: H.overlap(S.s, p) })));
+      $('sd').textContent = `semente ${S.seed}`;
+    }
+    function setState(s, msg) { if (stop) stop(); S.busy = false; S.s = s; S.R = null; S.last = -1; S.result = null; S.done = false; $('res').className = 'a9res'; $('res').textContent = msg; draw(); }
+    function cue(kind) { S.kind = kind; const p = pats()[S.alvo];
+      const s = L.cue(kind, p, { frac: S.frac }, S.seed), nm = names()[S.alvo];
+      setState(s, kind === 'ruido' ? `Pista: ${nm} com ${Math.round(S.frac * 100)}% dos pixels trocados. Toque em Lembrar.` : kind === 'metade' ? `Pista: só a metade de cima de ${nm} (cinza = apagado). Toque em Lembrar.` : 'Pista: rabisco ao acaso (não é nenhum desenho). Toque em Lembrar.'); }
+    function run() {
+      if (S.busy) return; if (stop) stop();
+      S.R = H.Runner(W, S.s, { seed: S.seed * 7919 + 1 }); S.s = S.R.s; S.busy = true; S.done = false; $('res').className = 'a9res'; $('res').textContent = 'Lembrando… cada neurônio, um de cada vez, segue o voto dos outros.';
+      let alive = true; stop = () => { alive = false; S.busy = false; };
+      const per = opt.big ? 2 : 3;
+      const loop = () => { if (!alive) return; let fin = false;
+        for (let k = 0; k < per && !fin; k++) { const t0 = S.R.sweeps; S.R.step(); S.last = S.R.lastChanged >= 0 ? S.R.lastChanged : S.last;
+          if (S.R.sweeps > t0 && ((S.R.stableSweeps >= 1 && !S.R.s.includes(0)) || S.R.sweeps >= 50)) fin = true; }
+        S.s = S.R.s; draw();
+        if (fin) { alive = false; S.busy = false; S.done = true; S.last = -1; const c = H.classify(S.s, pats(), names()); S.result = c; draw();
+          $('res').className = 'a9res ' + (c.tipo === 'memoria' ? 'ok' : 'bad'); $('res').textContent = resultText(c) + ` · parou depois de ${S.R.t} atualizações; a energia nunca subiu.`; }
+        else raf(loop); };
+      raf(loop);
+    }
+    host.querySelectorAll(`[name="${id}t"]`).forEach(r => r.addEventListener('change', () => { S.alvo = +r.value; cue(S.kind === 'rabisco' ? 'ruido' : S.kind); }));
+    $('frac').addEventListener('input', () => { S.frac = +$('frac').value / 100; $('fo').textContent = $('frac').value + '%'; cue('ruido'); });
+    ['ruido', 'metade', 'rabisco'].forEach(k => $(k).addEventListener('click', () => cue(k)));
+    $('run').addEventListener('click', run);
+    $('semente').addEventListener('click', () => { S.seed++; cue(S.kind); });
+    $('limpar').addEventListener('click', () => setState(new Array(100).fill(-1), 'Toque nos pixels para desenhar. Depois: Lembrar ou Guardar este desenho.'));
+    $('guardar').addEventListener('click', () => { if (S.extras.length >= 3) { $('res').textContent = 'Já há 3 desenhos seus guardados (máximo).'; return; }
+      const v = S.s.map(x => x > 0 ? 1 : -1); S.extras.push({ v, nome: 'seu ' + (S.extras.length + 1) }); W = H.hebb(pats()); mem(); draw();
+      $('res').className = 'a9res'; $('res').textContent = `Guardado (regra de Hebb): agora a rede tem ${pats().length} memórias. Estrague-o e veja se ela lembra.`; });
+    $('cv').addEventListener('pointerdown', (ev) => { const r = ev.target.getBoundingClientRect(), q = Math.floor((ev.clientX - r.left) / r.width * 10), rr = Math.floor((ev.clientY - r.top) / r.height * 10);
+      if (q < 0 || q > 9 || rr < 0 || rr > 9) return; const s = S.s.slice(), k = rr * 10 + q; s[k] = s[k] > 0 ? -1 : 1; setState(s, 'Sua pista. Toque em Lembrar (ou continue desenhando).'); });
+    root.addEventListener('resize', () => draw());
+    mem(); cue('ruido');
+    const api = { S, cue, run, busy: () => S.busy, seed: (n) => { S.seed = n; cue(S.kind); }, setFrac: (f) => { S.frac = f; $('frac').value = Math.round(f * 100); $('fo').textContent = Math.round(f * 100) + '%'; },
+      setAlvo: (i) => { S.alvo = i; const r = host.querySelector(`[name="${id}t"][value="${i}"]`); if (r) r.checked = true; },
+      demo: (k) => { if (k === 'ruido20') { api.setAlvo(0); api.setFrac(0.2); cue('ruido'); run(); } else if (k === 'metade') { api.setAlvo(0); cue('metade'); run(); } else if (k === 'ruido60') { api.setAlvo(0); api.setFrac(0.6); cue('ruido'); run(); } else if (k === 'rabisco') { cue('rabisco'); run(); } } };
+    host.sim = api; return api;
+  }
+
+  // ======================= Atividade 3 (i) · CA3 com lesão =======================
+  function LesionSim(host, opt) {
+    opt = Object.assign({ seed: 1 }, opt || {}); const id = 'a9l' + (UID++);
+    host.innerHTML = `<div class="a9sim">
+      ${seg(id + 'c', [['intacta', 'CA3 intacta'], ['lesao', 'CA3 com lesão (sem ligações)']], 'intacta', 'Rede')}
+      <canvas class="grid" data-k="cv"></canvas>
+      <div class="a9res" data-k="res"></div>
+      <div class="a9btns"><button class="ghost" data-k="metade">Pista: metade de cima</button><button class="ghost" data-k="inteira">Pista: inteira</button><button data-k="run">▶ Lembrar</button></div>
+    </div>`;
+    const $ = (k) => host.querySelector(`[data-k="${k}"]`);
+    const P = L.A2.pats(), Wi = H.hebb(P), W0 = H.zeros(100), nome = D[L.A2.nomes[0]].nome;
+    const S = { lesao: false, pista: 'metade', s: null, m0: 0, m1: null, busy: false, done: false };
+    let stop = null;
+    function draw() { const { g, W: w } = surface($('cv'), 1); drawGrid(g, 0, 0, w, S.s); }
+    function cue(k) { if (stop) stop(); S.pista = k; S.s = k === 'metade' ? H.erase(P[0], 'cima') : P[0].slice(); S.m0 = H.overlap(S.s, P[0]); S.m1 = null; S.done = false;
+      $('res').className = 'a9res'; $('res').textContent = `Pista: ${k === 'metade' ? 'metade de cima' : 'inteira'} da ${nome} · parecido com a ${nome}: ${fmt(S.m0)}. Toque em Lembrar.`; draw(); }
+    function run() { if (S.busy) return; const R = H.Runner(S.lesao ? W0 : Wi, S.s, { seed: opt.seed }); S.busy = true; let alive = true; stop = () => { alive = false; S.busy = false; };
+      const loop = () => { if (!alive) return; let fin = false; for (let k = 0; k < 4 && !fin; k++) { const t0 = R.sweeps; R.step(); if (R.sweeps > t0 && (R.stableSweeps >= 1 || R.sweeps >= 3)) fin = true; }
+        S.s = R.s; draw(); if (!fin) { raf(loop); return; }
+        alive = false; S.busy = false; S.done = true; S.m1 = H.overlap(S.s, P[0]); const ok = S.m1 >= 0.98;
+        $('res').className = 'a9res ' + (ok ? 'ok' : 'bad');
+        $('res').textContent = `parecido com a ${nome}: ${fmt(S.m0)} → ${fmt(S.m1)}` + (S.lesao ? ' · sem ligações recorrentes não há voto: a saída é a própria pista.' : ok ? ' · completou.' : ''); };
+      raf(loop); }
+    host.querySelectorAll(`[name="${id}c"]`).forEach(r => r.addEventListener('change', () => { S.lesao = r.value === 'lesao'; cue(S.pista); }));
+    $('metade').addEventListener('click', () => cue('metade')); $('inteira').addEventListener('click', () => cue('inteira')); $('run').addEventListener('click', run);
+    root.addEventListener('resize', draw);
+    cue('metade');
+    const api = { S, cue, run, busy: () => S.busy, lesao: (b) => { S.lesao = b; host.querySelector(`[name="${id}c"][value="${b ? 'lesao' : 'intacta'}"]`).checked = true; },
+      demo: (k) => { api.lesao(k !== 'intacta'); cue(k === 'inteira' ? 'inteira' : 'metade'); run(); } };
+    host.sim = api; return api;
+  }
+
+  // ======================= Atividade 3 (ii) · caixa que muda de forma (Wills) =======================
+  function MorphSim(host, opt) {
+    opt = Object.assign({ seed: 1, n: 20 }, opt || {});
+    host.innerHTML = `<div class="a9sim">
+      <canvas data-k="box" aria-label="a caixa"></canvas>
+      <label class="a9rng">Forma da caixa <output data-k="fo">quadrado</output><input type="range" data-k="j" min="0" max="6" step="1" value="0"></label>
+      <div class="a9btns"><button data-k="one">▶ Colocar o rato</button><button class="ghost" data-k="all">Testar as 7 formas (${opt.n}× cada)</button><button class="ghost" data-k="semente">Outra semente</button></div>
+      <div class="a9bars" data-k="bars"></div>
+      <div class="a9res" data-k="res">Escolha a forma e coloque o rato na caixa.</div>
+      <canvas data-k="ch" aria-label="gráfico: em que mapa a rede termina, para cada forma"></canvas>
+    </div>`;
+    const $ = (k) => host.querySelector(`[data-k="${k}"]`);
+    const M = L.WILLS.maps(), S = { j: 0, seed: opt.seed, rnd: H.rng(opt.seed), last: null, sweep: null, busy: false };
+    const nomeForma = (j) => j === 0 ? 'quadrado' : j === 6 ? 'círculo' : j === 3 ? 'meio do caminho' : (j < 3 ? 'mais quadrado' : 'mais círculo');
+    function draw() {
+      const { g, W, H: Hh } = surface($('box'), 0.42), lam = S.j / 6, sz = Hh * 0.8, x0 = 12, y0 = Hh * 0.1;
+      g.strokeStyle = css('--fg'); g.lineWidth = 4; g.beginPath(); if (g.roundRect) g.roundRect(x0, y0, sz, sz, lam * sz / 2); else g.rect(x0, y0, sz, sz); g.stroke();
+      g.fillStyle = css('--you'); g.beginPath(); g.arc(x0 + sz * 0.62, y0 + sz * 0.4, 6, 0, 7); g.fill();
+      const gx = x0 + sz + 18, gs = Math.min(Hh * 0.8, W - gx - 8);
+      if (S.last) { drawGrid(g, gx, y0, gs, S.last.s, { thin: true }); g.fillStyle = css('--muted'); g.font = '600 11px ' + css('--mono'); g.fillText('células de lugar', gx, Hh - 1); }
+      else { g.fillStyle = css('--muted'); g.font = '13px ' + css('--body'); g.fillText('as células de lugar aparecem aqui', gx, y0 + 20); }
+      bars($('bars'), [{ nome: 'mapa do quadrado', m: S.last ? S.last.mq : 0 }, { nome: 'mapa do círculo', m: S.last ? S.last.mc : 0 }]);
+      chart();
+    }
+    function chart() {
+      const { g, W, H: Hh } = surface($('ch'), 0.6), m = { l: 34, r: 10, t: 40, b: 34 };
+      const X = (j) => m.l + j / 6 * (W - m.l - m.r), Y = (v) => m.t + (1 - v) * (Hh - m.t - m.b);
+      g.strokeStyle = css('--line'); g.lineWidth = 1; g.beginPath(); g.moveTo(m.l, m.t); g.lineTo(m.l, Hh - m.b); g.lineTo(W - m.r, Hh - m.b); g.stroke();
+      g.fillStyle = css('--muted'); g.font = '11px ' + css('--body'); g.textAlign = 'center'; g.fillText('quadrado', X(0) + 18, Hh - m.b + 14); g.fillText('meio', X(3), Hh - m.b + 14); g.fillText('círculo', X(6) - 16, Hh - m.b + 14);
+      g.fillText('forma da caixa →', (m.l + W) / 2, Hh - 4); g.textAlign = 'right'; g.fillText('100%', m.l - 3, Y(1) + 4); g.fillText('0', m.l - 3, Y(0) + 4); g.textAlign = 'left';
+      if (!S.sweep) { g.fillStyle = css('--muted'); g.font = '13px ' + css('--body'); g.fillText('Toque em "Testar as 7 formas".', m.l + 10, Hh / 2); return; }
+      const line = (key, col, dash) => { g.strokeStyle = col; g.lineWidth = 2.5; g.setLineDash(dash || []); g.beginPath(); S.sweep.forEach((o, j) => j ? g.lineTo(X(j), Y(o[key])) : g.moveTo(X(j), Y(o[key]))); g.stroke(); g.setLineDash([]);
+        S.sweep.forEach((o, j) => { g.fillStyle = col; g.beginPath(); g.arc(X(j), Y(o[key]), 3.5, 0, 7); g.fill(); }); };
+      line('cue', css('--muted'), [5, 4]); line('q', css('--accent'));
+      g.font = '600 11.5px ' + css('--body'); g.fillStyle = css('--accent'); g.fillText('vezes no mapa do quadrado', m.l + 6, 12); g.fillStyle = css('--muted'); g.fillText('- - pista: semelhança com o quadrado', m.l + 6, 24);
+    }
+    function setJ(j) { S.j = j; $('j').value = j; $('fo').textContent = nomeForma(j); }
+    function one() { const t = L.WILLS.trial(M, S.j, S.rnd); S.last = t; draw();
+      const msg = t.mapa === 'Q' ? 'a rede escolheu o mapa do QUADRADO' : t.mapa === 'C' ? 'a rede escolheu o mapa do CÍRCULO' : 'a rede terminou num estado intermediário';
+      $('res').className = 'a9res ' + (t.mapa === 'outro' ? 'bad' : 'ok'); $('res').textContent = `${nomeForma(S.j)}: pista ${fmt((1 + t.cq) / 2 * 100, 0)}% parecida com o quadrado → ${msg}.`; return t; }
+    function all() { S.sweep = L.WILLS.sweep(M, opt.n, S.seed * 13 + 1); draw();
+      $('res').className = 'a9res'; $('res').textContent = `A pista (tracejado) muda aos poucos; a escolha da rede (linha cheia) muda de repente, no meio. Tentativas que terminaram numa média dos dois mapas: ${Math.round(S.sweep.reduce((a, o) => a + o.outro, 0) * opt.n)} de ${7 * opt.n}.`; }
+    $('j').addEventListener('input', () => { setJ(+$('j').value); draw(); });
+    $('one').addEventListener('click', one); $('all').addEventListener('click', all);
+    $('semente').addEventListener('click', () => { S.seed++; S.rnd = H.rng(S.seed); S.last = null; S.sweep = null; draw(); $('res').textContent = `semente ${S.seed}.`; });
+    root.addEventListener('resize', draw); setJ(0); draw();
+    const api = { S, M, one, all, setJ, busy: () => false, demo: () => { setJ(3); one(); all(); } };
+    host.sim = api; return api;
+  }
+
+  // ======================= Atividade 4 · lista de palavras (DRM) =======================
+  function WordList(host, opt) {
+    opt = Object.assign({ ms: L.DRM.ms, onEnd: null, big: false }, opt || {});
+    host.innerHTML = `<div class="a9sim"><div class="a9word" data-k="w"><span>15 palavras, uma de cada vez<small>preste atenção; não anote</small></span></div>
+      <div class="a9btns"><button data-k="go">▶ Ver a lista</button><button class="ghost" data-k="skip">O professor leu em voz alta</button></div></div>`;
+    const $ = (k) => host.querySelector(`[data-k="${k}"]`); const S = { i: -1, playing: false, done: false }; let timer = null;
+    function end() { clearTimeout(timer); S.playing = false; S.done = true; $('w').innerHTML = '<span>Fim da lista<small>agora, sem voltar: marque abaixo</small></span>'; $('go').disabled = true; $('go').textContent = 'A lista passa uma vez só'; opt.onEnd && opt.onEnd(); }
+    function next() { S.i++; if (S.i >= L.DRM.lista.length) { end(); return; } $('w').innerHTML = `<span>${esc(L.DRM.lista[S.i])}<small>${S.i + 1} de ${L.DRM.lista.length}</small></span>`; timer = setTimeout(next, opt.ms); }
+    $('go').addEventListener('click', () => { if (S.playing || S.done) return; S.playing = true; S.i = -1; next(); });
+    $('skip').addEventListener('click', () => { clearTimeout(timer); S.playing = false; end(); });
+    const api = { S, end }; host.sim = api; return api;
+  }
+
+  // ======================= Atividade 5 · quebre a memória =======================
+  function BreakSim(host, opt) {
+    opt = Object.assign({ seed: 1, per: 25 }, opt || {});
+    const keys = Object.keys(L.CASOS);
+    host.innerHTML = `<div class="a9sim">
+      <div class="a9cases">${keys.map(k => `<button data-c="${k}">${k} · ${L.CASOS[k].rot}</button>`).join('')}</div>
+      <div class="a9pair"><div><h4 class="good" data-k="gl">rede boa</h4><canvas class="grid" data-k="g"></canvas><div class="a9res" data-k="gr"></div></div>
+        <div><h4 class="bad" data-k="bl">quebrada</h4><canvas class="grid" data-k="b"></canvas><div class="a9res" data-k="br"></div></div></div>
+      <div class="a9btns"><button data-k="again">▶ Rodar de novo</button><button class="ghost" data-k="semente">Outra semente</button><span class="a9note" data-k="sd"></span></div>
+    </div>`;
+    const $ = (k) => host.querySelector(`[data-k="${k}"]`);
+    const S = { c: null, seed: opt.seed, busy: false, res: {} }; let stop = null;
+    function side(cfg) { const net = L.buildNet(cfg, S.seed); const st = { cfg, net, R: H.Runner(net.W, net.s, { rnd: net.rnd, T: cfg.T || 0 }), phase: cfg.T ? 'quente' : 'frio', done: false, F: null };
+      st.R0 = st.R; return st; }
+    function tick(st, n) { // avança n atualizações; mesma sequência de sorteios que L.runSide
+      for (let k = 0; k < n && !st.done; k++) {
+        const R = st.R, t0 = R.sweeps; R.step();
+        if (R.sweeps === t0) continue;
+        if (st.phase === 'quente') { if (R.sweeps >= (st.cfg.sweeps || 40)) { if (st.cfg.esfria) { st.phase = 'frio'; st.R = H.Runner(st.net.W, R.s, { rnd: st.net.rnd }); st.cool = true; } else st.done = true; } }
+        else if ((R.stableSweeps >= 1 && R.stable() && !R.s.includes(0)) || R.sweeps >= (st.cool ? 50 : 60)) st.done = true;
+      } }
+    function label(st) { const sm = L.summary(st.net, st.R, st.cfg), nm = st.net.labels[st.net.alvo]; st.sm = sm;
+      if (!sm.parou) return { t: `não parou: depois de ${st.R.sweeps} rodadas, ainda mudando${sm.sobe ? '; a energia subiu várias vezes' : ''}.`, ok: false };
+      if (sm.tipo === 'memoria') return { t: sm.idx === sm.alvo ? `✓ lembrou: ${sm.nome}` : `terminou em: ${sm.nome} (a pista era ${nm})`, ok: sm.idx === sm.alvo };
+      if (sm.mistura3) return { t: 'parou numa mistura dos 3 desenhos, que ninguém guardou', ok: false };
+      if (sm.tipo === 'negativo') return { t: `terminou no negativo de: ${sm.nome}`, ok: false };
+      return { t: `mistura (borrão): não é nenhum desenho guardado (parecido com ${nm}: ${fmt(sm.mAlvo)})`, ok: false }; }
+    function draw(sides) { ['g', 'b'].forEach((k, i) => { const st = sides[i], { g, W } = surface($(k), 1); drawGrid(g, 0, 0, W, st.R.s);
+      if (st.done) { const lb = label(st); $(k + 'r').className = 'a9res ' + (lb.ok ? 'ok' : 'bad'); $(k + 'r').textContent = lb.t; }
+      else $(k + 'r').textContent = st.phase === 'quente' ? `com ruído… rodada ${st.R.sweeps}` : `lembrando… rodada ${st.R.sweeps}`; }); }
+    function show(c) { if (stop) stop(); S.c = c; const C = L.CASOS[c]; host.querySelectorAll('[data-c]').forEach(b => b.classList.toggle('on', b.dataset.c === c));
+      $('gl').textContent = 'boa · ' + C.gl; $('bl').textContent = 'quebrada · ' + C.bl; $('sd').textContent = `semente ${S.seed}`;
+      const sides = [side(C.good), side(C.bad)]; S.sides = sides; S.busy = true; let alive = true; stop = () => { alive = false; S.busy = false; };
+      draw(sides);
+      const loop = () => { if (!alive) return; sides.forEach(st => tick(st, opt.per)); draw(sides);
+        if (sides.every(st => st.done)) { alive = false; S.busy = false; S.res[c] = sides.map(st => st.sm); } else raf(loop); };
+      raf(loop); }
+    host.querySelectorAll('[data-c]').forEach(b => b.addEventListener('click', () => show(b.dataset.c)));
+    $('again').addEventListener('click', () => S.c && show(S.c)); $('semente').addEventListener('click', () => { S.seed++; S.c && show(S.c); });
+    root.addEventListener('resize', () => S.sides && draw(S.sides));
+    const api = { S, show, busy: () => S.busy, cur: () => S.c, seed: (n) => { S.seed = n; S.c && show(S.c); } };
+    host.sim = api; return api;
+  }
+
+  // ======================= Atividade 6 · segurar uma informação (anel) =======================
+  function RingSim(host, opt) {
+    opt = Object.assign({ seed: 1, forca: 'medida', per: 3 }, opt || {}); const id = 'a9r' + (UID++);
+    host.innerHTML = `<div class="a9sim">
+      ${seg(id + 'f', [['fraca', 'fraca'], ['medida', 'na medida'], ['forte', 'forte demais']], opt.forca, 'Força da recorrência')}
+      <canvas data-k="ring" aria-label="anel de 48 neurônios"></canvas>
+      <div class="a9res" data-k="res">Toque em Mostrar o ponto.</div>
+      <canvas data-k="ras" aria-label="atividade de cada neurônio ao longo do tempo"></canvas>
+      <div class="a9btns"><button data-k="go">▶ Mostrar o ponto</button><button class="ghost" data-k="semente">Outra semente</button><span class="a9note" data-k="sd"></span></div>
+    </div>`;
+    const $ = (k) => host.querySelector(`[data-k="${k}"]`); const T = L.RING.T, TT = T.pre + T.cue + T.delay;
+    const S = { forca: opt.forca, seed: opt.seed, pos: L.RING.posOf(opt.seed), R: null, t: 0, busy: false, verdict: null, read: null }; let stop = null;
+    function phase() { return S.t < T.pre ? 'antes' : S.t < T.pre + T.cue ? 'ponto' : S.t < TT ? 'atraso' : 'resposta'; }
+    function draw() {
+      const { g, W, H: Hh } = surface($('ring'), 0.62), cx = W / 2, cy = Hh / 2, rad = Math.min(W, Hh) * 0.36, n = 48, r = S.R ? S.R.r : new Float64Array(n);
+      g.strokeStyle = css('--line'); g.lineWidth = 1; g.beginPath(); g.arc(cx, cy, rad, 0, 7); g.stroke();
+      for (let p = 0; p < 8; p++) { const a = p / 8 * 2 * Math.PI; g.fillStyle = css('--muted'); g.font = '600 12px ' + css('--mono'); g.textAlign = 'center'; g.fillText(String(p + 1), cx + Math.cos(a) * (rad + 22), cy + Math.sin(a) * (rad + 22) + 4); }
+      const acc = css('--accent');
+      for (let i = 0; i < n; i++) { const a = i / n * 2 * Math.PI, x = cx + Math.cos(a) * rad, y = cy + Math.sin(a) * rad; g.fillStyle = css('--bg'); g.beginPath(); g.arc(x, y, 7, 0, 7); g.fill();
+        g.globalAlpha = Math.min(1, r[i]); g.fillStyle = acc; g.beginPath(); g.arc(x, y, 7, 0, 7); g.fill(); g.globalAlpha = 1; g.strokeStyle = css('--line'); g.stroke(); }
+      const ph = phase();
+      if (ph === 'ponto') { const a = S.pos / 8 * 2 * Math.PI; g.fillStyle = css('--you'); g.beginPath(); g.arc(cx + Math.cos(a) * rad * 0.62, cy + Math.sin(a) * rad * 0.62, 11, 0, 7); g.fill(); }
+      g.fillStyle = css('--fg'); g.font = '700 14px ' + css('--body'); g.textAlign = 'center';
+      g.fillText(ph === 'ponto' ? 'ponto!' : ph === 'atraso' ? `atraso: ${fmt((S.t - T.pre - T.cue) * L.RING.msPorPasso / 1000, 1)} s` : ph === 'resposta' ? 'onde estava?' : '', cx, cy + 5);
+      if (ph === 'resposta' && S.verdict === 'certo') { const a = S.read.pos / 8 * 2 * Math.PI; g.strokeStyle = css('--ok'); g.lineWidth = 3; g.beginPath(); g.moveTo(cx + Math.cos(a) * 20, cy + 10 + Math.sin(a) * 20); g.lineTo(cx + Math.cos(a) * rad * 0.8, cy + Math.sin(a) * rad * 0.8); g.stroke(); }
+      g.textAlign = 'left';
+      raster();
+    }
+    function raster() {
+      const { g, W, H: Hh } = surface($('ras'), 0.42), m = { l: 8, r: 8, t: 18, b: 16 }, n = 48, hist = S.R ? S.R.hist : [];
+      g.fillStyle = css('--muted'); g.font = '600 11.5px ' + css('--mono'); g.fillText('neurônios (vertical) × tempo →', m.l, 12);
+      const cw = (W - m.l - m.r) / TT, ch = (Hh - m.t - m.b) / n, acc = css('--accent');
+      g.fillStyle = css('--bg'); g.fillRect(m.l, m.t, W - m.l - m.r, Hh - m.t - m.b);
+      g.fillStyle = 'rgba(240,166,69,.25)'; g.fillRect(m.l + T.pre * cw, m.t, T.cue * cw, Hh - m.t - m.b);
+      g.fillStyle = acc; hist.forEach((r, t) => { for (let i = 0; i < n; i++) if (r[i] > 0.05) { g.globalAlpha = Math.min(1, r[i]); g.fillRect(m.l + t * cw, m.t + i * ch, Math.max(1, cw + 0.3), ch + 0.3); } }); g.globalAlpha = 1;
+      g.fillStyle = css('--muted'); g.font = '11px ' + css('--body'); g.fillText('ponto', m.l + T.pre * cw, Hh - 3); g.fillText('atraso (3 s)', m.l + (T.pre + T.cue + 20) * cw, Hh - 3);
+    }
+    function go() {
+      if (stop) stop(); S.pos = L.RING.posOf(S.seed); S.R = H.Ring({ g: L.RING.forcas[S.forca], seed: S.seed }); S.t = 0; S.verdict = null; S.busy = true; $('sd').textContent = `semente ${S.seed}`;
+      $('res').className = 'a9res'; $('res').textContent = `O ponto aparece na posição ${S.pos + 1}…`;
+      let alive = true; stop = () => { alive = false; S.busy = false; };
+      const loop = () => { if (!alive) return;
+        for (let k = 0; k < opt.per && S.t < TT; k++) { const ph = phase(); S.R.step(ph === 'ponto' ? S.pos : null); S.t++; }
+        if (S.t >= TT) { alive = false; S.busy = false; S.read = S.R.read(); S.verdict = L.RING.verdict(S.read, S.pos);
+          const v = S.verdict; $('res').className = 'a9res ' + (v === 'certo' ? 'ok' : 'bad');
+          $('res').textContent = v === 'sumiu' ? `A atividade sumiu no atraso: a rede esqueceu (o ponto estava em ${S.pos + 1}).` : v === 'espalhou' ? `O anel inteiro acendeu: a rede perdeu a posição (o ponto estava em ${S.pos + 1}).` :
+            v === 'certo' ? `A bolha ficou no lugar: a rede aponta para ${fmt(S.read.pos + 1, 1)} (o ponto estava em ${S.pos + 1}).` : `A bolha andou: a rede aponta para ${fmt(S.read.pos + 1, 1)} (o ponto estava em ${S.pos + 1}).`; }
+        else if (phase() === 'atraso') $('res').textContent = 'O ponto sumiu. Atraso…';
+        draw(); if (alive) raf(loop); };
+      raf(loop);
+    }
+    host.querySelectorAll(`[name="${id}f"]`).forEach(r => r.addEventListener('change', () => { S.forca = r.value; go(); }));
+    $('go').addEventListener('click', go); $('semente').addEventListener('click', () => { S.seed++; go(); });
+    root.addEventListener('resize', draw); draw(); $('sd').textContent = `semente ${S.seed}`;
+    const api = { S, go, busy: () => S.busy, forca: (f) => { S.forca = f; host.querySelector(`[name="${id}f"][value="${f}"]`).checked = true; go(); } };
+    host.sim = api; return api;
+  }
+
+  // ======================= Extra (projetor) · Hopfield moderna / atenção =======================
+  function AttnSim(host, opt) {
+    opt = Object.assign({ seed: 3 }, opt || {}); const id = 'a9a' + (UID++); const names = L.ATT.nomes, P = names.map(L.pat);
+    host.innerHTML = `<div class="a9sim">
+      ${seg(id + 'q', names.map((k, i) => [String(i), D[k].nome]), '0', 'Consulta a partir de')}
+      <label class="a9rng">Ruído na consulta <output data-k="no">40%</output><input type="range" data-k="noise" min="0" max="60" step="5" value="40"></label>
+      <label class="a9rng">Nitidez (β): 0 = média de tudo; alto = só a mais parecida <output data-k="bo">8</output><input type="range" data-k="beta" min="0" max="40" step="1" value="8"></label>
+      <div class="a9pair"><div><h4>consulta</h4><canvas class="grid" data-k="q"></canvas></div><div><h4>o que volta (média ponderada das memórias)</h4><canvas class="grid" data-k="o"></canvas></div></div>
+      <div class="a9bars" data-k="w"></div>
+      <p class="a9note">Cada memória ganha um peso: softmax(β × semelhança com a consulta). A saída é a média das memórias com esses pesos. A camada de atenção dos Transformers pode ser lida como um passo de lembrança de uma Hopfield moderna como esta: a consulta (<i>query</i>) puxa as memórias (<i>keys</i>) mais parecidas (Ramsauer et al., 2020).</p>
+      <div class="a9btns"><button class="ghost" data-k="semente">Outra semente</button></div>
+    </div>`;
+    const $ = (k) => host.querySelector(`[data-k="${k}"]`); const S = { i: 0, noise: 0.4, beta: 8, seed: opt.seed, q: null };
+    function upd() { S.q = H.flip(P[S.i], S.noise, H.rng(S.seed * 97 + S.i)); draw(); }
+    function draw() { const r = H.modern(P, S.q, S.beta); S.r = r;
+      let s = surface($('q'), 1); drawGrid(s.g, 0, 0, s.W, S.q); s = surface($('o'), 1); drawGrid(s.g, 0, 0, s.W, r.out, { cont: true });
+      $('w').innerHTML = r.w.map((w, k) => `<div class="a9bar"><span>${esc(D[names[k]].nome)}</span><span class="tr"><i style="left:0;width:${100 * w}%"></i></span><span>${Math.round(100 * w)}%</span></div>`).join(''); }
+    host.querySelectorAll(`[name="${id}q"]`).forEach(r => r.addEventListener('change', () => { S.i = +r.value; upd(); }));
+    $('noise').addEventListener('input', () => { S.noise = +$('noise').value / 100; $('no').textContent = $('noise').value + '%'; upd(); });
+    $('beta').addEventListener('input', () => { S.beta = +$('beta').value; $('bo').textContent = $('beta').value; draw(); });
+    $('semente').addEventListener('click', () => { S.seed++; upd(); }); root.addEventListener('resize', draw); upd();
+    const api = { S, draw, setBeta: (b) => { S.beta = b; $('beta').value = b; $('bo').textContent = b; draw(); } }; host.sim = api; return api;
+  }
+
+  root.A9UI = { DrawSim, LesionSim, MorphSim, WordList, BreakSim, RingSim, AttnSim, whenVisible, drawGrid, thumb, fmt };
+})(window);
+
+</script>
+<script>
+(() => {
+  const U = window.A9UI, P = window.P = {}, L = window.A9L;
+  const $ = (s) => document.querySelector(s);
+  const MAKE = {
+    desenhe: () => { P.draw = U.DrawSim($('#simDesenhe'), { seed: 1, big: true }); },
+    hipocampo: () => { P.lesao = U.LesionSim($('#simLesao'), { seed: 1 }); P.wills = U.MorphSim($('#simWills'), { seed: 1, n: 40 }); },
+    falsa: () => { P.lista = U.WordList($('#simFalsa')); },
+    quebre: () => { P.quebre = U.BreakSim($('#simQuebre'), { seed: 1 }); P.quebre.show('a'); },
+    anel: () => { P.anel = U.RingSim($('#simAnel'), { seed: 1, per: 2 }); },
+    atencao: () => { P.att = U.AttnSim($('#simAtencao')); },
+  };
+  $('[data-k=rev]').onclick = () => { $('#revelar').innerHTML = `<span>A lista:</span><b>${L.DRM.lista.join(', ')}</b><span>Palavra crítica, nunca dita:</span><span class="crit">${L.DRM.critica}</span><span style="font-size:15px">Nas normas brasileiras, 81% reconheceram "${L.DRM.critica}" como se estivesse na lista (Stein et al., 2006).</span>`; };
+  const made = {};
+  function open(t) {
+    document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === t));
+    document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + t));
+    if (!made[t]) { made[t] = true; MAKE[t](); } else window.dispatchEvent(new Event('resize'));
+    history.replaceState(null, '', '#' + t);
+  }
+  document.querySelectorAll('.tab').forEach(b => b.onclick = () => open(b.dataset.tab));
+  const h = location.hash.slice(1); open(MAKE[h] ? h : 'desenhe');
 })();
 </script>
 </body>
