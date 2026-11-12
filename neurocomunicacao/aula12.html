@@ -287,7 +287,7 @@ function triagem(){const t=hoje();return [
  {d:'lin',g:'Linguagem: leitura',s:'Mostre a tela a quem responde e diga: “Faça o que está escrito”.',a:'Vale se levantar a mão direita.',max:1,show:'<div style="font:800 34px/1.1 var(--display);text-align:center">LEVANTE A<br>MÃO DIREITA</div>'},
  {d:'lin',g:'Linguagem: escrita',s:'Peça: “Escreva uma frase qualquer”, num papel ou no seu celular.',a:'Vale se a frase tiver sujeito e verbo e fizer sentido. Erros de ortografia não contam.',max:1},
  {d:'lin',g:'Desenho: cópia',s:'Mostre a tela e peça: “Copie este desenho num papel”.',a:'Vale se forem dois quadrados que se cruzam, com 8 cantos no total.',max:1,show:COPY}];}
-const MED=[['sem\nescolaridade',20],['1–4\nanos',25],['5–8\nanos',26.5],['9–11\nanos',28],['mais de\n11 anos',29]];
+const MED=[['sem\nestudo',20],['1–4\nanos',25],['5–8\nanos',26.5],['9–11\nanos',28],['mais de\n11 anos',29]];
 $('e1go').onclick=async()=>{const scr=$('e1scr');$('e1go').disabled=true;$('e1res').hidden=true;const IT=triagem();const pts={ori:0,mem:0,ate:0,lin:0};let tot=0;
   scr.innerHTML='<div style="display:grid;gap:10px;text-align:center"><b>Quem aplica:</b> leia em voz alta só o que está em negrito e marque os pontos.<br><b>Quem responde:</b> não olhe a tela, a não ser quando pedirem.</div>';
   setButtons($('e1btn'),[['ok','Entendido']]);$('e1btn').hidden=false;await waitChoice($('e1btn'));
@@ -297,7 +297,7 @@ $('e1go').onclick=async()=>{const scr=$('e1scr');$('e1go').disabled=true;$('e1re
     setButtons($('e1btn'),opts);$('e1btn').hidden=false;const {r}=await waitChoice($('e1btn'));pts[it.d]+=+r;tot+=+r;}
   $('e1btn').hidden=true;$('e1p').textContent='';scr.innerHTML=`<span class="hint">Concluído: ${tot} de 30 pontos.</span>`;
   bars($('e1chart'),[...MED.map(([l,v])=>({label:l,value:v,text:String(v).replace('.',',')})),{label:'quem\nrespondeu',value:tot,alt:1}],{max:32});
-  $('e1rep').innerHTML=`Pontuação: <b>${tot}</b> de 30 · orientação ${pts.ori}/10 · memória ${pts.mem}/6 · atenção ${pts.ate}/5 · linguagem e desenho ${pts.lin}/9. Informe a pontuação total ao professor. As barras cinzas são as medianas brasileiras por anos de estudo (Brucki et al., 2003).`;
+  $('e1rep').innerHTML=`Pontuação: <b>${tot}</b> de 30 · orientação ${pts.ori}/10 · memória ${pts.mem}/6 · atenção ${pts.ate}/5 · linguagem e desenho ${pts.lin}/9. Informe a pontuação total ao professor. As barras laranja são as medianas brasileiras por anos de estudo (Brucki et al., 2003); a verde é quem respondeu.`;
   $('e1res').hidden=false;$('e1go').disabled=false;$('e1go').textContent='Aplicar de novo (trocar os papéis)';};
 
 /* ================= E2 · fluência verbal ================= */
