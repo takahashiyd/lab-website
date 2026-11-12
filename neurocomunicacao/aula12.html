@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Laboratório de Afasia</title>
+<title>Laboratório de Triagem</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500;700&display=swap">
 <style>
@@ -86,17 +86,13 @@ svg.brain .lab{font:700 15px var(--display);fill:var(--fg);pointer-events:none}
 .fb{border-radius:10px;padding:12px 14px;background:var(--soft);font-size:15px;display:grid;gap:6px}
 .fb .ok{color:var(--ok);font-weight:700}.fb .no{color:var(--warn);font-weight:700}
 /* E2 naming */
-#e2pic{width:min(220px,60vw);height:auto;color:var(--screen-fg)}
+#e3pic{width:min(220px,60vw);height:auto;color:var(--screen-fg)}
 .timer{height:6px;background:var(--line);border-radius:3px;overflow:hidden;width:100%}
 .timer span{display:block;height:100%;width:100%;background:var(--you);transform-origin:left}
 .cue{font-size:17px;padding:10px 14px;border-radius:10px;background:var(--soft);text-align:center;max-width:92%}
 .cue.fon{font:700 26px/1.2 var(--mono);letter-spacing:.06em;color:var(--you);background:transparent}
 .name{font:800 30px/1 var(--display);font-stretch:112%;color:var(--accent)}
-/* E3 tokens */
 .cmd{font:600 19px/1.35 var(--body);padding:14px 16px;text-align:center}
-#e3board{width:100%;height:auto;display:block}
-#e3board .tk{cursor:pointer}
-#e3board .badge{font:700 17px var(--mono);fill:#142033;pointer-events:none}
 /* E4 decoder */
 .seg{display:flex;gap:0;border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
 .seg button{border-radius:0;background:transparent;color:var(--fg);min-height:44px;padding:10px 14px;font-size:15px}
@@ -134,63 +130,58 @@ svg.brain .lab{font:700 15px var(--display);fill:var(--fg);pointer-events:none}
 <div class="wrap" id="student">
   <header>
     <span class="eyebrow">Bases neurais da comunicação humana · Aula 12</span>
-    <h1>Laboratório de Afasia</h1>
-    <p class="lead">Quatro experimentos sobre o que acontece quando a linguagem falha e como ela pode ser recuperada. No fim de cada um, informe o resultado ao professor.</p>
-    <div class="phones"><span>Os casos clínicos do experimento 1 são exemplos construídos para o ensino, a partir de descrições clássicas. Por trás de cada síndrome há uma pessoa que continua inteligente e com algo a dizer. Leia os casos com esse respeito.</span></div>
-    <nav aria-label="Experimentos"><a href="#e1">1 · Estudos de caso</a><a href="#e2">2 · Na ponta da língua</a><a href="#e3">3 · Siga as instruções</a><a href="#e4">4 · Decodificador de fala</a><a href="#e5">Extra · Cantar para falar</a></nav>
+    <h1>Laboratório de Triagem</h1>
+    <p class="lead">Como um clínico percebe que a linguagem de alguém está falhando? Quatro experimentos com testes usados de verdade: uma triagem cognitiva, a fluência verbal, a nomeação de figuras e um decodificador de fala para quem não consegue falar. No fim de cada um, informe o resultado ao professor.</p>
+    <div class="phones"><span>Os experimentos 1 e 2 são feitos em dupla: um aplica, o outro responde. Os resultados são de pessoas saudáveis e servem para entender os testes, não para diagnosticar ninguém.</span></div>
+    <nav aria-label="Experimentos"><a href="#e1">1 · Mini-triagem</a><a href="#e2">2 · Fluência verbal</a><a href="#e3">3 · Nomeação</a><a href="#e4">4 · Decodificador de fala</a><a href="#e5">Extra · Cantar para falar</a></nav>
   </header>
 
   <!-- E1 -->
   <section class="exp" id="e1">
-    <div class="row"><span class="num">EXPERIMENTO 1</span><span class="tag">≈ 10 min · em grupo · 7 casos</span></div>
-    <h2>Estudos de caso: sintoma, síndrome, lesão</h2>
-    <p>Em grupos de 3 ou 4, usando um celular só. Para cada pessoa, leiam a fala e as observações, discutam e escolham <b>o tipo de afasia</b>. Depois toquem no cérebro <b>onde deve estar a lesão</b>. Use as três perguntas: a fala é fluente? A pessoa compreende? Consegue repetir?</p>
-    <div class="screen" id="e1scr"><span class="hint">Toque em Começar.</span></div>
+    <div class="row"><span class="num">EXPERIMENTO 1</span><span class="tag">≈ 10 min · em dupla · 30 pontos</span></div>
+    <h2>Mini-triagem cognitiva</h2>
+    <p>Em duplas: um aplica, o outro responde, depois troquem. Quem aplica fica com o celular, lê em voz alta as frases em <b>negrito</b> e marca a pontuação. Quem responde não olha a tela, a não ser quando o teste pedir. Os itens seguem o formato do <b>Mini-Exame do Estado Mental</b> (MEEM), o teste de triagem mais usado no Brasil, mas as palavras e as frases são versões próprias desta aula.</p>
+    <div class="phones"><span>Isto é um exercício de sala, não um diagnóstico. Uma triagem só indica quem deve ser avaliado com mais cuidado.</span></div>
+    <div class="screen" id="e1scr" style="min-height:230px;padding:16px"><span class="hint">Combinem quem aplica e toque em Começar.</span></div>
+    <div class="row" id="e1btn" hidden></div>
     <div class="row"><button id="e1go">Começar</button><span class="readout" id="e1p"></span></div>
-    <div id="e1ask" hidden style="display:grid;gap:10px">
-      <h3 id="e1q">Qual é o tipo de afasia?</h3>
-      <div class="choices" id="e1btn"></div>
-      <div id="e1brainbox" hidden><svg class="brain" id="e1brain" viewBox="0 0 400 290" role="img" aria-label="Hemisfério esquerdo visto de lado; toque na região lesionada"></svg>
-        <p class="readout" style="text-align:center">frente ← hemisfério esquerdo → nuca</p></div>
-      <div class="fb" id="e1fb" hidden></div>
-      <div class="row"><button id="e1next" hidden>Próximo caso</button></div>
-    </div>
     <div class="result" id="e1res" hidden>
-      <svg class="chart" id="e1chart" viewBox="0 0 640 300" role="img" aria-label="Acertos de síndrome e de local"></svg>
+      <svg class="chart" id="e1chart" viewBox="0 0 640 300" role="img" aria-label="Pontuação da dupla comparada às medianas por escolaridade"></svg>
       <div class="report" id="e1rep"></div>
-      <p class="why">As síndromes clássicas nascem de três perguntas. Fala não fluente aponta para o lobo frontal, à frente do sulco central; problemas de compreensão apontam para o temporal posterior; repetição ruim aponta para o território perissilviano que liga os dois. Quando a repetição está preservada, a lesão costuma estar fora desse anel, nas transcorticais. Na vida real os casos são mais misturados que estes, e a mesma lesão pode dar quadros diferentes em pessoas diferentes.</p>
+      <p class="why">Quase todo mundo da turma faz 28 a 30 pontos: o teste foi feito para separar quem tem um prejuízo moderado de quem não tem, e não para medir diferenças entre pessoas saudáveis (o <b>efeito teto</b>). A escolaridade pesa muito: no Brasil, a mediana de pessoas sem escolaridade é 20 e a de quem estudou mais de 11 anos é 29 (Brucki et al., 2003). Por isso não existe uma nota de corte única. E repare quão pouco do teste é linguagem: nomear dois objetos, repetir uma frase, seguir um comando, ler e escrever. Uma pessoa com afasia leve ou com Alzheimer inicial pode passar. Para a linguagem, o clínico usa testes mais finos, como os dos próximos experimentos.</p>
     </div>
     <div class="ajuda"><span>Ajuda</span><a href="respostas/aula12.html#e1-dica" target="_blank" rel="noopener">Dica</a><a href="respostas/aula12.html#e1-resposta" target="_blank" rel="noopener" data-resp hidden>Ver a resposta</a><span class="trava" hidden>A resposta aparece quando você terminar o exercício.</span></div>
   </section>
 
   <!-- E2 -->
   <section class="exp" id="e2">
-    <div class="row"><span class="num">EXPERIMENTO 2</span><span class="tag">≈ 5 min · 12 desenhos</span></div>
-    <h2>Na ponta da língua</h2>
-    <p>Aparece um desenho. Se você sabe o nome, toque em <b>Sei o nome</b> e diga-o em pensamento. Se a palavra está quase saindo, toque em <b>Na ponta da língua</b>. Você terá 5 segundos. Quando não lembrar, vai receber primeiro uma <b>pista de significado</b> e depois uma <b>pista de som</b>. Seja honesto: não há nota.</p>
-    <div class="screen" id="e2scr" style="min-height:300px;gap:10px;padding:14px 0"><span class="hint">Toque em Começar.</span></div>
-    <div class="row"><button id="e2go">Começar</button><span class="readout" id="e2p"></span></div>
+    <div class="row"><span class="num">EXPERIMENTO 2</span><span class="tag">≈ 5 min · em dupla · 3 rodadas de 1 min</span></div>
+    <h2>Fluência verbal: animais, letra P e ações</h2>
+    <p>Um fala, o outro conta. Em cada rodada, quem responde diz em voz alta, durante <b>1 minuto</b>, o máximo de palavras da categoria. Quem conta toca em <b>+1</b> a cada palavra válida. Não valem repetições, nomes próprios nem a mesma palavra com outro final (pato, patinho). Depois troquem os papéis, se der tempo.</p>
+    <div class="screen" id="e2scr" style="min-height:230px;padding:16px;gap:10px"><span class="hint">Toque em Começar para a primeira rodada.</span></div>
     <div class="row" id="e2btn" hidden></div>
+    <div class="row"><button id="e2go">Começar</button><span class="readout" id="e2p"></span></div>
     <div class="result" id="e2res" hidden>
-      <svg class="chart" id="e2chart" viewBox="0 0 640 300" role="img" aria-label="Como cada palavra foi encontrada"></svg>
+      <svg class="chart" id="e2chart" viewBox="0 0 640 300" role="img" aria-label="Palavras por categoria"></svg>
+      <svg class="chart" id="e2quart" viewBox="0 0 640 260" role="img" aria-label="Palavras a cada 15 segundos"></svg>
       <div class="report" id="e2rep"></div>
-      <p class="why">No estado de <b>ponta da língua</b> você sabe o que o objeto é e para que serve, às vezes até quantas sílabas a palavra tem, mas os sons não chegam. Por isso a pista de som costuma resolver mais do que a pista de significado. Na <b>anomia</b>, a dificuldade de achar palavras que existe em quase toda afasia, isso acontece a toda hora. Fonoaudiólogos usam exatamente esta hierarquia de pistas: primeiro o significado, depois o som inicial.</p>
+      <p class="why">A fluência verbal leva um minuto e diz muito. <b>Animais</b> exige buscar na memória semântica, a rede de significados do lobo temporal: é a primeira a cair no <b>Alzheimer</b>, que na fluência por letra perde bem menos. Palavras com <b>P</b> exigem uma busca pelo som, organizada pelo lobo frontal e pelos núcleos da base, que no <b>Parkinson</b> cai tanto quanto a de animais, e nas lesões frontais cai mais. <b>Ações</b> (verbos) cai especialmente no Parkinson, quando o circuito motor que usa a dopamina falha. Note também que a maioria das palavras sai nos primeiros 15 segundos: depois disso a busca fica mais lenta. No Brasil, dizer menos de 9 animais (para quem estudou menos de 8 anos) ou menos de 13 (para quem estudou 8 anos ou mais) sugere investigar uma demência (Brucki et al., 1997).</p>
     </div>
     <div class="ajuda"><span>Ajuda</span><a href="respostas/aula12.html#e2-dica" target="_blank" rel="noopener">Dica</a><a href="respostas/aula12.html#e2-resposta" target="_blank" rel="noopener" data-resp hidden>Ver a resposta</a><span class="trava" hidden>A resposta aparece quando você terminar o exercício.</span></div>
   </section>
 
   <!-- E3 -->
   <section class="exp" id="e3">
-    <div class="row"><span class="num">EXPERIMENTO 3</span><span class="tag">≈ 5 min · 15 instruções</span></div>
-    <h2>Siga as instruções</h2>
-    <p>Inspirado no <b>Token Test</b>, usado há 60 anos para detectar afasias leves. Uma instrução aparece por poucos segundos e some, como uma frase falada. Depois toque nas fichas na ordem pedida e em <b>Pronto</b>. As instruções ficam mais longas e mais difíceis de analisar a cada nível.</p>
-    <div class="screen" id="e3scr" style="min-height:96px"><span class="hint">Toque em Começar.</span></div>
-    <div id="e3wrap" hidden><svg id="e3board" viewBox="0 0 500 330" role="img" aria-label="Vinte fichas: círculos e quadrados de cinco cores e dois tamanhos"></svg></div>
-    <div class="row"><button id="e3go">Começar</button><button id="e3ok" hidden>Pronto</button><button id="e3clr" class="ghost" hidden>Apagar</button><span class="readout" id="e3p"></span></div>
+    <div class="row"><span class="num">EXPERIMENTO 3</span><span class="tag">≈ 5 min · sozinho · 12 desenhos</span></div>
+    <h2>Nomeação de figuras: na ponta da língua</h2>
+    <p>Testes de nomeação, como o de Boston, mostram desenhos de objetos cada vez menos comuns. A dificuldade de achar palavras (<b>anomia</b>) aparece em quase toda afasia e no começo do Alzheimer. Aqui, aparece um desenho. Se você sabe o nome, toque em <b>Sei o nome</b> e diga-o em pensamento. Se a palavra está quase saindo, toque em <b>Na ponta da língua</b>. Você terá 5 segundos. Quando não lembrar, vai receber primeiro uma <b>pista de significado</b> e depois uma <b>pista de som</b>. Seja honesto: não há nota.</p>
+    <div class="screen" id="e3scr" style="min-height:300px;gap:10px;padding:14px 0"><span class="hint">Toque em Começar.</span></div>
+    <div class="row"><button id="e3go">Começar</button><span class="readout" id="e3p"></span></div>
+    <div class="row" id="e3btn" hidden></div>
     <div class="result" id="e3res" hidden>
-      <svg class="chart" id="e3chart" viewBox="0 0 640 300" role="img" aria-label="Acertos por nível"></svg>
+      <svg class="chart" id="e3chart" viewBox="0 0 640 300" role="img" aria-label="Como cada palavra foi encontrada"></svg>
       <div class="report" id="e3rep"></div>
-      <p class="why">Entender uma frase não é uma coisa só. Os níveis 1 a 3 pedem que você guarde mais palavras; os níveis 4 e 5 pedem que você analise a sintaxe: “antes de”, “depois de”, “menos”, “se não”. Pessoas com afasia de Wernicke ou global erram já nos primeiros níveis. Pessoas com afasia de Broca ou de condução acertam os primeiros e erram quando a ordem das palavras não coincide com a ordem dos atos ou quando a frase é longa. Se você errou no nível 5, foi a memória de trabalho que ficou cheia, não a sua linguagem.</p>
+      <p class="why">No estado de <b>ponta da língua</b> você sabe o que o objeto é e para que serve, às vezes até quantas sílabas a palavra tem, mas os sons não chegam. Por isso a pista de som costuma resolver mais do que a de significado. Na <b>anomia</b> da afasia isso acontece a toda hora, e fonoaudiólogos usam exatamente esta hierarquia de pistas na terapia. No Alzheimer o quadro é outro: com o tempo o próprio conceito se desfaz, e a pista de som deixa de ajudar, como na demência semântica.</p>
     </div>
     <div class="ajuda"><span>Ajuda</span><a href="respostas/aula12.html#e3-dica" target="_blank" rel="noopener">Dica</a><a href="respostas/aula12.html#e3-resposta" target="_blank" rel="noopener" data-resp hidden>Ver a resposta</a><span class="trava" hidden>A resposta aparece quando você terminar o exercício.</span></div>
   </section>
@@ -240,7 +231,7 @@ svg.brain .lab{font:700 15px var(--display);fill:var(--fg);pointer-events:none}
   <header>
     <span class="eyebrow">Placar da turma · Aula 12</span>
     <h1>Resultados da turma</h1>
-    <p class="lead">Peça que levantem a mão por categoria e registre com + e −. No experimento 1, conte um voto por grupo. Os números ficam salvos neste navegador.</p>
+    <p class="lead">Peça que levantem a mão por categoria e registre com + e −. Nos experimentos 1 e 2, conte um voto por pessoa que respondeu. Os números ficam salvos neste navegador.</p>
     <div class="row"><button class="ghost" id="reset">Zerar placar</button><span class="readout" id="resetMsg"></span><a href="#" id="toStudent" style="color:var(--accent);font-weight:600">Ver página dos alunos</a></div>
   </header>
   <div class="board" id="board"></div>
@@ -271,65 +262,72 @@ function bars(svg,items,{max,unit=''}={}){const W=640,H=+svg.getAttribute('viewB
     const lines=it.label.split('\n');lines.forEach((ln,k)=>g+=`<text x="${x+bw/2}" y="${H-B+24+k*21}" text-anchor="middle">${ln}</text>`);});
   svg.innerHTML=g;}
 
-/* ================= E1 · case studies ================= */
-const BR={"outline":"M14,148 13,140 13,132 14,124 17,116 20,108 24,100 28,92 33,85 37,78 42,71 47,65 53,59 59,54 65,49 72,44 79,39 86,35 93,31 101,28 109,25 116,22 124,20 132,18 140,16 149,14 157,13 165,13 173,12 181,12 190,12 198,13 206,13 214,14 223,16 231,17 239,19 247,21 255,23 263,26 270,29 278,32 285,36 292,40 299,44 306,49 313,54 320,59 326,64 332,69 339,75 345,80 350,86 356,92 361,98 366,105 371,112 375,119 379,126 383,134 385,142 388,150 388,158 388,166 387,174 383,182 379,189 374,196 368,202 362,207 354,211 347,215 339,218 332,222 324,225 317,228 309,230 301,233 293,236 285,238 277,240 269,243 261,245 253,246 245,248 237,249 229,250 221,250 212,250 204,250 196,250 188,250 179,249 171,248 163,247 155,245 147,243 139,240 132,237 124,233 117,229 110,225 103,221 97,215 91,208 90,200 94,192 98,186 95,181 86,178 75,177 65,177 57,178 50,179 43,177 35,173 28,168 22,162 17,155 14,148Z","s_silviana":"M100,185 108,183 115,181 123,179 130,177 138,175 146,173 153,170 160,168 168,165 175,163 183,161 190,158 198,156 205,153 213,150 220,148 227,145 235,141 241,138 248,133 254,128 259,123 264,116","s_central":"M220,16 218,21 216,26 214,32 212,37 211,43 209,48 208,54 206,59 205,64 203,70 202,75 200,81 198,86 196,91 194,97 192,102 190,107 188,112 186,118 185,123 183,129 183,134 182,140","s_precentral":"M180,18 178,22 177,27 175,31 174,35 172,40 171,44 170,49 169,53 168,58 166,62 165,67 164,71 163,76 162,80 161,85 160,89 159,94 157,98 156,102 155,107 153,111 152,116 150,120","s_temporal_sup":"M116,214 125,212 134,210 143,208 152,207 162,205 171,203 180,201 189,199 198,198 207,196 216,194 225,192 234,189 243,187 252,185 261,182 270,178 278,175 286,171 294,166 302,161 309,155 316,148","s_frontal_inf":"M52,120 56,119 60,117 64,116 68,115 71,114 75,113 79,112 83,111 87,110 91,109 95,108 99,107 103,107 107,106 111,106 115,105 119,105 123,105 128,104 132,104 136,104 140,104 144,104","s_frontal_sup":"M64,68 68,67 73,65 77,64 82,63 86,61 91,60 95,59 100,58 104,57 109,57 113,56 118,55 122,55 127,54 131,53 136,53 140,53 145,52 149,52 154,52 159,52 163,52 168,52","s_poscentral":"M260,32 259,36 258,40 257,44 255,48 254,52 253,56 251,60 250,64 248,68 246,72 245,76 243,80 242,84 240,88 239,92 238,96 236,99 235,104 234,108 233,112 232,116 231,120 230,124","s_intraparietal":"M248,60 253,62 258,63 262,65 267,66 272,68 277,69 282,70 287,72 292,73 297,75 302,76 307,78 312,79 316,81 321,83 326,85 330,87 335,89 339,92 344,95 348,98 352,101 356,104","s_temporal_inf":"M144,234 151,234 159,233 166,232 174,232 181,231 189,230 196,229 203,227 211,226 218,225 225,223 233,222 240,220 247,218 255,216 262,215 269,213 276,211 283,209 291,206 298,204 305,202 312,200","r_broca":"M162,139 161,135 159,132 156,130 152,127 148,126 144,125 139,125 134,125 129,126 125,128 121,130 117,133 114,136 112,140 110,144 109,147 109,151 110,155 112,158 115,161 118,164 122,165 126,167 131,167 135,167 140,166 145,165 149,163 153,160 157,157 159,154 161,150 162,146 163,143 162,139Z","r_wernicke":"M279,151 277,149 275,147 272,146 269,145 264,145 260,145 255,146 250,147 245,149 241,151 237,154 233,157 230,160 227,163 226,166 225,169 225,172 226,174 228,176 230,178 234,179 237,179 242,179 246,179 251,177 256,176 261,174 265,171 269,169 273,166 276,163 278,160 279,157 279,154 279,151Z","r_supramarginal":"M299,102 298,99 297,96 296,93 294,90 291,88 288,86 284,85 281,84 277,84 273,84 270,85 267,87 264,89 261,91 259,94 258,97 257,100 257,104 258,107 259,110 261,113 264,115 267,117 270,119 273,120 277,120 281,120 284,119 288,118 291,116 294,114 296,111 297,108 298,105 299,102Z","r_angular":"M346,120 346,116 345,113 343,110 341,107 338,104 334,102 331,101 327,100 323,100 319,101 315,102 312,103 309,106 306,108 304,111 303,115 302,118 302,122 303,125 304,129 306,132 309,134 312,137 315,138 319,139 323,140 327,140 331,139 334,138 338,136 341,133 343,130 345,127 346,124 346,120Z","r_temporal_medio":"M247,207 246,205 244,203 240,202 236,201 230,200 224,200 218,201 211,202 204,203 197,205 190,207 184,209 179,212 175,215 172,217 170,220 169,222 169,225 171,227 174,228 178,229 183,230 189,230 195,230 202,229 209,228 216,226 223,225 229,222 234,220 239,217 243,214 246,212 247,209 247,207Z","r_frontal_motor":"M126,79 124,75 122,72 119,68 116,66 111,64 107,62 101,62 96,62 91,63 86,64 81,66 77,69 73,72 70,75 68,79 67,83 66,87 67,91 69,95 71,98 74,101 78,103 83,105 88,106 93,106 98,106 104,105 109,103 113,101 117,98 121,94 123,91 125,87 126,83 126,79Z","r_tpo":"M368,164 368,160 366,156 365,152 362,148 359,145 355,143 351,141 347,140 343,140 339,141 335,142 331,144 327,147 325,150 322,154 321,158 320,162 320,166 321,170 322,174 325,178 327,181 331,184 335,186 339,187 343,188 347,188 351,187 355,185 359,183 362,180 365,176 366,172 368,168 368,164Z","r_vsmc":"M209,112 210,107 211,102 212,97 212,92 211,88 210,85 209,82 207,80 205,79 202,79 199,80 197,82 194,84 191,88 188,92 186,96 184,101 182,106 181,112 180,117 180,121 180,126 181,129 182,133 184,135 186,136 189,137 191,136 194,135 197,133 200,130 202,126 205,122 207,117 209,112Z","r_global":"M96,156 96,146 98,137 102,128 108,120 114,113 122,107 130,102 139,99 148,97 157,95 166,92 175,90 184,87 193,84 201,81 210,78 219,75 229,73 238,71 249,70 259,69 269,70 278,72 286,76 293,81 299,88 303,96 306,105 307,115 308,125 308,136 306,145 303,155 300,164 295,172 289,179 283,184 275,189 266,193 257,195 248,197 238,199 228,200 218,200 209,200 199,200 190,200 181,199 172,198 162,197 153,196 143,195 134,193 125,190 116,186 109,181 103,174 98,165 96,156Z","arc":"M248,152 254,150 260,146 266,140 271,133 276,125 278,116 280,108 279,100 276,94 271,89 264,86 255,85 247,84 239,84 231,85 223,87 216,89 209,92 202,95 195,98 188,102 181,106 175,110 168,114 162,118 156,123 150,128 145,134 140,140"};
-const SYN={broca:'Broca',wernicke:'Wernicke',conducao:'Condução',global:'Global',anomica:'Anômica',tcm:'Transcortical motora',tcs:'Transcortical sensorial'};
-const SITE={broca:['broca'],wernicke:['wernicke'],conducao:['supramarginal'],global:['global'],anomica:['temporal_medio','angular'],tcm:['frontal_motor'],tcs:['tpo']};
-const SITEN={broca:'giro frontal inferior esquerdo (área de Broca) e arredores',wernicke:'giro temporal superior posterior esquerdo (área de Wernicke)',
- supramarginal:'giro supramarginal e fascículo arqueado, logo acima do fim da fissura de Sylvius',global:'grande parte do território perissilviano esquerdo (artéria cerebral média)',
- temporal_medio:'giro temporal médio e inferior',angular:'giro angular',frontal_motor:'córtex pré-frontal dorsolateral ou área motora suplementar, acima e à frente de Broca',
- tpo:'junção temporo-parieto-occipital, atrás da área de Wernicke'};
-const CASES=[
- {s:'broca',who:'Seu Antônio, 58 anos, motorista · AVC há 3 meses',q:'Menino… biscoito… cai… ah… mãe… água… água… chão.',
-  o:'Descreve uma figura falando devagar, com muito esforço, quase sem artigos e preposições. Entende bem a conversa do dia a dia, mas erra “O menino foi empurrado pela menina: quem empurrou?”. Repetir frases é muito difícil. Tem fraqueza no braço direito e sabe dos próprios erros, o que o deixa frustrado.',
-  e:'Fala não fluente e telegráfica (agramatismo), compreensão relativamente boa exceto em frases sintaticamente difíceis, repetição ruim. A fraqueza do braço direito mostra que a lesão chega ao córtex motor, logo atrás do frontal inferior.'},
- {s:'wernicke',who:'Dona Lúcia, 67 anos, costureira · AVC há 1 mês',q:'Ah sim, então a menina tava lá pegando o pastrino, né, e a coisa toda ela fez a minha sanobete, porque eu falei pra ela que o negócio é assim mesmo…',
-  o:'Fala rápido, sem esforço e com boa melodia, mas troca palavras e cria palavras novas. Não consegue seguir “feche os olhos”. Não repete frases. Não parece perceber os próprios erros. Não tem paralisia.',
-  e:'Fala fluente, mas com parafasias e neologismos (jargão); compreensão muito ruim; repetição ruim; pouca consciência dos erros. A lesão é posterior, no temporal superior, longe do córtex motor: por isso não há paralisia.'},
- {s:'conducao',who:'Rafael, 45 anos, professor · AVC há 6 meses',q:'Me passa o… tefelone… telefo… tenefone… telefone! Isso.',
-  o:'Conversa com fluência e entende tudo. Erra os sons das palavras, percebe e tenta corrigir várias vezes, chegando cada vez mais perto. Pedir para repetir “nem aqui, nem ali, nem lá” é o que mais o atrapalha.',
-  e:'Fluente, compreensão boa, repetição desproporcionalmente ruim, com parafasias fonológicas e tentativas sucessivas de correção (conduite d’approche). Lesão clássica: giro supramarginal e fascículo arqueado, que ligam a parte posterior à anterior.'},
- {s:'global',who:'Seu José, 72 anos, aposentado · AVC extenso há 2 semanas',q:'Tá… tá, tá. (pausa) Meu Deus.',
-  o:'Diz quase só “tá, tá” e algumas expressões automáticas. Entende apenas ordens muito simples acompanhadas de gesto. Não repete. Tem paralisia do lado direito do corpo. Ainda reconhece a família e reage com emoção a músicas conhecidas.',
-  e:'Todas as funções gravemente comprometidas: fala, compreensão e repetição. Costuma resultar da oclusão da artéria cerebral média esquerda, que irriga o território perissilviano inteiro. Expressões automáticas e canto podem ser preservados.'},
- {s:'anomica',who:'Marta, 50 anos, advogada · AVC há 1 ano',q:'Preciso comprar aquela coisa… de cortar papel… sabe? Com dois buracos para os dedos… isso, tesoura.',
-  o:'Fala fluente e gramatical, entende tudo, repete bem. A dificuldade é achar substantivos: usa rodeios (circunlocuções), “coisa” e “negócio”. Quando alguém dá o começo da palavra, ela acha na hora.',
-  e:'Só a nomeação está afetada. É a afasia mais leve e a menos localizadora: aparece com lesões temporais médias e inferiores ou do giro angular, e é o ponto de chegada comum da recuperação de outras afasias.'},
- {s:'tcm',who:'Paulo, 63 anos, comerciante · AVC há 2 meses',q:'(longo silêncio) … Bem. (Terapeuta: “O livro que a menina leu estava em cima da mesa.”) O livro que a menina leu estava em cima da mesa.',
-  o:'Quase não inicia a fala sozinho; responde com uma ou duas palavras e demora a começar. Entende bem. Mas repete com perfeição frases longas.',
-  e:'Não fluente com compreensão boa e repetição preservada: transcortical motora. O circuito perissilviano está intacto (por isso repete), mas a lesão desliga o planejamento e a iniciativa da fala, no frontal dorsolateral ou na área motora suplementar.'},
- {s:'tcs',who:'Dona Rita, 70 anos, dona de casa · AVC há 3 semanas',q:'(Terapeuta: “Como a senhora está?”) Como a senhora está… está bem, a mesa, a coisa da mesa, sabe?',
-  o:'Fala fluente com trocas de palavras de significado parecido. Entende mal. Repete muito bem e às vezes repete automaticamente o que acabou de ouvir (ecolalia).',
-  e:'Como uma Wernicke, mas com repetição preservada: transcortical sensorial. A via que liga sons a articulação está intacta; o que se desconecta é o acesso ao significado, por lesões na junção temporo-parieto-occipital, atrás da área de Wernicke.'}];
-function brainSVG(svg){let g=`<path class="outline" d="${BR.outline}"/>`;
-  Object.keys(BR).filter(k=>k.startsWith('s_')).forEach(k=>g+=`<path class="sulc${k==='s_silviana'||k==='s_central'?' main':''}" d="${BR[k]}"/>`);
-  g+=`<path class="reg glob" data-k="global" d="${BR.r_global}"/>`;
-  ['broca','wernicke','supramarginal','temporal_medio','angular','frontal_motor','tpo'].forEach(k=>g+=`<path class="reg" data-k="${k}" d="${BR['r_'+k]}"/>`);
-  svg.innerHTML=g;}
-function waitRegion(svg){return new Promise(res=>{const rs=[...svg.querySelectorAll('.reg')];const h=e=>{e.stopPropagation();rs.forEach(r=>r.removeEventListener('click',h));res(e.currentTarget.dataset.k);};rs.forEach(r=>r.addEventListener('click',h));});}
-$('e1go').onclick=async()=>{$('e1go').disabled=true;$('e1res').hidden=true;const order=shuffle([...CASES]);let okS=0,okL=0;const miss=[];
-  $('e1ask').hidden=false;
-  for(let i=0;i<order.length;i++){const c=order[i];$('e1p').textContent=`caso ${i+1} / ${order.length}`;
-    $('e1scr').innerHTML=`<div class="case"><span class="who">${c.who}</span><blockquote>“${c.q}”</blockquote><p class="obs">${c.o}</p></div>`;
-    $('e1q').textContent='1. Qual é o tipo de afasia?';$('e1fb').hidden=true;$('e1next').hidden=true;$('e1brainbox').hidden=true;
-    setButtons($('e1btn'),Object.entries(SYN).map(([k,t])=>[k,t]),'ghost');$('e1btn').hidden=false;
-    const {r}=await waitChoice($('e1btn'));const sOK=r===c.s;if(sOK)okS++;else miss.push(SYN[c.s]);
-    $('e1btn').querySelectorAll('button').forEach(b=>{if(b.dataset.r===c.s)b.classList.add('right');else if(b.dataset.r===r)b.classList.add('wrong');});
-    $('e1q').textContent='2. Toque no cérebro onde deve estar a lesão.';brainSVG($('e1brain'));$('e1brainbox').hidden=false;
-    $('e1brainbox').scrollIntoView({block:'nearest',behavior:'smooth'});
-    const k=await waitRegion($('e1brain'));const lOK=SITE[c.s].includes(k);if(lOK)okL++;
-    $('e1brain').querySelectorAll('.reg').forEach(p=>{if(SITE[c.s].includes(p.dataset.k))p.classList.add('ans');else if(p.dataset.k===k)p.classList.add('pick');});
-    $('e1fb').innerHTML=`<div>Síndrome: <span class="${sOK?'ok':'no'}">${sOK?'certo':'não'}</span>, era <b>${SYN[c.s]}</b>. Local: <span class="${lOK?'ok':'no'}">${lOK?'certo':'não'}</span>, em verde: ${SITE[c.s].map(x=>SITEN[x]).join(' ou ')}.</div><div>${c.e}</div>`;
-    $('e1fb').hidden=false;$('e1next').hidden=false;$('e1next').textContent=i<order.length-1?'Próximo caso':'Ver resultado';
-    $('e1fb').scrollIntoView({block:'nearest',behavior:'smooth'});await once($('e1next'));
-    $('e1scr').scrollIntoView({block:'start',behavior:'smooth'});}
-  $('e1ask').hidden=true;$('e1scr').innerHTML='<span class="hint">Concluído.</span>';$('e1p').textContent='';
-  bars($('e1chart'),[{label:'síndromes\ncertas',value:okS,text:`${okS} de 7`},{label:'locais\ncertos',value:okL,text:`${okL} de 7`,alt:1}],{max:8.2});
-  const cat=n=>n<=3?'0–3':n<=5?'4–5':'6–7';
-  $('e1rep').innerHTML=`O grupo acertou <b>${okS} de 7</b> síndromes e <b>${okL} de 7</b> locais.${miss.length?' Erraram: '+miss.join(', ')+'.':''} Informe (um voto por grupo): síndromes <b>${cat(okS)}</b> e locais <b>${cat(okL)}</b>.`;
-  $('e1res').hidden=false;$('e1go').disabled=false;$('e1go').textContent='Refazer';};
+/* ================= E1 · mini-triagem (formato do MEEM, itens próprios) ================= */
+const DIAS=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+const MESES=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+function hoje(){const d=new Date();return {dia:DIAS[d.getDay()],n:d.getDate(),mes:MESES[d.getMonth()],ano:d.getFullYear(),h:String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};}
+const COPY=`<svg viewBox="0 0 160 160" width="170" height="170" aria-label="Dois quadrados que se cruzam"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"><rect x="30" y="30" width="80" height="80"/><rect x="58" y="58" width="80" height="80" transform="rotate(45 98 98)"/></g></svg>`;
+function triagem(){const t=hoje();return [
+ {d:'ori',g:'Orientação no tempo',s:'Em que dia da semana estamos?',a:`Certo: ${t.dia}.`,max:1},
+ {d:'ori',g:'Orientação no tempo',s:'Que dia do mês é hoje?',a:`Certo: ${t.n}.`,max:1},
+ {d:'ori',g:'Orientação no tempo',s:'Em que mês estamos?',a:`Certo: ${t.mes}.`,max:1},
+ {d:'ori',g:'Orientação no tempo',s:'Em que ano estamos?',a:`Certo: ${t.ano}.`,max:1},
+ {d:'ori',g:'Orientação no tempo',s:'Sem olhar o relógio: que horas são, mais ou menos?',a:`Agora são ${t.h}. Vale um erro de até 1 hora.`,max:1},
+ {d:'ori',g:'Orientação no espaço',s:'Em que lugar estamos agora, exatamente?',a:'Vale “numa sala de aula”, “no laboratório”, o número da sala…',max:1},
+ {d:'ori',g:'Orientação no espaço',s:'Que lugar é este, em geral?',a:'Vale o nome da universidade, do campus ou do prédio.',max:1},
+ {d:'ori',g:'Orientação no espaço',s:'Em que bairro, ou em que rua, fica este lugar?',a:'Vale o bairro ou uma rua próxima.',max:1},
+ {d:'ori',g:'Orientação no espaço',s:'Em que cidade estamos?',a:'',max:1},
+ {d:'ori',g:'Orientação no espaço',s:'Em que estado estamos?',a:'',max:1},
+ {d:'mem',g:'Memória imediata',s:'Vou dizer três palavras. Repita depois de mim e guarde, porque vou perguntar de novo: CHAVE · LARANJA · CAVALO.',a:'Um ponto por palavra repetida na primeira tentativa. Se errar, repita as três até ela aprender (no máximo 5 vezes), sem mudar a nota.',max:3},
+ {d:'ate',g:'Atenção e cálculo',s:'Quanto é 100 menos 7? E menos 7? (continue até cinco subtrações)',a:'Respostas: 93 · 86 · 79 · 72 · 65. Um ponto por subtração certa, mesmo que a anterior tenha errado.',max:5},
+ {d:'mem',g:'Memória de evocação',s:'Quais eram as três palavras que pedi para você guardar?',a:'Chave, laranja, cavalo. Um ponto por palavra, em qualquer ordem.',max:3},
+ {d:'lin',g:'Linguagem: nomeação',s:'Aponte para um celular e pergunte: “O que é isto?”. Depois aponte uma caneta, lápis ou chave.',a:'Um ponto por objeto nomeado.',max:2},
+ {d:'lin',g:'Linguagem: repetição',s:'Repita depois de mim: O PATO E O RATO NÃO CABEM NO PRATO.',a:'Só vale se a frase sair inteira e exata. Diga a frase uma vez só.',max:1},
+ {d:'lin',g:'Linguagem: comando de três etapas',s:'Entregue um objeto (uma caneta) e diga de uma vez: Pegue esta caneta com a mão esquerda, encoste-a no ombro direito e devolva-a para mim.',a:'Um ponto por etapa feita.',max:3},
+ {d:'lin',g:'Linguagem: leitura',s:'Mostre a tela a quem responde e diga: “Faça o que está escrito”.',a:'Vale se levantar a mão direita.',max:1,show:'<div style="font:800 34px/1.1 var(--display);text-align:center">LEVANTE A<br>MÃO DIREITA</div>'},
+ {d:'lin',g:'Linguagem: escrita',s:'Peça: “Escreva uma frase qualquer”, num papel ou no seu celular.',a:'Vale se a frase tiver sujeito e verbo e fizer sentido. Erros de ortografia não contam.',max:1},
+ {d:'lin',g:'Desenho: cópia',s:'Mostre a tela e peça: “Copie este desenho num papel”.',a:'Vale se forem dois quadrados que se cruzam, com 8 cantos no total.',max:1,show:COPY}];}
+const MED=[['sem\nescolaridade',20],['1–4\nanos',25],['5–8\nanos',26.5],['9–11\nanos',28],['mais de\n11 anos',29]];
+$('e1go').onclick=async()=>{const scr=$('e1scr');$('e1go').disabled=true;$('e1res').hidden=true;const IT=triagem();const pts={ori:0,mem:0,ate:0,lin:0};let tot=0;
+  scr.innerHTML='<div style="display:grid;gap:10px;text-align:center"><b>Quem aplica:</b> leia em voz alta só o que está em negrito e marque os pontos.<br><b>Quem responde:</b> não olhe a tela, a não ser quando pedirem.</div>';
+  setButtons($('e1btn'),[['ok','Entendido']]);$('e1btn').hidden=false;await waitChoice($('e1btn'));
+  for(let i=0;i<IT.length;i++){const it=IT[i];$('e1p').textContent=`${i+1} / ${IT.length}`;
+    scr.innerHTML=`<div style="display:grid;gap:12px;width:100%;text-align:left"><span class="readout">${it.g}</span><p style="font:700 20px/1.35 var(--body)">${it.s}</p>${it.show?`<div style="display:grid;place-items:center;padding:6px 0">${it.show}</div>`:''}${it.a?`<p class="why">${it.a}</p>`:''}</div>`;
+    const opts=it.max===1?[['1','Acertou'],['0','Errou','ghost']]:Array.from({length:it.max+1},(_,j)=>{const k=it.max-j;return [String(k),`${k} ponto${k===1?'':'s'}`,k===it.max?'':'ghost'];});
+    setButtons($('e1btn'),opts);$('e1btn').hidden=false;const {r}=await waitChoice($('e1btn'));pts[it.d]+=+r;tot+=+r;}
+  $('e1btn').hidden=true;$('e1p').textContent='';scr.innerHTML=`<span class="hint">Concluído: ${tot} de 30 pontos.</span>`;
+  bars($('e1chart'),[...MED.map(([l,v])=>({label:l,value:v,text:String(v).replace('.',',')})),{label:'quem\nrespondeu',value:tot,alt:1}],{max:32});
+  $('e1rep').innerHTML=`Pontuação: <b>${tot}</b> de 30 · orientação ${pts.ori}/10 · memória ${pts.mem}/6 · atenção ${pts.ate}/5 · linguagem e desenho ${pts.lin}/9. Informe a pontuação total ao professor. As barras cinzas são as medianas brasileiras por anos de estudo (Brucki et al., 2003).`;
+  $('e1res').hidden=false;$('e1go').disabled=false;$('e1go').textContent='Aplicar de novo (trocar os papéis)';};
 
-/* ================= E2 · tip of the tongue: naming with cueing hierarchy ================= */
+/* ================= E2 · fluência verbal ================= */
+const ROUNDS=[{k:'an',t:'Animais',s:'Diga todos os animais que conseguir lembrar, de qualquer tipo. Você tem um minuto. Pode começar.'},
+ {k:'p',t:'Palavras com P',s:'Agora, palavras que começam com a letra P. Não valem nomes de pessoas nem de lugares, nem a mesma palavra com outro final. Um minuto. Pode começar.'},
+ {k:'ac',t:'Ações',s:'Agora, coisas que as pessoas fazem: ações, como correr ou cozinhar. Um minuto. Pode começar.'}];
+function round60(){return new Promise(res=>{const scr=$('e2scr');let n=0;const times=[];const t0=performance.now();
+  scr.innerHTML='<div class="timer" style="width:80%"><span></span></div><div class="name" id="e2n" style="font-size:64px">0</div><span class="readout" id="e2t">60 s</span>';
+  scr.querySelector('.timer span').animate([{transform:'scaleX(1)'},{transform:'scaleX(0)'}],{duration:60000,fill:'forwards'});
+  setButtons($('e2btn'),[['+','+1 palavra','big'],['-','desfazer','ghost']]);$('e2btn').hidden=false;
+  const bs=[...$('e2btn').querySelectorAll('button')];
+  const h=e=>{if(e.currentTarget.dataset.r==='+'){n++;times.push(performance.now()-t0);}else if(n>0){n--;times.pop();}$('e2n').textContent=n;};
+  bs.forEach(b=>b.addEventListener('click',h));
+  const tick=setInterval(()=>{const s=Math.max(0,60-Math.floor((performance.now()-t0)/1000));const el=$('e2t');if(el)el.textContent=s+' s';},250);
+  setTimeout(()=>{clearInterval(tick);bs.forEach(b=>{b.removeEventListener('click',h);b.disabled=true;});try{navigator.vibrate&&navigator.vibrate(300)}catch(e){}res({n,times});},60000);});}
+$('e2go').onclick=async()=>{const scr=$('e2scr');$('e2go').disabled=true;$('e2res').hidden=true;const R={};const Q=[0,0,0,0];
+  for(let i=0;i<ROUNDS.length;i++){const rd=ROUNDS[i];$('e2p').textContent=`rodada ${i+1} de 3`;
+    scr.innerHTML=`<div style="display:grid;gap:10px;text-align:center;width:100%"><span class="readout">Rodada ${i+1} · ${rd.t}</span><p style="font:700 20px/1.35 var(--body)">${rd.s}</p><p class="why">Toque em Valendo! quando terminar de ler.</p></div>`;
+    setButtons($('e2btn'),[['go','Valendo!']]);$('e2btn').hidden=false;await waitChoice($('e2btn'));
+    const {n,times}=await round60();R[rd.k]=n;times.forEach(t=>Q[Math.min(3,Math.floor(t/15000))]++);
+    scr.innerHTML=`<div style="display:grid;gap:8px;text-align:center"><span class="readout">Tempo! ${rd.t}</span><div class="name" style="font-size:56px">${n}</div><span class="hint">palavras válidas</span></div>`;
+    setButtons($('e2btn'),[['ok',i<2?'Próxima rodada':'Ver resultado']]);await waitChoice($('e2btn'));}
+  $('e2btn').hidden=true;$('e2p').textContent='';scr.innerHTML='<span class="hint">Concluído.</span>';
+  bars($('e2chart'),[{label:'animais',value:R.an},{label:'letra P',value:R.p,alt:1},{label:'ações',value:R.ac}]);
+  bars($('e2quart'),[{label:'0–15 s',value:Q[0]},{label:'15–30 s',value:Q[1]},{label:'30–45 s',value:Q[2]},{label:'45–60 s',value:Q[3]}]);
+  const tot=Q.reduce((a,b)=>a+b,0);const low=[['animais',R.an],['letra P',R.p],['ações',R.ac]].sort((a,b)=>a[1]-b[1])[0][0];
+  $('e2rep').innerHTML=`Animais <b>${R.an}</b> · letra P <b>${R.p}</b> · ações <b>${R.ac}</b>. A categoria mais difícil foi <b>${low}</b>. ${tot?Math.round(100*Q[0]/tot):0}% das palavras saíram nos primeiros 15 segundos. Informe ao professor o número de animais e a categoria com menos palavras.`;
+  $('e2res').hidden=false;$('e2go').disabled=false;$('e2go').textContent='Refazer (trocar os papéis)';};
+
+/* ================= E3 · tip of the tongue: naming with cueing hierarchy ================= */
 const S='fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"';
 const PICS={
  ampulheta:`<g ${S}><rect x="30" y="12" width="60" height="9" rx="3"/><rect x="30" y="99" width="60" height="9" rx="3"/><path d="M34 21v78M86 21v78"/><path d="M40 21C40 46 57 53 58 60C57 67 40 74 40 99M80 21C80 46 63 53 62 60C63 67 80 74 80 99"/></g><path d="M45 33h30C70 46 63 52 60 55C57 52 50 46 45 33Z" fill="currentColor" opacity=".35"/><path d="M45 97C48 86 56 80 60 79C64 80 72 86 75 97Z" fill="currentColor" opacity=".35"/><path d="M60 58V80" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 3"/>`,
@@ -356,18 +354,18 @@ const ITEMS=[['ampulheta','ampulheta','Mede o tempo com areia que escorre de um 
  ['bussola','bússola','A agulha aponta sempre para o norte.','BÚS-…'],
  ['regador','regador','Usado para molhar as plantas.','RE-GA…'],
  ['funil','funil','Ajuda a pôr líquido numa garrafa de boca estreita.','FU-…']];
-function pic(k){return `<svg id="e2pic" viewBox="0 0 120 120" aria-hidden="true">${PICS[k]}</svg>`;}
-function choose(list){setButtons($('e2btn'),list);$('e2btn').hidden=false;return waitChoice($('e2btn'));}
-function timed(ms){const box=$('e2btn');return new Promise(res=>{let done=false;const bar=$('e2scr').querySelector('.timer span');
+function pic(k){return `<svg id="e3pic" viewBox="0 0 120 120" aria-hidden="true">${PICS[k]}</svg>`;}
+function choose(list){setButtons($('e3btn'),list);$('e3btn').hidden=false;return waitChoice($('e3btn'));}
+function timed(ms){const box=$('e3btn');return new Promise(res=>{let done=false;const bar=$('e3scr').querySelector('.timer span');
   if(bar){bar.animate([{transform:'scaleX(1)'},{transform:'scaleX(0)'}],{duration:ms,fill:'forwards'});}
   const t=setTimeout(()=>{if(done)return;done=true;box.querySelectorAll('button').forEach(b=>b.disabled=true);res({r:'timeout',rt:ms});},ms);
   waitChoice(box).then(v=>{if(done)return;done=true;clearTimeout(t);res(v);});});}
-$('e2go').onclick=async()=>{const scr=$('e2scr');$('e2go').disabled=true;$('e2res').hidden=true;const items=shuffle([...ITEMS]);
+$('e3go').onclick=async()=>{const scr=$('e3scr');$('e3go').disabled=true;$('e3res').hidden=true;const items=shuffle([...ITEMS]);
   const R={imed:0,sem:0,fon:0,nao:0,errado:0};let tot=0,reachSem=0,reachFon=0;const rts=[];
-  for(let t=0;t<items.length;t++){const [k,name,sem,fon]=items[t];$('e2p').textContent=`${t+1} / ${items.length}`;
-    scr.innerHTML='<span class="hint">Prepare-se…</span>';$('e2btn').hidden=true;await sleep(700);
+  for(let t=0;t<items.length;t++){const [k,name,sem,fon]=items[t];$('e3p').textContent=`${t+1} / ${items.length}`;
+    scr.innerHTML='<span class="hint">Prepare-se…</span>';$('e3btn').hidden=true;await sleep(700);
     scr.innerHTML=pic(k)+'<div class="timer" style="width:70%"><span></span></div>';
-    setButtons($('e2btn'),[['sei','Sei o nome'],['tot','Na ponta da língua','ghost'],['nao','Não sei','ghost']]);$('e2btn').hidden=false;
+    setButtons($('e3btn'),[['sei','Sei o nome'],['tot','Na ponta da língua','ghost'],['nao','Não sei','ghost']]);$('e3btn').hidden=false;
     let {r,rt}=await timed(5000);
     if(r==='timeout'){scr.querySelector('.timer').remove();scr.insertAdjacentHTML('beforeend','<span class="hint">O tempo acabou. A palavra está…</span>');
       ({r}=await choose([['tot','Na ponta da língua'],['nao','Não sei','ghost']]));}
@@ -383,53 +381,11 @@ $('e2go').onclick=async()=>{const scr=$('e2scr');$('e2go').disabled=true;$('e2re
       if(stage!=='nao'){const c=await choose([['s','Era essa!'],['n','Era outra','ghost']]);if(c.r==='n')stage='nao';}
       else await sleep(1300);}
     R[stage]++;}
-  $('e2btn').hidden=true;scr.innerHTML='<span class="hint">Concluído.</span>';$('e2p').textContent='';
-  bars($('e2chart'),[{label:'de\nprimeira',value:R.imed,alt:1},{label:'com pista de\nsignificado',value:R.sem},{label:'com pista\nde som',value:R.fon},{label:'não\nlembrou',value:R.nao+R.errado,alt:1}],{max:13});
+  $('e3btn').hidden=true;scr.innerHTML='<span class="hint">Concluído.</span>';$('e3p').textContent='';
+  bars($('e3chart'),[{label:'de\nprimeira',value:R.imed,alt:1},{label:'com pista de\nsignificado',value:R.sem},{label:'com pista\nde som',value:R.fon},{label:'não\nlembrou',value:R.nao+R.errado,alt:1}],{max:13});
   const ps=reachSem?R.sem/reachSem:NaN,pf=reachFon?R.fon/reachFon:NaN;const pct=v=>isNaN(v)?'—':Math.round(100*v)+'%';
   const cat=!reachSem?'não precisei':isNaN(pf)?'semântica':pf-ps>=0.15?'fonológica':ps-pf>=0.15?'semântica':'empate';
-  $('e2rep').innerHTML=`Você nomeou ${R.imed} de 12 de primeira (tempo mediano ${fmt(median(rts))} ms) e teve ${tot} estado${tot===1?'':'s'} de ponta da língua. A pista de significado resolveu <b>${pct(ps)}</b> das vezes em que foi dada; a pista de som, <b>${pct(pf)}</b>. Informe a pista que mais ajudou: <b>${cat}</b>.`;
-  $('e2res').hidden=false;$('e2go').disabled=false;$('e2go').textContent='Refazer';};
-
-/* ================= E3 · Token Test ================= */
-const COL={vermelho:'#D2423A',azul:'#2F6FD0',verde:'#2E9B5A',amarelo:'#F2C230',branco:'#FFFFFF'};
-const TOK=[];Object.keys(COL).forEach(c=>['círculo','quadrado'].forEach(f=>['grande','pequeno'].forEach(s=>TOK.push({c,f,s,id:TOK.length}))));
-const nm=t=>`${t.f} ${t.c} ${t.s}`;const pick=(n,pool=TOK)=>shuffle([...pool]).slice(0,n);
-function makeCmd(level,variant){
-  if(level===1){const [a]=pick(1);return {txt:`Toque no ${nm(a)}.`,ans:[a.id],ord:false};}
-  if(level===2){const [a,b]=pick(2);return {txt:`Toque no ${nm(a)} e no ${nm(b)}.`,ans:[a.id,b.id],ord:false};}
-  if(level===3){const [a,b,c]=pick(3);return {txt:`Toque no ${nm(a)}, no ${nm(b)} e no ${nm(c)}.`,ans:[a.id,b.id,c.id],ord:false};}
-  if(level===4){const [a,b]=pick(2);return [{txt:`Antes de tocar no ${nm(a)}, toque no ${nm(b)}.`,ans:[b.id,a.id],ord:true},
-     {txt:`Toque no ${nm(a)} depois de tocar no ${nm(b)}.`,ans:[b.id,a.id],ord:true},
-     {txt:`Toque no ${nm(a)} antes de tocar no ${nm(b)}.`,ans:[a.id,b.id],ord:true}][variant];}
-  if(variant===0){const f=Math.random()<.5?'círculo':'quadrado',s=Math.random()<.5?'grande':'pequeno';const ex=pick(1,TOK.filter(t=>t.f===f&&t.s===s))[0];
-    return {txt:`Toque em todos os ${f}s ${s}s, menos no ${ex.c}.`,ans:TOK.filter(t=>t.f===f&&t.s===s&&t!==ex).map(t=>t.id),ord:false};}
-  const [a,b]=pick(2);
-  if(variant===1)return {txt:`Se houver um ${a.f} preto, toque no ${nm(a)}; se não houver, toque no ${nm(b)}.`,ans:[b.id],ord:false};
-  return {txt:`Em vez de tocar no ${nm(a)}, toque no ${nm(b)}.`,ans:[b.id],ord:false};}
-let e3taps=[];
-function drawBoard(order){const svg=$('e3board');let g='';order.forEach((t,i)=>{const cx=50+(i%5)*100,cy=50+Math.floor(i/5)*78;const r=t.s==='grande'?30:17;
-    const st=t.c==='branco'?'stroke="#7d8a9b" stroke-width="2.5"':'stroke="rgba(0,0,0,.15)" stroke-width="1.5"';
-    g+=`<g class="tk" data-id="${t.id}"><rect x="${cx-48}" y="${cy-38}" width="96" height="76" fill="transparent"/>`+(t.f==='círculo'?`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${COL[t.c]}" ${st}/>`:`<rect x="${cx-r}" y="${cy-r}" width="${2*r}" height="${2*r}" rx="3" fill="${COL[t.c]}" ${st}/>`)+`<g class="bd" transform="translate(${cx+22},${cy-24})"></g></g>`;});
-  svg.innerHTML=g;svg.querySelectorAll('.tk').forEach(el=>el.onclick=()=>{if(!svg.dataset.live)return;e3taps.push(+el.dataset.id);badges();});}
-function badges(){const svg=$('e3board');svg.querySelectorAll('.bd').forEach(b=>b.innerHTML='');
-  e3taps.forEach((id,k)=>{const b=svg.querySelector(`.tk[data-id="${id}"] .bd`);b.innerHTML+=`<circle cx="${k*6}" cy="0" r="12" fill="var(--you)" stroke="#fff" stroke-width="2"/><text class="badge" x="${k*6}" y="6" text-anchor="middle">${k+1}</text>`;});}
-$('e3clr').onclick=()=>{e3taps=[];badges();};
-$('e3go').onclick=async()=>{$('e3go').disabled=true;$('e3res').hidden=true;const scr=$('e3scr');const res={1:[],2:[],3:[],4:[],5:[]};
-  const trials=[];for(let L=1;L<=5;L++)shuffle([0,1,2]).forEach(v=>trials.push([L,v]));
-  $('e3wrap').hidden=false;
-  for(let t=0;t<trials.length;t++){const [L,v]=trials[t];const cmd=makeCmd(L,v);$('e3p').textContent=`nível ${L} · ${t+1} / 15`;
-    drawBoard(shuffle([...TOK]));e3taps=[];$('e3board').dataset.live='';
-    scr.innerHTML='<span class="hint">Leia com atenção…</span>';await sleep(800);
-    const words=cmd.txt.split(' ').length;scr.innerHTML=`<div class="cmd">${cmd.txt}</div>`;await sleep(1000+260*words);
-    scr.innerHTML='<span class="hint">Agora toque nas fichas e depois em Pronto.</span>';$('e3board').dataset.live='1';$('e3ok').hidden=false;$('e3clr').hidden=false;
-    await once($('e3ok'));$('e3board').dataset.live='';$('e3ok').hidden=true;$('e3clr').hidden=true;
-    const ok=cmd.ord?(e3taps.length===cmd.ans.length&&e3taps.every((x,i)=>x===cmd.ans[i])):(e3taps.length===cmd.ans.length&&[...e3taps].sort().join()===[...cmd.ans].sort().join());
-    res[L].push(ok);scr.innerHTML=`<div class="cmd" style="font-size:16px">${ok?'<span style="color:var(--ok)">Certo.</span>':'<span style="color:var(--warn)">Não era isso.</span>'} ${cmd.txt}</div>`;await sleep(1500);}
-  $('e3wrap').hidden=true;scr.innerHTML='<span class="hint">Concluído.</span>';$('e3p').textContent='';
-  const p=L=>100*mean(res[L].map(Number));
-  bars($('e3chart'),[1,2,3,4,5].map(L=>({label:'nível '+L,value:p(L),text:res[L].filter(Boolean).length+'/3',alt:L>=4})),{max:115});
-  const first=[1,2,3,4,5].find(L=>res[L].some(x=>!x));const cat=!first?'nenhum erro':first<=2?'níveis 1–2':'nível '+first;
-  $('e3rep').innerHTML=`Acertos: ${[1,2,3,4,5].map(L=>`nível ${L} ${res[L].filter(Boolean).length}/3`).join(' · ')}. Informe o primeiro nível em que errou: <b>${cat}</b>.`;
+  $('e3rep').innerHTML=`Você nomeou ${R.imed} de 12 de primeira (tempo mediano ${fmt(median(rts))} ms) e teve ${tot} estado${tot===1?'':'s'} de ponta da língua. A pista de significado resolveu <b>${pct(ps)}</b> das vezes em que foi dada; a pista de som, <b>${pct(pf)}</b>. Informe a pista que mais ajudou: <b>${cat}</b>.`;
   $('e3res').hidden=false;$('e3go').disabled=false;$('e3go').textContent='Refazer';};
 
 /* ================= E4 · speech BCI decoding simulation ================= */
@@ -496,14 +452,14 @@ $('e5fal').onclick=()=>sing('fal');$('e5ent').onclick=()=>sing('ent');
 
 /* ================= teacher board ================= */
 const BOARD=[
- {k:'e1a',t:'1 · Síndromes certas (por grupo)',cats:['0–3','4–5','6–7']},
- {k:'e1b',t:'1 · Locais certos (por grupo)',cats:['0–3','4–5','6–7']},
- {k:'e2',t:'2 · Pista que mais ajudou',cats:['fonológica','semântica','empate','não precisei']},
- {k:'e3',t:'3 · Primeiro nível com erro',cats:['níveis 1–2','nível 3','nível 4','nível 5','nenhum erro']},
+ {k:'e1',t:'1 · Pontuação na mini-triagem',cats:['≤ 25','26–27','28','29','30']},
+ {k:'e2a',t:'2 · Animais em 1 minuto',cats:['< 13','13–19','20–24','≥ 25']},
+ {k:'e2b',t:'2 · Categoria com menos palavras',cats:['animais','letra P','ações']},
+ {k:'e3',t:'3 · Pista que mais ajudou',cats:['fonológica','semântica','empate','não precisei']},
  {k:'e4a',t:'4 · Erro, ~600 palavras sem modelo',cats:['< 20%','20–40%','40–60%','> 60%']},
  {k:'e4b',t:'4 · Redução pelo modelo de linguagem',cats:['< 25%','25–50%','50–75%','> 75%']}];
-let ST={};try{ST=JSON.parse(localStorage.getItem('afasia-placar')||'{}')}catch(e){ST={}}
-const save=()=>{try{localStorage.setItem('afasia-placar',JSON.stringify(ST))}catch(e){}};
+let ST={};try{ST=JSON.parse(localStorage.getItem('triagem-placar')||'{}')}catch(e){ST={}}
+const save=()=>{try{localStorage.setItem('triagem-placar',JSON.stringify(ST))}catch(e){}};
 function renderBoard(){const host=$('board');host.innerHTML='';
   BOARD.forEach(p=>{const div=document.createElement('div');div.className='panel';let max=1;p.cats.forEach((_,i)=>max=Math.max(max,ST[p.k+'_'+i]||0));
     let h=`<h2>${p.t}</h2><div class="bars">`;
